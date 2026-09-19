@@ -15,6 +15,7 @@ dev = [
     "pytest",
     "pytest-asyncio",
     "respx",
+    "python-dotenv",
 ]
 
 [build-system]
