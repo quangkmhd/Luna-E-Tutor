@@ -20,6 +20,10 @@ from luna_tutor.storage.session_repository import SessionRepository
 from luna_tutor.teaching.engine import TeachingEngine
 from luna_tutor.teaching.planner import TurnPlanner
 from luna_tutor.teaching.turn_service import TurnService
+from luna_tutor.speaking.fixtures import FixtureSpeakingModels
+from luna_tutor.speaking.llm import SpeakingModels
+from luna_tutor.speaking.repository import SpeakingRepository
+from luna_tutor.speaking.service import SpeakingService
 
 
 class FixtureTurnService:
@@ -87,12 +91,14 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
     database_path = Path(environment.get(
         'TUTOR_DATABASE_PATH', str(root / 'backend/data/luna-tutor.sqlite3')))
     repository = SessionRepository(database_path)
+    speaking_repository = SpeakingRepository(database_path)
     mode = environment.get('TUTOR_LLM_MODE', 'live')
     client = None
     if mode == 'fixture':
         if environment.get('ENV') != 'test':
             raise RuntimeError('TUTOR_LLM_MODE=fixture requires ENV=test')
         turn_service = FixtureTurnService()
+        speaking_models = FixtureSpeakingModels()
     else:
         key = environment.get('OPENROUTER_API_KEY', '').strip()
         settings = Settings(openrouter_api_key=key)
@@ -100,6 +106,7 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
         curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
         planner = TurnPlanner(GeminiEvaluator(client), TeachingEngine(), curriculum)
         turn_service = TurnService(planner, GeminiTeacher(client))
+        speaking_models = SpeakingModels(client)
 
     if turn_service_adapter is not None:
         turn_service = turn_service_adapter(turn_service)
@@ -114,4 +121,6 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
     if environment.get('ENV') == 'test':
         origins.append('http://localhost:3090')
     return create_app(repository=repository, turn_service=turn_service,
+                      speaking_service=SpeakingService(speaking_repository, speaking_models),
+                      speaking_repository=speaking_repository,
                       lifespan=lifespan, allowed_origins=origins)
