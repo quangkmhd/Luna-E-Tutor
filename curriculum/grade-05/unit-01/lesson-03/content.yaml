@@ -30,13 +30,17 @@ activities:
   required: true
   max_attempts: 2
   completion_rule:
+    meaning_objective_ids:
+    - unit01.lesson01.pattern.class
+    - unit01.lesson01.pattern.live_in
+    require_all_meanings: true
     mode: communicative_turn
     model_repetitions: 0
     response_opportunity_required: true
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Review class and home with the Lesson 1 objectives. Do not restart new-word teaching.
+  instruction: Ask Quang to tell you both his class and where he lives in one short prompt. City and countryside are alternative home answers; class and home are two separate facts, not alternatives. Do not restart new-word teaching.
   examples: []
 - id: lesson-03.favourites
   source:

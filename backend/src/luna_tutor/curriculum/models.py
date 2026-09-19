@@ -53,6 +53,8 @@ class CompletionRule(StrictModel):
     feedback_required: bool = False
     allow_support_limit_exit: bool = False
     mastery_required: Literal[False] = False
+    meaning_objective_ids: list[Identifier] = Field(default_factory=list)
+    require_all_meanings: bool = False
 
 
 class Activity(SourcedItem):
@@ -70,6 +72,10 @@ class Activity(SourcedItem):
     @model_validator(mode='after')
     def check_completion(self) -> Self:
         rule = self.completion_rule
+        if not set(rule.meaning_objective_ids) <= set(self.objective_ids):
+            raise ValueError('Completion meaning targets must belong to the activity')
+        if rule.require_all_meanings and not rule.meaning_objective_ids:
+            raise ValueError('All-meaning completion requires explicit targets')
         expected_modes = {
             'greeting': 'delivered', 'bridge': 'delivered', 'summary': 'delivered',
             'emotion_check': 'interaction', 'vocabulary_introduction': 'vocabulary_turn',

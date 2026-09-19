@@ -1,0 +1,2181 @@
+{
+  "scope": "real_pipecat_evaluator_engine_teacher_text",
+  "pipecat_version": "1.11.0",
+  "hashes": {
+    "backend/src/luna_tutor/__init__.py": "ead7225a1886655145af376d31daea52f74122928d4d11620c870a6445e6f0fe",
+    "backend/src/luna_tutor/api/__init__.py": "c4eefddde4bba7166de7b2557a1dadf04512571c97f3be56b440f9eeb688f27b",
+    "backend/src/luna_tutor/api/app.py": "46ed2ee93445465e0dc98e5013427dc1cf423602676b621ec7a0e199d6eabdeb",
+    "backend/src/luna_tutor/api/routes.py": "2f2219ec0746a2afcb4fdf3aa5d7526652c6a096f5e77e5cd76676b3d4905fe1",
+    "backend/src/luna_tutor/api/runtime.py": "36878a10034fc409f8c9e1c832f20715910e000410583facb53895842ae14497",
+    "backend/src/luna_tutor/api/schemas.py": "5a992a98b263189fafaa5caa16dfed987a8321290600fdb2aa9eca6fb6b11a93",
+    "backend/src/luna_tutor/config.py": "57143e14de463f7085834fe1d95c98495aefe7a3250d6e204f97da7877e81c2a",
+    "backend/src/luna_tutor/curriculum/__init__.py": "1fee533a87192cda0025d27a9280c312ca6a043c3e2f95ff5653468d10cb472b",
+    "backend/src/luna_tutor/curriculum/excel_importer.py": "c3bc42698c295092f57c85ab99f3a174688db2dc41b0dbc9e7c9e1c936966fd0",
+    "backend/src/luna_tutor/curriculum/loader.py": "aef1cc9932008c1c56528ef73c7ea7c13a6c52b4296e752bf6d44344557b8ef4",
+    "backend/src/luna_tutor/curriculum/models.py": "4609a8114d95878b2382509e79cd779a42f9b412d64f441c3eee4b042d0fd95c",
+    "backend/src/luna_tutor/domain/__init__.py": "16030cfa3ffe28c848affc3396f607319501a96dcb9ee91f5d14cdb99f84b99c",
+    "backend/src/luna_tutor/domain/contracts.py": "3153b012fe218513652bdd52832c4664c075d7d08f4809de1dc0abd4fe284819",
+    "backend/src/luna_tutor/domain/decisions.py": "8801c3d79dc9da040cea8a1a3794e121f7ccb4f6d4ca657f6a1f562db1e810fa",
+    "backend/src/luna_tutor/domain/evidence.py": "72ee88903caafc32e8bce6a718c13e0ea7e35db20d7d8a458b8b84d0ae8af705",
+    "backend/src/luna_tutor/domain/privacy.py": "4397e4b9c63deb7933442bab9f31d0d1850198d3c5ec59fc15fe976fa346d45f",
+    "backend/src/luna_tutor/domain/state.py": "2adee9651f2806c73e967fe7b091906a7c6e535a4f335f5e5d4dc104854b57ca",
+    "backend/src/luna_tutor/evals/__init__.py": "f3bc7810ace28f8bfd1fa95462eb05a2717774b708d6b7ab2a81ff455d76b8b7",
+    "backend/src/luna_tutor/evals/behavior.py": "18e4365312fe0393454873fdcf35bbb564fb264f67867d8357091f02728bcb41",
+    "backend/src/luna_tutor/evals/cli.py": "a1b54e14db6dc37fecac1e5343939b6d14b6b10296c47ad8c0edfe8a0400a363",
+    "backend/src/luna_tutor/evals/loader.py": "c29f86486dd93cb986215e3f68007b49f37812c350358d60451b14a29874a5cc",
+    "backend/src/luna_tutor/evals/metrics.py": "290c9a06d74d509856ab51ccefa2d4e6425c8cf2f38944976852bb7c7016e0d6",
+    "backend/src/luna_tutor/evals/models.py": "47e1b89e147c4ce6b838e92bd66cd9ea71edb540c3299bb00095adbd5dfe8a9d",
+    "backend/src/luna_tutor/evals/runner.py": "7b5082e6826b53bcbc0521d35d97487b1e8f8d46f50bb89a375a6daaf31bc4b0",
+    "backend/src/luna_tutor/llm/__init__.py": "2fcf8d80271bb97a44714fe9aecace78d24c1433193b0a1d1a6043ff9ad7bc4f",
+    "backend/src/luna_tutor/llm/evaluator.py": "9d45e2b5fa8c3e0ad10d7fb1fb5e36ee0d7a97ef79d42062e4bef444396d8553",
+    "backend/src/luna_tutor/llm/openrouter.py": "6bbc83ea42584c503dafbae3662d5a8df20ca3a1bdfef04be4eea91cbaf15a39",
+    "backend/src/luna_tutor/llm/teacher.py": "653bd7491dd8bf0f4572779946211bd1b12435deb4bc83f6c9cb4931a474ff49",
+    "backend/src/luna_tutor/prompts/__init__.py": "56a67b31a2526c2ff8757ddf82d68e1a50f3ee108978029657e24acdbc073a71",
+    "backend/src/luna_tutor/prompts/evaluator.md": "2aca251b3ea32a32df389da4b9ab462e43468b1aca902130ea1100a1a98d9d0e",
+    "backend/src/luna_tutor/prompts/teacher-system.md": "ae50a828c7079b48a9ca1b33e4967ddd9cce3ddb2a81a7633efe2e996a61caa2",
+    "backend/src/luna_tutor/storage/__init__.py": "e0d0ad5036c622475a92a60f26acda5285634df6d71ad4d6ae1bf343609a2d18",
+    "backend/src/luna_tutor/storage/session_repository.py": "0f2c2e11a68496b6b6f47c199211962c552e2384547555939257dc892224dc06",
+    "backend/src/luna_tutor/storage/sqlite.py": "297b003dbe46689a8a57be31dda9ffccaa0c01e4b9fed0abb66db38c016602cb",
+    "backend/src/luna_tutor/teaching/engine.py": "e084b36b04b7f48b733fc7fd2d87bd91e01ef9be543410379a2a19d06ef15cc0",
+    "backend/src/luna_tutor/teaching/planner.py": "54fa22583b9681743ee927040c8c287136dc040d7c5bdfb1c1d974f612183552",
+    "backend/src/luna_tutor/teaching/text_delivery.py": "c790568d3f69777592c87b0dd256d3eb827559e71c7cad744d0ee7f5def0895b",
+    "backend/src/luna_tutor/teaching/turn_service.py": "19366391acac91a806256c0bc5e4c97132c47dd2636b765e06fe6106d997469a",
+    "curriculum/grade-05/unit-01/free-talk/content.yaml": "8b74dd9c91f432c20e1a5942a3579e060091657532e6af76f0c66b870f9f5f0d",
+    "curriculum/grade-05/unit-01/lesson-01/content.yaml": "80f35e8236cdd3e38a277b4d1158fd85cc3080658d328e9408ead072fcf3dc93",
+    "curriculum/grade-05/unit-01/lesson-02/content.yaml": "63d0e182e7cbd9923dccbd8a775df3bb942babc858be2d92a1673b22dd8fa83a",
+    "curriculum/grade-05/unit-01/lesson-03/content.yaml": "d692aafbeed4170e8fa75c7020e916ab6cb859955607589d52fb62a4c9e3d8d2",
+    "curriculum/grade-05/unit-01/level-02/content.yaml": "2042982b9c635c6f95fe238281ccd20c585e695f8d42ab193a2b3a3749c05914",
+    "curriculum/grade-05/unit-01/level-03/content.yaml": "9c17dc6d1410e265377aed4b62d5be6d41eaee3f106bb4cb8bd2945765541cbc",
+    "curriculum/grade-05/unit-01/unit.yaml": "0e0060ab396397829e9a64e8d221e624b714da9adcaefdb0b14013c1d5f02908",
+    "evals/unit-01/development/branches.yaml": "c65469e052607b1aac9d642d59147a8604ef908709a05f3d4d0c54be5db55c9d",
+    "evals/unit-01/development/interaction-regressions.yaml": "e7846992e749c3d4d36d8de556019c96508e23aba1ddb4381eb01a8fb4669226",
+    "evals/unit-01/development/numbered.yaml": "55e9dceebef37c83130d17c7fc954e5be64b8bfdab6e3b09f6aaa23cd5fdcaf6",
+    "voice/server/bot.py": "ee6ec4cc26b3f2bd440f6532406f60f9d26f441d55a08b3b88b8dcea80d3e676",
+    "voice/server/text_pipeline.py": "254c15909cf2115cecd5f44e0584b2ec866c827be98781fae01ef8eb86e0759b",
+    "voice/server/text_runtime.py": "902f879292fa2e4a3012ce955198c9f00eac486559702feb4ea3743fb4241670"
+  },
+  "semantic_review": "pending",
+  "complete": true,
+  "records": [
+    {
+      "scenario_id": "regression-ask-animal",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-regression-ask-animal",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "lesson-02",
+        "activity_id": "lesson-02.ask-luna",
+        "objective_id": "unit01.lesson02.pattern.favourite",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "lesson-02.introduce-dolphin",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.introduce-pink",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.introduce-sandwich",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.introduce-table-tennis",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-animal",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-colour",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-food",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-sport",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.ask-luna",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "Now it is your turn to ask me about my favourite animal.",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "answers_child_question_first",
+        "pretend_personal_example",
+        "does_not_reask_same_question"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "regression-ask-animal-0",
+          "state_version": 0,
+          "learner_text": "What's your favourite animal?",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "regression-ask-animal-0",
+            "state_version": 0,
+            "response_kind": "asks_teacher",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "meaning_status": "satisfied",
+                "target_form_status": "correct_target_form",
+                "evidence_quote": "What's your favourite animal?",
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "answer_teacher_question",
+            "progression_action": "move_to_next_stage",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": "unit01.lesson01.vocabulary.city",
+            "next_activity_id": "lesson-03.introductions",
+            "next_stage_id": "lesson-03",
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false
+          },
+          "teacher_request": {
+            "turn_id": "regression-ask-animal-0",
+            "feedback_action": "answer_teacher_question",
+            "corrected_form": null,
+            "learner_meaning": "What's your favourite animal?",
+            "next_teaching_move": "Review class and home with the Lesson 1 objectives. Do not restart new-word teaching.",
+            "emotional_support": false,
+            "previous_teacher_turn": "Now it is your turn to ask me about my favourite animal.",
+            "activity_context": {
+              "stage_id": "lesson-03",
+              "activity_id": "lesson-03.introductions",
+              "kind": "review",
+              "objectives": [
+                "Vocabulary: city",
+                "Vocabulary: class",
+                "Vocabulary: countryside",
+                "Pattern: Can you tell me about yourself? – I'm in ___.",
+                "Pattern: I live in the ___."
+              ],
+              "target_words": [
+                "city",
+                "class",
+                "countryside"
+              ],
+              "target_patterns": [
+                "Can you tell me about yourself? – I'm in ___.",
+                "I live in the ___."
+              ],
+              "examples": [],
+              "model_repetitions": 0,
+              "response_opportunity_required": true,
+              "delivery_only": false
+            },
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-regression-ask-animal",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "lesson-03",
+            "activity_id": "lesson-03.introductions",
+            "objective_id": "unit01.lesson01.vocabulary.city",
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": true,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "lesson-02.introduce-dolphin",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.introduce-pink",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.introduce-sandwich",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.introduce-table-tennis",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-animal",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-colour",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-food",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-sport",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.ask-luna",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson02.pattern.favourite"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": true,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-03.introductions",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02"
+            ],
+            "applied_turn_ids": [
+              "regression-ask-animal-0"
+            ],
+            "last_teacher_turn": "Now it is your turn to ask me about my favourite animal.",
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "For our game, my favourite animal is a cat! Now, can you tell me if you are in a class, or do you live in a city or the countryside?",
+          "delivery_intent": "warm",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-regression-ask-animal",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "lesson-03",
+          "activity_id": "lesson-03.introductions",
+          "objective_id": "unit01.lesson01.vocabulary.city",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": true,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "lesson-02.introduce-dolphin",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.introduce-pink",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.introduce-sandwich",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.introduce-table-tennis",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-animal",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-colour",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-food",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-sport",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.ask-luna",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson02.pattern.favourite"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": true,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-03.introductions",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson02.pattern.favourite",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02"
+          ],
+          "applied_turn_ids": [
+            "regression-ask-animal-0"
+          ],
+          "last_teacher_turn": "For our game, my favourite animal is a cat! Now, can you tell me if you are in a class, or do you live in a city or the countryside?",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [
+        "unapproved_transition"
+      ],
+      "latency_ms": 3319.0024240029743
+    },
+    {
+      "scenario_id": "regression-ask-hobby",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-regression-ask-hobby",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "level-02",
+        "activity_id": "level-02.ask-luna",
+        "objective_id": "unit01.level02.pattern.hobby",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "level-02.introduce-birthday",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.introduce-hobby",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.introduce-phone-number",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.introduce-subject",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.birthday",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.hobby",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.subject",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "level-02.ask-luna",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "Now ask me about my hobby.",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "answers_child_question_first",
+        "pretend_personal_example",
+        "does_not_reask_same_question"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "regression-ask-hobby-0",
+          "state_version": 0,
+          "learner_text": "What's your hobby?",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "regression-ask-hobby-0",
+            "state_version": 0,
+            "response_kind": "asks_teacher",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "meaning_status": "satisfied",
+                "target_form_status": "correct_target_form",
+                "evidence_quote": "What's your hobby?",
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "answer_teacher_question",
+            "progression_action": "move_to_next_stage",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": "unit01.level03.vocabulary.cottage",
+            "next_activity_id": "level-03.introduce-cottage",
+            "next_stage_id": "level-03",
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false
+          },
+          "teacher_request": {
+            "turn_id": "regression-ask-hobby-0",
+            "feedback_action": "answer_teacher_question",
+            "corrected_form": null,
+            "learner_meaning": "What's your hobby?",
+            "next_teaching_move": "Model cottage twice, invite one response, wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.",
+            "emotional_support": false,
+            "previous_teacher_turn": "Now ask me about my hobby.",
+            "activity_context": {
+              "stage_id": "level-03",
+              "activity_id": "level-03.introduce-cottage",
+              "kind": "vocabulary_introduction",
+              "objectives": [
+                "Vocabulary: cottage"
+              ],
+              "target_words": [
+                "cottage"
+              ],
+              "target_patterns": [],
+              "examples": [
+                "cottage"
+              ],
+              "model_repetitions": 2,
+              "response_opportunity_required": true,
+              "delivery_only": false
+            },
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-regression-ask-hobby",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "level-03",
+            "activity_id": "level-03.introduce-cottage",
+            "objective_id": "unit01.level03.vocabulary.cottage",
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": true,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "level-02.introduce-birthday",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.introduce-hobby",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.introduce-phone-number",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.introduce-subject",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.birthday",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.hobby",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.subject",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-02.ask-luna",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.level02.pattern.hobby"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": true,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "level-03.introduce-cottage",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 2,
+                "response_opportunity_given": true,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02"
+            ],
+            "applied_turn_ids": [
+              "regression-ask-hobby-0"
+            ],
+            "last_teacher_turn": "Now ask me about my hobby.",
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "For our story, my hobby is reading. Now let us look at a new word, cottage. Cottage. Can you say cottage?",
+          "delivery_intent": "warm",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-regression-ask-hobby",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "level-03",
+          "activity_id": "level-03.introduce-cottage",
+          "objective_id": "unit01.level03.vocabulary.cottage",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": true,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "level-02.introduce-birthday",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.introduce-hobby",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.introduce-phone-number",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.introduce-subject",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.birthday",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.hobby",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.subject",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-02.ask-luna",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.level02.pattern.hobby"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": true,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "level-03.introduce-cottage",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 2,
+              "response_opportunity_given": true,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.level02.pattern.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02"
+          ],
+          "applied_turn_ids": [
+            "regression-ask-hobby-0"
+          ],
+          "last_teacher_turn": "For our story, my hobby is reading. Now let us look at a new word, cottage. Cottage. Can you say cottage?",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [
+        "unapproved_transition"
+      ],
+      "latency_ms": 2482.8337500075577
+    },
+    {
+      "scenario_id": "regression-ask-paraphrase",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-regression-ask-paraphrase",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "lesson-02",
+        "activity_id": "lesson-02.ask-luna",
+        "objective_id": "unit01.lesson02.pattern.favourite",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "lesson-02.introduce-dolphin",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.introduce-pink",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.introduce-sandwich",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.introduce-table-tennis",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-animal",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-colour",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-food",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.favourite-sport",
+            "status": "completed",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-02.ask-luna",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "You can ask me about the food I like.",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "answers_child_question_first",
+        "pretend_personal_example",
+        "does_not_reask_same_question"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [
+        "teacher_fallback"
+      ],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "regression-ask-paraphrase-0",
+          "state_version": 0,
+          "learner_text": "Which food do you like best?",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "regression-ask-paraphrase-0",
+            "state_version": 0,
+            "response_kind": "asks_teacher",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "meaning_status": "satisfied",
+                "target_form_status": "valid_alternative",
+                "evidence_quote": "Which food do you like best?",
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "answer_teacher_question",
+            "progression_action": "move_to_next_stage",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": "unit01.lesson01.vocabulary.city",
+            "next_activity_id": "lesson-03.introductions",
+            "next_stage_id": "lesson-03",
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false
+          },
+          "teacher_request": {
+            "turn_id": "regression-ask-paraphrase-0",
+            "feedback_action": "answer_teacher_question",
+            "corrected_form": null,
+            "learner_meaning": "Which food do you like best?",
+            "next_teaching_move": "Review class and home with the Lesson 1 objectives. Do not restart new-word teaching.",
+            "emotional_support": false,
+            "previous_teacher_turn": "You can ask me about the food I like.",
+            "activity_context": {
+              "stage_id": "lesson-03",
+              "activity_id": "lesson-03.introductions",
+              "kind": "review",
+              "objectives": [
+                "Vocabulary: city",
+                "Vocabulary: class",
+                "Vocabulary: countryside",
+                "Pattern: Can you tell me about yourself? – I'm in ___.",
+                "Pattern: I live in the ___."
+              ],
+              "target_words": [
+                "city",
+                "class",
+                "countryside"
+              ],
+              "target_patterns": [
+                "Can you tell me about yourself? – I'm in ___.",
+                "I live in the ___."
+              ],
+              "examples": [],
+              "model_repetitions": 0,
+              "response_opportunity_required": true,
+              "delivery_only": false
+            },
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-regression-ask-paraphrase",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "lesson-03",
+            "activity_id": "lesson-03.introductions",
+            "objective_id": "unit01.lesson01.vocabulary.city",
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "lesson-02.introduce-dolphin",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.introduce-pink",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.introduce-sandwich",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.introduce-table-tennis",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-animal",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-colour",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-food",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.favourite-sport",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-02.ask-luna",
+                "status": "completed",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson02.pattern.favourite"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02"
+            ],
+            "applied_turn_ids": [
+              "regression-ask-paraphrase-0"
+            ],
+            "last_teacher_turn": "You can ask me about the food I like.",
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "Let us take a moment, Quang. We can try that together.",
+          "delivery_intent": "encouraging",
+          "generation_mode": "fallback"
+        },
+        "next_state": {
+          "session_id": "behavior-regression-ask-paraphrase",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "lesson-03",
+          "activity_id": "lesson-03.introductions",
+          "objective_id": "unit01.lesson01.vocabulary.city",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "lesson-02.introduce-dolphin",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.introduce-pink",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.introduce-sandwich",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.introduce-table-tennis",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-animal",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-colour",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-food",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.favourite-sport",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-02.ask-luna",
+              "status": "completed",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson02.pattern.favourite"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson02.pattern.favourite",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02"
+          ],
+          "applied_turn_ids": [
+            "regression-ask-paraphrase-0"
+          ],
+          "last_teacher_turn": "Let us take a moment, Quang. We can try that together.",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [
+        "unapproved_transition"
+      ],
+      "latency_ms": 2421.312214995851
+    },
+    {
+      "scenario_id": "regression-review-countryside",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-regression-review-countryside",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "lesson-03",
+        "activity_id": "lesson-03.introductions",
+        "objective_id": "unit01.lesson01.vocabulary.city",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "lesson-03.introductions",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "Can you tell me about your class and where you live?",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "acknowledges_class_and_home",
+        "does_not_require_city",
+        "moves_to_favourites"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "regression-review-countryside-0",
+          "state_version": 0,
+          "learner_text": "I'm in Class 5B and I live in the countryside.",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "regression-review-countryside-0",
+            "state_version": 0,
+            "response_kind": "answer",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.city",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "I'm in Class 5B",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "I live in the countryside.",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "meaning_status": "satisfied",
+                "target_form_status": "correct_target_form",
+                "evidence_quote": "I'm in Class 5B",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "meaning_status": "satisfied",
+                "target_form_status": "correct_target_form",
+                "evidence_quote": "I live in the countryside.",
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "acknowledge_and_continue",
+            "progression_action": "move_to_next_objective",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": "unit01.lesson02.vocabulary.dolphin",
+            "next_activity_id": "lesson-03.favourites",
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": true
+          },
+          "teacher_request": {
+            "turn_id": "regression-review-countryside-0",
+            "feedback_action": "acknowledge_and_continue",
+            "corrected_form": null,
+            "learner_meaning": "I'm in Class 5B and I live in the countryside.",
+            "next_teaching_move": "Review favourite things with the Lesson 2 objectives. Create a meaningful choice or short response, not a word-list drill.",
+            "emotional_support": false,
+            "previous_teacher_turn": "Can you tell me about your class and where you live?",
+            "activity_context": {
+              "stage_id": "lesson-03",
+              "activity_id": "lesson-03.favourites",
+              "kind": "review",
+              "objectives": [
+                "Vocabulary: dolphin",
+                "Vocabulary: pink",
+                "Vocabulary: sandwich",
+                "Vocabulary: table tennis",
+                "Pattern: What's your favourite ___? – It's ___."
+              ],
+              "target_words": [
+                "dolphin",
+                "pink",
+                "sandwich",
+                "table tennis"
+              ],
+              "target_patterns": [
+                "What's your favourite ___? – It's ___."
+              ],
+              "examples": [],
+              "model_repetitions": 0,
+              "response_opportunity_required": true,
+              "delivery_only": false
+            },
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-regression-review-countryside",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "lesson-03",
+            "activity_id": "lesson-03.favourites",
+            "objective_id": "unit01.lesson02.vocabulary.dolphin",
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "lesson-03.introductions",
+                "status": "completed",
+                "attempt_count": 1,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson01.pattern.class",
+                  "unit01.lesson01.pattern.live_in",
+                  "unit01.lesson01.vocabulary.class",
+                  "unit01.lesson01.vocabulary.countryside"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-03.favourites",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02"
+            ],
+            "applied_turn_ids": [
+              "regression-review-countryside-0"
+            ],
+            "last_teacher_turn": "Can you tell me about your class and where you live?",
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "It is wonderful that you are in Class 5B and live in the countryside! What is your favourite thing to do there?",
+          "delivery_intent": "warm",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-regression-review-countryside",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "lesson-03",
+          "activity_id": "lesson-03.favourites",
+          "objective_id": "unit01.lesson02.vocabulary.dolphin",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "lesson-03.introductions",
+              "status": "completed",
+              "attempt_count": 1,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson01.pattern.class",
+                "unit01.lesson01.pattern.live_in",
+                "unit01.lesson01.vocabulary.class",
+                "unit01.lesson01.vocabulary.countryside"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-03.favourites",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson01.vocabulary.class",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.lesson01.vocabulary.countryside",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.lesson01.pattern.class",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02"
+          ],
+          "applied_turn_ids": [
+            "regression-review-countryside-0"
+          ],
+          "last_teacher_turn": "It is wonderful that you are in Class 5B and live in the countryside! What is your favourite thing to do there?",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "activity_id",
+        "count_attempt",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [
+        "unapproved_transition"
+      ],
+      "latency_ms": 3004.4815840083174
+    }
+  ]
+}

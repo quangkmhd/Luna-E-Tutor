@@ -62,3 +62,25 @@ async def test_teacher_failure_yields_no_completed_turn_or_state_mutation(state)
     with pytest.raises(TimeoutError):
         await service.process(state, 'hello', 'turn-10')
     assert state.model_dump() == original
+
+
+@pytest.mark.asyncio
+async def test_fallback_cannot_commit_an_engine_transition(state, unit_01):
+    from luna_tutor.teaching.planner import TurnPlanner
+    from luna_tutor.teaching.engine import TeachingEngine
+    from luna_tutor.domain.evidence import EvaluatorResult, ObjectiveEvidence
+    from luna_tutor.llm.openrouter import InvalidModelOutputError
+    class Evaluator:
+        async def evaluate(self, request):
+            return EvaluatorResult(turn_id=request.turn_id,state_version=request.state_version,
+                response_kind='answer',emotional_signals=[],needs_clarification=False,
+                ambiguity_reason=None,objective_evidence=[ObjectiveEvidence(
+                    objective_id=state.objective_id,meaning_status='satisfied',
+                    target_form_status='correct_target_form',evidence_quote='I live in the city.',
+                    recast_needed=False,corrected_form=None)])
+    service=TurnService(TurnPlanner(Evaluator(),TeachingEngine(),unit_01),FakeTeacher(
+        TeacherUtterance(spoken_text='Let us take a moment.',delivery_intent='warm',generation_mode='fallback')))
+    with pytest.raises(InvalidModelOutputError):
+        await service.process(state,'I live in the city.','fallback')
+    assert state.state_version==0
+    assert state.applied_turn_ids==()

@@ -64,7 +64,6 @@ async def test_delivered_models_and_response_opportunity_unlock_next_turn(unit_0
 @pytest.mark.asyncio
 @pytest.mark.parametrize('text,mode,expected', [
     ('City. What can you see?', 'model', 1),
-    ('Please take a moment.', 'fallback', 0),
     ('Countryside. Countryside. What can you see?', 'model', 0),
 ])
 async def test_delivery_never_invents_missing_target_models(unit_01, text, mode, expected):
@@ -73,6 +72,3 @@ async def test_delivery_never_invents_missing_target_models(unit_01, text, mode,
                                Teacher(text, mode)).process(state, 'What does city mean?', 'one')
     progress = next(p for p in result.next_state.activity_progress if p.activity_id == state.activity_id)
     assert progress.model_repetitions_delivered == expected
-    if mode == 'fallback':
-        assert not progress.response_opportunity_given
-        assert not progress.feedback_delivered

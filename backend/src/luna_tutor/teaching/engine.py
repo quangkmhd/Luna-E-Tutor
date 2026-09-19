@@ -198,7 +198,9 @@ class TeachingEngine:
             return TeachingDecision(feedback_action=('explain_meaning' if kind == 'asks_meaning'
                                                     else 'answer_teacher_question'), **move, **base)
 
-        targets = {state.objective_id} if state.objective_id else set(activity.objective_ids)
+        targets = (set(activity.completion_rule.meaning_objective_ids or activity.objective_ids)
+                   if stage.review is None else
+                   {state.objective_id} if state.objective_id else set(activity.objective_ids))
         meaningful = any(item.objective_id in targets and item.meaning_status == 'satisfied'
                          for item in evidence.objective_evidence)
         recast = next((item for item in evidence.objective_evidence if item.recast_needed), None)
@@ -227,11 +229,16 @@ class TeachingEngine:
         count = attempts < min(activity.max_attempts, curriculum.teaching_policy.max_attempts)
         base['count_attempt'] = count
         # A question activity needs a question, even when an answer is fluent.
-        successful_activity = meaningful and activity.kind != 'ask_teacher'
+        demonstrated = set(progress.demonstrated_meaning_ids) | {
+            item.objective_id for item in evidence.objective_evidence
+            if item.meaning_status == 'satisfied'}
+        complete_meaning = (targets <= demonstrated if activity.completion_rule.require_all_meanings
+                            else meaningful)
+        successful_activity = complete_meaning and activity.kind != 'ask_teacher'
         if successful_activity:
             return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
         if attempts + int(count) >= activity.max_attempts:
-            add.extend(oid for oid in (sorted(targets) if targets else [])
+            add.extend(oid for oid in (sorted(targets if activity.kind == 'ask_teacher' else targets - demonstrated) if targets else [])
                        if oid not in add and oid not in remove)
             if activity.completion_rule.allow_support_limit_exit:
                 return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)

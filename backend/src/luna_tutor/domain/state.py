@@ -24,6 +24,7 @@ class ActivityProgress(Contract):
     activity_id: Identifier
     status: Literal['not_started', 'in_progress', 'completed', 'support_limit_reached'] = 'not_started'
     attempt_count: AttemptCount = 0
+    demonstrated_meaning_ids: SnapshotItems[Identifier] = ()
     no_response_count: int = Field(default=0, ge=0)
     model_repetitions_delivered: int = Field(default=0, ge=0, le=2)
     response_opportunity_given: bool = False

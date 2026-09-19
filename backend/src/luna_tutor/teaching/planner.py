@@ -45,12 +45,24 @@ class TurnPlanner:
         decision = self._engine.decide(planning_state, evidence, self._curriculum)
         target_activity = next((item for item in self._curriculum.activities
                                 if item.id == decision.next_activity_id), activity)
+        next_move = self._next_move_text(activity, decision, evidence)
+        if activity.completion_rule.require_all_meanings and decision.progression_action == 'stay':
+            progress = next((p for p in state.activity_progress if p.activity_id == activity.id), None)
+            demonstrated = set(progress.demonstrated_meaning_ids if progress else ()) | {
+                item.objective_id for item in evidence.objective_evidence
+                if item.meaning_status == 'satisfied'}
+            remaining = set(activity.completion_rule.meaning_objective_ids) - demonstrated
+            if remaining and demonstrated and not evidence.needs_clarification:
+                descriptions = [o.description for o in self._curriculum.objectives if o.id in remaining]
+                next_move = ('Acknowledge the information Quang already provided. Ask only for '
+                             'the remaining information, without repeating completed questions: '
+                             + '; '.join(descriptions))
         teacher_request = TeacherTurnRequest(
             turn_id=turn_id,
             feedback_action=decision.feedback_action,
             corrected_form=decision.corrected_form,
             learner_meaning=redacted.text,
-            next_teaching_move=self._next_move_text(activity, decision, evidence),
+            next_teaching_move=next_move,
             emotional_support=decision.emotional_support,
             previous_teacher_turn=state.last_teacher_turn,
             activity_context=self._teacher_context(target_activity),
@@ -108,7 +120,7 @@ class TurnPlanner:
             evidence_criteria=objective.evidence_criteria,
         )
 
-    def _next_move_text(self, current: Activity, decision, evidence) -> str:
+    def _next_move_text(self, current: Activity, decision, evidence=None) -> str:
         if decision.feedback_action == 'privacy_redirect':
             return 'Ask Quang to use a made-up phone number or words instead of real digits.'
         if decision.feedback_action == 'clarify':
@@ -124,7 +136,7 @@ class TurnPlanner:
             return ('Answer the question Quang just asked, then connect one short follow-up '
                     'to his answer or the current topic. He has already asked you; '
                     'do not instruct him to ask the same question again.')
-        if evidence.response_kind == 'no_response':
+        if evidence is not None and evidence.response_kind == 'no_response':
             if not decision.next_activity_id:
                 return ('Give Quang time without blaming him. Offer one easy choice question '
                         'on the current topic. Do not claim he does not know or answered wrongly.')
@@ -176,6 +188,9 @@ class TurnPlanner:
             'status': ('support_limit_reached' if reached_limit else 'completed')
                       if leaving else 'in_progress',
             'attempt_count': old.attempt_count + int(decision.count_attempt),
+            'demonstrated_meaning_ids': tuple(sorted(set(old.demonstrated_meaning_ids) | {
+                item.objective_id for item in evidence.objective_evidence
+                if item.meaning_status == 'satisfied' and item.objective_id in current.objective_ids})),
             'no_response_count': old.no_response_count + int(evidence.response_kind == 'no_response'),
             'completion_reason': 'support limit reached' if reached_limit else old.completion_reason,
         })

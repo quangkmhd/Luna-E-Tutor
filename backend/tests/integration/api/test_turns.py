@@ -75,3 +75,16 @@ def test_provider_failures_are_retryable_and_do_not_mutate_state(tmp_path):
         stored = repository.get_session(session['session_id'])
         assert stored.state.state_version == 0
         assert stored.turns == ()
+
+
+def test_invalid_teacher_output_is_retryable_without_committing(tmp_path):
+    from luna_tutor.llm.teacher import InvalidTeacherResultError
+    error = InvalidTeacherResultError(status_code=200, request_id='turn-1', reason='invalid reply')
+    api, repository, _, session = setup(tmp_path, FakeTurnService(error=error))
+    response = api.post(f"/api/sessions/{session['session_id']}/turns", json=payload(session))
+    assert response.status_code == 503
+    assert response.json()['detail']['code'] == 'INVALID_TEACHER_OUTPUT'
+    assert response.json()['detail']['retryable']
+    stored = repository.get_session(session['session_id'])
+    assert stored.state.state_version == 0
+    assert stored.turns == ()

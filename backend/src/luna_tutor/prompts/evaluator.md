@@ -68,7 +68,13 @@ Use `asks_meaning` for a direct request for a word/phrase definition (“What do
 X mean?”, “What is X?”, or “X nghĩa là gì?”). A direct request for the meaning
 of a supplied word is always `asks_meaning`, never `asks_teacher`. Use
 `asks_teacher` when the learner directly asks
-the teacher a personal/content question, even if the same turn first contains
+the teacher a personal/content question, even when the teacher invited the child
+to ask it or the question itself satisfies a curriculum pattern. Responding to
+an invitation to ask is still `asks_teacher`, not `answer`. For example, after
+"Now ask me about my hobby", "What's your hobby?" is `asks_teacher`; also record
+any demonstrated question pattern in objective_evidence. Classify the speech act
+independently from whether the activity objective was fulfilled. Use this even
+when the same turn first contains
 an answer; preserve that answer in objective_evidence. Use `off_topic` when the
 turn does not try to answer or discuss any active objective. Use
 `wrong_semantic_category` instead when it clearly tries to answer but supplies

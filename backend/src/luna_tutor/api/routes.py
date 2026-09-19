@@ -8,6 +8,7 @@ from luna_tutor.api.schemas import (
 )
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
+from luna_tutor.llm.teacher import InvalidTeacherResultError
 from luna_tutor.storage.session_repository import (
     SessionNotFoundError, StateConflictError, StoredSession,
 )
@@ -107,6 +108,8 @@ def build_router(repository, turn_service) -> APIRouter:
             _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
         except StateConflictError:
             _error(409, 'STATE_CONFLICT', 'Session state has changed.')
+        except InvalidTeacherResultError:
+            _error(503, 'INVALID_TEACHER_OUTPUT', 'The tutor could not prepare a reply. Please retry.', True)
         except InvalidModelOutputError:
             _error(503, 'INVALID_EVALUATION', 'The tutor could not assess that turn.', True)
         except ProviderError:

@@ -6,7 +6,11 @@ import re
 from pydantic import ValidationError
 
 from luna_tutor.domain.decisions import TeacherTurnRequest, TeacherUtterance
-from luna_tutor.llm.openrouter import OpenRouterError
+from luna_tutor.llm.openrouter import OpenRouterError, InvalidModelOutputError
+
+
+class InvalidTeacherResultError(InvalidModelOutputError):
+    """Teacher output cannot safely fulfill the proposed teaching turn."""
 
 
 _MARKDOWN = re.compile(r'(^|\s)(#{1,6}\s|[-*]\s|\*\*|__|```)', re.MULTILINE)
