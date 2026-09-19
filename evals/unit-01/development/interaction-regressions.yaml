@@ -57,7 +57,7 @@ scenarios:
       activity_id: lesson-03.introductions
     teacher_criteria:
     - answers_child_question_first
-    - pretend_personal_example
+    - consistent_luna_profile
     - does_not_reask_same_question
 - id: regression-ask-hobby
   source:
@@ -82,7 +82,7 @@ scenarios:
       activity_id: level-03.introduce-cottage
     teacher_criteria:
     - answers_child_question_first
-    - pretend_personal_example
+    - consistent_luna_profile
     - does_not_reask_same_question
 - id: regression-ask-paraphrase
   source:
@@ -107,7 +107,7 @@ scenarios:
       activity_id: lesson-03.introductions
     teacher_criteria:
     - answers_child_question_first
-    - pretend_personal_example
+    - consistent_luna_profile
     - does_not_reask_same_question
 - id: regression-review-countryside
   source:

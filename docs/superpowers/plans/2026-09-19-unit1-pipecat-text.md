@@ -16,7 +16,7 @@ User-approved scope: integrate Pipecat using typed input and text output first. 
 ## Tasks
 
 - [ ] 1. Audit and repair evaluation measurement and scenario data. Preserve previous reports as historical, qualify their narrower claims.
-- [ ] 2. Adapt CLI scaffold to text-only dependencies, verify current Pipecat and Flow APIs with CLI/source. Add failing pipeline integration tests before implementation.
+- [x] 2. Adapt CLI scaffold to text-only dependencies, verify current Pipecat and Flow APIs with CLI/source. Add failing pipeline integration tests before implementation.
 - [ ] 3. Wire existing Planner, Teacher validation and SQLite into Pipecat and Flows; use the existing web interface to exercise it.
 - [ ] 4. Add behavioral runner with actual stage/activity context and independent assertions; run baseline over 30 source scenarios and extended Unit 1 paths.
 - [ ] 5. Improve prompt/content/logic and invalid data based on evidence; rerun development and fresh paraphrases; review representative outputs and all failures.

@@ -4,30 +4,18 @@ Each HTTP turn owns a short-lived worker. SQLite remains the session authority,
 so reconnects and concurrent requests cannot inherit another worker's context.
 This module performs no audio initialization or speech-provider calls.
 """
-from dataclasses import dataclass
 
 from luna_tutor.domain.decisions import CompletedTurn
-from luna_tutor.domain.evidence import TranscriptStatus, InputEvent
+from luna_tutor.domain.evidence import InputEvent, TranscriptStatus
 from luna_tutor.domain.state import LessonState
-from pipecat.frames.frames import DataFrame, EndFrame, Frame
+from luna_tutor.teaching.turn_service import TurnService
+from pipecat.frames.frames import EndFrame, Frame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineWorker
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.workers.runner import WorkerRunner
 
-
-@dataclass
-class LearnerTextFrame(DataFrame):
-    state: LessonState
-    text: str
-    turn_id: str
-    transcript_status: TranscriptStatus = 'final'
-    input_event: InputEvent = 'transcript'
-
-
-@dataclass
-class CompletedTeachingFrame(DataFrame):
-    turn: CompletedTurn
+from text_frames import CompletedTeachingFrame, LearnerTextFrame, TextResultProcessor
 
 
 class TeachingProcessor(FrameProcessor):
@@ -55,18 +43,6 @@ class TeachingProcessor(FrameProcessor):
             await self.push_frame(frame, direction)
 
 
-class TextResultProcessor(FrameProcessor):
-    def __init__(self):
-        super().__init__()
-        self.turns: list[CompletedTurn] = []
-
-    async def process_frame(self, frame: Frame, direction: FrameDirection):
-        await super().process_frame(frame, direction)
-        if isinstance(frame, CompletedTeachingFrame) and direction == FrameDirection.DOWNSTREAM:
-            self.turns.append(frame.turn)
-        await self.push_frame(frame, direction)
-
-
 class PipecatTurnService:
     def __init__(self, turn_service):
         self.turn_service = turn_service
@@ -74,6 +50,11 @@ class PipecatTurnService:
     async def process(self, state: LessonState, learner_text: str, turn_id: str,
                       *, transcript_status: TranscriptStatus = 'final',
                       input_event: InputEvent = 'transcript') -> CompletedTurn:
+        if isinstance(self.turn_service, TurnService):
+            from text_flows import run_teaching_flow
+            return await run_teaching_flow(self.turn_service, state, learner_text, turn_id,
+                                           transcript_status=transcript_status, input_event=input_event)
+        # Small process-only fixtures use this adapter; production always uses Flows above.
         teaching = TeachingProcessor(self.turn_service)
         result = TextResultProcessor()
         worker = PipelineWorker(

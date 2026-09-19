@@ -122,7 +122,8 @@ class TurnPlanner:
 
     def _next_move_text(self, current: Activity, decision, evidence=None) -> str:
         if decision.feedback_action == 'privacy_redirect':
-            return 'Ask Quang to use a made-up phone number or words instead of real digits.'
+            return ('Gently keep real phone numbers private. Practise only the phrase phone number, '
+                    'not a sequence of digits, then connect to the current learning topic.')
         if decision.feedback_action == 'clarify':
             return ('The input is not reliable enough to assess. Ask one short question to '
                     'confirm what Quang meant, using the previous question for context. '

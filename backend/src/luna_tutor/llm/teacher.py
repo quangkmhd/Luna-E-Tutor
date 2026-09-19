@@ -54,7 +54,7 @@ def _fallback(request: TeacherTurnRequest) -> TeacherUtterance:
     elif request.feedback_action == 'explain_meaning':
         text = 'Let us look at that together, Quang.'
     elif request.feedback_action == 'privacy_redirect':
-        text = 'Please use a made-up phone number, or say the digits as words.'
+        text = 'Keep your real number private. We are practising the words phone number.'
     elif request.feedback_action == 'clarify':
         text = 'I did not hear that clearly. Could you tell me again?'
     elif request.feedback_action == 'stop':
