@@ -70,14 +70,14 @@ async def test_invalid_or_uncorrelated_output_is_rejected_once(
     {'meaning_status': 'mastered'}, {'target_form_status': 'valid_alternative',
                                     'recast_needed': True, 'corrected_form': 'I live in the city.'},
 ])
-async def test_bad_evidence_is_rejected_without_retry(
+async def test_bad_evidence_is_rejected_after_bounded_recast_repair(
         changes, respx_mock, completion_response, evaluator_request, evaluator_result):
     evaluator_result['objective_evidence'][0].update(changes)
     route = respx_mock.post(ENDPOINT).mock(return_value=completion_response(evaluator_result))
     async with OpenRouterClient(Settings('test-key')) as client:
         with pytest.raises(InvalidEvaluatorResultError):
             await GeminiEvaluator(client).evaluate(evaluator_request)
-    assert route.call_count == 1
+    assert route.call_count == (2 if {'recast_needed', 'corrected_form'} & changes.keys() else 1)
 
 
 @pytest.mark.parametrize('changes', [
@@ -289,3 +289,55 @@ async def test_real_quote_is_allowed_when_same_text_also_occurs_inside_a_marker(
         result = await GeminiEvaluator(client).evaluate(evaluator_request.model_copy(
             update={'learner_transcript': transcript}))
     assert result.objective_evidence[0].evidence_quote == 'PHONE'
+
+
+@pytest.mark.parametrize('bad_changes', [
+    {'target_form_status': 'error_in_target_form', 'recast_needed': True, 'corrected_form': None},
+    {'target_form_status': 'correct_target_form', 'recast_needed': True, 'corrected_form': 'I live in the city.'},
+])
+async def test_inconsistent_recast_gets_one_repair_with_original_request(
+        bad_changes, respx_mock, completion_response, evaluator_request, evaluator_result):
+    import copy
+    bad = copy.deepcopy(evaluator_result)
+    bad['objective_evidence'][0].update(bad_changes)
+    route = respx_mock.post(ENDPOINT).mock(side_effect=[
+        completion_response(bad), completion_response(evaluator_result)])
+    async with OpenRouterClient(Settings('test-key')) as client:
+        result = await GeminiEvaluator(client).evaluate(evaluator_request)
+    assert result == EvaluatorResult.model_validate(evaluator_result)
+    assert route.call_count == 2
+    first = json.loads(json.loads(route.calls[0].request.content)['messages'][-1]['content'])
+    second = json.loads(json.loads(route.calls[1].request.content)['messages'][-1]['content'])
+    feedback = second.pop('validation_feedback')
+    assert second == first
+    assert feedback
+    assert 'expected_label' not in second
+
+
+@pytest.mark.parametrize(('status', 'http_attempts'), [(401, 1), (503, 2)])
+async def test_provider_failure_during_repair_does_not_start_another_model_draft(
+        status, http_attempts, respx_mock, completion_response, evaluator_request, evaluator_result):
+    import httpx
+    evaluator_result['objective_evidence'][0].update(recast_needed=True)
+    route = respx_mock.post(ENDPOINT).mock(side_effect=[
+        completion_response(evaluator_result),
+        *[httpx.Response(status, text='unavailable') for _ in range(http_attempts)]])
+    async with OpenRouterClient(Settings('test-key')) as client:
+        with pytest.raises(ProviderError):
+            await GeminiEvaluator(client).evaluate(evaluator_request)
+    assert route.call_count == 1 + http_attempts
+
+
+async def test_repaired_draft_still_rejects_quote_not_in_learner_input(
+        respx_mock, completion_response, evaluator_request, evaluator_result):
+    import copy
+    first = copy.deepcopy(evaluator_result)
+    first['objective_evidence'][0]['recast_needed'] = True
+    second = copy.deepcopy(evaluator_result)
+    second['objective_evidence'][0]['evidence_quote'] = 'An invented learner statement.'
+    route = respx_mock.post(ENDPOINT).mock(side_effect=[
+        completion_response(first), completion_response(second)])
+    async with OpenRouterClient(Settings('test-key')) as client:
+        with pytest.raises(InvalidEvaluatorResultError):
+            await GeminiEvaluator(client).evaluate(evaluator_request)
+    assert route.call_count == 2

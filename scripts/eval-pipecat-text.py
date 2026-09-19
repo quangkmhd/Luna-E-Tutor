@@ -88,10 +88,14 @@ async def run(args):
                 client.calls.clear()
                 records = await runner.run([scenario])
                 for record in records:
-                    if 'turn_execution' in record['failures']:
-                        failed_turn = f"{scenario.id}-{record['turn_index'] - 1}"
-                        record['model_diagnostics'] = [call for call in client.calls
-                                                       if call['turn_id'] == failed_turn]
+                    turn_id = f"{scenario.id}-{record['turn_index'] - 1}"
+                    calls = [call for call in client.calls if call['turn_id'] == turn_id]
+                    record['model_attempts'] = {
+                        component: sum(call['component'] == component for call in calls)
+                        for component in ('evaluator', 'teacher')}
+                    if ('turn_execution' in record['failures'] or
+                            any(call['input'].get('validation_feedback') for call in calls)):
+                        record['model_diagnostics'] = calls
                 payload['records'].extend(records)
                 checkpoint()
                 print(scenario.id, [r['failures'] for r in records], flush=True)

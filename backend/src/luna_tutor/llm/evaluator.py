@@ -1,5 +1,6 @@
 """Evidence-only Gemini evaluation; no teaching decisions or Teacher prose."""
 
+import json
 from importlib.resources import files
 
 from pydantic import ValidationError
@@ -99,18 +100,41 @@ class GeminiEvaluator:
         })
         original_objective_ids = {_provider_id(objective.objective_id): objective.objective_id
                                   for objective in request.active_objectives}
-        raw = await self._client.structured_chat([
-            {'role': 'system', 'content': self._prompt},
-            {'role': 'user', 'content': provider_request.model_dump_json()},
-        ], EvaluatorResult.model_json_schema(), request.turn_id)
+        feedback = []
         result = None
-        # Reject provider-introduced contact even in fields not typed SanitizedText.
-        if _redact_contact(raw) == raw:
+        for attempt in range(2):
+            payload = provider_request.model_dump(mode='json')
+            if feedback:
+                payload['validation_feedback'] = feedback
+            raw = await self._client.structured_chat([
+                {'role': 'system', 'content': self._prompt},
+                {'role': 'user', 'content': json.dumps(payload, ensure_ascii=False)},
+            ], EvaluatorResult.model_json_schema(), request.turn_id)
+            # Contact injection is rejected, never echoed in a repair request.
+            if _redact_contact(raw) != raw:
+                break
+            feedback = []
             try:
                 result = EvaluatorResult.model_validate(raw)
-            except ValidationError:
-                pass
-        del raw
+            except ValidationError as error:
+                messages = {issue['msg'] for issue in error.errors(
+                    include_url=False, include_context=False, include_input=False)}
+                recast_constraints = {
+                    'Value error, Corrected form is required exactly when recast is needed',
+                    'Value error, Recast requires a demonstrated form error with known meaning',
+                }
+                if messages and messages <= recast_constraints:
+                    feedback = [
+                        'Your previous result had inconsistent recast fields. Reassess the original '
+                        'learner evidence: recast_needed may be true only with error_in_target_form, '
+                        'known meaning, and a nonempty corrected_form. Otherwise use false and null. '
+                        'Do not invent an error or change learner facts merely to satisfy the schema.'
+                    ]
+            del raw
+            # Only the two observed cross-field recast errors allow one new draft.
+            # Other validation errors do not qualify. Final correlation remains mandatory.
+            if result is not None or not feedback or attempt == 1:
+                break
         if result is not None and _correlates(provider_request, result):
             result = result.model_copy(update={
                 'turn_id': request.turn_id,

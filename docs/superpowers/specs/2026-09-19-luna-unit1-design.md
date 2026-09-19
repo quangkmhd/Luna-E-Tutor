@@ -302,3 +302,9 @@ Prototype trong `tmp/jev-gemini-spike` chỉ có 18 case tự tạo, schema cũ 
 Người dùng yêu cầu bỏ qua phần đề xuất cần duyệt trước triển khai; các đề xuất đó không được coi là quyết định đã phê duyệt hoặc điều kiện phải chốt để tiếp tục. Các quy tắc dạy học đã thống nhất vẫn áp dụng.
 
 Phạm vi hiện tại: spec đã đủ để viết implementation plan. Thứ tự triển khai bắt buộc bắt đầu bằng evaluation harness và vòng lặp ở mục 8.1; chỉ xây toàn bộ trang web quanh phần lõi sau khi có báo cáo development/holdout và danh sách giới hạn còn lại. Prototype cũ trong `tmp/jev-gemini-spike` không chứng minh luồng dạy hay model mới đã đạt. Chưa scaffold bot hoặc triển khai dịch vụ. Khi chuyển sang tích hợp Pipecat mới tra CLI, scaffold với eval và xác minh API theo yêu cầu dự án.
+
+### Xử lý đầu ra Evaluator mâu thuẫn (text runtime)
+
+Nếu đầu ra vi phạm ràng buộc giữa `recast_needed`, `corrected_form`, trạng thái mẫu câu và nghĩa, runtime cho phép đúng một bản đánh giá sửa lại. Gửi nguyên yêu cầu đã làm sạch cùng mô tả ràng buộc bị vi phạm; không gửi đáp án chuẩn, quyết định chuyển bài hoặc tự thay nhãn cho model. Đây là sửa cấu trúc đầu ra, không phải bắt học sinh thử thêm lần nữa. Bản sửa phải qua toàn bộ kiểm tra schema, ID, phiên bản, trích dẫn và tính nhất quán trước khi Teaching Engine chạy. Nếu vẫn lỗi, trả lỗi vận hành và không lưu tiến độ của lượt đó.
+
+Phạm vi này chỉ gồm hai lỗi recast chéo trường đã tái hiện. Không sửa tự động dữ liệu liên hệ, trích dẫn không thuộc lời trẻ, lỗi tương quan hoặc lỗi nhà cung cấp. Chính sách thử lại HTTP tạm thời có sẵn được giữ riêng. Báo cáo thực nghiệm ghi số bản model và giữ chẩn đoán khi có sửa, kể cả khi kết quả cuối hợp lệ; không coi một lượt sửa thành công là bằng chứng chất lượng ngữ nghĩa toàn bài.
