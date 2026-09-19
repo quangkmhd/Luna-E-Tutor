@@ -41,6 +41,7 @@ class StateSnapshot(Contract):
 class ScenarioTurn(Contract):
     teacher_turn: Text = ''
     learner_text: Text
+    input_event: Literal['transcript', 'no_response'] = 'transcript'
     transcript_status: Literal['final', 'incomplete', 'uncertain'] = 'final'
     evaluator_gold: EvaluatorGold
     allowed_feedback_actions: list[Text] = Field(min_length=1)

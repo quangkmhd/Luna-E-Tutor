@@ -67,7 +67,7 @@ class EvalRunner:
                         teacher_turn=turn.teacher_turn,
                         activity_type=scenario.initial_state.stage_id,
                         active_objectives=[self._objective(item) for item in scenario.objective_ids],
-                        support_given={}, transcript_status=turn.transcript_status,
+                        support_given={}, transcript_status=turn.transcript_status, input_event=turn.input_event,
                         learner_transcript=learner_text, recent_context=[],
                         attempt_count=scenario.initial_state.attempt_count,
                     )

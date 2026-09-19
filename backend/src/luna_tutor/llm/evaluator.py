@@ -28,6 +28,9 @@ def _provider_id(value: str) -> str:
 
 
 def _correlates(request: EvaluatorRequest, result: EvaluatorResult) -> bool:
+    # Only an explicit application event can establish no response; the LLM cannot.
+    if result.response_kind == 'no_response':
+        return False
     if result.turn_id != request.turn_id or result.state_version != request.state_version:
         return False
     if result.needs_clarification != (result.ambiguity_reason is not None):
@@ -84,6 +87,10 @@ class GeminiEvaluator:
         if validated_request is None:
             raise ValueError('Invalid evaluator request')
         request = validated_request
+        if request.input_event == 'no_response':
+            if request.transcript_status != 'final' or request.stt_issue or request.audio_issue:
+                raise ValueError('No-response event cannot represent an input failure')
+            return EvaluatorResult.observed_no_response(request.turn_id, request.state_version)
         provider_request = request.model_copy(update={
             'turn_id': _provider_id(request.turn_id),
             'active_objectives': [objective.model_copy(update={

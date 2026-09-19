@@ -12,7 +12,8 @@ MeaningStatus = Literal['satisfied', 'partially_satisfied', 'wrong_semantic_cate
 TargetFormStatus = Literal['correct_target_form', 'valid_alternative',
                            'error_in_target_form', 'not_used', 'uncertain']
 ResponseKind = Literal['answer', 'asks_meaning', 'asks_teacher', 'off_topic',
-                       'does_not_know', 'insufficient_data']
+                       'does_not_know', 'insufficient_data', 'no_response']
+InputEvent = Literal['transcript', 'no_response']
 TranscriptStatus = Literal['final', 'incomplete', 'uncertain']
 
 
@@ -43,6 +44,7 @@ class EvaluatorRequest(Contract):
     active_objectives: list[ActiveObjective] = Field(max_length=20)
     support_given: SupportGiven
     transcript_status: TranscriptStatus
+    input_event: InputEvent = 'transcript'
     learner_transcript: Annotated[SanitizedText, Field(max_length=8000)]
     recent_context: list[ContextTurn] = Field(default_factory=list, max_length=6)
     attempt_count: AttemptCount = 0
@@ -91,6 +93,12 @@ class EvaluatorResult(Contract):
     objective_evidence: list[ObjectiveEvidence]
     needs_clarification: bool
     ambiguity_reason: Text | None
+
+    @classmethod
+    def observed_no_response(cls, turn_id: str, state_version: int) -> 'EvaluatorResult':
+        return cls(turn_id=turn_id, state_version=state_version, response_kind='no_response',
+                   emotional_signals=[], objective_evidence=[], needs_clarification=False,
+                   ambiguity_reason=None)
 
     @classmethod
     def contact_removed(cls, turn_id: str, state_version: int) -> 'EvaluatorResult':

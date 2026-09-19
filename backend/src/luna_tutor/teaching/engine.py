@@ -173,6 +173,10 @@ class TeachingEngine:
         progress = _progress(state, activity)
         emotion = bool(evidence.emotional_signals)
         if stage.id == 'warm-up':
+            if evidence.response_kind == 'no_response':
+                move = (_next_move(state, curriculum, stage, activity)
+                        if progress.no_response_count >= 1 else dict(progression_action='stay'))
+                return TeachingDecision(feedback_action='offer_support', **move)
             # Warm-up cannot manufacture curriculum evidence or practice targets.
             move = dict(progression_action='stay')
             if _handled(progress, activity) or (

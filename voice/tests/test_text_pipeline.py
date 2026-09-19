@@ -89,3 +89,16 @@ async def test_pipeline_preserves_uncertainty_metadata():
     await PipecatTurnService(Service()).process(
         initial_state(), 'countryside', 'uncertain', transcript_status='uncertain')
     assert seen == ['uncertain']
+
+
+@pytest.mark.asyncio
+async def test_pipeline_preserves_explicit_no_response_event():
+    from text_pipeline import PipecatTurnService
+    seen = []
+    class Service:
+        async def process(self, state, text, turn_id, *, input_event='transcript'):
+            seen.append(input_event)
+            return await FixtureTurnService().process(state, text, turn_id)
+    await PipecatTurnService(Service()).process(
+        initial_state(), '', 'silent', input_event='no_response')
+    assert seen == ['no_response']

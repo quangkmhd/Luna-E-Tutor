@@ -33,7 +33,7 @@ scenarios:
     source: {heading: "Kịch bản 5 — Học sinh im lặng", line: 85, numbered: true}
     initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R08, R09]
-    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, reassure]}]
+    turns: [{expected_state_effects: {count_attempt: false, progression_action: stay, activity_id: warm-up.feelings}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "[simulated no response]", input_event: no_response, evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: false}, allowed_feedback_actions: [offer_support], teacher_criteria: [gentle_choice_about_feelings, no_academic_practice, no_mastery_claim]}]
   - id: warmup-06
     source: {heading: "Kịch bản 6 — Học sinh nói đang mệt", line: 95, numbered: true}
     initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
@@ -162,9 +162,23 @@ scenarios:
     turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What's your hobby?", learner_text: "My hobby is table tennis because I play with my dad after school and sometimes with my friends.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station2-10
     source: {heading: "Trạm 2 — Kịch bản 10 — Học sinh im lặng hai lần", line: 534, numbered: true}
-    initial_state: {activity_id: level-02.hobby, stage_id: level-02, objective_id: unit01.level02.pattern.hobby, attempt_count: 1}
-    objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Is your hobby table tennis or drawing?", learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, offer_support]}]
+    initial_state: {activity_id: level-02.birthday, stage_id: level-02, objective_id: unit01.level02.pattern.birthday, attempt_count: 0, support: independent}
+    objective_ids: [unit01.level02.pattern.birthday]
+    turns:
+      - teacher_turn: "When's your birthday?"
+        learner_text: "[simulated no response]"
+        input_event: no_response
+        evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: false}
+        allowed_feedback_actions: [offer_support]
+        expected_state_effects: {count_attempt: true, progression_action: stay, activity_id: level-02.birthday}
+        teacher_criteria: [gentle_choice_about_birthday, no_blame, no_mastery_claim]
+      - teacher_turn: "Take your time. Is it in May or December?"
+        learner_text: "[simulated no response]"
+        input_event: no_response
+        evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: false}
+        allowed_feedback_actions: [offer_support]
+        expected_state_effects: {count_attempt: true, progression_action: move_to_next_objective, activity_id: level-02.hobby, review_queue_contains: [unit01.level02.pattern.birthday]}
+        teacher_criteria: [reassure_without_blame, easier_choice_on_next_topic, no_mastery_claim, no_same_question_retry]
 
   - id: station3-01
     source: {heading: "Trạm 3 — Kịch bản 1 — Học sinh dùng được câu nâng cao", line: 619, numbered: true}

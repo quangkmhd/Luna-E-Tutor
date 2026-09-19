@@ -93,3 +93,27 @@ Limitations to audit next: receipts use observable lexical/question cues, not a 
 ### Same branch, Teacher review after the routing fix
 
 The first uncertainty rerun's **decision** was correct, but its actual Teacher output was “Countryside. Let's say it together: countryside. How does that sound to you?” This still restarted imitation, so it was not pedagogically accepted. Added a dedicated clarification directive in Planner: confirm intended meaning, do not infer a pronunciation error or restart the introduction. A failing regression reproduced the conflicting generic activity directive before the fix. `behavior-uncertainty-teacher-revised.json` now says “Did you say countryside?”, with stay/no-attempt and model generation. This is one targeted success, not broad acceptance. Final suite for this slice: 351 passed, 1 skipped.
+
+## Observed no-response events and source-data correction
+
+- Corrected warmup-05 and station2-10: `input_event: no_response` is an explicit simulation of observed silence, not `transcript_status: incomplete`. Operationally uncertain input still clarifies without counting attempts. No audio timer is claimed. An application event supplies the absence of a response locally; Gemini is not asked to infer knowledge or emotion from absence. Reports identify this evidence source separately from model evaluation.
+- Added propagation through real Pipecat frames and the teaching service. Warm-up first silence offers a feelings choice; a second silence can move past that greeting without academic attempts or learning evidence. Per-activity no-response count is separate from academic attempt count. A real learning activity counts response opportunities toward its support limit, then records later review.
+- Restored station2-10's source birthday context (previous fixture used hobby), then expanded it to **two sequential turns** beginning with “When's your birthday?”. The second turn uses actual returned state and actual Teacher history. Both the stay/first-attempt and move/review-queue effects are asserted. The next topic follows the full Unit 1 curriculum (hobby), rather than copying the source's shortened colour example.
+- `behavior-silence-revised.json`: warmup response offered happy/sleepy choices, but second birthday silence led to an open hobby question. This was a semantic failure despite passing implemented deterministic checks.
+- Strengthened the teaching directive to require two concrete choices when reducing difficulty (or a question starter for ask_teacher). `behavior-silence-choices-revised.json` produced happy/sleepy and football/reading choices; both were directly reviewed as appropriate directions for those two cases.
+- `behavior-silence-sequential.json` exercises the two real Teacher turns in sequence through Pipecat, with explicit locally observed no-response evidence. Deterministic checks pass on both turns. The record retains actual outputs and code/data hashes; do not infer whole-unit acceptance from these two turns.
+- Latest full suite before the final small validation/wording refinement: 356 passed, 1 skipped, two pre-existing dependency warnings. Targeted no-response/schema tests after refinement: 7 passed. Pipecat version coverage is still 1.8.1; 1.11 installation remains authoritative live process 3073902 / exec handle 71516, not a reason to restart it.
+
+Remaining: full Unit 1 continuous run, native Flows, comprehensive semantic review and regression/paraphrase runs, live browser validation and dedicated dependency environment. Baseline biography, contrast, privacy, delivery/fallback and evidence-mastery findings remain open.
+
+The sequential silence outputs were directly reviewed: first “Is your birthday in May or November, Quang?”, then “No worries, Quang! Is your hobby drawing or playing football?”. The birthday objective is queued for review on turn two. Final full suite after all no-response refinements: **356 passed, 1 skipped**.
+
+## Full journey experiment started
+
+`/tmp/luna-full-journey.py` (reusable version: `scripts/eval-unit1-journey.py`) drives the actual HTTP API from a new session, using SQLite, Pipecat and real Gemini calls; no fixture jumps or edited state. The scripted learner deliberately includes `I live countryside.` then later uses the correct construction. Output is checkpointed to `pipecat-full-journey-baseline.json`. This first diagnostic maps replies to current activities and may repeat one after a stall; such repetitions are test behavior, **not proof that the conversation felt natural**. Review each prior Teacher question against the supplied answer.
+
+Already observed before completion:
+- Gemini classified “What's your favourite animal?” during ask_teacher as `answer` once, delaying the handover. Repeat then classified correctly. Needs a targeted evidence/prompt regression with paraphrases.
+- Lesson 3 introductions accepted class/countryside evidence but still returned offer_support/stay because primary objective defaults to the first vocabulary entry (`city`). This wrongly disfavors countryside despite source acceptance. Review multi-objective activity success semantics; do not merely change the simulated child to live in a city.
+- Some introductions/guided responses lacked sufficient delivered-model/opportunity receipts, causing another turn despite correct answers. Inspect actual words and receipt rules before loosening gates.
+- These are failures discovered by sequential testing even though many single-case checks passed. Preserve the baseline before fixes.

@@ -4,7 +4,7 @@ from luna_tutor.curriculum.models import Activity, Objective, UnitCurriculum
 from luna_tutor.domain.decisions import (
     PlannedTurn, TeacherActivityContext, TeacherConstraints, TeacherTurnRequest,
 )
-from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult, TranscriptStatus
+from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult, TranscriptStatus, InputEvent
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.domain.state import ActivityProgress, LessonState, ReviewItem
 
@@ -16,7 +16,8 @@ class TurnPlanner:
         self._curriculum = curriculum
 
     async def plan(self, state: LessonState, learner_text: str, turn_id: str,
-                   *, transcript_status: TranscriptStatus = 'final') -> PlannedTurn:
+                   *, transcript_status: TranscriptStatus = 'final',
+                   input_event: InputEvent = 'transcript') -> PlannedTurn:
         if turn_id in state.applied_turn_ids:
             raise ValueError('duplicate turn_id for this session state')
         redacted = redact_sensitive_contact(learner_text)
@@ -30,7 +31,7 @@ class TurnPlanner:
             active_objectives=[self._active_objective(objective_id)
                                for objective_id in activity.objective_ids],
             support_given=state.support_given,
-            transcript_status=transcript_status,
+            transcript_status=transcript_status, input_event=input_event,
             learner_transcript=redacted.text,
             recent_context=[],
             attempt_count=state.attempt_count,
@@ -49,7 +50,7 @@ class TurnPlanner:
             feedback_action=decision.feedback_action,
             corrected_form=decision.corrected_form,
             learner_meaning=redacted.text,
-            next_teaching_move=self._next_move_text(activity, decision),
+            next_teaching_move=self._next_move_text(activity, decision, evidence),
             emotional_support=decision.emotional_support,
             previous_teacher_turn=state.last_teacher_turn,
             activity_context=self._teacher_context(target_activity),
@@ -58,7 +59,7 @@ class TurnPlanner:
                 'Speak one short, natural turn without Markdown.',
             )),
         )
-        proposed = self._apply(state, redacted.text, turn_id, decision)
+        proposed = self._apply(state, redacted.text, turn_id, decision, evidence)
         return PlannedTurn(
             turn_id=turn_id, state_version=state.state_version,
             learner_text=redacted.text, privacy_event=redacted.safety_event,
@@ -107,7 +108,7 @@ class TurnPlanner:
             evidence_criteria=objective.evidence_criteria,
         )
 
-    def _next_move_text(self, current: Activity, decision) -> str:
+    def _next_move_text(self, current: Activity, decision, evidence) -> str:
         if decision.feedback_action == 'privacy_redirect':
             return 'Ask Quang to use a made-up phone number or words instead of real digits.'
         if decision.feedback_action == 'clarify':
@@ -123,6 +124,21 @@ class TurnPlanner:
             return ('Answer the question Quang just asked, then connect one short follow-up '
                     'to his answer or the current topic. He has already asked you; '
                     'do not instruct him to ask the same question again.')
+        if evidence.response_kind == 'no_response':
+            if not decision.next_activity_id:
+                return ('Give Quang time without blaming him. Offer one easy choice question '
+                        'on the current topic. Do not claim he does not know or answered wrongly.')
+            target = next(a for a in self._curriculum.activities
+                          if a.id == decision.next_activity_id)
+            if target.completion_rule.mode == 'delivered':
+                return ('Gently let the unanswered greeting go and offer a short reassuring '
+                        'transition without another question. Next activity: ' + target.instruction)
+            return ('Gently let the unanswered item go for now. Make the next step easier with '
+                    'one question containing two concrete answer choices. An open question alone '
+                    'does not reduce difficulty. If this is ask_teacher, instead supply the '
+                    'exact short question Quang can ask you and invite him to use it. '
+                    'Do not announce mastery or request the same answer again. Next activity: '
+                    + target.instruction)
         if decision.progression_action == 'finish':
             return 'Give one warm closing sentence.'
         if decision.next_activity_id:
@@ -135,7 +151,7 @@ class TurnPlanner:
             return target.instruction
         return current.instruction
 
-    def _apply(self, state: LessonState, learner_text: str, turn_id: str, decision) -> LessonState:
+    def _apply(self, state: LessonState, learner_text: str, turn_id: str, decision, evidence) -> LessonState:
         objective_progress = {item.objective_id: item for item in state.objective_progress}
         objective_progress.update({item.objective_id: item for item in decision.mastery_updates})
 
@@ -160,6 +176,7 @@ class TurnPlanner:
             'status': ('support_limit_reached' if reached_limit else 'completed')
                       if leaving else 'in_progress',
             'attempt_count': old.attempt_count + int(decision.count_attempt),
+            'no_response_count': old.no_response_count + int(evidence.response_kind == 'no_response'),
             'completion_reason': 'support limit reached' if reached_limit else old.completion_reason,
         })
 

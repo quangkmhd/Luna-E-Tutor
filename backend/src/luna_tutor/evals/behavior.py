@@ -61,11 +61,17 @@ class BehaviorRunner:
                           'initial_state': state.model_dump(mode='json'),
                           'semantic_criteria': turn.teacher_criteria,
                           'semantic_review_status': 'pending', 'failures': [],
-                          'input_mode': 'typed_text' if turn.transcript_status == 'final'
+                          'input_event': turn.input_event, 'transcript_status': turn.transcript_status,
+                          'evidence_source': ('local_observed_event' if turn.input_event == 'no_response'
+                                              else 'evaluator'),
+                          'input_mode': 'simulated_no_response' if turn.input_event == 'no_response'
+                          else 'typed_text' if turn.transcript_status == 'final'
                           else 'text_simulation_not_audio_validation'}
                 try:
                     metadata = ({'transcript_status': turn.transcript_status}
                                 if turn.transcript_status != 'final' else {})
+                    if turn.input_event != 'transcript':
+                        metadata['input_event'] = turn.input_event
                     completed = await self.service.process(state, turn.learner_text,
                                                            f'{scenario.id}-{index}', **metadata)
                 except Exception as error:
