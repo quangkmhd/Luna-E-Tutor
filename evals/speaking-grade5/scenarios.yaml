@@ -1,0 +1,25 @@
+- name: beginner_help
+  topic: Animals
+  words: [rabbit, feed]
+  turns: ["I don't know. Help me."]
+  expect: {status: active, support: choices}
+- name: independent_answer
+  topic: Food
+  words: [juice, sandwich]
+  turns: [I like juice because it is sweet.]
+  expect: {independent: [juice]}
+- name: child_question
+  topic: Hobbies
+  words: [create]
+  turns: ["What do you like to create?"]
+  expect: {status: active}
+- name: unclear_audio
+  topic: School
+  words: [library]
+  turns: ["..."]
+  expect: {status: active, level_change: 0}
+- name: finish_without_all_words
+  topic: Animals
+  words: [rabbit, carrot, feed]
+  turns: [I like rabbits., I want to stop now.]
+  expect: {status: completed, unseen: [carrot, feed]}
