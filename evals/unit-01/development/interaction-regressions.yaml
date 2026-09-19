@@ -181,3 +181,31 @@ scenarios:
     - acknowledges_word_practice_without_claiming_independent_mastery
     - asks_one_birthday_month_question
     - leaves_room_for_child_answer_before_extra_help
+- id: regression-ask-home-before-dolphin
+  source:
+    heading: 'Derived journey regression: answer home question before introducing dolphin'
+    line: 166
+    numbered: false
+  initial_state:
+    stage_id: lesson-01
+    activity_id: lesson-01.ask-luna
+    objective_id: unit01.lesson01.pattern.live_in
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  turns:
+  - teacher_turn: Now, can you ask me where I live?
+    learner_text: Where do you live?
+    evaluator_gold:
+      response_kind: asks_teacher
+      meaning_status: not_demonstrated
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - answer_teacher_question
+    expected_state_effects:
+      count_attempt: false
+      activity_id: lesson-02.introduce-dolphin
+    teacher_criteria:
+    - answers_home_question_before_new_word
+    - consistent_luna_profile
+    - models_dolphin_twice
+    - invites_word_practice

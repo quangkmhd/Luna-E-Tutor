@@ -1,35 +1,132 @@
 source_file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
 defaults:
-  scenario: {objective_ids: [], rule_ids: [R06, R07], branch_ids: [], state_snapshots: []}
-  initial_state: {stage_id: lesson-01, activity_id: lesson-01.home, objective_id: unit01.lesson01.pattern.live_in, attempt_count: 0, support: independent}
+  scenario:
+    objective_ids: []
+    rule_ids:
+    - R06
+    - R07
+    branch_ids: []
+    state_snapshots: []
+  initial_state:
+    stage_id: lesson-01
+    activity_id: lesson-01.home
+    objective_id: unit01.lesson01.pattern.live_in
+    attempt_count: 0
+    support: independent
+    prior_activities_handled: true
+    response_opportunity_given: true
   turn:
-    evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: valid_alternative, recast_needed: false, emotional_signals: [], needs_clarification: false}
-    allowed_feedback_actions: [acknowledge_and_continue]
-    forbidden_behaviors: [forced_repetition, fabricated_evidence]
-    expected_state_effects: {preserve_evidence: true}
-    teacher_criteria: [natural_for_grade_five, follows_approved_action]
+    evaluator_gold:
+      response_kind: answer
+      meaning_status: satisfied
+      target_form_status: valid_alternative
+      recast_needed: false
+      emotional_signals: []
+      needs_clarification: false
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    forbidden_behaviors:
+    - forced_repetition
+    - fabricated_evidence
+    expected_state_effects:
+      count_attempt: true
+    teacher_criteria:
+    - natural_for_grade_five
+    - follows_approved_action
 scenarios:
-  - id: holdout-place-alternative
-    source: {heading: "Holdout paraphrase for Trạm 1", line: 198, numbered: false}
-    objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "My home is in a busy town.", evaluator_gold: {}}]
-  - id: holdout-vietnamese-meaning
-    source: {heading: "Holdout paraphrase for Vietnamese meaning", line: 278, numbered: false}
-    objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "Nhà con ở vùng quê.", evaluator_gold: {target_form_status: not_used}}]
-  - id: holdout-hobby-error
-    source: {heading: "Holdout paraphrase for hobby grammar", line: 474, numbered: false}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
-    objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "I hobby is badminton.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
-  - id: holdout-emotion-answer
-    source: {heading: "Holdout combined emotion and answer", line: 727, numbered: false}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
-    objective_ids: [unit01.level03.pattern.however]
-    turns: [{learner_text: "I'm a bit tired, but my town is quiet and nice.", evaluator_gold: {target_form_status: valid_alternative, emotional_signals: [tired]}, allowed_feedback_actions: [reassure, acknowledge_and_continue]}]
-  - id: holdout-privacy
-    source: {heading: "Holdout privacy paraphrase", line: 510, numbered: false}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.vocabulary.phone_number}
-    objective_ids: [unit01.level02.vocabulary.phone_number]
-    rule_ids: [R14]
-    turns: [{learner_text: "You can call me on 0987-654-321.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [privacy_redirect]}]
+- id: holdout-place-alternative
+  source:
+    heading: Holdout paraphrase for Trạm 1
+    line: 198
+    numbered: false
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  turns:
+  - learner_text: My home is in a busy town.
+    evaluator_gold: {}
+    teacher_turn: Where do you live?
+  initial_state:
+    activity_id: lesson-01.home
+- id: holdout-vietnamese-meaning
+  source:
+    heading: Holdout paraphrase for Vietnamese meaning
+    line: 278
+    numbered: false
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  turns:
+  - learner_text: Nhà con ở vùng quê.
+    evaluator_gold:
+      target_form_status: not_used
+    teacher_turn: Where do you live?
+  initial_state:
+    activity_id: lesson-01.home
+- id: holdout-hobby-error
+  source:
+    heading: Holdout paraphrase for hobby grammar
+    line: 474
+    numbered: false
+  initial_state:
+    stage_id: level-02
+    objective_id: unit01.level02.pattern.hobby
+    activity_id: level-02.hobby
+  objective_ids:
+  - unit01.level02.pattern.hobby
+  turns:
+  - learner_text: I hobby is badminton.
+    evaluator_gold:
+      target_form_status: error_in_target_form
+      recast_needed: true
+    allowed_feedback_actions:
+    - recast
+    teacher_turn: What is your hobby?
+- id: holdout-emotion-answer
+  source:
+    heading: Holdout combined emotion and answer
+    line: 727
+    numbered: false
+  initial_state:
+    stage_id: level-03
+    objective_id: unit01.level03.pattern.however
+    activity_id: level-03.contrast
+  objective_ids:
+  - unit01.level03.pattern.however
+  turns:
+  - learner_text: My town is quiet, but it has no park. I'm a bit tired.
+    evaluator_gold:
+      target_form_status: valid_alternative
+      emotional_signals:
+      - tired
+    allowed_feedback_actions:
+    - reassure
+    - acknowledge_and_continue
+    teacher_turn: Tell me one good thing and one drawback of your town.
+- id: holdout-privacy
+  source:
+    heading: Holdout privacy paraphrase
+    line: 510
+    numbered: false
+  initial_state:
+    stage_id: level-02
+    objective_id: unit01.level02.vocabulary.phone_number
+    activity_id: level-02.introduce-phone-number
+    model_repetitions_delivered: 2
+    support: model
+  objective_ids:
+  - unit01.level02.vocabulary.phone_number
+  rule_ids:
+  - R14
+  turns:
+  - learner_text: You can call me on 0987-654-321.
+    evaluator_gold:
+      target_form_status: not_used
+      response_kind: insufficient_data
+      meaning_status: not_demonstrated
+      needs_clarification: true
+    allowed_feedback_actions:
+    - privacy_redirect
+    teacher_turn: We practise only the words phone number, not a real number. Your
+      turn.
+    expected_state_effects:
+      count_attempt: false
+      activity_id: level-02.introduce-phone-number

@@ -141,7 +141,13 @@ class TurnPlanner:
             return ('Explain the meaning Quang asked about with one concrete example. '
                     'Check understanding with one easy meaning question or choice; '
                     'do not ask him to repeat the word or restart the introduction.')
-        if decision.feedback_action == 'answer_teacher_question' and not decision.next_activity_id:
+        if decision.feedback_action == 'answer_teacher_question' and decision.next_activity_id:
+            target = next(a for a in self._curriculum.activities
+                          if a.id == decision.next_activity_id)
+            return ('First answer the specific question Quang just asked, before changing roles '
+                    'or introducing new material. Acknowledging that he asked is not an answer. '
+                    'Then carry out this next activity in the same short turn: ' + target.instruction)
+        if decision.feedback_action == 'answer_teacher_question':
             return ('Answer the question Quang just asked, then connect one short follow-up '
                     'to his answer or the current topic. He has already asked you; '
                     'do not instruct him to ask the same question again.')

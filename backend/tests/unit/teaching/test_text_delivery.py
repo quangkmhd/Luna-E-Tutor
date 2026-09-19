@@ -31,10 +31,14 @@ def city_state(unit):
 
 
 @pytest.mark.asyncio
-async def test_delivered_models_and_response_opportunity_unlock_next_turn(unit_01):
+@pytest.mark.parametrize('invitation', [
+    'City. City. A city has tall buildings. What can you see there?',
+    'The word is city. City. Now you say it, Quang!',
+])
+async def test_delivered_models_and_response_opportunity_unlock_next_turn(unit_01, invitation):
     state = city_state(unit_01)
     service = TurnService(TurnPlanner(MeaningEvaluator(), TeachingEngine(), unit_01),
-                          Teacher('City. City. A city has tall buildings. What can you see there?'))
+                          Teacher(invitation))
     first = await service.process(state, 'What does city mean?', 'delivery-1')
     progress = next(p for p in first.next_state.activity_progress if p.activity_id == state.activity_id)
     assert progress.model_repetitions_delivered == 2
