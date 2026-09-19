@@ -128,6 +128,26 @@ def test_rejects_stage_cycle_without_terminal_exit(unit_01):
         UnitCurriculum.model_validate(data)
 
 
+def test_rejects_entry_route_bypassing_free_talk_prerequisites(unit_01):
+    from luna_tutor.curriculum.models import UnitCurriculum
+    data = unit_01.model_dump()
+    lesson_one = next(stage for stage in data['stages'] if stage['id'] == 'lesson-01')
+    lesson_one['exits'] = ['free-talk']
+    with pytest.raises(ValidationError, match='entry.*prerequisites'):
+        UnitCurriculum.model_validate(data)
+
+
+def test_rejects_prerequisites_only_reachable_on_separate_routes(unit_01):
+    from luna_tutor.curriculum.models import UnitCurriculum
+    data = unit_01.model_dump()
+    stages = {stage['id']: stage for stage in data['stages']}
+    stages['lesson-01']['exits'] = ['lesson-02', 'lesson-03']
+    stages['lesson-02']['exits'] = ['level-02']
+    # Every stage is graph-reachable, but no route handles both Lessons 2 and 3.
+    with pytest.raises(ValidationError, match='entry.*prerequisites'):
+        UnitCurriculum.model_validate(data)
+
+
 def test_rejects_missing_objective_coverage(unit_01):
     from luna_tutor.curriculum.models import UnitCurriculum
     data = unit_01.model_dump()

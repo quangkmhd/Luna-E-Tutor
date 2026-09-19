@@ -249,6 +249,32 @@ class UnitCurriculum(SourcedItem):
         for stage in self.stages:
             if any(positions[p] >= positions[stage.id] for p in stage.prerequisite_stage_ids):
                 raise ValueError('Stage prerequisites must precede the stage')
+        # Track completed stages per route: separate branches cannot jointly
+        # satisfy prerequisites that a learner must handle in one session.
+        stage_map = {stage.id: stage for stage in self.stages}
+        pending = [(self.stages[0].id, frozenset())]
+        visited = set()
+        accessible = set()
+        while pending:
+            stage_id, completed = pending.pop()
+            if (stage_id, completed) in visited:
+                continue
+            visited.add((stage_id, completed))
+            if stage_id == 'finish':
+                accessible.add(stage_id)
+                continue
+            stage = stage_map[stage_id]
+            if not set(stage.prerequisite_stage_ids) <= completed:
+                continue
+            accessible.add(stage_id)
+            handled = completed | {stage_id}
+            pending.extend((exit_id, handled) for exit_id in stage.exits)
+        inaccessible = (stage_ids | {'finish'}) - accessible
+        if inaccessible:
+            raise ValueError(
+                'Stages unreachable from entry with prerequisites satisfied: '
+                f'{sorted(inaccessible)}'
+            )
 
 
 class ContentFragment(StrictModel):
