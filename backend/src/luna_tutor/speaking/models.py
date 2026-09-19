@@ -60,6 +60,7 @@ class TurnInput(StrictModel):
     text: str = Field(min_length=1, max_length=2000)
     expected_version: int = Field(ge=0)
     quality: Literal['final', 'unclear'] = 'final'
+    input_mode: Literal['text', 'voice'] = 'text'
 
     @field_validator('text')
     @classmethod
@@ -81,6 +82,7 @@ class SpeakingState(StrictModel):
     word_evidence: tuple[WordUse, ...] = ()
     last_delivered_text: str = ''
     opening_message: str = ''
+    messages: tuple['ConversationMessage', ...] = ()
 
     @classmethod
     def initial(cls, session_id: str, config: SessionConfig) -> 'SpeakingState':
@@ -97,6 +99,12 @@ class SpeakingState(StrictModel):
 class Reply(StrictModel):
     text: str = Field(min_length=1, max_length=500)
     support_kind: str = 'none'
+
+
+class ConversationMessage(StrictModel):
+    role: Literal['learner', 'teacher']
+    text: str
+    turn_id: str | None = None
 
 
 class TurnResult(StrictModel):

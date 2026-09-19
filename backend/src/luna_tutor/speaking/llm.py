@@ -1,5 +1,7 @@
 import json
+from pydantic import ValidationError
 
+from luna_tutor.llm.openrouter import InvalidModelOutputError
 from luna_tutor.speaking.models import Evidence, Reply, Suggestions
 
 
@@ -15,7 +17,12 @@ class SpeakingModels:
              {'role': 'user', 'content': json.dumps(data, ensure_ascii=False)}],
             model.model_json_schema(), request_id,
         )
-        return model.model_validate(raw)
+        try:
+            return model.model_validate(raw)
+        except ValidationError:
+            raise InvalidModelOutputError(
+                status_code=200, request_id=request_id,
+                reason='Invalid structured model output') from None
 
     async def suggest(self, topic: str) -> Suggestions:
         return await self._call(
@@ -51,5 +58,6 @@ class SpeakingModels:
             {'topic': state.config.topic, 'target_words': state.config.words, 'level': decision.level,
              'action': decision.action, 'learner_text': turn.text,
              'recent_teacher_text': state.last_delivered_text,
+             'recent_conversation': [message.model_dump() for message in state.messages[-6:]],
              'used_words': [use.word for use in evidence.word_uses]},
             Reply, turn.turn_id)

@@ -64,6 +64,18 @@ async def test_unlisted_word_is_not_recorded(repository):
 
 
 @pytest.mark.asyncio
+async def test_unclear_quality_cannot_advance_or_record_empty_quote(repository):
+    evidence = Evidence(kind='answer', independent=True,
+                        word_uses=(WordUse(word='juice', quote='', independent=True),))
+    service = SpeakingService(repository, FakeModels(evidence))
+    started = await service.start(SessionConfig(grade=5, topic='Food', words=('juice',)))
+    result = await service.submit(started.session_id,
+        TurnInput(turn_id='t1', text='hello', expected_version=0, quality='unclear'))
+    assert result.state.independent_streak == 0
+    assert result.state.word_evidence == ()
+
+
+@pytest.mark.asyncio
 async def test_finish_summary_does_not_invent_unseen_words(repository):
     service = SpeakingService(repository, FakeModels())
     started = await service.start(SessionConfig(grade=5, topic='Food', words=('juice', 'sandwich')))

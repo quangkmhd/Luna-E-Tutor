@@ -101,7 +101,11 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
         speaking_models = FixtureSpeakingModels()
     else:
         key = environment.get('OPENROUTER_API_KEY', '').strip()
-        settings = Settings(openrouter_api_key=key)
+        settings = Settings(
+            openrouter_api_key=key,
+            openrouter_model=environment.get(
+                'OPENROUTER_MODEL', 'google/gemini-3.5-flash-lite').strip(),
+        )
         client = OpenRouterClient(settings)
         curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
         planner = TurnPlanner(GeminiEvaluator(client), TeachingEngine(), curriculum)

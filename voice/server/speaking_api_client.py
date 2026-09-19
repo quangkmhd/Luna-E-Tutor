@@ -18,5 +18,17 @@ class SpeakingApiClient:
         response.raise_for_status()
         return response.json()
 
+    async def acquire_voice(self, session_id: str, token: str):
+        response = await self._client.post(
+            f'{self.base_url}/api/speaking/sessions/{session_id}/voice-lease',
+            json={'token': token})
+        response.raise_for_status()
+
+    async def release_voice(self, session_id: str, token: str):
+        response = await self._client.request(
+            'DELETE', f'{self.base_url}/api/speaking/sessions/{session_id}/voice-lease',
+            json={'token': token})
+        response.raise_for_status()
+
     async def close(self):
         if self._owns_client: await self._client.aclose()

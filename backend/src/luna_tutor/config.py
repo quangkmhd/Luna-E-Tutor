@@ -18,4 +18,7 @@ class Settings:
         key = os.getenv("OPENROUTER_API_KEY", "").strip()
         if not key:
             raise ValueError("OPENROUTER_API_KEY is required")
-        return cls(openrouter_api_key=key)
+        model = os.getenv("OPENROUTER_MODEL", "google/gemini-3.5-flash-lite").strip()
+        if not model:
+            raise ValueError("OPENROUTER_MODEL is required")
+        return cls(openrouter_api_key=key, openrouter_model=model)

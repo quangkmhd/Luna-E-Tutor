@@ -17,6 +17,11 @@ class FinishRequest(BaseModel):
     expected_version: int = Field(ge=0)
 
 
+class VoiceLeaseRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    token: str = Field(min_length=16, max_length=100)
+
+
 def _error(status, code, message, retryable=False):
     raise HTTPException(status_code=status, detail={
         'code': code, 'message': message, 'retryable': retryable})
@@ -47,6 +52,19 @@ def build_speaking_router(service, repository):
     async def get(session_id: str):
         try: return repository.get(session_id)
         except NotFound: _error(404, 'SESSION_NOT_FOUND', 'Speaking session was not found.')
+
+    @router.post('/sessions/{session_id}/voice-lease')
+    async def acquire_voice(session_id: str, request: VoiceLeaseRequest):
+        try: repository.acquire_voice(session_id, request.token)
+        except NotFound: _error(404, 'SESSION_NOT_FOUND', 'Speaking session was not found.')
+        except SessionClosed: _error(409, 'SESSION_CLOSED', 'Speaking session has ended.')
+        except Conflict as error: _error(409, 'VOICE_IN_USE', str(error), True)
+        return {'ok': True}
+
+    @router.delete('/sessions/{session_id}/voice-lease')
+    async def release_voice(session_id: str, request: VoiceLeaseRequest):
+        repository.release_voice(session_id, request.token)
+        return {'ok': True}
 
     @router.post('/sessions/{session_id}/turns')
     async def submit(session_id: str, turn: TurnInput):

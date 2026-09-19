@@ -133,9 +133,11 @@ async def test_truncated_output_is_rejected_even_when_json_parses(respx_mock, co
     assert route.call_count == 1
 
 
-async def test_model_cannot_be_overridden():
-    with pytest.raises(ValueError, match='model'):
-        OpenRouterClient(Settings('test-key', openrouter_model='some-other-model'))
+async def test_configured_model_is_sent_to_openrouter(respx_mock, completion_response):
+    route = respx_mock.post(ENDPOINT).mock(return_value=completion_response({'ok': True}))
+    async with OpenRouterClient(Settings('test-key', openrouter_model='some-other-model')) as client:
+        await client.structured_chat(MESSAGES, SCHEMA, 'turn-1')
+    assert json.loads(route.calls.last.request.content)['model'] == 'some-other-model'
 
 
 @pytest.mark.parametrize('body', [

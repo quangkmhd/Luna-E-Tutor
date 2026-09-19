@@ -47,3 +47,48 @@ def test_finish_closes_session_even_with_unseen_words(tmp_path):
     assert finished.status == 'completed'
     with pytest.raises(SessionClosed):
         repo.reserve_turn('s1', TurnInput(turn_id='t1', text='Hello', expected_version=1))
+
+
+def test_late_commit_cannot_reopen_finished_session(tmp_path):
+    repo = SpeakingRepository(tmp_path / 'sessions.sqlite3')
+    repo.create(initial())
+    reservation = repo.reserve_turn('s1', TurnInput(turn_id='t1', text='Hello', expected_version=0))
+    repo.finish('s1', 0)
+    with pytest.raises(Conflict):
+        repo.commit_turn('s1', 't1', reservation.generation,
+                         initial().model_copy(update={'version': 1}), {'text': 'late'})
+    assert repo.get('s1').status == 'completed'
+
+
+def test_expired_reservation_can_be_recovered(tmp_path):
+    clock = [100.0]
+    repo = SpeakingRepository(tmp_path / 'sessions.sqlite3', lease_seconds=5, time_fn=lambda: clock[0])
+    repo.create(initial())
+    repo.reserve_turn('s1', TurnInput(turn_id='t1', text='Hello', expected_version=0))
+    clock[0] = 106.0
+    replacement = repo.reserve_turn('s1', TurnInput(turn_id='t2', text='Try again', expected_version=0))
+    assert replacement.existing_reply is None
+
+
+def test_expired_reservation_can_retry_same_id(tmp_path):
+    clock = [100.0]
+    repo = SpeakingRepository(tmp_path / 'sessions.sqlite3', lease_seconds=5, time_fn=lambda: clock[0])
+    repo.create(initial())
+    turn = TurnInput(turn_id='t1', text='Hello', expected_version=0)
+    first = repo.reserve_turn('s1', turn)
+    clock[0] = 106.0
+    retried = repo.reserve_turn('s1', turn)
+    assert retried.generation != first.generation
+
+
+def test_only_one_live_voice_connection_owns_a_session(tmp_path):
+    clock = [100.0]
+    repo = SpeakingRepository(tmp_path / 'sessions.sqlite3', time_fn=lambda: clock[0])
+    repo.create(initial())
+    repo.acquire_voice('s1', 'first', ttl_seconds=30)
+    with pytest.raises(Conflict):
+        repo.acquire_voice('s1', 'second', ttl_seconds=30)
+    clock[0] = 131.0
+    repo.acquire_voice('s1', 'second', ttl_seconds=30)
+    repo.release_voice('s1', 'second')
+    repo.acquire_voice('s1', 'third', ttl_seconds=30)

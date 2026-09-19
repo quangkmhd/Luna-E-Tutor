@@ -5,6 +5,7 @@ export interface SpeakingApi {
   topics(): Promise<Topic[]>;
   suggest(topic: string): Promise<Suggestions>;
   create(config: Config): Promise<SpeakingState>;
+  get(id: string): Promise<SpeakingState>;
   submit(id: string, turn: {turn_id: string; text: string; expected_version: number}): Promise<TurnResult>;
   finish(id: string, version: number): Promise<Summary>;
 }
@@ -23,6 +24,7 @@ export class HttpSpeakingApi implements SpeakingApi {
   topics() { return this.request<Topic[]>('/api/speaking/topics'); }
   suggest(topic: string) { return this.request<Suggestions>('/api/speaking/suggestions', {method: 'POST', body: JSON.stringify({topic})}); }
   create(config: Config) { return this.request<SpeakingState>('/api/speaking/sessions', {method: 'POST', body: JSON.stringify(config)}); }
+  get(id: string) { return this.request<SpeakingState>(`/api/speaking/sessions/${id}`); }
   submit(id: string, turn: {turn_id: string; text: string; expected_version: number}) { return this.request<TurnResult>(`/api/speaking/sessions/${id}/turns`, {method: 'POST', body: JSON.stringify(turn)}); }
   finish(id: string, version: number) { return this.request<Summary>(`/api/speaking/sessions/${id}/finish`, {method: 'POST', body: JSON.stringify({expected_version: version})}); }
 }

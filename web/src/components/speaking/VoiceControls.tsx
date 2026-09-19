@@ -2,15 +2,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { SpeakingVoiceClient } from '@/lib/speaking-voice';
 
-export function VoiceControls({sessionId}: {sessionId: string}) {
+export function VoiceControls({sessionId, onRefresh}: {sessionId: string; onRefresh: () => Promise<void>}) {
   const voice = useRef<SpeakingVoiceClient | null>(null);
-  const [status, setStatus] = useState<'off'|'connecting'|'on'|'error'>('off');
+  const [status, setStatus] = useState<'off'|'connecting'|'on'|'blocked'|'error'>('off');
+  useEffect(() => { if (status !== 'on') return; const id = window.setInterval(() => void onRefresh(), 1000); return () => window.clearInterval(id); }, [status, onRefresh]);
   useEffect(() => () => { void voice.current?.disconnect(); }, []);
   async function toggle() {
     if (status === 'on') { await voice.current?.disconnect(); setStatus('off'); return; }
     setStatus('connecting');
-    try { voice.current = new SpeakingVoiceClient(); await voice.current.connect(sessionId); setStatus('on'); }
+    try { voice.current = new SpeakingVoiceClient(() => setStatus('blocked')); await voice.current.connect(sessionId); setStatus('on'); }
     catch { setStatus('error'); }
   }
-  return <div><button type="button" onClick={toggle} disabled={status === 'connecting'}>{status === 'on' ? 'Tắt micro' : status === 'connecting' ? 'Đang kết nối…' : 'Bật micro'}</button>{status === 'error' && <span role="alert"> Không kết nối được micro. Em vẫn có thể nhập câu trả lời.</span>}</div>;
+  return <div><button type="button" onClick={toggle} disabled={status === 'connecting'}>{status === 'on' ? 'Tắt micro' : status === 'connecting' ? 'Đang kết nối…' : 'Bật micro'}</button>{status === 'blocked' && <button type="button" onClick={() => { void voice.current?.resumeAudio().then(() => setStatus('on')); }}>Bật âm thanh</button>}{status === 'error' && <span role="alert"> Không kết nối được micro. Em vẫn có thể nhập câu trả lời.</span>}</div>;
 }

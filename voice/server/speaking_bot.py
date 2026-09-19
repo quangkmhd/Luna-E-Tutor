@@ -1,5 +1,8 @@
 """Pipecat voice adapter for the independent grade 5 speaking room."""
+import asyncio
+from contextlib import suppress
 import os
+from uuid import uuid4
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -34,25 +37,46 @@ async def run_bot(transport, runner_args: RunnerArguments):
     if os.getenv('STT_PROVIDER', '').strip().lower() != 'soniox':
         raise ValueError('STT_PROVIDER must be soniox for the speaking room')
     api = SpeakingApiClient(os.getenv('TUTOR_API_URL', 'http://127.0.0.1:8000'))
-    processor = SpeakingProcessor(api, session_id)
-    await api.get(session_id)
-    key = require('SONIOX_API_KEY')
-    pipeline = Pipeline([
-        transport.input(), SonioxSTTService(api_key=key), processor,
-        SonioxTTSService(api_key=key, settings=SonioxTTSService.Settings(
-            voice=require('SONIOX_VOICE_ID'))), transport.output(),
-    ])
-    worker = PipelineWorker(pipeline, params=PipelineParams(
-        enable_metrics=True, enable_usage_metrics=True))
+    voice_token = str(uuid4())
+    lease_task = None
+    acquired = False
 
-    @transport.event_handler('on_client_disconnected')
-    async def disconnected(_transport, _client):
-        await worker.cancel()
+    async def renew_voice_lease():
+        while True:
+            await asyncio.sleep(10)
+            await api.acquire_voice(session_id, voice_token)
 
-    runner = WorkerRunner(handle_sigint=False)
-    await runner.add_workers(worker)
-    try: await runner.run()
-    finally: await api.close()
+    try:
+        await api.acquire_voice(session_id, voice_token)
+        acquired = True
+        lease_task = asyncio.create_task(renew_voice_lease())
+        processor = SpeakingProcessor(api, session_id)
+        await api.get(session_id)
+        key = require('SONIOX_API_KEY')
+        pipeline = Pipeline([
+            transport.input(), SonioxSTTService(api_key=key), processor,
+            SonioxTTSService(api_key=key, settings=SonioxTTSService.Settings(
+                voice=require('SONIOX_VOICE_ID'))), transport.output(),
+        ])
+        worker = PipelineWorker(pipeline, params=PipelineParams(
+            enable_metrics=True, enable_usage_metrics=True))
+
+        @transport.event_handler('on_client_disconnected')
+        async def disconnected(_transport, _client):
+            await worker.cancel()
+
+        runner = WorkerRunner(handle_sigint=False)
+        await runner.add_workers(worker)
+        await runner.run()
+    finally:
+        if lease_task is not None:
+            lease_task.cancel()
+            with suppress(asyncio.CancelledError):
+                await lease_task
+        if acquired:
+            with suppress(Exception):
+                await api.release_voice(session_id, voice_token)
+        await api.close()
 
 
 async def bot(runner_args: RunnerArguments):

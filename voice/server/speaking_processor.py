@@ -25,7 +25,7 @@ class SpeakingProcessor(FrameProcessor):
             self.version = (await self.api.get(self.session_id))['version']
         result = await self.api.submit(self.session_id, {
             'turn_id': str(uuid4()), 'text': frame.text,
-            'expected_version': self.version, 'quality': 'final',
+            'expected_version': self.version, 'quality': 'final', 'input_mode': 'voice',
         })
         self.version = result['state']['version']
         await self.push_frame(LLMFullResponseStartFrame())

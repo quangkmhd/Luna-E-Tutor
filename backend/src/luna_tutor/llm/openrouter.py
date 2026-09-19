@@ -11,7 +11,6 @@ import httpx
 from luna_tutor.config import Settings
 from luna_tutor.domain.privacy import redact_sensitive_contact
 
-_MODEL = 'google/gemini-3.5-flash-lite'
 _ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 _RETRYABLE_STATUSES = {429, 502, 503, 504}
 
@@ -100,13 +99,14 @@ class OpenRouterClient:
     """
 
     def __init__(self, settings: Settings, *, http_client: httpx.AsyncClient | None = None):
-        if settings.openrouter_model != _MODEL:
-            raise ValueError('The OpenRouter model must be google/gemini-3.5-flash-lite')
+        if not settings.openrouter_model.strip():
+            raise ValueError('OPENROUTER_MODEL is required')
         if not settings.openrouter_api_key.strip():
             raise ValueError('OPENROUTER_API_KEY is required')
         if not math.isfinite(settings.request_timeout_seconds) or settings.request_timeout_seconds <= 0:
             raise ValueError('Request timeout must be finite and positive')
         self._api_key = settings.openrouter_api_key
+        self._model = settings.openrouter_model
         self._timeout = settings.request_timeout_seconds
         self._owns_client = http_client is None
         self._http = http_client if http_client is not None else httpx.AsyncClient()
@@ -129,7 +129,7 @@ class OpenRouterClient:
         invalid model output fail immediately with body-free typed exceptions.
         """
         payload = {
-            'model': _MODEL, 'temperature': 0, 'stream': False,
+            'model': self._model, 'temperature': 0, 'stream': False,
             'messages': [{**message, 'content': _message_content(message['content'])}
                          for message in messages],
             'provider': {'require_parameters': True},
