@@ -176,3 +176,27 @@ Next required loop: add bounded Teacher repair for detected output violations (w
 - Verification: **375 passed, 1 skipped** on Pipecat 1.11, one existing dependency warning. The bounded-repair tests cover same-request preservation, max two attempts, outage no-retry and missing word invitation. No state commits on failed Teacher validation.
 
 New continuous native journey is running as exec session **42624**, checkpoint `native-flows-word-practice-journey.json` and log `/tmp/luna-word-practice-journey.log`. Poll its authoritative handle; do not overwrite/restart solely on elapsed time. Its script records code/content hashes and parsed-response counts and attempts the finish endpoint if Free Talk succeeds.
+
+### Text-only scope confirmation and latest journey result
+
+The user explicitly confirmed that Pipecat remains integrated while typed input/output is the current priority; STT/TTS and local speech/vision models are outside this acceptance stage. Evaluate pedagogical responses and state transitions before audio integration.
+
+Session 42624 has terminated. `native-flows-word-practice-journey.json` contains 26 requests: 25 successful HTTP turns followed by HTTP 503 `INVALID_TEACHER_OUTPUT` at `level-02.introduce-subject`. The learner said “subject”; Evaluator recognized the target meaning. Both Teacher drafts asked an open birthday question followed by a separate month-choice question, violating the one-question bound even after repair. The experiment stopped with `request_error`; `complete: true` means the experiment terminated, not that Unit 1 passed. No successful Free Talk or finish check occurred in this run. Preserve this evidence; the cause of repeated invalid Teacher generation still needs targeted investigation.
+
+## Conditional support belongs to the current decision, not a future lesson branch
+
+Applied prompt-engineer skill and reread Google's primary prompting guidance (https://ai.google.dev/gemini-api/docs/prompting-strategies): clear instructions, varied examples, and experimental refinement. Reviewed the birthday silence source at dialogue lines 534–546: first ask openly, offer choices after silence, then reduce difficulty and move on. The existing two-turn silence fixture deliberately uses the real curriculum's next hobby activity, not the source's abbreviated return to colour.
+
+Added `regression-subject-before-birthday` with the actual prior Teacher word invitation, two delivered models, modeled support (not independent mastery), and the observed child input. It is a derived journey regression, not an additional source-numbered case.
+
+Experimental sequence, all real Gemini through native Pipecat Flows:
+- `question-support-baseline.json`: reproduced the failed transition; two-turn silence checks passed.
+- `question-support-revised.json`: clearer one-opportunity/open-versus-choice prompt removed the question-count failure in this run, but Teacher only said “When is your birthday, Quang?” and omitted acknowledgment. Direct semantic review failed that criterion despite passing automated checks.
+- `question-support-acknowledged.json`: adding explicit acknowledgment did not reliably solve the transition; Teacher validation failed again. Preserve as a failed run, not average it away.
+- `question-support-diagnosed.json`: same revision passed on repeat with “Yes, subject! When is your birthday?”; inspected exact bounded request and confirmed it still contained a hypothetical future support branch. This variability rules out claiming the prompt-only revision robust.
+- Removed hypothetical “Support with two month choices if needed” from the birthday activity's current-turn instruction. Shared Teacher rules now tie support to the existing `offer_support` decision or observed confusion. No new state machine, retries or post-hoc question truncation were added.
+- `question-support-content-revised.json`: all four turns passed implemented checks. Direct review: brief word acknowledgment then one birthday question; wrong countryside meaning corrected with an accurate fields/trees contrast and one choice question; first silence prompted two month choices; second silence moved to a simple hobby choice and retained birthday for review. Wording is judged by behavior, not exact matching. These four turns do not establish full Unit acceptance.
+
+Continuous journey rerun started as session **79759**, artifact `native-flows-single-question-journey.json`, log `/tmp/luna-single-question-journey.log`. Poll the existing handle; do not infer completion from checkpoint presence. Full backend/voice regression test session **29526** also started after the final content revision.
+
+Final-revision code regression session 29526 completed: **375 passed, 1 skipped**, with the existing Starlette/AnyIO deprecation warning. This is code regression evidence, not semantic acceptance. Journey 79759 was verified still running after this result.

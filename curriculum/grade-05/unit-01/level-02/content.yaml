@@ -220,7 +220,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Ask only for the birthday month. Support with two month choices if needed.
+  instruction: Ask which month Quang's birthday is in, then wait for his answer.
   examples: *id001
 - id: level-02.hobby
   source:

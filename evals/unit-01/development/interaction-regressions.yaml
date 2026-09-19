@@ -156,3 +156,28 @@ scenarios:
     - models_birthday_twice
     - invites_saying_word_not_birth_month
     - consistent_luna_profile
+- id: regression-subject-before-birthday
+  source:
+    heading: 'Derived journey regression: completed word practice enters birthday question'
+    line: 405
+    numbered: false
+  initial_state:
+    stage_id: level-02
+    activity_id: level-02.introduce-subject
+    objective_id: unit01.level02.vocabulary.subject
+    model_repetitions_delivered: 2
+    support: model
+  objective_ids:
+  - unit01.level02.vocabulary.subject
+  turns:
+  - teacher_turn: Subject, subject. Can you say subject, Quang?
+    learner_text: subject
+    evaluator_gold:
+      target_form_status: not_used
+    expected_state_effects:
+      count_attempt: true
+      activity_id: level-02.birthday
+    teacher_criteria:
+    - acknowledges_word_practice_without_claiming_independent_mastery
+    - asks_one_birthday_month_question
+    - leaves_room_for_child_answer_before_extra_help
