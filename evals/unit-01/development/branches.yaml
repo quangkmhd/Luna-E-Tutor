@@ -29,22 +29,46 @@ scenarios:
     turns: [{learner_text: "I don't know.", evaluator_gold: {response_kind: does_not_know, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
   - id: branch-station2-silent-hobby
     source: {heading: "Nhánh: học sinh im lặng khi nói về sở thích", line: 367, numbered: false}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
+    initial_state: {stage_id: level-02, activity_id: level-02.hobby, objective_id: unit01.level02.pattern.hobby, prior_activities_handled: true, response_opportunity_given: true}
     branch_ids: [station2-silent-hobby]
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
+    turns:
+      - teacher_turn: "What's your hobby?"
+        learner_text: "[simulated no response]"
+        input_event: no_response
+        evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used}
+        allowed_feedback_actions: [offer_support]
+        expected_state_effects: {activity_id: level-02.hobby, count_attempt: true}
+        teacher_criteria: [offers_easy_hobby_choice, allows_time, does_not_blame_child]
+      - learner_text: "My hobby is table tennis."
+        evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: correct_target_form}
+        allowed_feedback_actions: [acknowledge_and_continue]
+        expected_state_effects: {activity_id: level-02.subject}
+        teacher_criteria: [accepts_supported_answer, continues_without_forced_repeat]
   - id: branch-station2-wrong-hobby-form
     source: {heading: "Nhánh: học sinh dùng sai cấu trúc sở thích", line: 377, numbered: false}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
+    initial_state: {stage_id: level-02, activity_id: level-02.hobby, objective_id: unit01.level02.pattern.hobby, prior_activities_handled: true, response_opportunity_given: true}
     branch_ids: [station2-wrong-hobby-form]
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "My hobby play football.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns:
+      - teacher_turn: "What's your hobby?"
+        learner_text: "I hobby is table tennis."
+        evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}
+        allowed_feedback_actions: [recast]
+        expected_state_effects: {activity_id: level-02.subject, review_queue_contains: [unit01.level02.pattern.hobby]}
+        teacher_criteria: [natural_minimal_recast, preserves_learner_hobby, continues_without_forced_repeat]
   - id: branch-station2-one-word
     source: {heading: "Nhánh: học sinh chỉ nói một từ", line: 386, numbered: false}
-    initial_state: {stage_id: lesson-02, objective_id: unit01.lesson02.vocabulary.sandwich}
+    initial_state: {stage_id: level-02, activity_id: level-02.birthday, objective_id: unit01.level02.pattern.birthday, prior_activities_handled: true, response_opportunity_given: true}
     branch_ids: [station2-one-word]
-    objective_ids: [unit01.lesson02.vocabulary.sandwich]
-    turns: [{learner_text: "Sandwich.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    objective_ids: [unit01.level02.pattern.birthday]
+    turns:
+      - teacher_turn: "When's your birthday?"
+        learner_text: "May."
+        evaluator_gold: {target_form_status: not_used}
+        allowed_feedback_actions: [acknowledge_and_continue]
+        expected_state_effects: {activity_id: level-02.hobby}
+        teacher_criteria: [accepts_short_meaningful_answer, acknowledges_birthday_month, does_not_call_fragment_error, continues_without_forced_repeat]
   - id: branch-station3-countryside
     source: {heading: "Nhánh: học sinh sống ở nông thôn", line: 593, numbered: false}
     initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.describe_countryside}

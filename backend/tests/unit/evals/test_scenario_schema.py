@@ -45,3 +45,23 @@ def test_numbered_behavior_cases_have_unambiguous_activity_and_prior_teacher_tur
         assert scenario.turns[0].teacher_turn.strip(), scenario.id
         for turn in scenario.turns:
             assert 'attempt_delta' not in turn.expected_state_effects, scenario.id
+
+
+def test_level2_named_branches_have_executable_source_aligned_context():
+    from luna_tutor.evals.behavior import BehaviorRunner
+    branches = [s for s in load_scenarios(ROOT / 'evals/unit-01')
+                if s.id.startswith('branch-station2-')]
+    assert len(branches) == 3
+    runner = BehaviorRunner(ROOT, None)
+    for scenario in branches:
+        state = runner.initial_state(scenario)
+        assert state.stage_id == 'level-02'
+        assert state.last_teacher_turn.strip()
+        assert scenario.initial_state.response_opportunity_given
+        assert 'preserve_open_review' not in scenario.turns[0].expected_state_effects
+    silent = next(s for s in branches if s.id == 'branch-station2-silent-hobby')
+    assert silent.turns[0].input_event == 'no_response'
+    assert silent.turns[0].transcript_status == 'final'
+    short = next(s for s in branches if s.id == 'branch-station2-one-word')
+    assert short.initial_state.activity_id == 'level-02.birthday'
+    assert short.turns[0].learner_text == 'May.'
