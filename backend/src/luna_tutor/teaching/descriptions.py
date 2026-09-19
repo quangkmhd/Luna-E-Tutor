@@ -4,24 +4,32 @@ from pathlib import Path
 import yaml
 
 CATALOG_PATH = Path(__file__).resolve().parents[1] / 'prompts/teacher-description-catalog.yaml'
+BRANCH_NAMES = {
+    'privacy_redirect', 'clarify', 'explain_meaning',
+    'answer_teacher_question_then_move', 'answer_teacher_question',
+    'no_response_stay', 'no_response_move_to_delivery',
+    'no_response_move_with_support', 'free_talk', 'support_ask_teacher',
+    'support_new_vocabulary', 'offer_support', 'finish',
+    'move_to_ask_teacher', 'move_to_next_activity', 'current_activity',
+}
 
 
 class TeacherDescriptions:
     def __init__(self, path: Path | None = None):
         path = CATALOG_PATH if path is None else path
         self.data = yaml.safe_load(path.read_text(encoding='utf-8'))
-        self.branches = {item['order']: item['description_en']
-                         for item in self.data['planner_branches']}
-        if set(self.branches) != set(range(1, 17)) or len(self.data['planner_branches']) != 16:
-            raise ValueError('Teacher catalog must contain unique branches 1–16')
+        self.branches = {name: item['description_en']
+                         for name, item in self.data['planner_branches'].items()}
+        if set(self.branches) != BRANCH_NAMES:
+            raise ValueError('Teacher catalog branch names do not match Planner branches')
         self.activities = {item['activity_id']: item['description_en']
                            for item in self.data['activity_instructions']}
 
     def instruction(self, activity):
         return self.activities.get(activity.id, activity.instruction)
 
-    def branch(self, number, *, target=None, current=None):
-        text = self.branches[number]
+    def branch(self, name, *, target=None, current=None):
+        text = self.branches[name]
         for name, activity in [('target', target), ('current', current)]:
             if activity is not None:
                 text = text.replace('{' + name + '.instruction}', self.instruction(activity))

@@ -1,62 +1,62 @@
 planner_branches:
-- order: 1
-  description_en: Gently keep real phone numbers private. Practise only the phrase phone number, not a sequence
-    of digits, then connect to the current learning topic.
-- order: 2
-  description_en: The input is not reliable enough to assess. Ask one short question to confirm what Quang meant,
-    using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation
-    error, ask for imitation, or restart the activity introduction.
-- order: 3
-  description_en: Explain the meaning Quang asked about with one concrete example. Check understanding with one
-    easy meaning question or choice; do not ask him to repeat the word or restart the introduction.
-- order: 4
-  description_en: 'First answer the specific question Quang just asked, before changing roles or introducing new
-    material. Acknowledging that he asked is not an answer. Then carry out this next activity in the same short
-    turn: {target.instruction}'
-- order: 5
-  description_en: Answer the specific question Quang just asked using the correct person and recent context. An
-    additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked
-    you; do not instruct him to ask the same question again.
-- order: 6
-  description_en: Give Quang time without blaming him. Offer one easy choice question on the current topic. Do not
-    claim he does not know or answered wrongly.
-- order: 7
-  description_en: 'Gently let the unanswered greeting go and offer a short reassuring transition without another
-    question. Next activity: {target.instruction}'
-- order: 8
-  description_en: 'Gently let the unanswered item go for now. Make the next step easier with one question containing
-    two concrete answer choices. An open question alone does not reduce difficulty. If this is ask_teacher, instead
-    supply the exact short question Quang can ask you and invite him to use it. Do not announce mastery or request
-    the same answer again. Next activity: {target.instruction}'
-- order: 9
-  description_en: Continue the role in activity_context naturally; do not announce the role again or end the scene.
-    Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal into
-    a related question, without announcing a test or asking for a repeat. If absent, continue the conversation without
-    inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request closes
-    the conversation.
-- order: 10
-  description_en: 'Make the next step easy: supply one short question Quang can ask you on the authorized topic
-    and invite him to use it. Do not answer it yet.'
-- order: 11
-  description_en: Keep the new-word step short and reassuring. {target.instruction}
-- order: 12
-  description_en: 'Briefly acknowledge any expressed feeling or confusion. Make the authorized activity easier with
-    one question containing two concrete, simple answer choices. A one-word choice is enough; do not demand a full
-    sentence, an abstract drawback explanation, or another attempt at the same difficult wording. If the learner
-    gave the wrong semantic category, first explain that distinction briefly. Use the activity context for the CURRENT
-    target, even after a transition. Do not re-ask a fact Quang already gave or repeat the previous question. Choose
-    a missing part of the goal: if he already gave a drawback such as crowding, ask about a positive feature instead.
-    For an addition goal, ask about another positive feature. Choices are possible answers, never asserted learner
-    facts.'
-- order: 13
-  description_en: Give one warm closing sentence.
-- order: 14
-  description_en: 'After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question.
-    Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: {target.instruction}'
-- order: 15
-  description_en: '{target.instruction}'
-- order: 16
-  description_en: '{current.instruction}'
+  privacy_redirect:
+    description_en: Gently keep real phone numbers private. Practise only the phrase phone number, not a sequence
+      of digits, then connect to the current learning topic.
+  clarify:
+    description_en: The input is not reliable enough to assess. Ask one short question to confirm what Quang meant,
+      using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation
+      error, ask for imitation, or restart the activity introduction.
+  explain_meaning:
+    description_en: Explain the meaning Quang asked about with one concrete example. Check understanding with one
+      easy meaning question or choice; do not ask him to repeat the word or restart the introduction.
+  answer_teacher_question_then_move:
+    description_en: 'First answer the specific question Quang just asked, before changing roles or introducing new
+      material. Acknowledging that he asked is not an answer. Then carry out this next activity in the same short
+      turn: {target.instruction}'
+  answer_teacher_question:
+    description_en: Answer the specific question Quang just asked using the correct person and recent context. An
+      additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked
+      you; do not instruct him to ask the same question again.
+  no_response_stay:
+    description_en: Give Quang time without blaming him. Offer one easy choice question on the current topic. Do
+      not claim he does not know or answered wrongly.
+  no_response_move_to_delivery:
+    description_en: 'Gently let the unanswered greeting go and offer a short reassuring transition without another
+      question. Next activity: {target.instruction}'
+  no_response_move_with_support:
+    description_en: 'Gently let the unanswered item go for now. Make the next step easier with one question containing
+      two concrete answer choices. An open question alone does not reduce difficulty. If this is ask_teacher, instead
+      supply the exact short question Quang can ask you and invite him to use it. Do not announce mastery or request
+      the same answer again. Next activity: {target.instruction}'
+  free_talk:
+    description_en: Continue the role in activity_context naturally; do not announce the role again or end the scene.
+      Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal
+      into a related question, without announcing a test or asking for a repeat. If absent, continue the conversation
+      without inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request
+      closes the conversation.
+  support_ask_teacher:
+    description_en: 'Make the next step easy: supply one short question Quang can ask you on the authorized topic
+      and invite him to use it. Do not answer it yet.'
+  support_new_vocabulary:
+    description_en: Keep the new-word step short and reassuring. {target.instruction}
+  offer_support:
+    description_en: 'Briefly acknowledge any expressed feeling or confusion. Make the authorized activity easier
+      with one question containing two concrete, simple answer choices. A one-word choice is enough; do not demand
+      a full sentence, an abstract drawback explanation, or another attempt at the same difficult wording. If the
+      learner gave the wrong semantic category, first explain that distinction briefly. Use the activity context
+      for the CURRENT target, even after a transition. Do not re-ask a fact Quang already gave or repeat the previous
+      question. Choose a missing part of the goal: if he already gave a drawback such as crowding, ask about a positive
+      feature instead. For an addition goal, ask about another positive feature. Choices are possible answers, never
+      asserted learner facts.'
+  finish:
+    description_en: Give one warm closing sentence.
+  move_to_ask_teacher:
+    description_en: 'After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question.
+      Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: {target.instruction}'
+  move_to_next_activity:
+    description_en: '{target.instruction}'
+  current_activity:
+    description_en: '{current.instruction}'
 override_after_branch_selection:
   description_en: 'Acknowledge the information Quang already provided. Ask only for the remaining information, without
     repeating completed questions: {remaining_objective_descriptions}'

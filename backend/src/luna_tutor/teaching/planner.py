@@ -137,28 +137,28 @@ class TurnPlanner:
 
     def _next_move_text(self, current: Activity, decision, evidence=None) -> str:
         if decision.feedback_action == 'privacy_redirect':
-            return self._descriptions.branch(1)
+            return self._descriptions.branch('privacy_redirect')
         if decision.feedback_action == 'clarify':
-            return self._descriptions.branch(2)
+            return self._descriptions.branch('clarify')
         if decision.feedback_action == 'explain_meaning':
-            return self._descriptions.branch(3)
+            return self._descriptions.branch('explain_meaning')
         if decision.feedback_action == 'answer_teacher_question' and decision.next_activity_id:
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
-            return self._descriptions.branch(4, target=target)
+            return self._descriptions.branch('answer_teacher_question_then_move', target=target)
         if decision.feedback_action == 'answer_teacher_question':
-            return self._descriptions.branch(5)
+            return self._descriptions.branch('answer_teacher_question')
         if evidence is not None and evidence.response_kind == 'no_response':
             if not decision.next_activity_id:
-                return self._descriptions.branch(6)
+                return self._descriptions.branch('no_response_stay')
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
             if target.completion_rule.mode == 'delivered':
-                return self._descriptions.branch(7, target=target)
-            return self._descriptions.branch(8, target=target)
+                return self._descriptions.branch('no_response_move_to_delivery', target=target)
+            return self._descriptions.branch('no_response_move_with_support', target=target)
         stage = next(s for s in self._curriculum.stages if s.id == current.stage_id)
         if stage.review is not None and not decision.next_activity_id:
-            return self._descriptions.branch(9)
+            return self._descriptions.branch('free_talk')
         if (decision.feedback_action == 'offer_support'
                 or decision.progression_action == 'reduce_difficulty'
                 or decision.support_limit_exit
@@ -166,19 +166,19 @@ class TurnPlanner:
             target = next((a for a in self._curriculum.activities
                            if a.id == decision.next_activity_id), current)
             if target.kind == 'ask_teacher':
-                return self._descriptions.branch(10)
+                return self._descriptions.branch('support_ask_teacher')
             if target.kind == 'vocabulary_introduction' and target.id != current.id:
-                return self._descriptions.branch(11, target=target)
-            return self._descriptions.branch(12)
+                return self._descriptions.branch('support_new_vocabulary', target=target)
+            return self._descriptions.branch('offer_support')
         if decision.progression_action == 'finish':
-            return self._descriptions.branch(13)
+            return self._descriptions.branch('finish')
         if decision.next_activity_id:
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
             if target.kind == 'ask_teacher':
-                return self._descriptions.branch(14, target=target)
-            return self._descriptions.branch(15, target=target)
-        return self._descriptions.branch(16, current=current)
+                return self._descriptions.branch('move_to_ask_teacher', target=target)
+            return self._descriptions.branch('move_to_next_activity', target=target)
+        return self._descriptions.branch('current_activity', current=current)
 
     def _apply(self, state: LessonState, learner_text: str, turn_id: str, decision, evidence) -> LessonState:
         objective_progress = {item.objective_id: item for item in state.objective_progress}

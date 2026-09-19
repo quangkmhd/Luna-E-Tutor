@@ -11,12 +11,13 @@ from luna_tutor.llm.teacher import GeminiTeacher
 @pytest.mark.asyncio
 async def test_yaml_edits_reach_planner_and_teacher(tmp_path, monkeypatch, unit_01):
     data = yaml.safe_load(descriptions.CATALOG_PATH.read_text())
-    data['planner_branches'][1]['description_en'] = 'Ask gently what Quang meant.'
+    data['planner_branches']['clarify']['description_en'] = 'Ask gently what Quang meant.'
     data['activity_instructions'][0]['description_en'] = 'Say a warm hello.'
     path = tmp_path / 'descriptions.yaml'
     path.write_text(yaml.safe_dump(data))
     monkeypatch.setattr(descriptions, 'CATALOG_PATH', path)
     planner = TurnPlanner(None, None, unit_01)
+    assert 'clarify' in planner._descriptions.branches
     current = unit_01.activities[0]
     move = planner._next_move_text(current, TeachingDecision(
         feedback_action='clarify', progression_action='stay'))
