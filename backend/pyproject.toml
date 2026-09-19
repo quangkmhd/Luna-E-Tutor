@@ -1,0 +1,25 @@
+[project]
+name = "luna-tutor"
+version = "0.1.0"
+description = "Provider-independent Grade 5 teaching core"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic",
+    "httpx",
+    "PyYAML",
+    "openpyxl",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "respx",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/luna_tutor"]
