@@ -1,7 +1,9 @@
 """Pure turn planning boundary shared by web and Pipecat adapters."""
 
 from luna_tutor.curriculum.models import Activity, Objective, UnitCurriculum
-from luna_tutor.domain.decisions import PlannedTurn, TeacherConstraints, TeacherTurnRequest
+from luna_tutor.domain.decisions import (
+    PlannedTurn, TeacherActivityContext, TeacherConstraints, TeacherTurnRequest,
+)
 from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.domain.state import ActivityProgress, LessonState, ReviewItem
@@ -39,6 +41,8 @@ class TurnPlanner:
         if evidence.turn_id != turn_id or evidence.state_version != state.state_version:
             raise ValueError('stale or uncorrelated evaluator result')
         decision = self._engine.decide(planning_state, evidence, self._curriculum)
+        target_activity = next((item for item in self._curriculum.activities
+                                if item.id == decision.next_activity_id), activity)
         teacher_request = TeacherTurnRequest(
             turn_id=turn_id,
             feedback_action=decision.feedback_action,
@@ -46,6 +50,8 @@ class TurnPlanner:
             learner_meaning=redacted.text,
             next_teaching_move=self._next_move_text(activity, decision),
             emotional_support=decision.emotional_support,
+            previous_teacher_turn=state.last_teacher_turn,
+            activity_context=self._teacher_context(target_activity),
             constraints=TeacherConstraints(additional=(
                 'Never require Quang to repeat a correction.',
                 'Speak one short, natural turn without Markdown.',
@@ -57,6 +63,23 @@ class TurnPlanner:
             learner_text=redacted.text, privacy_event=redacted.safety_event,
             evidence=evidence, decision=decision, teacher_request=teacher_request,
             proposed_next_state=proposed,
+        )
+
+    def _teacher_context(self, activity: Activity) -> TeacherActivityContext:
+        objectives = [item for item in self._curriculum.objectives
+                      if item.id in activity.objective_ids]
+        word_ids = {word for item in objectives for word in item.vocabulary_ids}
+        pattern_ids = {pattern for item in objectives for pattern in item.pattern_ids}
+        return TeacherActivityContext(
+            stage_id=activity.stage_id, activity_id=activity.id, kind=activity.kind,
+            objectives=tuple(item.description for item in objectives),
+            target_words=tuple(item.text for item in self._curriculum.vocabulary
+                               if item.id in word_ids),
+            target_patterns=tuple(item.text for item in self._curriculum.patterns
+                                  if item.id in pattern_ids),
+            examples=tuple(activity.examples),
+            model_repetitions=activity.completion_rule.model_repetitions,
+            response_opportunity_required=activity.completion_rule.response_opportunity_required,
         )
 
     def _activity(self, state: LessonState) -> Activity:
@@ -85,6 +108,14 @@ class TurnPlanner:
     def _next_move_text(self, current: Activity, decision) -> str:
         if decision.feedback_action == 'privacy_redirect':
             return 'Ask Quang to use a made-up phone number or words instead of real digits.'
+        if decision.feedback_action == 'explain_meaning':
+            return ('Explain the meaning Quang asked about with one concrete example. '
+                    'Check understanding with one easy meaning question or choice; '
+                    'do not ask him to repeat the word or restart the introduction.')
+        if decision.feedback_action == 'answer_teacher_question' and not decision.next_activity_id:
+            return ('Answer the question Quang just asked, then connect one short follow-up '
+                    'to his answer or the current topic. He has already asked you; '
+                    'do not instruct him to ask the same question again.')
         if decision.progression_action == 'finish':
             return 'Give one warm closing sentence.'
         if decision.next_activity_id:

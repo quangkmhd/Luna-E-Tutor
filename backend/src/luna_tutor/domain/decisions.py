@@ -49,6 +49,20 @@ class TeacherConstraints(Contract):
     additional: SnapshotItems[Text] = ()
 
 
+class TeacherActivityContext(Contract):
+    """Curriculum content for expression, never authority to change state."""
+
+    stage_id: Identifier
+    activity_id: Identifier
+    kind: Text
+    objectives: SnapshotItems[Text] = ()
+    target_words: SnapshotItems[Text] = ()
+    target_patterns: SnapshotItems[Text] = ()
+    examples: SnapshotItems[Text] = ()
+    model_repetitions: int = Field(default=0, ge=0, le=2)
+    response_opportunity_required: bool = False
+
+
 class TeacherTurnRequest(Contract):
     turn_id: Text
     feedback_action: FeedbackAction
@@ -56,6 +70,8 @@ class TeacherTurnRequest(Contract):
     learner_meaning: Annotated[SanitizedText, Field(max_length=2000)]
     next_teaching_move: SpokenText
     emotional_support: bool = False
+    previous_teacher_turn: Annotated[SanitizedText, Field(max_length=4000)] = ''
+    activity_context: TeacherActivityContext | None = None
     constraints: TeacherConstraints = Field(default_factory=TeacherConstraints)
 
     @model_validator(mode='after')

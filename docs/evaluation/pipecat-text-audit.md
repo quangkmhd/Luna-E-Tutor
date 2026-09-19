@@ -29,3 +29,23 @@ Official Google guidance: https://ai.google.dev/gemini-api/docs/prompting-strate
 3. Run a baseline of actual pipeline outputs and multi-turn trajectories.
 4. Classify each failure as data, content, prompt, engine or integration. Preserve outputs and hashes before changes.
 5. Improve the responsible layer, rerun development cases and fresh paraphrases, and review all remaining failures. Never change gold solely to agree with current output.
+
+## Teacher diagnostic iteration — 2026-09-19
+
+Changes: a typed Teacher activity context now supplies stage/activity, objectives, words, patterns, examples and the previous teacher question. Meaning clarification gets a specific teaching directive instead of the entire vocabulary-introduction instruction. Teacher fallback no longer reads internal curriculum directives aloud. System prompt clarifies task-data boundaries and provides transferable examples for meaning, short answers and teacher questions.
+
+Experiments (all isolated Teacher calls on the configured OpenRouter model, not Pipecat or full Unit 1):
+
+| Run | Meaning clarification | Short response | Learner asks Luna |
+|---|---|---|---|
+| `teacher-context-before.json` | Explained city, then requested saying it | Accepted countryside and followed up | Fallback leaked internal activity instruction |
+| `teacher-context-after.json` | Still requested saying city | Redundantly asked whether learner lives there | Safe fallback, but no useful answer |
+| `teacher-context-diagnosis.json` | Still requested saying city | Redundant confirmation | Invented residence without pretend framing |
+| `teacher-context-revised.json` | Explained, then meaning-choice check | Acknowledged and asked about surroundings | Clearly framed pretend residence |
+| `teacher-context-revised-repeat.json` | Explained, then meaning-choice check | Connected follow-up about village/fields | Clearly framed pretend residence |
+
+All six outputs in the two revised runs used model generation; direct review found the three targeted behaviors followed. This tiny development sample does not establish broad accuracy, holdout performance or progression safety. Early experiments did not capture provider error provenance, so the cause of their fallback cannot be determined from those artifacts. The checked-in diagnostic script now captures safe provider errors and parsed model replies separately, resetting capture per request.
+
+Verification: new planner-context and fallback regressions were observed failing before implementation; full backend suite after fixes: 333 passed, 1 skipped (existing live test), two existing dependency deprecation warnings. The previous accepted Teacher prompt hash is historical; a new full behavioral baseline has not been accepted.
+
+Outstanding: actual Pipecat/Flows integration, text-delivery progress, complete source-data corrections, full pipeline baseline and iterative reruns remain required. Pipecat installation is running as tracked exec session 71516; do not launch a duplicate installer without checking its authoritative status.

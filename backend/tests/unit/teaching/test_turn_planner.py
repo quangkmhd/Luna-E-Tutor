@@ -54,3 +54,39 @@ async def test_planner_rejects_duplicate_turn_before_evaluation(state, unit_01):
     with pytest.raises(ValueError, match='duplicate'):
         await planner.plan(duplicate, 'I live in the city.', 'turn-7')
     assert evaluator.requests == []
+
+
+@pytest.mark.asyncio
+async def test_teacher_gets_prior_question_and_actual_next_activity_content(state, unit_01):
+    state = state.model_copy(update={'last_teacher_turn': 'Where do you live?'})
+    plan = await TurnPlanner(FakeEvaluator(result()), TeachingEngine(), unit_01).plan(
+        state, 'I live countryside', 'context-turn')
+    request = plan.teacher_request
+    assert request.previous_teacher_turn == 'Where do you live?'
+    assert request.activity_context.activity_id == plan.proposed_next_state.activity_id
+    assert request.activity_context.stage_id == plan.proposed_next_state.stage_id
+    activity = next(a for a in unit_01.activities
+                    if a.id == plan.proposed_next_state.activity_id)
+    assert request.activity_context.kind == activity.kind
+    assert request.activity_context.examples == tuple(activity.examples)
+    assert request.activity_context.objectives
+
+
+@pytest.mark.asyncio
+async def test_teacher_vocabulary_context_has_concrete_word_not_only_generic_instruction(unit_01):
+    from luna_tutor.domain.state import LessonState
+    state = LessonState(session_id='context', unit_id=unit_01.id, stage_id='lesson-01',
+                        activity_id='lesson-01.introduce-city',
+                        objective_id='unit01.lesson01.vocabulary.city',
+                        last_teacher_turn='City. City. What does city mean?')
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0,
+                              response_kind='asks_meaning', emotional_signals=[],
+                              objective_evidence=[], needs_clarification=False,
+                              ambiguity_reason=None)
+    plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
+        state, 'What does city mean?', 'meaning-context')
+    assert plan.teacher_request.activity_context.target_words == ('city',)
+    assert plan.teacher_request.activity_context.model_repetitions == 2
+    assert plan.teacher_request.activity_context.response_opportunity_required is True
+    assert 'Model city twice' not in plan.teacher_request.next_teaching_move
+    assert 'meaning' in plan.teacher_request.next_teaching_move.lower()

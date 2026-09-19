@@ -57,3 +57,16 @@ async def test_invalid_teacher_output_uses_plain_deterministic_fallback():
     assert utterance.spoken_text.count('?') <= 1
     assert 'repeat' not in utterance.spoken_text.casefold()
     assert 'I live in the countryside.' in utterance.spoken_text
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('action', ['answer_teacher_question', 'explain_meaning',
+                                  'acknowledge_and_continue', 'offer_support'])
+async def test_fallback_never_reads_internal_activity_instructions_to_learner(action):
+    internal = 'Record the opportunity as handled without claiming the learner asked.'
+    client = FakeClient({'unexpected': 'invalid structured response'})
+    utterance = await GeminiTeacher(client).respond(request(
+        feedback_action=action, corrected_form=None, next_teaching_move=internal))
+    assert utterance.generation_mode == 'fallback'
+    assert internal not in utterance.spoken_text
+    assert 'opportunity as handled' not in utterance.spoken_text

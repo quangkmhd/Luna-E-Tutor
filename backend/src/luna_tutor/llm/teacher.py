@@ -27,7 +27,7 @@ def _fallback(request: TeacherTurnRequest) -> TeacherUtterance:
     if request.feedback_action == 'recast' and request.corrected_form:
         text = f'Oh, {request.corrected_form}'
     elif request.feedback_action == 'explain_meaning':
-        text = request.next_teaching_move
+        text = 'Let us look at that together, Quang.'
     elif request.feedback_action == 'privacy_redirect':
         text = 'Please use a made-up phone number, or say the digits as words.'
     elif request.feedback_action == 'clarify':
@@ -37,9 +37,8 @@ def _fallback(request: TeacherTurnRequest) -> TeacherUtterance:
     elif request.emotional_support:
         text = 'That is okay, Quang. We can take it one small step at a time.'
     else:
-        text = request.next_teaching_move
-    # Deterministic requests are authored to be voice safe, but keep the
-    # fallback bounded even if a future curriculum string is too long.
+        text = 'Let us take a moment, Quang. We can try that together.'
+    # Activity instructions are internal directives, never learner-facing text.
     text = re.sub(r'[*_#`]', '', text).strip()
     if text.count('?') > request.constraints.max_questions:
         first, *_ = text.split('?', 1)
