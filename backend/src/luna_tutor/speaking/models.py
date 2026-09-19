@@ -80,6 +80,7 @@ class SpeakingState(StrictModel):
     difficulty_streak: int = 0
     word_evidence: tuple[WordUse, ...] = ()
     last_delivered_text: str = ''
+    opening_message: str = ''
 
     @classmethod
     def initial(cls, session_id: str, config: SessionConfig) -> 'SpeakingState':
@@ -91,3 +92,33 @@ class SpeakingState(StrictModel):
             'independent_streak': decision.independent_streak,
             'difficulty_streak': decision.difficulty_streak,
         })
+
+
+class Reply(StrictModel):
+    text: str = Field(min_length=1, max_length=500)
+    support_kind: str = 'none'
+
+
+class TurnResult(StrictModel):
+    state: SpeakingState
+    reply: Reply
+
+
+class Summary(StrictModel):
+    state: SpeakingState
+    independent: tuple[str, ...]
+    supported: tuple[str, ...]
+    unseen: tuple[str, ...]
+    next_practice: str
+
+
+class SuggestedWord(StrictModel):
+    word: str
+    meaning_vi: str
+    example: str
+
+
+class Suggestions(StrictModel):
+    topic: str
+    words: tuple[SuggestedWord, ...] = Field(max_length=8)
+    clarification: str | None = None
