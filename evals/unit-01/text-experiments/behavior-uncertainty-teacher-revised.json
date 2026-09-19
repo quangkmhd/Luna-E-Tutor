@@ -1,0 +1,297 @@
+{
+  "scope": "actual_pipecat_core_teacher_numbered_scenarios",
+  "pipecat_version": "1.8.1",
+  "hashes": {
+    "/home/quangnhvn34/dev/massko/E-Voice-Tutor-v1/.worktrees/luna-unit1/backend/src/luna_tutor/prompts/evaluator.md": "f2bfcc4b29354676a89a1fcbe2369d625124bf1f8d38a4aefe794771e4f383b4",
+    "/home/quangnhvn34/dev/massko/E-Voice-Tutor-v1/.worktrees/luna-unit1/backend/src/luna_tutor/prompts/teacher-system.md": "ae50a828c7079b48a9ca1b33e4967ddd9cce3ddb2a81a7633efe2e996a61caa2",
+    "/home/quangnhvn34/dev/massko/E-Voice-Tutor-v1/.worktrees/luna-unit1/evals/unit-01/development/numbered.yaml": "e5bea86c1b314ec00ba8c9931aea8e33bd63025c97bdc0653786cc5b446e6fe3"
+  },
+  "semantic_review": "pending",
+  "complete": true,
+  "records": [
+    {
+      "scenario_id": "station1-06",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-station1-06",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "lesson-01",
+        "activity_id": "lesson-01.introduce-countryside",
+        "objective_id": "unit01.lesson01.vocabulary.countryside",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "lesson-01.introduce-city",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.introduce-class",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.introduce-countryside",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 2,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "Countryside. Countryside. Your turn.",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "responds_to_meaning",
+        "uses_plain_spoken_text",
+        "continues_naturally"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_mode": "text_simulation_not_audio_validation",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "station1-06-0",
+          "state_version": 0,
+          "learner_text": "[uncertain transcript: countryside]",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "station1-06-0",
+            "state_version": 0,
+            "response_kind": "insufficient_data",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "uncertain",
+                "target_form_status": "uncertain",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": true,
+            "ambiguity_reason": "The transcript is marked uncertain."
+          },
+          "decision": {
+            "feedback_action": "clarify",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [],
+            "count_attempt": false
+          },
+          "teacher_request": {
+            "turn_id": "station1-06-0",
+            "feedback_action": "clarify",
+            "corrected_form": null,
+            "learner_meaning": "[uncertain transcript: countryside]",
+            "next_teaching_move": "The input is not reliable enough to assess. Ask one short question to confirm what Quang meant, using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation error, ask for imitation, or restart the activity introduction.",
+            "emotional_support": false,
+            "previous_teacher_turn": "Countryside. Countryside. Your turn.",
+            "activity_context": {
+              "stage_id": "lesson-01",
+              "activity_id": "lesson-01.introduce-countryside",
+              "kind": "vocabulary_introduction",
+              "objectives": [
+                "Vocabulary: countryside"
+              ],
+              "target_words": [
+                "countryside"
+              ],
+              "target_patterns": [],
+              "examples": [
+                "countryside"
+              ],
+              "model_repetitions": 2,
+              "response_opportunity_required": true,
+              "delivery_only": false
+            },
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-station1-06",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "lesson-01",
+            "activity_id": "lesson-01.introduce-countryside",
+            "objective_id": "unit01.lesson01.vocabulary.countryside",
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": true,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "lesson-01.introduce-city",
+                "status": "completed",
+                "attempt_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-01.introduce-class",
+                "status": "completed",
+                "attempt_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": false,
+                "feedback_delivered": false,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              },
+              {
+                "activity_id": "lesson-01.introduce-countryside",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "model_repetitions_delivered": 2,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up"
+            ],
+            "applied_turn_ids": [
+              "station1-06-0"
+            ],
+            "last_teacher_turn": "Countryside. Countryside. Your turn.",
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "Did you say countryside?",
+          "delivery_intent": "warm",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-station1-06",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.introduce-countryside",
+          "objective_id": "unit01.lesson01.vocabulary.countryside",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": true,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "lesson-01.introduce-city",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.introduce-class",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.introduce-countryside",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 2,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up"
+          ],
+          "applied_turn_ids": [
+            "station1-06-0"
+          ],
+          "last_teacher_turn": "Did you say countryside?",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [
+        "unapproved_transition"
+      ],
+      "latency_ms": 2742.255324003054
+    }
+  ]
+}

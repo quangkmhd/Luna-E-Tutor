@@ -4,7 +4,7 @@ from luna_tutor.curriculum.models import Activity, Objective, UnitCurriculum
 from luna_tutor.domain.decisions import (
     PlannedTurn, TeacherActivityContext, TeacherConstraints, TeacherTurnRequest,
 )
-from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult
+from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult, TranscriptStatus
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.domain.state import ActivityProgress, LessonState, ReviewItem
 
@@ -15,7 +15,8 @@ class TurnPlanner:
         self._engine = engine
         self._curriculum = curriculum
 
-    async def plan(self, state: LessonState, learner_text: str, turn_id: str) -> PlannedTurn:
+    async def plan(self, state: LessonState, learner_text: str, turn_id: str,
+                   *, transcript_status: TranscriptStatus = 'final') -> PlannedTurn:
         if turn_id in state.applied_turn_ids:
             raise ValueError('duplicate turn_id for this session state')
         redacted = redact_sensitive_contact(learner_text)
@@ -29,7 +30,7 @@ class TurnPlanner:
             active_objectives=[self._active_objective(objective_id)
                                for objective_id in activity.objective_ids],
             support_given=state.support_given,
-            transcript_status='final',
+            transcript_status=transcript_status,
             learner_transcript=redacted.text,
             recent_context=[],
             attempt_count=state.attempt_count,
@@ -109,6 +110,11 @@ class TurnPlanner:
     def _next_move_text(self, current: Activity, decision) -> str:
         if decision.feedback_action == 'privacy_redirect':
             return 'Ask Quang to use a made-up phone number or words instead of real digits.'
+        if decision.feedback_action == 'clarify':
+            return ('The input is not reliable enough to assess. Ask one short question to '
+                    'confirm what Quang meant, using the previous question for context. '
+                    'Do not treat a partial word as a successful answer, infer a pronunciation '
+                    'error, ask for imitation, or restart the activity introduction.')
         if decision.feedback_action == 'explain_meaning':
             return ('Explain the meaning Quang asked about with one concrete example. '
                     'Check understanding with one easy meaning question or choice; '

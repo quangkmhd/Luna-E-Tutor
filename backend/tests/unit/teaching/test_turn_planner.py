@@ -91,3 +91,24 @@ async def test_teacher_vocabulary_context_has_concrete_word_not_only_generic_ins
     assert plan.teacher_request.activity_context.response_opportunity_required is True
     assert 'Model city twice' not in plan.teacher_request.next_teaching_move
     assert 'meaning' in plan.teacher_request.next_teaching_move.lower()
+
+
+@pytest.mark.asyncio
+async def test_uncertain_input_is_preserved_through_service(state, unit_01):
+    from luna_tutor.teaching.turn_service import TurnService
+    from luna_tutor.domain.decisions import TeacherUtterance
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0,
+        response_kind='insufficient_data', emotional_signals=[], objective_evidence=[],
+        needs_clarification=True, ambiguity_reason='Input is uncertain.')
+    evaluator = FakeEvaluator(evidence)
+    class Teacher:
+        async def respond(self, request):
+            return TeacherUtterance(spoken_text='Did you mean the city or the countryside?',
+                                    delivery_intent='reassuring')
+    service = TurnService(TurnPlanner(evaluator, TeachingEngine(), unit_01), Teacher())
+    completed = await service.process(state, 'countryside', 'uncertain', transcript_status='uncertain')
+    assert evaluator.requests[0].transcript_status == 'uncertain'
+    assert completed.plan.decision.count_attempt is False
+    assert completed.plan.decision.progression_action == 'stay'
+    assert 'confirm' in completed.plan.teacher_request.next_teaching_move
+    assert 'Model' not in completed.plan.teacher_request.next_teaching_move

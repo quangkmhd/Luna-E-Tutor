@@ -1,6 +1,7 @@
 """Atomic in-memory orchestration; persistence is an outer adapter."""
 
 from luna_tutor.domain.decisions import CompletedTurn, TeacherUtterance
+from luna_tutor.domain.evidence import TranscriptStatus
 from luna_tutor.teaching.text_delivery import confirm_text_delivery
 
 
@@ -9,8 +10,10 @@ class TurnService:
         self._planner = planner
         self._teacher = teacher
 
-    async def process(self, state, learner_text: str, turn_id: str) -> CompletedTurn:
-        plan = await self._planner.plan(state, learner_text, turn_id)
+    async def process(self, state, learner_text: str, turn_id: str,
+                      *, transcript_status: TranscriptStatus = 'final') -> CompletedTurn:
+        metadata = {'transcript_status': transcript_status} if transcript_status != 'final' else {}
+        plan = await self._planner.plan(state, learner_text, turn_id, **metadata)
         utterance = await self._teacher.respond(plan.teacher_request)
         if not isinstance(utterance, TeacherUtterance):
             utterance = TeacherUtterance.model_validate(utterance)

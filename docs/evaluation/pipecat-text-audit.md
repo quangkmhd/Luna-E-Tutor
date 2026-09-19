@@ -72,3 +72,24 @@ Outstanding: actual Pipecat/Flows integration, text-delivery progress, complete 
 - Combined backend and Pipecat adapter suite: 344 passed, 1 skipped, two existing dependency warnings. Dedicated 1.11 installation still pending, and Flows/full-scenario acceptance remains incomplete.
 
 Limitations to audit next: receipts use observable lexical/question cues, not a semantic proof of correct teaching; the behavioral runner must check relevance and activity fit. Full-turn fallback progression, introduced-word reporting, vocabulary evidence classification, and end-to-end review/support behavior still need explicit coverage. Earlier prompt and curriculum baselines remain historical.
+
+## Numbered behavioral baseline and uncertainty correction
+
+- Replaced implicit scenario activity selection with explicit activity IDs, previous teacher turns and delivery/support fixtures for 40 numbered cases (10 warm-up + 30 station branches). These seeded states represent isolated branch tests, not proof of prior learning. Some cases are topic-preserving variants of the source, not literal transcript reproductions.
+- Removed the inherited `attempt_delta: 1` assertion. The behavioral runner now rejects unknown assertions and compares actual Engine actions/state; it executes Evaluator → Engine → Teacher inside Pipecat. Multi-turn cases carry actual resulting state and Teacher history. Failed execution stops that trajectory. Semantic criteria remain pending until reviewed.
+- `behavior-baseline.json` preserves 40 real-model outputs. Three cases failed one or more deterministic checks: warmup-05, station1-06, station2-10. The other 37 have no failures in the limited implemented checks; this is **not** a 37/40 pedagogical acceptance score.
+- Root cause for station1-06: scenario uncertainty was only reported in metadata, while Planner always passed `final` to Evaluator. Added optional typed transcript status across runner, Pipecat frame, service and planner. A regression first failed on the absent parameter. The real-model rerun in `behavior-uncertainty-revised.json` now clarifies, stays and does not consume an attempt.
+- New reproducible entry point: `scripts/eval-pipecat-text.py --env-file <path> --output <new-file> [--scenario <id>]`, using the voice/server Python environment. It refuses to overwrite prior runs, checkpoints each case and hashes code/prompts/content/data. It requires no STT or TTS.
+- Verification after this change: 351 tests passed, 1 skipped, two existing dependency deprecation warnings, using installed Pipecat 1.8.1 while dedicated 1.11 sync continues.
+
+### Review findings still open (do not conceal by relabelling gold)
+
+1. warmup-05 and station2-10 encode observed learner silence as `incomplete` transcript. That conflates a pedagogical no-response event with operational uncertainty. Source lines 85–94 call for a gentle choice after first silence; lines 534–548 call for an easier question after the second, preserving later review. Add an explicit simulated no-response event for text evaluation, with no claim to measure an eight-second audio timeout. Correct source context and expected effects alongside this feature. Do not treat typed `[silence]` as measured silence.
+2. Baseline station3-02 and station3-07 use “I live ...” without clearly pretend framing. The shared prompt rule needs to cover teacher-supplied practice examples as well as answers to personal questions.
+3. Baseline station3-10 offers “crowded; however, it is busy”, an incoherent contrast; structural output checks missed it. Add semantic criteria/contrast examples and rerun paraphrases.
+4. Baseline station2-08 asks for a made-up phone number. Source/spec privacy guidance must be reconciled with the existing planner directive; do not call this branch accepted merely because privacy redaction worked.
+5. Most state assertions still only check count_attempt. Add activity/progression/review assertions grounded in source rules. Full Unit 1 continuous journey, native Flows, browser live interaction and dedicated 1.11 validation remain pending.
+
+### Same branch, Teacher review after the routing fix
+
+The first uncertainty rerun's **decision** was correct, but its actual Teacher output was “Countryside. Let's say it together: countryside. How does that sound to you?” This still restarted imitation, so it was not pedagogically accepted. Added a dedicated clarification directive in Planner: confirm intended meaning, do not infer a pronunciation error or restart the introduction. A failing regression reproduced the conflicting generic activity directive before the fix. `behavior-uncertainty-teacher-revised.json` now says “Did you say countryside?”, with stay/no-attempt and model generation. This is one targeted success, not broad acceptance. Final suite for this slice: 351 passed, 1 skipped.

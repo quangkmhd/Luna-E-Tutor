@@ -1,218 +1,218 @@
 source_file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
 defaults:
   scenario: {rule_ids: [R06, R09, R13], branch_ids: [], state_snapshots: []}
-  initial_state: {activity_id: null, objective_id: null, attempt_count: 0, support: independent}
+  initial_state: {activity_id: null, objective_id: null, attempt_count: 0, support: independent, prior_activities_handled: true, response_opportunity_given: true}
   turn:
     evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: correct_target_form, recast_needed: false, emotional_signals: [], needs_clarification: false}
     allowed_feedback_actions: [acknowledge_and_continue]
     forbidden_behaviors: [forced_repetition, fabricated_pronunciation_claim, unapproved_transition]
-    expected_state_effects: {attempt_delta: 1}
+    expected_state_effects: {}
     teacher_criteria: [responds_to_meaning, uses_plain_spoken_text, continues_naturally]
 scenarios:
   - id: warmup-01
     source: {heading: "Kịch bản 1 — Học sinh vui vẻ, sẵn sàng học", line: 53, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R01, R02, R13]
-    turns: [{learner_text: "I'm great today!", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "I'm great today!", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: warmup-02
     source: {heading: "Kịch bản 2 — Học sinh trả lời ngắn, đúng", line: 61, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R07]
-    turns: [{learner_text: "Fine.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "Fine.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: warmup-03
     source: {heading: "Kịch bản 3 — Học sinh trả lời bằng tiếng Việt", line: 69, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R12]
-    turns: [{learner_text: "Con khỏe ạ.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "Con khỏe ạ.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: warmup-04
     source: {heading: "Kịch bản 4 — Học sinh nói I fine", line: 77, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R06]
-    turns: [{learner_text: "I fine.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "I fine.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [acknowledge_and_continue], teacher_criteria: [natural_greeting_recast, no_repetition_request, greeting_only]}]
   - id: warmup-05
     source: {heading: "Kịch bản 5 — Học sinh im lặng", line: 85, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R08, R09]
-    turns: [{learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, reassure]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, reassure]}]
   - id: warmup-06
     source: {heading: "Kịch bản 6 — Học sinh nói đang mệt", line: 95, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R11]
-    turns: [{learner_text: "I'm tired.", evaluator_gold: {emotional_signals: [tired]}, allowed_feedback_actions: [reassure]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "I'm tired.", evaluator_gold: {emotional_signals: [tired]}, allowed_feedback_actions: [reassure]}]
   - id: warmup-07
     source: {heading: "Kịch bản 7 — Học sinh có cảm xúc buồn", line: 103, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R11, R12]
-    turns: [{learner_text: "Con hơi buồn.", evaluator_gold: {target_form_status: not_used, emotional_signals: [sad]}, allowed_feedback_actions: [reassure]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "Con hơi buồn.", evaluator_gold: {target_form_status: not_used, emotional_signals: [sad]}, allowed_feedback_actions: [reassure]}]
   - id: warmup-08
     source: {heading: "Kịch bản 8 — Học sinh trả lời lạc đề", line: 111, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.hello, activity_completed: true, stage_id: warm-up}
     rule_ids: [R02, R11]
-    turns: [{teacher_turn: "Hello, Quang!", learner_text: "I played a game all night.", evaluator_gold: {response_kind: answer, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect, acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hello, Quang!", learner_text: "I played a game all night.", evaluator_gold: {response_kind: answer, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect, acknowledge_and_continue]}]
   - id: warmup-09
     source: {heading: "Kịch bản 9 — Học sinh kể quá nhiều ngay khi chào", line: 121, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R11, R17]
-    turns: [{learner_text: "I went to school and met my friends and then we played football for a long time.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue, redirect]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "I went to school and met my friends and then we played football for a long time.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue, redirect]}]
   - id: warmup-10
     source: {heading: "Kịch bản 10 — Buổi đầu tiên, Luna tự giới thiệu", line: 129, numbered: true}
-    initial_state: {stage_id: warm-up}
+    initial_state: {activity_id: warm-up.hello, activity_completed: true, stage_id: warm-up}
     rule_ids: [R01, R02]
-    turns: [{learner_text: "Hello, Luna.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hello, Quang!", learner_text: "Hello, Luna.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
 
   - id: station1-01
     source: {heading: "Trạm 1 — Kịch bản 1 — Học sinh đã biết bài và trả lời đầy đủ", line: 198, numbered: true}
     initial_state: {stage_id: lesson-01, activity_id: lesson-01.home, objective_id: unit01.lesson01.pattern.live_in}
     objective_ids: [unit01.lesson01.vocabulary.city, unit01.lesson01.vocabulary.class, unit01.lesson01.vocabulary.countryside, unit01.lesson01.pattern.class, unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "I'm in Class 5A and I live in the city.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Can you tell me about yourself?", learner_text: "I'm in Class 5A and I live in the city.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station1-02
     source: {heading: "Trạm 1 — Kịch bản 2 — Học sinh chưa biết nghĩa từ city", line: 212, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.city}
+    initial_state: {activity_id: lesson-01.introduce-city, model_repetitions_delivered: 2, stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.city}
     objective_ids: [unit01.lesson01.vocabulary.city]
     rule_ids: [R07, R12]
-    turns: [{learner_text: "What does city mean?", evaluator_gold: {response_kind: asks_meaning, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [explain_meaning]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "City. City. Do you know what city means?", learner_text: "What does city mean?", evaluator_gold: {response_kind: asks_meaning, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [explain_meaning]}]
   - id: station1-03
     source: {heading: "Trạm 1 — Kịch bản 3 — Học sinh trả lời đúng nhưng chỉ nói một từ", line: 224, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
+    initial_state: {activity_id: lesson-01.introduce-countryside, model_repetitions_delivered: 2, stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
     objective_ids: [unit01.lesson01.vocabulary.countryside]
     rule_ids: [R07]
-    turns: [{learner_text: "Countryside.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Where do you live?", learner_text: "Countryside.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station1-04
     source: {heading: "Trạm 1 — Kịch bản 4 — Học sinh trả lời sai nghĩa từ vựng", line: 238, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
+    initial_state: {activity_id: lesson-01.place-meaning, stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
     objective_ids: [unit01.lesson01.vocabulary.city, unit01.lesson01.vocabulary.countryside]
-    turns: [{learner_text: "Countryside means a place with many tall buildings.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What does countryside mean?", learner_text: "Countryside means a place with many tall buildings.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
   - id: station1-05
     source: {heading: "Trạm 1 — Kịch bản 5 — Học sinh nói sai ngữ pháp", line: 252, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
+    initial_state: {activity_id: lesson-01.home, stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
     objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "I live countryside.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Can you tell me about yourself?", learner_text: "I live countryside.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
   - id: station1-06
     source: {heading: "Trạm 1 — Kịch bản 6 — Học sinh phát âm từ mới chưa rõ", line: 264, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
+    initial_state: {activity_id: lesson-01.introduce-countryside, model_repetitions_delivered: 2, stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
     objective_ids: [unit01.lesson01.vocabulary.countryside]
     rule_ids: [R18, R19]
-    turns: [{learner_text: "[uncertain transcript: countryside]", transcript_status: uncertain, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Countryside. Countryside. Your turn.", learner_text: "[uncertain transcript: countryside]", transcript_status: uncertain, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
   - id: station1-07
     source: {heading: "Trạm 1 — Kịch bản 7 — Học sinh trả lời bằng tiếng Việt", line: 278, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
+    initial_state: {activity_id: lesson-01.home, stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
     objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "Con sống ở nông thôn.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Where do you live?", learner_text: "Con sống ở nông thôn.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station1-08
     source: {heading: "Trạm 1 — Kịch bản 8 — Học sinh nói lạc đề", line: 292, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
+    initial_state: {activity_id: lesson-01.home, stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
     objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{teacher_turn: "Where do you live?", learner_text: "My cat is orange.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Where do you live?", learner_text: "My cat is orange.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
   - id: station1-09
     source: {heading: "Trạm 1 — Kịch bản 9 — Học sinh nói quá dài", line: 304, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
+    initial_state: {activity_id: lesson-01.home, stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
     objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "I live in the city near a park and a school, and every day I see many buses and people.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Can you tell me about yourself?", learner_text: "I live in the city near a park and a school, and every day I see many buses and people.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station1-10
     source: {heading: "Trạm 1 — Kịch bản 10 — Học sinh im lặng hoặc mệt", line: 316, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in, attempt_count: 1}
+    initial_state: {activity_id: lesson-01.home, stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in, attempt_count: 1}
     objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "I'm tired and I don't know.", evaluator_gold: {response_kind: does_not_know, meaning_status: not_demonstrated, target_form_status: not_used, emotional_signals: [tired]}, allowed_feedback_actions: [reassure, offer_support]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Do you live in the city or the countryside?", learner_text: "I'm tired and I don't know.", evaluator_gold: {response_kind: does_not_know, meaning_status: not_demonstrated, target_form_status: not_used, emotional_signals: [tired]}, allowed_feedback_actions: [reassure, offer_support]}]
 
   - id: station2-01
     source: {heading: "Trạm 2 — Kịch bản 1 — Học sinh trả lời đúng và chủ động hỏi lại", line: 420, numbered: true}
-    initial_state: {stage_id: lesson-02, objective_id: unit01.lesson02.pattern.favourite}
+    initial_state: {activity_id: lesson-02.favourite-animal, stage_id: lesson-02, objective_id: unit01.lesson02.pattern.favourite}
     objective_ids: [unit01.lesson02.vocabulary.dolphin, unit01.lesson02.vocabulary.pink, unit01.lesson02.vocabulary.sandwich, unit01.lesson02.vocabulary.table_tennis, unit01.lesson02.pattern.favourite]
-    turns: [{learner_text: "My favourite animal is a dolphin. What's your favourite animal?", evaluator_gold: {response_kind: asks_teacher, target_form_status: valid_alternative}, allowed_feedback_actions: [answer_teacher_question]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "What's your favourite animal?", learner_text: "My favourite animal is a dolphin. What's your favourite animal?", evaluator_gold: {response_kind: asks_teacher, target_form_status: valid_alternative}, allowed_feedback_actions: [answer_teacher_question]}]
   - id: station2-02
     source: {heading: "Trạm 2 — Kịch bản 2 — Học sinh chưa biết nghĩa hobby", line: 434, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.vocabulary.hobby}
+    initial_state: {activity_id: level-02.introduce-hobby, model_repetitions_delivered: 2, stage_id: level-02, objective_id: unit01.level02.vocabulary.hobby}
     objective_ids: [unit01.level02.vocabulary.hobby]
-    turns: [{learner_text: "What is a hobby?", evaluator_gold: {response_kind: asks_meaning, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [explain_meaning]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hobby. Hobby. What is a hobby?", learner_text: "What is a hobby?", evaluator_gold: {response_kind: asks_meaning, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [explain_meaning]}]
   - id: station2-03
     source: {heading: "Trạm 2 — Kịch bản 3 — Học sinh trả lời đúng một từ", line: 448, numbered: true}
-    initial_state: {stage_id: lesson-02, objective_id: unit01.lesson02.vocabulary.pink}
+    initial_state: {activity_id: lesson-02.favourite-colour, stage_id: lesson-02, objective_id: unit01.lesson02.vocabulary.pink}
     objective_ids: [unit01.lesson02.vocabulary.pink]
-    turns: [{learner_text: "Pink.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What's your favourite colour?", learner_text: "Pink.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station2-04
     source: {heading: "Trạm 2 — Kịch bản 4 — Học sinh trả lời sai loại từ", line: 462, numbered: true}
-    initial_state: {stage_id: lesson-02, objective_id: unit01.lesson02.pattern.favourite}
+    initial_state: {activity_id: lesson-02.favourite-animal, stage_id: lesson-02, objective_id: unit01.lesson02.pattern.favourite}
     objective_ids: [unit01.lesson02.pattern.favourite]
-    turns: [{learner_text: "My favourite animal is pink.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: valid_alternative}, allowed_feedback_actions: [offer_support]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What's your favourite animal?", learner_text: "My favourite animal is pink.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: valid_alternative}, allowed_feedback_actions: [offer_support]}]
   - id: station2-05
     source: {heading: "Trạm 2 — Kịch bản 5 — Học sinh nói sai ngữ pháp về sở thích", line: 474, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
+    initial_state: {activity_id: level-02.hobby, stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "My hobby play table tennis.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What's your hobby?", learner_text: "My hobby play table tennis.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
   - id: station2-06
     source: {heading: "Trạm 2 — Kịch bản 6 — Học sinh nói sai ngữ pháp về sinh nhật", line: 486, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.birthday}
+    initial_state: {activity_id: level-02.birthday, stage_id: level-02, objective_id: unit01.level02.pattern.birthday}
     objective_ids: [unit01.level02.vocabulary.birthday, unit01.level02.pattern.birthday]
-    turns: [{learner_text: "My birthday on May.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "When's your birthday?", learner_text: "My birthday on May.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
   - id: station2-07
     source: {heading: "Trạm 2 — Kịch bản 7 — Học sinh trả lời bằng tiếng Việt", line: 498, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
+    initial_state: {activity_id: level-02.hobby, stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "Sở thích của con là bóng bàn.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What's your hobby?", learner_text: "Sở thích của con là bóng bàn.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station2-08
     source: {heading: "Trạm 2 — Kịch bản 8 — Học sinh nói thông tin không phù hợp an toàn", line: 510, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.vocabulary.phone_number}
+    initial_state: {activity_id: level-02.introduce-phone-number, model_repetitions_delivered: 2, stage_id: level-02, objective_id: unit01.level02.vocabulary.phone_number}
     objective_ids: [unit01.level02.vocabulary.phone_number, unit01.level02.vocabulary.subject]
     rule_ids: [R14]
-    turns: [{learner_text: "My phone number is 0912 345 678.", evaluator_gold: {response_kind: insufficient_data, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: true}, allowed_feedback_actions: [privacy_redirect]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "We are practising the words phone number. Please keep real numbers private. What words are we practising?", learner_text: "My phone number is 0912 345 678.", evaluator_gold: {response_kind: insufficient_data, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: true}, allowed_feedback_actions: [privacy_redirect]}]
   - id: station2-09
     source: {heading: "Trạm 2 — Kịch bản 9 — Học sinh nói rất dài", line: 522, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
+    initial_state: {activity_id: level-02.hobby, stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "My hobby is table tennis because I play with my dad after school and sometimes with my friends.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What's your hobby?", learner_text: "My hobby is table tennis because I play with my dad after school and sometimes with my friends.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station2-10
     source: {heading: "Trạm 2 — Kịch bản 10 — Học sinh im lặng hai lần", line: 534, numbered: true}
-    initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby, attempt_count: 1}
+    initial_state: {activity_id: level-02.hobby, stage_id: level-02, objective_id: unit01.level02.pattern.hobby, attempt_count: 1}
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, offer_support]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Is your hobby table tennis or drawing?", learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, offer_support]}]
 
   - id: station3-01
     source: {heading: "Trạm 3 — Kịch bản 1 — Học sinh dùng được câu nâng cao", line: 619, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
+    initial_state: {activity_id: level-03.contrast, stage_id: level-03, objective_id: unit01.level03.pattern.however}
     objective_ids: [unit01.level03.pattern.however, unit01.level03.vocabulary.crowded]
-    turns: [{learner_text: "I live in a big city; however, it is crowded.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What is your town like?", learner_text: "I live in a big city; however, it is crowded.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-02
     source: {heading: "Trạm 3 — Kịch bản 2 — Học sinh sống ở nông thôn", line: 631, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.describe_countryside}
+    initial_state: {activity_id: level-03.home-description, stage_id: level-03, objective_id: unit01.level03.pattern.describe_countryside}
     objective_ids: [unit01.level03.pattern.describe_countryside, unit01.level03.vocabulary.cottage, unit01.level03.vocabulary.calm]
-    turns: [{learner_text: "I live in the countryside. It is calm and the air is fresh.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What is your home like?", learner_text: "I live in the countryside. It is calm and the air is fresh.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-03
     source: {heading: "Trạm 3 — Kịch bản 3 — Học sinh chưa biết drawback", line: 643, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.vocabulary.drawback}
+    initial_state: {activity_id: level-03.introduce-drawback, model_repetitions_delivered: 2, stage_id: level-03, objective_id: unit01.level03.vocabulary.drawback}
     objective_ids: [unit01.level03.vocabulary.drawback]
-    turns: [{learner_text: "What does drawback mean?", evaluator_gold: {response_kind: asks_meaning, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [explain_meaning]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Drawback. Drawback. What is one drawback of your town?", learner_text: "What does drawback mean?", evaluator_gold: {response_kind: asks_meaning, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [explain_meaning]}]
   - id: station3-04
     source: {heading: "Trạm 3 — Kịch bản 4 — Học sinh dùng sai nghĩa traffic jam", line: 655, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.vocabulary.traffic_jam}
+    initial_state: {activity_id: level-03.use-traffic-jam, stage_id: level-03, objective_id: unit01.level03.vocabulary.traffic_jam}
     objective_ids: [unit01.level03.vocabulary.traffic_jam, unit01.level03.vocabulary.vehicles]
-    turns: [{learner_text: "A traffic jam means one fast car.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What does a traffic jam mean?", learner_text: "A traffic jam means one fast car.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
   - id: station3-05
     source: {heading: "Trạm 3 — Kịch bản 5 — Học sinh nói sai ngữ pháp", line: 667, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.moreover}
+    initial_state: {activity_id: level-03.addition, stage_id: level-03, objective_id: unit01.level03.pattern.moreover}
     objective_ids: [unit01.level03.pattern.moreover, unit01.level03.vocabulary.amusement_park]
-    turns: [{learner_text: "My town have good schools, moreover have amusement park.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What is good about your town, and what else does it have?", learner_text: "My town have good schools, moreover have amusement park.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
   - id: station3-06
     source: {heading: "Trạm 3 — Kịch bản 6 — Học sinh chỉ nói một từ", line: 679, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.vocabulary.pavement}
+    initial_state: {activity_id: level-03.use-pavement, stage_id: level-03, objective_id: unit01.level03.vocabulary.pavement}
     objective_ids: [unit01.level03.vocabulary.pavement]
-    turns: [{learner_text: "Pavement.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What do we call the place beside a road where people walk?", learner_text: "Pavement.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-07
     source: {heading: "Trạm 3 — Kịch bản 7 — Học sinh nói bằng tiếng Việt", line: 691, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.describe_countryside}
+    initial_state: {activity_id: level-03.home-description, stage_id: level-03, objective_id: unit01.level03.pattern.describe_countryside}
     objective_ids: [unit01.level03.pattern.describe_countryside]
-    turns: [{learner_text: "Con sống ở quê, ở đó rất yên bình.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "What is your home like?", learner_text: "Con sống ở quê, ở đó rất yên bình.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-08
     source: {heading: "Trạm 3 — Kịch bản 8 — Học sinh nói lạc đề", line: 703, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
+    initial_state: {activity_id: level-03.contrast, stage_id: level-03, objective_id: unit01.level03.pattern.however}
     objective_ids: [unit01.level03.pattern.however]
-    turns: [{teacher_turn: "Tell me about your city using however.", learner_text: "I like dolphins.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Tell me about your city using however.", learner_text: "I like dolphins.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
   - id: station3-09
     source: {heading: "Trạm 3 — Kịch bản 9 — Học sinh nói quá dài", line: 715, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.moreover}
+    initial_state: {activity_id: level-03.addition, stage_id: level-03, objective_id: unit01.level03.pattern.moreover}
     objective_ids: [unit01.level03.pattern.moreover]
-    turns: [{learner_text: "My town has schools, shops, a park, many people, buses, and moreover there is an amusement park near my home.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Tell me what your town has, and add another good thing.", learner_text: "My town has schools, shops, a park, many people, buses, and moreover there is an amusement park near my home.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-10
     source: {heading: "Trạm 3 — Kịch bản 10 — Học sinh mệt hoặc lặp lỗi hai lần", line: 727, numbered: true}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however, attempt_count: 1}
+    initial_state: {activity_id: level-03.contrast, stage_id: level-03, objective_id: unit01.level03.pattern.however, attempt_count: 1}
     objective_ids: [unit01.level03.vocabulary.crowded, unit01.level03.pattern.however]
-    turns: [{learner_text: "I'm tired. City crowded but I don't know.", evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true, emotional_signals: [tired]}, allowed_feedback_actions: [recast, reassure]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Is your city calm or crowded?", learner_text: "I'm tired. City crowded but I don't know.", evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true, emotional_signals: [tired]}, allowed_feedback_actions: [recast, reassure]}]

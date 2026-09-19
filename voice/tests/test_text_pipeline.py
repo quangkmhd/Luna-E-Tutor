@@ -76,3 +76,16 @@ def test_api_uses_pipeline_and_keeps_idempotency_and_history(tmp_path):
         assert duplicate.status_code == 200
         assert duplicate.json()['session']['state_version'] == 1
         assert len(duplicate.json()['session']['messages']) == 3
+
+
+@pytest.mark.asyncio
+async def test_pipeline_preserves_uncertainty_metadata():
+    from text_pipeline import PipecatTurnService
+    seen = []
+    class Service:
+        async def process(self, state, text, turn_id, *, transcript_status='final'):
+            seen.append(transcript_status)
+            return await FixtureTurnService().process(state, text, turn_id)
+    await PipecatTurnService(Service()).process(
+        initial_state(), 'countryside', 'uncertain', transcript_status='uncertain')
+    assert seen == ['uncertain']

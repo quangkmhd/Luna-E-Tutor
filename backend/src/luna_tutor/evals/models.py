@@ -18,6 +18,10 @@ class InitialScenarioState(Contract):
     objective_id: Identifier | None = None
     attempt_count: int = Field(default=0, ge=0, le=2)
     support: Literal['independent', 'hint', 'choices', 'starter', 'model'] = 'independent'
+    prior_activities_handled: bool = False
+    model_repetitions_delivered: int = Field(default=0, ge=0, le=2)
+    response_opportunity_given: bool = False
+    activity_completed: bool = False
 
 
 class EvaluatorGold(Contract):
