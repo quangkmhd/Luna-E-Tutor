@@ -167,3 +167,26 @@ async def test_recast_does_not_turn_child_fact_into_teacher_biography():
     result = await GeminiTeacher(client).respond(request(
         learner_meaning='My birthday on May.',corrected_form='My birthday is in May.'))
     assert result.generation_mode == 'fallback'
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(('correction', 'text', 'accepted'), [
+    ('My town has good schools; moreover, there is an amusement park.',
+     'Your town has good schools, and moreover, there is an amusement park!', True),
+    ('I am in Class 5B. I live in the city.',
+     "You live in the city, and you're in Class 5B!", True),
+    ("I'm in Class 5B.", 'You are in Class 5B!', True),
+    ('My town has good schools; moreover, there is an amusement park.',
+     'Your town have good schools; moreover, there is an amusement park!', False),
+    ('My town has good schools; moreover, there is an amusement park.',
+     'Your town has good schools!', False),
+    ('I am in Class 5B. I live in the city.',
+     "You're in Class 5A, and you live in the city!", False),
+])
+async def test_recast_allows_clause_variation_without_dropping_corrected_facts(correction, text, accepted):
+    client = FakeClient({'spoken_text': text, 'delivery_intent': 'warm', 'generation_mode': 'model'})
+    result = await GeminiTeacher(client).respond(request(corrected_form=correction))
+    assert (result.generation_mode == 'model') is accepted
+    if accepted:
+        assert result.spoken_text == text
+        assert len(client.calls) == 1

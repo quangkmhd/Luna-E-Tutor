@@ -20,9 +20,17 @@ _FORCED_REPEAT = re.compile(r'\b(repeat after me|say it again|repeat it)\b', re.
 
 
 def _contains_recast(text: str, correction: str) -> bool:
-    """Permit conversational person changes, preserving the corrected construction."""
+    """Check corrected clauses, allowing person, contraction and clause-boundary variation.
+
+    This lexical guard is not a semantic proof or a general paraphrase judge.
+    """
     def tokens(value):
-        return re.findall(r"\w+(?:'\w+)?", value.replace('’', "'").casefold())
+        normalized = value.replace('’', "'").casefold()
+        for short, full in {"you're": 'you are', "i'm": 'i am',
+                            "it's": 'it is', "there's": 'there is', "that's": 'that is',
+                            "we're": 'we are', "they're": 'they are'}.items():
+            normalized = re.sub(r'\b' + re.escape(short) + r'\b', full, normalized)
+        return re.findall(r"\w+(?:'\w+)?", normalized)
 
     reference = correction.replace('’', "'").casefold()
     addressed = reference
@@ -32,9 +40,11 @@ def _contains_recast(text: str, correction: str) -> bool:
     ):
         addressed = re.sub(pattern, replacement, addressed)
     spoken = tokens(text)
-    expected = tokens(addressed)
-    return bool(expected) and any(spoken[i:i + len(expected)] == expected
-                                  for i in range(len(spoken) - len(expected) + 1))
+    clauses = [tokens(clause) for clause in re.split(r'[.;!?]+', addressed) if tokens(clause)]
+    return bool(clauses) and all(
+        any(spoken[i:i + len(clause)] == clause
+            for i in range(len(spoken) - len(clause) + 1))
+        for clause in clauses)
 
 
 def teacher_output_issues(text: str, request: TeacherTurnRequest) -> list[str]:
