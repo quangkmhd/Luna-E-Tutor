@@ -83,3 +83,16 @@ async def test_runner_rejects_new_activity_without_response_opportunity():
     scenario=next(s for s in load_scenarios(ROOT/'evals/unit-01') if s.id=='regression-ask-hobby')
     records=await BehaviorRunner(ROOT,service).run([scenario])
     assert 'missing_response_opportunity' in records[0]['failures']
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(('scenario_id', 'failure'), [
+    ('free-review-traffic-topic', 'state:objective_id'),
+    ('free-review-spontaneous-word', 'state:review_queue_excludes'),
+])
+async def test_review_assertions_reject_fixture_that_never_selects_or_resolves_review(scenario_id, failure):
+    from luna_tutor.evals.behavior import BehaviorRunner
+    scenario = next(s for s in load_scenarios(ROOT / 'evals/unit-01') if s.id == scenario_id)
+    records = await BehaviorRunner(ROOT, FixtureTurnService()).run([scenario])
+    assert failure in records[0]['failures']
+    assert records[0]['initial_state']['review_queue'][0]['objective_id'] == 'unit01.level03.vocabulary.traffic_jam'

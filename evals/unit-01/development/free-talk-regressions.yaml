@@ -1,0 +1,52 @@
+source_file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+defaults:
+  scenario:
+    objective_ids: [unit01.level03.vocabulary.traffic_jam]
+    rule_ids: [R06, R07]
+    branch_ids: []
+    state_snapshots: []
+  initial_state:
+    stage_id: free-talk
+    activity_id: free-talk.conversation
+    prior_activities_handled: true
+    response_opportunity_given: true
+    review_queue:
+    - objective_id: unit01.level03.vocabulary.traffic_jam
+      difficulty: word_recall
+      learner_context: many cars move slowly near school
+  turn:
+    evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: not_used}
+    allowed_feedback_actions: [acknowledge_and_continue]
+    forbidden_behaviors: [forced_repetition, fabricated_pronunciation_claim]
+    expected_state_effects: {}
+    teacher_criteria: [stays_in_emma_role, follows_child_topic, does_not_announce_review]
+scenarios:
+- id: free-review-traffic-topic
+  source: {heading: 'Derived Free Talk: contextual vocabulary review', line: 746, numbered: false}
+  turns:
+  - teacher_turn: What is the road near your school like?
+    learner_text: Many cars move slowly near my school.
+    evaluator_gold: {meaning_status: not_demonstrated}
+    expected_state_effects:
+      objective_id: unit01.level03.vocabulary.traffic_jam
+      review_queue_contains: [unit01.level03.vocabulary.traffic_jam]
+    teacher_criteria: [stays_in_emma_role, follows_traffic_topic, invites_related_word_use_without_drilling]
+- id: free-review-spontaneous-word
+  source: {heading: 'Derived Free Talk: spontaneous word resolves review', line: 746, numbered: false}
+  turns:
+  - teacher_turn: How is the road near your school?
+    learner_text: There is often a traffic jam near my school.
+    expected_state_effects:
+      objective_id: null
+      review_queue_excludes: [unit01.level03.vocabulary.traffic_jam]
+    teacher_criteria: [acknowledges_traffic_fact, does_not_reask_word_just_used, stays_in_emma_role]
+- id: free-review-unrelated-waits
+  source: {heading: 'Derived Free Talk: unrelated review waits', line: 746, numbered: false}
+  turns:
+  - teacher_turn: What do you like doing after school?
+    learner_text: I play table tennis with my dad.
+    evaluator_gold: {meaning_status: not_demonstrated}
+    expected_state_effects:
+      objective_id: null
+      review_queue_contains: [unit01.level03.vocabulary.traffic_jam]
+    teacher_criteria: [follows_table_tennis_topic, does_not_force_traffic_topic, stays_in_emma_role]

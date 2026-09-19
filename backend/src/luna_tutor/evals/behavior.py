@@ -41,12 +41,13 @@ class BehaviorRunner:
             session_id=f'behavior-{scenario.id}', unit_id=self.curriculum.id,
             stage_id=activity.stage_id, activity_id=activity.id, objective_id=initial.objective_id,
             attempt_count=initial.attempt_count, completed_stage_ids=tuple(completed),
-            activity_progress=tuple(progress), last_teacher_turn=scenario.turns[0].teacher_turn,
+            activity_progress=tuple(progress), review_queue=tuple(initial.review_queue),
+            last_teacher_turn=scenario.turns[0].teacher_turn,
             support_given=SupportGiven(model_spoken_recently=initial.support == 'model',
                 choices_given=initial.support == 'choices', sentence_starter_given=initial.support == 'starter'))
 
     async def run(self, scenarios):
-        supported = {'count_attempt', 'stage_id', 'activity_id', 'progression_action', 'review_queue_contains'}
+        supported = {'count_attempt', 'stage_id', 'activity_id', 'progression_action', 'review_queue_contains', 'review_queue_excludes', 'objective_id'}
         for scenario in scenarios:
             for turn in scenario.turns:
                 unknown = set(turn.expected_state_effects) - supported
@@ -91,9 +92,12 @@ class BehaviorRunner:
                           'stage_id': completed.next_state.stage_id,
                           'activity_id': completed.next_state.activity_id,
                           'progression_action': decision.progression_action,
-                          'review_queue_contains': [i.objective_id for i in completed.next_state.review_queue]}
+                          'review_queue_contains': [i.objective_id for i in completed.next_state.review_queue],
+                          'review_queue_excludes': [i.objective_id for i in completed.next_state.review_queue],
+                          'objective_id': completed.next_state.objective_id}
                 for key, expected in turn.expected_state_effects.items():
                     matches = (set(expected) <= set(actual[key]) if key == 'review_queue_contains'
+                               else not set(expected) & set(actual[key]) if key == 'review_queue_excludes'
                                else expected == actual[key])
                     if not matches:
                         failures.append(f'state:{key}')

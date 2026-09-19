@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Self
 from pydantic import Field, model_validator
 
 from luna_tutor.domain.contracts import Contract, Identifier, SnapshotItems, Text, Version
-from luna_tutor.domain.evidence import EvaluatorResult
+from luna_tutor.domain.evidence import ActiveObjective, EvaluatorResult
 from luna_tutor.domain.privacy import SanitizedText
 from luna_tutor.domain.state import LessonState, ObjectiveProgress
 
@@ -65,6 +65,8 @@ class TeacherActivityContext(Contract):
     needs_response_invitation: bool = False
     response_opportunity_required: bool = False
     delivery_only: bool = False
+    role_name: Text | None = None
+    role_country: Text | None = None
 
 
 class TeacherTurnRequest(Contract):
@@ -76,6 +78,7 @@ class TeacherTurnRequest(Contract):
     emotional_support: bool = False
     previous_teacher_turn: Annotated[SanitizedText, Field(max_length=4000)] = ''
     activity_context: TeacherActivityContext | None = None
+    review_objective: ActiveObjective | None = None
     constraints: TeacherConstraints = Field(default_factory=TeacherConstraints)
 
     @model_validator(mode='after')

@@ -184,3 +184,48 @@ async def test_second_unresolved_response_records_actual_support_limit(state, un
                     if p.activity_id == state.activity_id)
     assert progress.status == 'support_limit_reached'
     assert plan.decision.support_limit_exit
+
+
+@pytest.mark.asyncio
+async def test_free_talk_passes_only_selected_review_and_clears_resolved_focus(free_state, unit_01):
+    from luna_tutor.domain.state import ReviewItem
+    home = 'unit01.lesson01.pattern.live_in'
+    traffic = 'unit01.level03.vocabulary.traffic_jam'
+    state = free_state.model_copy(update={'review_queue': (
+        ReviewItem(objective_id=traffic, difficulty='word_recall', learner_context='many cars slow'),)})
+    item = ObjectiveEvidence(objective_id=home, meaning_status='partially_satisfied',
+        target_form_status='not_used', evidence_quote='Many cars move slowly near my home.',
+        recast_needed=False, corrected_form=None)
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0, response_kind='answer',
+        emotional_signals=[], objective_evidence=[item], needs_clarification=False, ambiguity_reason=None)
+    plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
+        state, item.evidence_quote, 'traffic-topic')
+    assert plan.decision.next_objective_id == traffic
+    assert plan.teacher_request.review_objective.objective_id == traffic
+    assert 'traffic jam' in plan.teacher_request.review_objective.communicative_goal
+    assert plan.teacher_request.activity_context.objectives == ()
+
+    from luna_tutor.teaching.turn_service import TurnService
+    from luna_tutor.domain.decisions import TeacherUtterance
+    delivered = TurnService.complete(state, plan, TeacherUtterance(
+        spoken_text='Do you often see a traffic jam there?', delivery_intent='roleplay'))
+    assert delivered.next_state.support_given.model_spoken_recently
+    supplied = evidence.model_copy(update={'objective_evidence': [ObjectiveEvidence(
+        objective_id=traffic, meaning_status='satisfied', target_form_status='not_used',
+        evidence_quote='Traffic jam.', recast_needed=False, corrected_form=None)]})
+    supported = await TurnPlanner(FakeEvaluator(supplied), TeachingEngine(), unit_01).plan(
+        delivered.next_state, 'Traffic jam.', 'supported-word')
+    assert supported.decision.review_queue_remove == []
+    assert supported.proposed_next_state.objective_progress[-1].supported_uses == 1
+
+    state = free_state.model_copy(update={'objective_id': home, 'attempt_count': 1,
+        'review_queue': (ReviewItem(objective_id=home, difficulty='target_form'),)})
+    evidence = evidence.model_copy(update={'objective_evidence': [ObjectiveEvidence(
+        objective_id=home, meaning_status='satisfied', target_form_status='correct_target_form',
+        evidence_quote='I live in the city.', recast_needed=False, corrected_form=None)]})
+    plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
+        state, 'I live in the city.', 'home-resolved')
+    assert plan.proposed_next_state.objective_id is None
+    assert plan.proposed_next_state.attempt_count == 0
+    assert plan.teacher_request.review_objective is None
+    assert plan.proposed_next_state.review_queue == ()

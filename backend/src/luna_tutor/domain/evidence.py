@@ -27,6 +27,7 @@ class ActiveObjective(Contract):
     objective_id: Identifier
     communicative_goal: Text
     target_patterns: list[Text] = Field(default_factory=list)
+    target_words: list[Text] = Field(default_factory=list)
     acceptable_alternatives: list[Text] = Field(default_factory=list)
     evidence_criteria: Text
 

@@ -42,7 +42,7 @@ class TurnPlanner:
             evidence = await self._evaluator.evaluate(request)
         if evidence.turn_id != turn_id or evidence.state_version != state.state_version:
             raise ValueError('stale or uncorrelated evaluator result')
-        decision = self._engine.decide(planning_state, evidence, self._curriculum)
+        decision = self._engine.decide(planning_state, evidence, self._curriculum, learner_text=redacted.text)
         target_activity = next((item for item in self._curriculum.activities
                                 if item.id == decision.next_activity_id), activity)
         next_move = self._next_move_text(activity, decision, evidence)
@@ -65,6 +65,8 @@ class TurnPlanner:
             next_teaching_move=next_move,
             emotional_support=decision.emotional_support,
             previous_teacher_turn=state.last_teacher_turn,
+            review_objective=(self._active_objective(decision.next_objective_id)
+                              if target_activity.kind == 'roleplay' and decision.next_objective_id else None),
             activity_context=self._teacher_context(target_activity, state, enforce_delivery=(
                 target_activity.id != activity.id or decision.feedback_action not in {
                     'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'})),
@@ -82,8 +84,9 @@ class TurnPlanner:
         )
 
     def _teacher_context(self, activity: Activity, state=None, *, enforce_delivery=True) -> TeacherActivityContext:
+        stage = next(s for s in self._curriculum.stages if s.id == activity.stage_id)
         objectives = [item for item in self._curriculum.objectives
-                      if item.id in activity.objective_ids]
+                      if item.id in activity.objective_ids and stage.review is None]
         word_ids = {word for item in objectives for word in item.vocabulary_ids}
         pattern_ids = {pattern for item in objectives for pattern in item.pattern_ids}
         delivered = next((p for p in state.activity_progress if p.activity_id == activity.id), None) if state else None
@@ -93,6 +96,8 @@ class TurnPlanner:
                             and not (delivered and delivered.response_opportunity_given))
         return TeacherActivityContext(
             stage_id=activity.stage_id, activity_id=activity.id, kind=activity.kind,
+            role_name=stage.role.name if stage.role else None,
+            role_country=stage.role.country if stage.role else None,
             objectives=tuple(item.description for item in objectives),
             target_words=tuple(item.text for item in self._curriculum.vocabulary
                                if item.id in word_ids),
@@ -124,6 +129,7 @@ class TurnPlanner:
             objective_id=objective.id,
             communicative_goal=objective.description,
             target_patterns=target_patterns,
+            target_words=[w.text for w in self._curriculum.vocabulary if w.id in objective.vocabulary_ids],
             acceptable_alternatives=alternatives,
             evidence_criteria=objective.evidence_criteria,
         )
@@ -166,6 +172,14 @@ class TurnPlanner:
                     'exact short question Quang can ask you and invite him to use it. '
                     'Do not announce mastery or request the same answer again. Next activity: '
                     + target.instruction)
+        stage = next(s for s in self._curriculum.stages if s.id == current.stage_id)
+        if stage.review is not None and not decision.next_activity_id:
+            return ('Continue the role in activity_context naturally; do not announce the role again '
+                    'or end the scene. Respond to Quang and follow his current interest. '
+                    'If review_objective is present, weave just that one goal into a related question, '
+                    'without announcing a test or asking for a repeat. If absent, continue the '
+                    'conversation without inventing a review target. Keep support concrete and gentle '
+                    'when requested. Only an explicit end request closes the conversation.')
         if (decision.feedback_action == 'offer_support'
                 or decision.progression_action == 'reduce_difficulty'
                 or decision.support_limit_exit
@@ -220,10 +234,11 @@ class TurnPlanner:
         leaving = decision.progression_action in {
             'move_to_next_objective', 'move_to_next_stage', 'finish'}
         reached_limit = leaving and decision.support_limit_exit
+        is_review_stage = next(s for s in self._curriculum.stages if s.id == current.stage_id).review is not None
         progress[current.id] = old.model_copy(update={
             'status': ('support_limit_reached' if reached_limit else 'completed')
                       if leaving else 'in_progress',
-            'attempt_count': old.attempt_count + int(decision.count_attempt),
+            'attempt_count': 0 if is_review_stage else old.attempt_count + int(decision.count_attempt),
             'demonstrated_meaning_ids': tuple(sorted(set(old.demonstrated_meaning_ids) | {
                 item.objective_id for item in evidence.objective_evidence
                 if item.meaning_status == 'satisfied' and item.objective_id in current.objective_ids})),
@@ -239,10 +254,11 @@ class TurnPlanner:
         next_stage = decision.next_stage_id or state.stage_id
         next_activity = decision.next_activity_id or state.activity_id
         next_objective = decision.next_objective_id
-        if decision.progression_action == 'stay' and next_objective is None:
+        if decision.progression_action == 'stay' and next_objective is None and not is_review_stage:
             next_objective = state.objective_id
         next_status = 'completed' if decision.progression_action == 'finish' else state.status
-        next_attempt = 0 if leaving else state.attempt_count + int(decision.count_attempt)
+        focus_changed = is_review_stage and (next_objective is None or next_objective != state.objective_id)
+        next_attempt = 0 if leaving or focus_changed else state.attempt_count + int(decision.count_attempt)
         return state.model_copy(update={
             'state_version': state.state_version + 1,
             'stage_id': next_stage,

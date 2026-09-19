@@ -37,8 +37,12 @@ def confirm_text_delivery(plan: PlannedTurn, utterance: TeacherUtterance,
         'model_repetitions_delivered': min(2, old.model_repetitions_delivered + models),
         'response_opportunity_given': old.response_opportunity_given or opportunity,
     })
+    review_model = plan.teacher_request.review_objective
+    review_word_given = bool(review_model and any(
+        re.search(r'(?<!\w)' + re.escape(word.casefold()) + r'(?!\w)', text)
+        for word in review_model.target_words))
     support = SupportGiven(
-        model_spoken_recently=bool(models),
+        model_spoken_recently=bool(models) or review_word_given,
         choices_given=opportunity and ' or ' in text,
         sentence_starter_given=bool(re.search(r'\b(you can say|start with)\b', text)),
     )

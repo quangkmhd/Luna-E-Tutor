@@ -24,8 +24,19 @@ def _independent(state: LessonState) -> bool:
     return not (support.model_spoken_recently or support.choices_given or support.sentence_starter_given)
 
 
-def _english_success(item: ObjectiveEvidence) -> bool:
-    return item.meaning_status == 'satisfied' and item.target_form_status in _SUCCESSFUL_FORMS
+def _english_success(item: ObjectiveEvidence, curriculum: UnitCurriculum) -> bool:
+    if item.meaning_status != 'satisfied':
+        return False
+    if item.target_form_status in _SUCCESSFUL_FORMS:
+        return True
+    objective = next(o for o in curriculum.objectives if o.id == item.objective_id)
+    if objective.pattern_ids or item.target_form_status != 'not_used':
+        return False
+    # Vocabulary has no sentence-form target. Require the actual English word,
+    # so a Vietnamese explanation alone is not counted as English word use.
+    words = [w.text for w in curriculum.vocabulary if w.id in objective.vocabulary_ids]
+    return bool(words) and all(re.search(r'(?<!\w)' + re.escape(word) + r'(?!\w)',
+                                        item.evidence_quote or '', re.IGNORECASE) for word in words)
 
 
 def _progress(state: LessonState, activity: Activity) -> ActivityProgress:
@@ -46,7 +57,7 @@ def _ready_for_response(progress: ActivityProgress, activity: Activity) -> bool:
             and progress.model_repetitions_delivered >= rule.model_repetitions)
 
 
-def _record_evidence(state: LessonState, evidence: EvaluatorResult) -> tuple[list[ObjectiveProgress], list[str], list[str]]:
+def _record_evidence(state: LessonState, evidence: EvaluatorResult, curriculum: UnitCurriculum) -> tuple[list[ObjectiveProgress], list[str], list[str]]:
     previous = {item.objective_id: item for item in state.objective_progress}
     queued = {item.objective_id for item in state.review_queue}
     updates, add, remove = [], [], []
@@ -55,7 +66,7 @@ def _record_evidence(state: LessonState, evidence: EvaluatorResult) -> tuple[lis
         if item.meaning_status not in _KNOWN_MEANING:
             continue
         old = previous.get(item.objective_id, ObjectiveProgress(objective_id=item.objective_id))
-        english_use = _english_success(item)
+        english_use = _english_success(item, curriculum)
         unresolved_form = item.target_form_status == 'error_in_target_form'
         if unresolved_form:
             add.append(item.objective_id)
@@ -98,7 +109,8 @@ def _next_move(state: LessonState, curriculum: UnitCurriculum, stage: Stage,
         target = next(item for item in curriculum.activities
                       if item.stage_id == exit_id and item.required)
         return dict(progression_action='move_to_next_stage', next_stage_id=exit_id,
-                    next_activity_id=target.id, next_objective_id=next(iter(target.objective_ids), None))
+                    next_activity_id=target.id, next_objective_id=(None if target_stage.review else
+                                                               next(iter(target.objective_ids), None)))
     return dict(progression_action='stay')
 
 
@@ -107,17 +119,19 @@ def _tokens(text: str) -> set[str]:
 
 
 def _select_review(state: LessonState, evidence: EvaluatorResult, curriculum: UnitCurriculum,
-                   stage: Stage, excluded: set[str]) -> str | None:
+                   stage: Stage, excluded: set[str], learner_text: str = '') -> str | None:
     """Rank only contextually connected items, using the available typed data.
 
-    Context is the learner's evidence quotes, never the Teacher's last prompt.
+    Context is the learner's current text (or evidence quotes for older callers),
+    never the Teacher's last prompt. Topic relevance does not establish learning.
     Importance is required curriculum opportunity count; support prefers the
     lighter opportunity; recency prefers older applied turns. Curriculum order
     is a stable final tie break, independent of review queue insertion order.
     """
     if stage.review is None:
         return None
-    context = set().union(*(_tokens(item.evidence_quote or '') for item in evidence.objective_evidence))
+    context = (_tokens(learner_text) if learner_text else
+               set().union(*(_tokens(item.evidence_quote or '') for item in evidence.objective_evidence)))
     if not context:
         return None
     objectives = {item.id: item for item in curriculum.objectives}
@@ -155,7 +169,7 @@ class TeachingEngine:
     """Deterministic decisions over validated curriculum and session snapshots."""
 
     def decide(self, state: LessonState, evidence: EvaluatorResult,
-               curriculum: UnitCurriculum) -> TeachingDecision:
+               curriculum: UnitCurriculum, *, learner_text: str = '') -> TeachingDecision:
         # Safety short-circuits every teaching branch, including positive evidence.
         if state.stop_requested:
             return TeachingDecision(feedback_action='stop', progression_action='save_and_stop')
@@ -185,7 +199,7 @@ class TeachingEngine:
             return TeachingDecision(feedback_action='reassure' if emotion else 'acknowledge_and_continue',
                                     emotional_support=emotion, **move)
 
-        updates, add, remove = _record_evidence(state, evidence)
+        updates, add, remove = _record_evidence(state, evidence, curriculum)
         base = dict(mastery_updates=updates, review_queue_add=add, review_queue_remove=remove,
                     emotional_support=emotion)
         kind = evidence.response_kind
@@ -216,7 +230,7 @@ class TeachingEngine:
             return TeachingDecision(progression_action='stay', **base)
 
         if stage.review is not None:
-            return self._free_talk(state, evidence, curriculum, stage, activity, progress, base)
+            return self._free_talk(state, evidence, curriculum, stage, activity, progress, base, learner_text)
 
         if _handled(progress, activity):
             return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
@@ -281,22 +295,24 @@ class TeachingEngine:
     @staticmethod
     def _free_talk(state: LessonState, evidence: EvaluatorResult, curriculum: UnitCurriculum,
                    stage: Stage, activity: Activity, progress: ActivityProgress,
-                   base: dict) -> TeachingDecision:
+                   base: dict, learner_text: str = '') -> TeachingDecision:
         if _handled(progress, activity):
             return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
         excluded = set(base['review_queue_remove']) | set(base['review_queue_add'])
         limit = curriculum.teaching_policy.max_attempts
-        attempts = max(state.attempt_count, progress.attempt_count)
+        attempts = state.attempt_count
+        if base['feedback_action'] == 'offer_support' and not state.objective_id and evidence.response_kind == 'answer':
+            base['feedback_action'] = 'acknowledge_and_continue'
         if state.objective_id:
             count = attempts < limit
             base['count_attempt'] = count
-            successful = any(item.objective_id == state.objective_id and _english_success(item)
+            successful = any(item.objective_id == state.objective_id and _english_success(item, curriculum)
                              for item in evidence.objective_evidence)
             if not successful and attempts + int(count) >= limit:
                 if state.objective_id not in base['review_queue_add']:
                     base['review_queue_add'].append(state.objective_id)
                 excluded.add(state.objective_id)
         # Never prompt the learner to repeat evidence they just supplied.
-        excluded.update(item.objective_id for item in evidence.objective_evidence if _english_success(item))
-        selected = _select_review(state, evidence, curriculum, stage, excluded)
+        excluded.update(item.objective_id for item in evidence.objective_evidence if _english_success(item, curriculum))
+        selected = _select_review(state, evidence, curriculum, stage, excluded, learner_text)
         return TeachingDecision(progression_action='stay', next_objective_id=selected, **base)

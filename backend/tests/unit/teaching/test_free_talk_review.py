@@ -112,3 +112,31 @@ def test_free_talk_only_ends_on_explicit_completion_and_keeps_open_review(engine
     assert decision.next_stage_id == 'summary'
     assert decision.review_queue_remove == []
     assert state.review_queue == queue
+
+
+@pytest.mark.parametrize(('quote', 'supported', 'resolved'), [
+    ('There is a traffic jam near my school.', False, True),
+    ('Traffic jam.', True, False),
+    ('Đường bị tắc.', False, False),
+])
+def test_vocabulary_review_uses_english_word_evidence_without_requiring_sentence_form(
+        engine, free_state, evidence, unit_01, quote, supported, resolved):
+    state = free_state.model_copy(update={
+        'objective_id': TRAFFIC,
+        'support_given': SupportGiven(model_spoken_recently=supported),
+        'review_queue': (ReviewItem(objective_id=TRAFFIC, difficulty='word_recall'),)})
+    decision = engine.decide(state, evidence(objective_id=TRAFFIC, quote=quote, form='not_used'), unit_01)
+    assert (TRAFFIC in decision.review_queue_remove) is resolved
+    progress = decision.mastery_updates[0]
+    assert progress.independent_uses == int(resolved)
+    assert progress.supported_uses == int(supported)
+
+
+def test_review_can_follow_topic_without_claiming_objective_evidence(engine, free_state, evidence, unit_01):
+    state = free_state.model_copy(update={'review_queue': (
+        ReviewItem(objective_id=TRAFFIC, difficulty='word_recall', learner_context='many cars slow'),)})
+    decision = engine.decide(state, evidence(items=[]), unit_01,
+                             learner_text='Many cars move slowly near my school.')
+    assert decision.next_objective_id == TRAFFIC
+    assert decision.mastery_updates == []
+    assert decision.review_queue_remove == []

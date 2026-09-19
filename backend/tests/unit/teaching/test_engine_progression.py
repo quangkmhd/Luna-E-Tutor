@@ -118,6 +118,7 @@ def test_free_talk_requires_all_prerequisite_stages(engine, state, evidence, uni
     decision = engine.decide(ready, evidence(items=[], kind='asks_teacher'), unit_01)
     assert decision.progression_action == 'move_to_next_stage'
     assert decision.next_stage_id == 'free-talk'
+    assert decision.next_objective_id is None  # No arbitrary first-vocabulary review focus.
 
 
 @pytest.mark.parametrize(('activity', 'status', 'next_id'), [

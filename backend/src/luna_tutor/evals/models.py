@@ -3,6 +3,7 @@ from typing import Any, Literal
 from pydantic import Field, model_validator
 
 from luna_tutor.domain.contracts import Contract, Identifier, Text
+from luna_tutor.domain.state import ReviewItem
 
 
 class SourceRef(Contract):
@@ -22,6 +23,7 @@ class InitialScenarioState(Contract):
     model_repetitions_delivered: int = Field(default=0, ge=0, le=2)
     response_opportunity_given: bool = False
     activity_completed: bool = False
+    review_queue: list[ReviewItem] = Field(default_factory=list)
 
 
 class EvaluatorGold(Contract):
