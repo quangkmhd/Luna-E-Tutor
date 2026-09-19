@@ -59,3 +59,27 @@ async def test_failed_turn_does_not_fabricate_state_for_following_turn():
     assert records[0]['failures'] == ['turn_execution']
     assert records[0]['error']['type'] == 'ProviderError'
     assert 'completed_turn' not in records[0]
+
+
+@pytest.mark.asyncio
+async def test_runner_rejects_new_activity_without_response_opportunity():
+    from luna_tutor.evals.behavior import BehaviorRunner
+    from luna_tutor.domain.evidence import EvaluatorResult
+    from luna_tutor.domain.decisions import TeacherUtterance
+    from luna_tutor.teaching.engine import TeachingEngine
+    from luna_tutor.teaching.planner import TurnPlanner
+    from luna_tutor.teaching.turn_service import TurnService
+    from luna_tutor.curriculum.loader import load_unit
+    class Evaluator:
+        async def evaluate(self, request):
+            return EvaluatorResult(turn_id=request.turn_id,state_version=request.state_version,
+                response_kind='asks_teacher',emotional_signals=[],objective_evidence=[],
+                needs_clarification=False,ambiguity_reason=None)
+    class BadTeacher:
+        async def respond(self, request):
+            return TeacherUtterance(spoken_text='My hobby is reading. Cottage. Cottage.',delivery_intent='warm')
+    unit=load_unit(ROOT/'curriculum/grade-05/unit-01')
+    service=TurnService(TurnPlanner(Evaluator(),TeachingEngine(),unit),BadTeacher())
+    scenario=next(s for s in load_scenarios(ROOT/'evals/unit-01') if s.id=='regression-ask-hobby')
+    records=await BehaviorRunner(ROOT,service).run([scenario])
+    assert 'missing_response_opportunity' in records[0]['failures']

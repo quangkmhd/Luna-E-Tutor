@@ -64,6 +64,11 @@ When active_objectives is empty, classify a greeting, an emotion report, or a
 normal conversational contribution as `answer`. Reserve `off_topic` for content
 that is clearly unrelated to the teacher's current conversational turn; the
 absence of an academic objective does not by itself make a turn off topic.
+A definition question about a word is not a personal question, even when it is
+addressed to the teacher. “What is a hobby?” and “What is a library?” are
+`asks_meaning`; “What is your hobby?” and “Which library do you use?” are
+`asks_teacher`. The indefinite article a/an does not make a definition question
+personal. Decide this speech act before assessing objective evidence.
 Use `asks_meaning` for a direct request for a word/phrase definition (“What does
 X mean?”, “What is X?”, or “X nghĩa là gì?”). A direct request for the meaning
 of a supplied word is always `asks_meaning`, never `asks_teacher`. Use

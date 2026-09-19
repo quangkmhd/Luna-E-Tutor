@@ -8,6 +8,7 @@ import re
 from luna_tutor.domain.decisions import PlannedTurn, TeacherUtterance
 from luna_tutor.domain.evidence import SupportGiven
 from luna_tutor.domain.state import ActivityProgress
+from luna_tutor.domain.text_observations import observe_delivery
 
 
 def confirm_text_delivery(plan: PlannedTurn, utterance: TeacherUtterance,
@@ -29,12 +30,7 @@ def confirm_text_delivery(plan: PlannedTurn, utterance: TeacherUtterance,
                 plan.evidence.response_kind == 'asks_teacher'),
         })
     old = progress.get(context.activity_id, ActivityProgress(activity_id=context.activity_id))
-    counts = [len(re.findall(r'(?<!\w)' + re.escape(word.casefold()) + r'(?!\w)', text))
-              for word in context.target_words]
-    models = min(counts, default=0) if context.model_repetitions else 0
-    opportunity = ('?' in text or bool(re.search(r'\b(tell me|your turn|ask me|try saying)\b', text)))
-    if context.kind == 'ask_teacher':
-        opportunity = bool(re.search(r'\bask (me|luna)\b', text))
+    models, opportunity = observe_delivery(context, text)
     progress[context.activity_id] = old.model_copy(update={
         'status': 'completed' if context.delivery_only else (
             'in_progress' if old.status == 'not_started' else old.status),

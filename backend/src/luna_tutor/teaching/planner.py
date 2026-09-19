@@ -65,7 +65,9 @@ class TurnPlanner:
             next_teaching_move=next_move,
             emotional_support=decision.emotional_support,
             previous_teacher_turn=state.last_teacher_turn,
-            activity_context=self._teacher_context(target_activity),
+            activity_context=self._teacher_context(target_activity, state, enforce_delivery=(
+                target_activity.id != activity.id or decision.feedback_action not in {
+                    'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'})),
             constraints=TeacherConstraints(additional=(
                 'Never require Quang to repeat a correction.',
                 'Speak one short, natural turn without Markdown.',
@@ -79,11 +81,16 @@ class TurnPlanner:
             proposed_next_state=proposed,
         )
 
-    def _teacher_context(self, activity: Activity) -> TeacherActivityContext:
+    def _teacher_context(self, activity: Activity, state=None, *, enforce_delivery=True) -> TeacherActivityContext:
         objectives = [item for item in self._curriculum.objectives
                       if item.id in activity.objective_ids]
         word_ids = {word for item in objectives for word in item.vocabulary_ids}
         pattern_ids = {pattern for item in objectives for pattern in item.pattern_ids}
+        delivered = next((p for p in state.activity_progress if p.activity_id == activity.id), None) if state else None
+        remaining_models = max(0, activity.completion_rule.model_repetitions - (
+            delivered.model_repetitions_delivered if delivered else 0)) if enforce_delivery else 0
+        needs_invitation = (enforce_delivery and activity.completion_rule.response_opportunity_required
+                            and not (delivered and delivered.response_opportunity_given))
         return TeacherActivityContext(
             stage_id=activity.stage_id, activity_id=activity.id, kind=activity.kind,
             objectives=tuple(item.description for item in objectives),
@@ -93,6 +100,7 @@ class TurnPlanner:
                                   if item.id in pattern_ids),
             examples=tuple(activity.examples),
             model_repetitions=activity.completion_rule.model_repetitions,
+            remaining_model_repetitions=remaining_models, needs_response_invitation=needs_invitation,
             response_opportunity_required=activity.completion_rule.response_opportunity_required,
             delivery_only=activity.completion_rule.mode == 'delivered',
         )

@@ -124,3 +124,18 @@ async def test_free_talk_accepts_complete_unit1_objective_context(free_state, un
     expected = next(a for a in unit_01.activities if a.id == 'free-talk.conversation').objective_ids
     assert len(expected) == 27
     assert [o.objective_id for o in evaluator.requests[0].active_objectives] == expected
+
+
+def test_teacher_context_requires_only_undelivered_models(unit_01):
+    from luna_tutor.domain.state import LessonState, ActivityProgress
+    activity = next(a for a in unit_01.activities if a.id == 'lesson-01.introduce-city')
+    state = LessonState(session_id='delivery-state',unit_id=unit_01.id,stage_id=activity.stage_id,
+        activity_id=activity.id,activity_progress=(ActivityProgress(activity_id=activity.id,
+            model_repetitions_delivered=1,response_opportunity_given=False),))
+    planner = TurnPlanner(None,TeachingEngine(),unit_01)
+    context = planner._teacher_context(activity,state)
+    assert context.remaining_model_repetitions == 1
+    assert context.needs_response_invitation
+    explanation = planner._teacher_context(activity,state,enforce_delivery=False)
+    assert explanation.remaining_model_repetitions == 0
+    assert not explanation.needs_response_invitation

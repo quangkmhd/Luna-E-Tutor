@@ -60,7 +60,7 @@ async def run(label: str, env_file: Path | None):
                 learner_meaning=text, previous_teacher_turn=previous,
                 next_teaching_move=builder._next_move_text(activity, TeachingDecision(
                     feedback_action=action, progression_action='stay')),
-                activity_context=builder._teacher_context(activity))
+                activity_context=builder._teacher_context(activity, enforce_delivery=action not in {'explain_meaning', 'clarify'}))
             reply = await teacher.respond(request)
             records.append({'case': name, 'request': request.model_dump(mode='json'),
                             'output': reply.model_dump(mode='json'), **captured})

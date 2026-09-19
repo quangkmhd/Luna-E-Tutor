@@ -33,10 +33,10 @@ def request(**changes):
 
 @pytest.mark.asyncio
 async def test_teacher_receives_bounded_request_without_progression_authority():
-    client = FakeClient({'spoken_text': 'Oh, I live in the countryside. What do you like about it?',
+    client = FakeClient({'spoken_text': 'Oh, you live in the countryside. What do you like about it?',
                          'delivery_intent': 'encouraging', 'generation_mode': 'model'})
     utterance = await GeminiTeacher(client).respond(request())
-    assert utterance.spoken_text.startswith('Oh, I live')
+    assert utterance.spoken_text.startswith('Oh, you live')
     payload = json.loads(client.calls[0][0][1]['content'])
     assert payload['feedback_action'] == 'recast'
     assert payload['corrected_form'] == 'I live in the countryside.'
@@ -87,4 +87,82 @@ async def test_second_person_recast_still_requires_correct_target_form():
     client = FakeClient({'spoken_text': 'Oh, you live countryside! What do you like?',
                          'delivery_intent': 'warm', 'generation_mode': 'model'})
     result = await GeminiTeacher(client).respond(request())
+    assert result.generation_mode == 'fallback'
+
+
+@pytest.mark.asyncio
+async def test_teacher_repairs_two_questions_once_without_changing_teaching_request():
+    class SequenceClient(FakeClient):
+        async def structured_chat(self, messages, schema, request_id):
+            self.calls.append((messages, schema, request_id))
+            text = ('When is your birthday? Is it in May or June?' if len(self.calls) == 1
+                    else 'Is your birthday in May or June?')
+            return {'spoken_text': text, 'delivery_intent': 'warm', 'generation_mode': 'model'}
+    client = SequenceClient()
+    original = request(feedback_action='offer_support', corrected_form=None)
+    result = await GeminiTeacher(client).respond(original)
+    assert result.generation_mode == 'model'
+    assert result.spoken_text == 'Is your birthday in May or June?'
+    assert len(client.calls) == 2
+    repaired = json.loads(client.calls[1][0][1]['content'])
+    assert repaired.pop('validation_feedback')
+    assert repaired == original.model_dump(mode='json')
+
+
+@pytest.mark.asyncio
+async def test_teacher_repair_is_bounded():
+    client = FakeClient({'spoken_text': 'First question? Second question?',
+                         'delivery_intent': 'warm', 'generation_mode': 'model'})
+    result = await GeminiTeacher(client).respond(request(feedback_action='offer_support', corrected_form=None))
+    assert result.generation_mode == 'fallback'
+    assert len(client.calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_teacher_does_not_retry_provider_outage():
+    from luna_tutor.llm.openrouter import ProviderError
+    client = FakeClient(error=ProviderError(status_code=503, request_id='t', reason='unavailable'))
+    result = await GeminiTeacher(client).respond(request())
+    assert result.generation_mode == 'fallback'
+    assert len(client.calls) == 1
+
+
+@pytest.mark.asyncio
+async def test_new_word_must_have_pending_models_and_invitation():
+    from luna_tutor.domain.decisions import TeacherActivityContext
+    class SequenceClient(FakeClient):
+        async def structured_chat(self, messages, schema, request_id):
+            self.calls.append((messages, schema, request_id))
+            return {'spoken_text': ('Cottage. Cottage.' if len(self.calls) == 1
+                                    else 'Cottage. Cottage. Can you say cottage?'),
+                    'delivery_intent': 'warm', 'generation_mode': 'model'}
+    client = SequenceClient()
+    context = TeacherActivityContext(stage_id='level-03', activity_id='level-03.introduce-cottage',
+        kind='vocabulary_introduction',target_words=('cottage',),model_repetitions=2,
+        remaining_model_repetitions=2,needs_response_invitation=True)
+    result = await GeminiTeacher(client).respond(request(
+        feedback_action='answer_teacher_question',corrected_form=None,activity_context=context))
+    assert result.spoken_text.endswith('Can you say cottage?')
+    assert len(client.calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_new_word_question_must_invite_using_that_word():
+    from luna_tutor.domain.decisions import TeacherActivityContext
+    client = FakeClient({'spoken_text': 'Cottage. Cottage. What is near your home?',
+                         'delivery_intent': 'warm', 'generation_mode': 'model'})
+    context = TeacherActivityContext(stage_id='level-03',activity_id='level-03.introduce-cottage',
+        kind='vocabulary_introduction',target_words=('cottage',),model_repetitions=2,
+        remaining_model_repetitions=2,needs_response_invitation=True)
+    result = await GeminiTeacher(client).respond(request(
+        feedback_action='acknowledge_and_continue',corrected_form=None,activity_context=context))
+    assert result.generation_mode == 'fallback'
+
+
+@pytest.mark.asyncio
+async def test_recast_does_not_turn_child_fact_into_teacher_biography():
+    client = FakeClient({'spoken_text': 'My birthday is in May! What is your hobby?',
+                         'delivery_intent': 'warm', 'generation_mode': 'model'})
+    result = await GeminiTeacher(client).respond(request(
+        learner_meaning='My birthday on May.',corrected_form='My birthday is in May.'))
     assert result.generation_mode == 'fallback'

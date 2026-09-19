@@ -43,7 +43,7 @@ scenarios:
     stage_id: lesson-02
     activity_id: lesson-02.ask-luna
     objective_id: unit01.lesson02.pattern.favourite
-  objective_ids:
+  objective_ids: &id001
   - unit01.lesson02.pattern.favourite
   turns:
   - teacher_turn: Now it is your turn to ask me about my favourite animal.
@@ -131,3 +131,28 @@ scenarios:
     - acknowledges_class_and_home
     - does_not_require_city
     - moves_to_favourites
+- id: regression-ask-food-before-birthday
+  source:
+    heading: 'Derived native journey regression: question before birthday vocabulary'
+    line: 401
+    numbered: false
+  initial_state:
+    stage_id: lesson-03
+    activity_id: lesson-03.ask-luna
+    objective_id: unit01.lesson02.pattern.favourite
+  objective_ids: *id001
+  turns:
+  - teacher_turn: Now it is your turn to ask me a question about my favourite things.
+    learner_text: What's your favourite food?
+    evaluator_gold:
+      response_kind: asks_teacher
+    allowed_feedback_actions:
+    - answer_teacher_question
+    expected_state_effects:
+      count_attempt: false
+      activity_id: level-02.introduce-birthday
+    teacher_criteria:
+    - answers_food_question
+    - models_birthday_twice
+    - invites_saying_word_not_birth_month
+    - consistent_luna_profile

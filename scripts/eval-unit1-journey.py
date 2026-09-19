@@ -129,6 +129,7 @@ async def main(args):
                         "teacher_before": current["messages"][-1]["text"],
                         "input": text,
                         "status": response.status_code,
+                        "parsed_model_response_count": len(CapturingClient.parsed_outputs),
                     }
                     if response.status_code != 200:
                         record["error"] = response.json()

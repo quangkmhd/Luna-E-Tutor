@@ -117,7 +117,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model city twice, invite one response, wait, then give evidence-based feedback and bridge.
+  instruction: Model city twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge.
     After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
     accuracy from text.
   examples:
@@ -139,7 +139,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model class twice, invite one response, wait, then give evidence-based feedback and bridge.
+  instruction: Model class twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge.
     After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
     accuracy from text.
   examples:
@@ -161,7 +161,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model countryside twice, invite one response, wait, then give evidence-based feedback and
+  instruction: Model countryside twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and
     bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
     phoneme accuracy from text.
   examples:

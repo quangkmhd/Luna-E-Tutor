@@ -109,9 +109,23 @@ class BehaviorRunner:
                     failures.append('markdown')
                 if text.count('?') > completed.plan.teacher_request.constraints.max_questions:
                     failures.append('too_many_questions')
+                delivery_checks = []
+                if completed.next_state.activity_id != state.activity_id:
+                    target = next(a for a in self.curriculum.activities
+                                  if a.id == completed.next_state.activity_id)
+                    receipt = next((p for p in completed.next_state.activity_progress
+                                    if p.activity_id == target.id), None)
+                    if target.completion_rule.response_opportunity_required:
+                        delivery_checks.append('new_activity_response_opportunity')
+                        if receipt is None or not receipt.response_opportunity_given:
+                            failures.append('missing_response_opportunity')
+                    if target.completion_rule.model_repetitions:
+                        delivery_checks.append('new_activity_models')
+                        if receipt is None or receipt.model_repetitions_delivered < target.completion_rule.model_repetitions:
+                            failures.append('missing_models')
                 record['checked'] = ['feedback_action', *turn.expected_state_effects,
                                      'teacher_fallback', 'forced_repetition',
-                                     'pronunciation_claim', 'markdown', 'too_many_questions']
+                                     'pronunciation_claim', 'markdown', 'too_many_questions', *delivery_checks]
                 record['unmeasured_forbidden_behaviors'] = sorted(set(turn.forbidden_behaviors)
                     - {'forced_repetition', 'fabricated_pronunciation_claim'})
                 record['latency_ms'] = (time.perf_counter() - started) * 1000

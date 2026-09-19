@@ -131,7 +131,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model birthday twice, invite one response, wait, then give evidence-based feedback and
+  instruction: Model birthday twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and
     bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
     phoneme accuracy from text.
   examples:
@@ -153,7 +153,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model hobby twice, invite one response, wait, then give evidence-based feedback and bridge.
+  instruction: Model hobby twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge.
     After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
     accuracy from text.
   examples:
@@ -175,7 +175,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model phone number twice, invite one response, wait, then give evidence-based feedback
+  instruction: Model phone number twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback
     and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
     phoneme accuracy from text. Practise only the words or fictional examples; never ask for a real phone
     number.
@@ -198,7 +198,7 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model subject twice, invite one response, wait, then give evidence-based feedback and bridge.
+  instruction: Model subject twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge.
     After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
     accuracy from text.
   examples:
