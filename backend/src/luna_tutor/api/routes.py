@@ -6,7 +6,7 @@ from luna_tutor.api.schemas import (
     CreateSessionRequest, MessageView, SessionView, SummaryView, TurnRequest,
     TurnResponse, VersionRequest,
 )
-from luna_tutor.domain.state import LessonState
+from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
 from luna_tutor.storage.session_repository import (
     SessionNotFoundError, StateConflictError, StoredSession,
@@ -70,7 +70,9 @@ def build_router(repository, turn_service) -> APIRouter:
         session_id = str(uuid4())
         state = LessonState(
             session_id=session_id, unit_id='grade05.unit01', stage_id='warm-up',
-            activity_id='warm-up.hello', last_teacher_turn=GREETING)
+            activity_id='warm-up.hello', last_teacher_turn=GREETING,
+            activity_progress=(ActivityProgress(
+                activity_id='warm-up.hello', status='completed'),))
         return session_view(repository.create_session(state))
 
     @router.get('/sessions', response_model=list[SessionView])

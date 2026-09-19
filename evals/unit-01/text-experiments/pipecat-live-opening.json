@@ -1,0 +1,357 @@
+{
+  "scope": "live_sequential_opening_via_http_api_and_pipecat_not_full_unit",
+  "records": [
+    {
+      "input": null,
+      "session": {
+        "session_id": "3525424b-46ae-48b3-aa62-dd9946764e5e",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "warm-up",
+        "activity_id": "warm-up.hello",
+        "objective_id": null,
+        "status": "active",
+        "messages": [
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! I'm Luna. It's lovely to see you today!",
+            "turn_id": null,
+            "delivery_intent": null
+          }
+        ],
+        "review_queue": [],
+        "objective_progress": [],
+        "last_evidence": null,
+        "last_decision": null,
+        "summary": null
+      }
+    },
+    {
+      "input": "Hello Luna.",
+      "session": {
+        "session_id": "3525424b-46ae-48b3-aa62-dd9946764e5e",
+        "unit_id": "grade05.unit01",
+        "state_version": 1,
+        "stage_id": "warm-up",
+        "activity_id": "warm-up.feelings",
+        "objective_id": null,
+        "status": "active",
+        "messages": [
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! I'm Luna. It's lovely to see you today!",
+            "turn_id": null,
+            "delivery_intent": null
+          },
+          {
+            "role": "learner",
+            "text": "Hello Luna.",
+            "turn_id": "opening-0",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! How are you feeling today?",
+            "turn_id": "opening-0",
+            "delivery_intent": "warm"
+          }
+        ],
+        "review_queue": [],
+        "objective_progress": [],
+        "last_evidence": {
+          "turn_id": "opening-0",
+          "state_version": 0,
+          "response_kind": "answer",
+          "emotional_signals": [],
+          "objective_evidence": [],
+          "needs_clarification": false,
+          "ambiguity_reason": null
+        },
+        "last_decision": {
+          "feedback_action": "acknowledge_and_continue",
+          "progression_action": "move_to_next_objective",
+          "corrected_form": null,
+          "emotional_support": false,
+          "next_objective_id": null,
+          "next_activity_id": "warm-up.feelings",
+          "next_stage_id": null,
+          "review_queue_add": [],
+          "review_queue_remove": [],
+          "mastery_updates": [],
+          "count_attempt": false
+        },
+        "summary": null
+      }
+    },
+    {
+      "input": "I'm fine.",
+      "session": {
+        "session_id": "3525424b-46ae-48b3-aa62-dd9946764e5e",
+        "unit_id": "grade05.unit01",
+        "state_version": 2,
+        "stage_id": "warm-up",
+        "activity_id": "warm-up.start",
+        "objective_id": null,
+        "status": "active",
+        "messages": [
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! I'm Luna. It's lovely to see you today!",
+            "turn_id": null,
+            "delivery_intent": null
+          },
+          {
+            "role": "learner",
+            "text": "Hello Luna.",
+            "turn_id": "opening-0",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! How are you feeling today?",
+            "turn_id": "opening-0",
+            "delivery_intent": "warm"
+          },
+          {
+            "role": "learner",
+            "text": "I'm fine.",
+            "turn_id": "opening-1",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "I am so glad to hear that. Let us start our first lesson together!",
+            "turn_id": "opening-1",
+            "delivery_intent": "warm"
+          }
+        ],
+        "review_queue": [],
+        "objective_progress": [],
+        "last_evidence": {
+          "turn_id": "opening-1",
+          "state_version": 1,
+          "response_kind": "answer",
+          "emotional_signals": [],
+          "objective_evidence": [],
+          "needs_clarification": false,
+          "ambiguity_reason": null
+        },
+        "last_decision": {
+          "feedback_action": "acknowledge_and_continue",
+          "progression_action": "move_to_next_objective",
+          "corrected_form": null,
+          "emotional_support": false,
+          "next_objective_id": null,
+          "next_activity_id": "warm-up.start",
+          "next_stage_id": null,
+          "review_queue_add": [],
+          "review_queue_remove": [],
+          "mastery_updates": [],
+          "count_attempt": false
+        },
+        "summary": null
+      }
+    },
+    {
+      "input": "Let's start.",
+      "session": {
+        "session_id": "3525424b-46ae-48b3-aa62-dd9946764e5e",
+        "unit_id": "grade05.unit01",
+        "state_version": 3,
+        "stage_id": "lesson-01",
+        "activity_id": "lesson-01.introduce-city",
+        "objective_id": "unit01.lesson01.vocabulary.city",
+        "status": "active",
+        "messages": [
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! I'm Luna. It's lovely to see you today!",
+            "turn_id": null,
+            "delivery_intent": null
+          },
+          {
+            "role": "learner",
+            "text": "Hello Luna.",
+            "turn_id": "opening-0",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! How are you feeling today?",
+            "turn_id": "opening-0",
+            "delivery_intent": "warm"
+          },
+          {
+            "role": "learner",
+            "text": "I'm fine.",
+            "turn_id": "opening-1",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "I am so glad to hear that. Let us start our first lesson together!",
+            "turn_id": "opening-1",
+            "delivery_intent": "warm"
+          },
+          {
+            "role": "learner",
+            "text": "Let's start.",
+            "turn_id": "opening-2",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "City. City. Can you say city?",
+            "turn_id": "opening-2",
+            "delivery_intent": "warm"
+          }
+        ],
+        "review_queue": [],
+        "objective_progress": [],
+        "last_evidence": {
+          "turn_id": "opening-2",
+          "state_version": 2,
+          "response_kind": "answer",
+          "emotional_signals": [],
+          "objective_evidence": [],
+          "needs_clarification": false,
+          "ambiguity_reason": null
+        },
+        "last_decision": {
+          "feedback_action": "acknowledge_and_continue",
+          "progression_action": "move_to_next_stage",
+          "corrected_form": null,
+          "emotional_support": false,
+          "next_objective_id": "unit01.lesson01.vocabulary.city",
+          "next_activity_id": "lesson-01.introduce-city",
+          "next_stage_id": "lesson-01",
+          "review_queue_add": [],
+          "review_queue_remove": [],
+          "mastery_updates": [],
+          "count_attempt": false
+        },
+        "summary": null
+      }
+    },
+    {
+      "input": "City.",
+      "session": {
+        "session_id": "3525424b-46ae-48b3-aa62-dd9946764e5e",
+        "unit_id": "grade05.unit01",
+        "state_version": 4,
+        "stage_id": "lesson-01",
+        "activity_id": "lesson-01.introduce-class",
+        "objective_id": "unit01.lesson01.vocabulary.class",
+        "status": "active",
+        "messages": [
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! I'm Luna. It's lovely to see you today!",
+            "turn_id": null,
+            "delivery_intent": null
+          },
+          {
+            "role": "learner",
+            "text": "Hello Luna.",
+            "turn_id": "opening-0",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "Hello, Quang! How are you feeling today?",
+            "turn_id": "opening-0",
+            "delivery_intent": "warm"
+          },
+          {
+            "role": "learner",
+            "text": "I'm fine.",
+            "turn_id": "opening-1",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "I am so glad to hear that. Let us start our first lesson together!",
+            "turn_id": "opening-1",
+            "delivery_intent": "warm"
+          },
+          {
+            "role": "learner",
+            "text": "Let's start.",
+            "turn_id": "opening-2",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "City. City. Can you say city?",
+            "turn_id": "opening-2",
+            "delivery_intent": "warm"
+          },
+          {
+            "role": "learner",
+            "text": "City.",
+            "turn_id": "opening-3",
+            "delivery_intent": null
+          },
+          {
+            "role": "teacher",
+            "text": "City! Now let us try class. Class. Class. Can you say class?",
+            "turn_id": "opening-3",
+            "delivery_intent": "warm"
+          }
+        ],
+        "review_queue": [],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson01.vocabulary.city",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": false
+          }
+        ],
+        "last_evidence": {
+          "turn_id": "opening-3",
+          "state_version": 3,
+          "response_kind": "answer",
+          "emotional_signals": [],
+          "objective_evidence": [
+            {
+              "objective_id": "unit01.lesson01.vocabulary.city",
+              "meaning_status": "satisfied",
+              "target_form_status": "not_used",
+              "evidence_quote": "City.",
+              "recast_needed": false,
+              "corrected_form": null
+            }
+          ],
+          "needs_clarification": false,
+          "ambiguity_reason": null
+        },
+        "last_decision": {
+          "feedback_action": "acknowledge_and_continue",
+          "progression_action": "move_to_next_objective",
+          "corrected_form": null,
+          "emotional_support": false,
+          "next_objective_id": "unit01.lesson01.vocabulary.class",
+          "next_activity_id": "lesson-01.introduce-class",
+          "next_stage_id": null,
+          "review_queue_add": [],
+          "review_queue_remove": [],
+          "mastery_updates": [
+            {
+              "objective_id": "unit01.lesson01.vocabulary.city",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            }
+          ],
+          "count_attempt": true
+        },
+        "summary": null
+      }
+    }
+  ]
+}

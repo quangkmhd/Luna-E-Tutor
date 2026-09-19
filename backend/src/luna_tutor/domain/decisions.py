@@ -61,6 +61,7 @@ class TeacherActivityContext(Contract):
     examples: SnapshotItems[Text] = ()
     model_repetitions: int = Field(default=0, ge=0, le=2)
     response_opportunity_required: bool = False
+    delivery_only: bool = False
 
 
 class TeacherTurnRequest(Contract):

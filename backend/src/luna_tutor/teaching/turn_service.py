@@ -1,6 +1,7 @@
 """Atomic in-memory orchestration; persistence is an outer adapter."""
 
 from luna_tutor.domain.decisions import CompletedTurn, TeacherUtterance
+from luna_tutor.teaching.text_delivery import confirm_text_delivery
 
 
 class TurnService:
@@ -13,6 +14,7 @@ class TurnService:
         utterance = await self._teacher.respond(plan.teacher_request)
         if not isinstance(utterance, TeacherUtterance):
             utterance = TeacherUtterance.model_validate(utterance)
+        plan = confirm_text_delivery(plan, utterance, state.activity_id)
         next_state = plan.proposed_next_state.model_copy(update={
             'last_teacher_turn': utterance.spoken_text,
         })

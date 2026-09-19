@@ -61,3 +61,14 @@ Outstanding: actual Pipecat/Flows integration, text-delivery progress, complete 
 - Added an explicit next-move instruction when Engine enters `ask_teacher`: invite the learner to ask, then wait; do not answer yet. This retains curriculum topic data and changes no transition policy. Added a transferable hobby example in the shared prompt.
 - `pipecat-live-role-handover.json`: both live outputs now recast naturally and invite Quang to ask where Luna lives. Both used model generation. This proves only the targeted single-turn behavior, not all activities or a multi-turn journey.
 - Latest core suite: 335 passed, 1 skipped; four Pipecat adapter tests passed on the locally installed 1.8.1. Full 1.11 verification, Flows, delivery progress and the full scenario loop remain open.
+
+## Text delivery and sequential opening
+
+- Added `confirm_text_delivery` to the text TurnService. The completed, validated Teacher text refines the uncommitted proposal with observable target-word occurrences, response invitation, support and feedback. Repository persistence remains atomic. This is text delivery only, not evidence of spoken playback.
+- Counts target words actually present, caps model exposure at two, records no delivery for fallback, and attributes feedback to the activity the learner answered rather than the newly introduced activity. An `ask_teacher` invitation requires an explicit invitation to ask Luna, not any question mark.
+- Session creation now records that its authored greeting is available in the stored/displayed transcript. Without this receipt the Engine stayed at the greeting forever.
+- New regressions reproduced missing model/opportunity receipts and feedback incorrectly assigned to the next word; after correction a real two-turn Planner/Engine/Teacher service sequence moves city → class.
+- `pipecat-live-opening.json` is a sequential real-model HTTP + Pipecat experiment: Hello → warm-up.feelings; fine → warm-up.start; start → lesson-01.introduce-city; City → lesson-01.introduce-class. Each response used the state returned by the previous API call. No fixture shortcut or manual state advance was used.
+- Combined backend and Pipecat adapter suite: 344 passed, 1 skipped, two existing dependency warnings. Dedicated 1.11 installation still pending, and Flows/full-scenario acceptance remains incomplete.
+
+Limitations to audit next: receipts use observable lexical/question cues, not a semantic proof of correct teaching; the behavioral runner must check relevance and activity fit. Full-turn fallback progression, introduced-word reporting, vocabulary evidence classification, and end-to-end review/support behavior still need explicit coverage. Earlier prompt and curriculum baselines remain historical.

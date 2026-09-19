@@ -80,6 +80,7 @@ class TurnPlanner:
             examples=tuple(activity.examples),
             model_repetitions=activity.completion_rule.model_repetitions,
             response_opportunity_required=activity.completion_rule.response_opportunity_required,
+            delivery_only=activity.completion_rule.mode == 'delivered',
         )
 
     def _activity(self, state: LessonState) -> Activity:
