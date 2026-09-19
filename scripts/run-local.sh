@@ -3,8 +3,12 @@ set -euo pipefail
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 env_args=()
-if [[ -f "$project_root/.env" ]]; then
-  env_args=(--env-file "$project_root/.env")
+env_file="$project_root/.env"
+if [[ ! -f "$env_file" ]]; then
+  env_file="/home/quangnhvn34/dev/massko/E-Voice-Tutor-v1/.env"
+fi
+if [[ -f "$env_file" ]]; then
+  env_args=(--env-file "$env_file")
 fi
 
 cleanup() {
