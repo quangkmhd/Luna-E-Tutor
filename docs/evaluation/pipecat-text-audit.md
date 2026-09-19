@@ -117,3 +117,13 @@ Already observed before completion:
 - Lesson 3 introductions accepted class/countryside evidence but still returned offer_support/stay because primary objective defaults to the first vocabulary entry (`city`). This wrongly disfavors countryside despite source acceptance. Review multi-objective activity success semantics; do not merely change the simulated child to live in a city.
 - Some introductions/guided responses lacked sufficient delivered-model/opportunity receipts, causing another turn despite correct answers. Inspect actual words and receipt rules before loosening gates.
 - These are failures discovered by sequential testing even though many single-case checks passed. Preserve the baseline before fixes.
+
+### Full journey baseline reached Free Talk and exposed a hard failure
+
+The baseline completed 55 HTTP teaching turns, entering `free-talk.conversation`. The next learner turn raised `EvaluatorRequest.active_objectives` validation: the request limit was 20, but the authored Free Talk activity contains 27 objectives. The checkpoint remains `complete: false`, faithfully reflecting the terminated experiment; Free Talk output and finishing were not verified. Also observed: unframed invented biography and the malformed prompt “Can you say calm, cottage?”. Reaching a stage does not establish teaching quality.
+
+A regression using the **actual complete Unit 1 Free Talk activity** reproduced the request failure. Raised the finite context bound to 64 so all 27 authored objectives fit without silently discarding targets. The targeted planner suite now passes 6 tests. Full-journey rerun is active as exec session **98984**, checkpoint `pipecat-full-journey-capacity-revised.json`; do not restart solely because a turn yields. The diagnostic script now records safe exception type/activity if it fails.
+
+Dedicated Pipecat 1.11 dependency sync has now completed successfully (installer 71516 exited 0). First full test invocation in that environment exposed a missing **test dependency** (`respx_mock` fixture), not teaching failures: 275 passed, 82 setup errors. Added `respx` to voice/server dev dependencies and reran the full suite. Existing in-flight full-journey capacity rerun remains on 1.8.1; future live runs should use `voice/server/.venv/bin/python` directly without a site-packages fallback.
+
+Verified dedicated **Pipecat 1.11.0** environment: `voice/server/.venv/bin/python -m pytest backend/tests voice/tests -q` → **357 passed, 1 skipped**, one existing dependency warning. This replaces provisional version coverage for automated tests; live 1.11 behavioral experiments and native Flows remain required.

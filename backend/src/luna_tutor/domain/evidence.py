@@ -41,7 +41,8 @@ class EvaluatorRequest(Contract):
     state_version: Version
     teacher_turn: Annotated[SanitizedText, Field(max_length=4000)]
     activity_type: Text
-    active_objectives: list[ActiveObjective] = Field(max_length=20)
+    # Unit 1 Free Talk revisits all 27 objectives; keep a finite unit-sized bound.
+    active_objectives: list[ActiveObjective] = Field(max_length=64)
     support_given: SupportGiven
     transcript_status: TranscriptStatus
     input_event: InputEvent = 'transcript'

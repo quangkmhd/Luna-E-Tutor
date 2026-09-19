@@ -49,7 +49,12 @@ async def main(args):
       payload['stopped']='activity_stalled:'+aid;break
      if '.introduce-' in aid: text=aid.split('.introduce-')[1].replace('-',' ')
      else: text=ANSWERS[aid]
-     response=await api.post(f"/api/sessions/{current['session_id']}/turns",json={'turn_id':f'journey-{i}','expected_state_version':current['state_version'],'learner_text':text})
+     try:
+      response=await api.post(f"/api/sessions/{current['session_id']}/turns",json={'turn_id':f'journey-{i}','expected_state_version':current['state_version'],'learner_text':text})
+     except Exception as error:
+      payload['stopped']='execution_error'
+      payload['error']={'type':type(error).__name__, 'activity_id':aid}
+      break
      record={'activity_before':aid,'teacher_before':current['messages'][-1]['text'],'input':text,'status':response.status_code}
      if response.status_code!=200:
       record['error']=response.json();payload['records'].append(record);payload['stopped']='request_error';break

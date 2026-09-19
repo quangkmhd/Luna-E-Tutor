@@ -112,3 +112,15 @@ async def test_uncertain_input_is_preserved_through_service(state, unit_01):
     assert completed.plan.decision.progression_action == 'stay'
     assert 'confirm' in completed.plan.teacher_request.next_teaching_move
     assert 'Model' not in completed.plan.teacher_request.next_teaching_move
+
+
+@pytest.mark.asyncio
+async def test_free_talk_accepts_complete_unit1_objective_context(free_state, unit_01):
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0, response_kind='answer',
+        emotional_signals=[], objective_evidence=[], needs_clarification=False, ambiguity_reason=None)
+    evaluator = FakeEvaluator(evidence)
+    await TurnPlanner(evaluator, TeachingEngine(), unit_01).plan(
+        free_state, 'Hello Emma! I live in the countryside.', 'free-talk-context')
+    expected = next(a for a in unit_01.activities if a.id == 'free-talk.conversation').objective_ids
+    assert len(expected) == 27
+    assert [o.objective_id for o in evaluator.requests[0].active_objectives] == expected
