@@ -37,3 +37,5 @@ voice/server/.venv/bin/python scripts/eval-unit1-journey.py --env-file /path/to/
 ```
 
 The scenario command runs real model outputs with independent state/action checks and keeps semantic criteria pending review. The journey uses scripted answers; repeated scripted answers and reaching Free Talk are not proof of natural or complete teaching. See `docs/evaluation/pipecat-text-audit.md` for failures, corrections and outstanding acceptance work.
+
+The explicit Free Talk end button is a control event, not a synthetic learner utterance. It atomically stores a short authored role exit and closing, moves to the summary stage, and retains pending review. Repeating the end request returns the same saved result. Ending does not call speech services or depend on an LLM being available; it does not manufacture learning evidence.

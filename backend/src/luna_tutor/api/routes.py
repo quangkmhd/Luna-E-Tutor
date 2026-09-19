@@ -27,6 +27,8 @@ def _summary(stored: StoredSession) -> SummaryView:
             demonstrated.append(item.objective_id)
         elif item.supported_uses or item.attempted:
             supported.append(item.objective_id)
+    review.extend(item.objective_id for item in stored.state.review_queue
+                  if item.objective_id not in review)
     observed = set(demonstrated + supported + review)
     return SummaryView(demonstrated=demonstrated, supported=supported,
                        needs_review=review,
@@ -45,6 +47,9 @@ def session_view(stored: StoredSession) -> SessionView:
         ])
     last = stored.turns[-1] if stored.turns else None
     state = stored.state
+    if state.closing_message:
+        messages.append(MessageView(role='teacher', text=state.closing_message,
+                                    delivery_intent='warm'))
     return SessionView(
         session_id=state.session_id, unit_id=state.unit_id,
         state_version=state.state_version, stage_id=state.stage_id,

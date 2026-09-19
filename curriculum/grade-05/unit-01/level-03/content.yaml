@@ -75,8 +75,10 @@ patterns:
     file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
     section: Lớp 5 (3 Level)!I2
   text: I live in a big city; however, it is very crowded.
+  # Teaching examples make the positive/negative contrast explicit; preserve the source pattern above.
   examples: &id002
-  - I live in a big city; however, it is very crowded.
+  - My city has good schools; however, it is very crowded.
+  - My village is peaceful; however, there are not many shops.
   acceptable_alternatives:
   - My city is exciting, but it is crowded.
 - id: moreover
@@ -404,8 +406,10 @@ activities:
     feedback_required: true
     allow_support_limit_exit: true
     mastery_required: false
-  instruction: Model however as a contrast, then create an opportunity to mention a drawback. Do not infer
-    use of however merely from hearing Luna model it.
+  instruction: Give one short example with a positive feature before however and a drawback after it,
+    then invite Quang to share a drawback. Use the activity examples as models. Being big or small alone
+    is not the positive feature; busy and noisy are two related drawbacks, not a contrast.
+    Do not infer use of however merely from hearing Luna model it.
   examples: *id002
 - id: level-03.addition
   source:

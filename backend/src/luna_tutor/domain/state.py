@@ -64,6 +64,7 @@ class LessonState(Contract):
     completed_stage_ids: SnapshotItems[Identifier] = ()
     applied_turn_ids: SnapshotItems[Text] = ()
     last_teacher_turn: SanitizedText = ''
+    closing_message: SanitizedText | None = None
     elapsed_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] = 0.0
     last_success_at_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] | None = None
     stop_requested: bool = False

@@ -59,3 +59,44 @@ def test_finish_free_talk_returns_evidence_based_summary_and_is_idempotent(tmp_p
     assert body['summary']['supported'] == ['supported']
     assert body['summary']['needs_review'] == ['review']
     assert second.json()['state_version'] == body['state_version'] == 4
+
+
+def test_finish_persists_one_role_exit_without_fabricating_learner_turn(tmp_path):
+    path = tmp_path / 'sessions.sqlite3'
+    repository = SessionRepository(path)
+    original = LessonState(session_id='closing', unit_id='grade05.unit01',
+        stage_id='free-talk', activity_id='free-talk.conversation',
+        review_queue=(ReviewItem(objective_id='review', difficulty='target_form'),))
+    repository.create_session(original)
+    api = TestClient(create_app(repository=repository, turn_service=FakeTurnService()))
+    response = api.post('/api/sessions/closing/finish', json={'expected_state_version': 0})
+    assert response.status_code == 200
+    body = response.json()
+    assert body['stage_id'] == 'summary'
+    assert body['activity_id'] == 'summary.reflect'
+    assert body['objective_id'] is None
+    assert body['summary']['needs_review'] == ['review']
+    assert len(body['messages']) == 2  # authored greeting and closing, no invented learner turn
+    closing = body['messages'][-1]
+    assert closing['role'] == 'teacher'
+    assert 'role-play is over' in closing['text']
+    assert 'Luna again' in closing['text']
+    assert 'next time' in closing['text']
+    stored = SessionRepository(path).get_session('closing')
+    assert stored.state.last_teacher_turn == closing['text']
+    assert stored.state.review_queue == original.review_queue
+    assert stored.state.objective_progress == original.objective_progress
+    assert stored.turns == ()
+    repeated = api.post('/api/sessions/closing/finish', json={'expected_state_version': 0})
+    restored = api.get('/api/sessions/closing')
+    assert repeated.json() == restored.json() == body
+
+
+def test_abandoned_free_talk_cannot_be_completed(tmp_path):
+    repository = SessionRepository(tmp_path / 'sessions.sqlite3')
+    repository.create_session(LessonState(session_id='abandoned', unit_id='grade05.unit01',
+        stage_id='free-talk', activity_id='free-talk.conversation', status='abandoned'))
+    api = TestClient(create_app(repository=repository, turn_service=FakeTurnService()))
+    response = api.post('/api/sessions/abandoned/finish', json={'expected_state_version': 0})
+    assert response.status_code == 409
+    assert repository.get_session('abandoned').state.status == 'abandoned'

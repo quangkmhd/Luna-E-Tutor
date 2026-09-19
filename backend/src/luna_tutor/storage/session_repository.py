@@ -11,6 +11,7 @@ from luna_tutor.domain.contracts import Contract, SnapshotItems
 from luna_tutor.domain.decisions import CompletedTurn
 from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.sqlite import connect
+from luna_tutor.teaching.closing import finish_text_lesson
 
 
 class SessionNotFoundError(LookupError):
@@ -146,16 +147,16 @@ class SessionRepository:
             if state.status == 'completed':
                 database.commit()
                 return self.get_session(session_id)
+            if state.status != 'active':
+                database.rollback()
+                raise StateConflictError('session is not active')
             if state.stage_id != 'free-talk':
                 database.rollback()
                 raise StateConflictError('session is not in free talk')
             if state.state_version != expected_version:
                 database.rollback()
                 raise StateConflictError('state version mismatch')
-            next_state = state.model_copy(update={
-                'state_version': state.state_version + 1,
-                'status': 'completed', 'stop_requested': True,
-            })
+            next_state = finish_text_lesson(state)
             timestamp = _now()
             database.execute(
                 'UPDATE sessions SET state_version = ?, status = ?, state_json = ?, updated_at = ? WHERE id = ?',
