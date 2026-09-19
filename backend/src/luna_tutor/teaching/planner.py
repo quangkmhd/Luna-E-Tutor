@@ -121,6 +121,10 @@ class TurnPlanner:
         if decision.next_activity_id:
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
+            if target.kind == 'ask_teacher':
+                return ('After responding to Quang, invite HIM to ask YOU about the target topic; '
+                        'wait for his question. Do not answer on your own behalf yet, and do not '
+                        'ask him to answer the previous question again. Topic: ' + target.instruction)
             return target.instruction
         return current.instruction
 

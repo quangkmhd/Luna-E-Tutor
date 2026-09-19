@@ -49,3 +49,15 @@ All six outputs in the two revised runs used model generation; direct review fou
 Verification: new planner-context and fallback regressions were observed failing before implementation; full backend suite after fixes: 333 passed, 1 skipped (existing live test), two existing dependency deprecation warnings. The previous accepted Teacher prompt hash is historical; a new full behavioral baseline has not been accepted.
 
 Outstanding: actual Pipecat/Flows integration, text-delivery progress, complete source-data corrections, full pipeline baseline and iterative reruns remain required. Pipecat installation is running as tracked exec session 71516; do not launch a duplicate installer without checking its authoritative status.
+
+## Real Pipecat adapter and live smoke iteration
+
+- Added `voice/server/text_pipeline.py`, with typed input and completed-turn frames, a real PipelineWorker/WorkerRunner and a per-request result processor. It wraps the existing core rather than creating a parallel teaching policy.
+- Added `text_runtime.py` using the existing API factory, SQLite and browser contract. Four tests exercise actual Pipecat frame routing, provider-error propagation, isolated parallel requests and API idempotency/history. These were first observed failing and then passing.
+- The dedicated 1.11 install remains in progress. To make independent progress, tests used the already installed Pipecat 1.8.1 source/dependencies read-only; no global environment was modified. This is explicitly provisional version coverage.
+- `pipecat-live-smoke.json`: live Evaluator and Teacher through Pipecat produced a valid recast decision, review item and next activity. Teacher copied first-person correction and asked the learner to guess instead of inviting a question. This is a behavioral failure despite successful plumbing.
+- Changed recast validation to allow limited grammatical first-to-second-person changes while preserving the corrected construction. A regression rejects a recast still missing the target preposition. Prompt now assigns the learner the questioning role explicitly.
+- `pipecat-live-smoke-revised.json`: two outputs corrected person but still volunteered Luna's residence and repeated the previous question. Not accepted.
+- Added an explicit next-move instruction when Engine enters `ask_teacher`: invite the learner to ask, then wait; do not answer yet. This retains curriculum topic data and changes no transition policy. Added a transferable hobby example in the shared prompt.
+- `pipecat-live-role-handover.json`: both live outputs now recast naturally and invite Quang to ask where Luna lives. Both used model generation. This proves only the targeted single-turn behavior, not all activities or a multi-turn journey.
+- Latest core suite: 335 passed, 1 skipped; four Pipecat adapter tests passed on the locally installed 1.8.1. Full 1.11 verification, Flows, delivery progress and the full scenario loop remain open.

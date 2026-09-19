@@ -70,3 +70,21 @@ async def test_fallback_never_reads_internal_activity_instructions_to_learner(ac
     assert utterance.generation_mode == 'fallback'
     assert internal not in utterance.spoken_text
     assert 'opportunity as handled' not in utterance.spoken_text
+
+
+@pytest.mark.asyncio
+async def test_natural_second_person_recast_is_accepted_without_fallback():
+    text = 'Oh, you live in the countryside! What do you like about it?'
+    client = FakeClient({'spoken_text': text, 'delivery_intent': 'warm',
+                         'generation_mode': 'model'})
+    result = await GeminiTeacher(client).respond(request())
+    assert result.generation_mode == 'model'
+    assert result.spoken_text == text
+
+
+@pytest.mark.asyncio
+async def test_second_person_recast_still_requires_correct_target_form():
+    client = FakeClient({'spoken_text': 'Oh, you live countryside! What do you like?',
+                         'delivery_intent': 'warm', 'generation_mode': 'model'})
+    result = await GeminiTeacher(client).respond(request())
+    assert result.generation_mode == 'fallback'

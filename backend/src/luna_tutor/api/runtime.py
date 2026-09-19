@@ -80,7 +80,8 @@ class FixtureTurnService:
         )
 
 
-def build_runtime_app(environment: Mapping[str, str] | None = None):
+def build_runtime_app(environment: Mapping[str, str] | None = None, *,
+                      turn_service_adapter=None):
     environment = os.environ if environment is None else environment
     root = Path(__file__).resolve().parents[4]
     database_path = Path(environment.get(
@@ -99,6 +100,9 @@ def build_runtime_app(environment: Mapping[str, str] | None = None):
         curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
         planner = TurnPlanner(GeminiEvaluator(client), TeachingEngine(), curriculum)
         turn_service = TurnService(planner, GeminiTeacher(client))
+
+    if turn_service_adapter is not None:
+        turn_service = turn_service_adapter(turn_service)
 
     @asynccontextmanager
     async def lifespan(_app):

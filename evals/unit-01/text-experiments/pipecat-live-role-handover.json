@@ -1,0 +1,711 @@
+{
+  "scope": "two_repetitions_one_turn_not_full_journey",
+  "pipecat_version": "1.8.1",
+  "teacher_prompt_sha256": "ae50a828c7079b48a9ca1b33e4967ddd9cce3ddb2a81a7633efe2e996a61caa2",
+  "initial_state": {
+    "session_id": "live-pipecat-smoke",
+    "unit_id": "grade05.unit01",
+    "state_version": 0,
+    "stage_id": "lesson-01",
+    "activity_id": "lesson-01.home",
+    "objective_id": "unit01.lesson01.pattern.live_in",
+    "status": "active",
+    "attempt_count": 0,
+    "support_given": {
+      "model_spoken_recently": false,
+      "choices_given": false,
+      "sentence_starter_given": false
+    },
+    "activity_progress": [
+      {
+        "activity_id": "lesson-01.introduce-city",
+        "status": "completed",
+        "attempt_count": 0,
+        "model_repetitions_delivered": 0,
+        "response_opportunity_given": false,
+        "feedback_delivered": false,
+        "learner_asked_teacher": false,
+        "completion_reason": null
+      },
+      {
+        "activity_id": "lesson-01.introduce-class",
+        "status": "completed",
+        "attempt_count": 0,
+        "model_repetitions_delivered": 0,
+        "response_opportunity_given": false,
+        "feedback_delivered": false,
+        "learner_asked_teacher": false,
+        "completion_reason": null
+      },
+      {
+        "activity_id": "lesson-01.introduce-countryside",
+        "status": "completed",
+        "attempt_count": 0,
+        "model_repetitions_delivered": 0,
+        "response_opportunity_given": false,
+        "feedback_delivered": false,
+        "learner_asked_teacher": false,
+        "completion_reason": null
+      },
+      {
+        "activity_id": "lesson-01.place-meaning",
+        "status": "completed",
+        "attempt_count": 0,
+        "model_repetitions_delivered": 0,
+        "response_opportunity_given": false,
+        "feedback_delivered": false,
+        "learner_asked_teacher": false,
+        "completion_reason": null
+      },
+      {
+        "activity_id": "lesson-01.class",
+        "status": "completed",
+        "attempt_count": 0,
+        "model_repetitions_delivered": 0,
+        "response_opportunity_given": false,
+        "feedback_delivered": false,
+        "learner_asked_teacher": false,
+        "completion_reason": null
+      },
+      {
+        "activity_id": "lesson-01.home",
+        "status": "not_started",
+        "attempt_count": 0,
+        "model_repetitions_delivered": 0,
+        "response_opportunity_given": true,
+        "feedback_delivered": false,
+        "learner_asked_teacher": false,
+        "completion_reason": null
+      }
+    ],
+    "objective_progress": [],
+    "review_queue": [],
+    "completed_stage_ids": [
+      "warm-up"
+    ],
+    "applied_turn_ids": [],
+    "last_teacher_turn": "Where do you live?",
+    "elapsed_seconds": 0.0,
+    "last_success_at_seconds": null,
+    "stop_requested": false,
+    "privacy_event": false
+  },
+  "completed_turns": [
+    {
+      "plan": {
+        "turn_id": "role-handover-0",
+        "state_version": 0,
+        "learner_text": "I live countryside.",
+        "privacy_event": false,
+        "evidence": {
+          "turn_id": "role-handover-0",
+          "state_version": 0,
+          "response_kind": "answer",
+          "emotional_signals": [],
+          "objective_evidence": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "meaning_status": "satisfied",
+              "target_form_status": "error_in_target_form",
+              "evidence_quote": "I live countryside.",
+              "recast_needed": true,
+              "corrected_form": "I live in the countryside."
+            }
+          ],
+          "needs_clarification": false,
+          "ambiguity_reason": null
+        },
+        "decision": {
+          "feedback_action": "recast",
+          "progression_action": "move_to_next_objective",
+          "corrected_form": "I live in the countryside.",
+          "emotional_support": false,
+          "next_objective_id": "unit01.lesson01.pattern.live_in",
+          "next_activity_id": "lesson-01.ask-luna",
+          "next_stage_id": null,
+          "review_queue_add": [
+            "unit01.lesson01.pattern.live_in"
+          ],
+          "review_queue_remove": [],
+          "mastery_updates": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": true
+            }
+          ],
+          "count_attempt": true
+        },
+        "teacher_request": {
+          "turn_id": "role-handover-0",
+          "feedback_action": "recast",
+          "corrected_form": "I live in the countryside.",
+          "learner_meaning": "I live countryside.",
+          "next_teaching_move": "After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question. Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: Create an opportunity to ask Luna where she lives. If still difficult after support, record the opportunity as handled without claiming the learner asked.",
+          "emotional_support": false,
+          "previous_teacher_turn": "Where do you live?",
+          "activity_context": {
+            "stage_id": "lesson-01",
+            "activity_id": "lesson-01.ask-luna",
+            "kind": "ask_teacher",
+            "objectives": [
+              "Pattern: I live in the ___."
+            ],
+            "target_words": [],
+            "target_patterns": [
+              "I live in the ___."
+            ],
+            "examples": [
+              "I live in the city.",
+              "I live in the countryside."
+            ],
+            "model_repetitions": 0,
+            "response_opportunity_required": true
+          },
+          "constraints": {
+            "max_questions": 1,
+            "require_repetition": false,
+            "allow_pronunciation_claims": false,
+            "plain_spoken_text": true,
+            "additional": [
+              "Never require Quang to repeat a correction.",
+              "Speak one short, natural turn without Markdown."
+            ]
+          }
+        },
+        "proposed_next_state": {
+          "session_id": "live-pipecat-smoke",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.ask-luna",
+          "objective_id": "unit01.lesson01.pattern.live_in",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "lesson-01.introduce-city",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.introduce-class",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.introduce-countryside",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.place-meaning",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.class",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.home",
+              "status": "support_limit_reached",
+              "attempt_count": 1,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": "support limit reached"
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": true
+            }
+          ],
+          "review_queue": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "difficulty": "target_form",
+              "evidence_quote": null,
+              "support_level": "independent",
+              "last_seen_turn_id": "role-handover-0",
+              "learner_context": "I live countryside."
+            }
+          ],
+          "completed_stage_ids": [
+            "warm-up"
+          ],
+          "applied_turn_ids": [
+            "role-handover-0"
+          ],
+          "last_teacher_turn": "Where do you live?",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "teacher_utterance": {
+        "spoken_text": "Oh, you live in the countryside! Now it is your turn to ask me where I live.",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      },
+      "next_state": {
+        "session_id": "live-pipecat-smoke",
+        "unit_id": "grade05.unit01",
+        "state_version": 1,
+        "stage_id": "lesson-01",
+        "activity_id": "lesson-01.ask-luna",
+        "objective_id": "unit01.lesson01.pattern.live_in",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "lesson-01.introduce-city",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.introduce-class",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.introduce-countryside",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.place-meaning",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.class",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.home",
+            "status": "support_limit_reached",
+            "attempt_count": 1,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": "support limit reached"
+          }
+        ],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": true
+          }
+        ],
+        "review_queue": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "difficulty": "target_form",
+            "evidence_quote": null,
+            "support_level": "independent",
+            "last_seen_turn_id": "role-handover-0",
+            "learner_context": "I live countryside."
+          }
+        ],
+        "completed_stage_ids": [
+          "warm-up"
+        ],
+        "applied_turn_ids": [
+          "role-handover-0"
+        ],
+        "last_teacher_turn": "Oh, you live in the countryside! Now it is your turn to ask me where I live.",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      }
+    },
+    {
+      "plan": {
+        "turn_id": "role-handover-1",
+        "state_version": 0,
+        "learner_text": "I live countryside.",
+        "privacy_event": false,
+        "evidence": {
+          "turn_id": "role-handover-1",
+          "state_version": 0,
+          "response_kind": "answer",
+          "emotional_signals": [],
+          "objective_evidence": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "meaning_status": "satisfied",
+              "target_form_status": "error_in_target_form",
+              "evidence_quote": "I live countryside.",
+              "recast_needed": true,
+              "corrected_form": "I live in the countryside."
+            }
+          ],
+          "needs_clarification": false,
+          "ambiguity_reason": null
+        },
+        "decision": {
+          "feedback_action": "recast",
+          "progression_action": "move_to_next_objective",
+          "corrected_form": "I live in the countryside.",
+          "emotional_support": false,
+          "next_objective_id": "unit01.lesson01.pattern.live_in",
+          "next_activity_id": "lesson-01.ask-luna",
+          "next_stage_id": null,
+          "review_queue_add": [
+            "unit01.lesson01.pattern.live_in"
+          ],
+          "review_queue_remove": [],
+          "mastery_updates": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": true
+            }
+          ],
+          "count_attempt": true
+        },
+        "teacher_request": {
+          "turn_id": "role-handover-1",
+          "feedback_action": "recast",
+          "corrected_form": "I live in the countryside.",
+          "learner_meaning": "I live countryside.",
+          "next_teaching_move": "After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question. Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: Create an opportunity to ask Luna where she lives. If still difficult after support, record the opportunity as handled without claiming the learner asked.",
+          "emotional_support": false,
+          "previous_teacher_turn": "Where do you live?",
+          "activity_context": {
+            "stage_id": "lesson-01",
+            "activity_id": "lesson-01.ask-luna",
+            "kind": "ask_teacher",
+            "objectives": [
+              "Pattern: I live in the ___."
+            ],
+            "target_words": [],
+            "target_patterns": [
+              "I live in the ___."
+            ],
+            "examples": [
+              "I live in the city.",
+              "I live in the countryside."
+            ],
+            "model_repetitions": 0,
+            "response_opportunity_required": true
+          },
+          "constraints": {
+            "max_questions": 1,
+            "require_repetition": false,
+            "allow_pronunciation_claims": false,
+            "plain_spoken_text": true,
+            "additional": [
+              "Never require Quang to repeat a correction.",
+              "Speak one short, natural turn without Markdown."
+            ]
+          }
+        },
+        "proposed_next_state": {
+          "session_id": "live-pipecat-smoke",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.ask-luna",
+          "objective_id": "unit01.lesson01.pattern.live_in",
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "lesson-01.introduce-city",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.introduce-class",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.introduce-countryside",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.place-meaning",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.class",
+              "status": "completed",
+              "attempt_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": false,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            },
+            {
+              "activity_id": "lesson-01.home",
+              "status": "support_limit_reached",
+              "attempt_count": 1,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": false,
+              "learner_asked_teacher": false,
+              "completion_reason": "support limit reached"
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": true
+            }
+          ],
+          "review_queue": [
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "difficulty": "target_form",
+              "evidence_quote": null,
+              "support_level": "independent",
+              "last_seen_turn_id": "role-handover-1",
+              "learner_context": "I live countryside."
+            }
+          ],
+          "completed_stage_ids": [
+            "warm-up"
+          ],
+          "applied_turn_ids": [
+            "role-handover-1"
+          ],
+          "last_teacher_turn": "Where do you live?",
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "teacher_utterance": {
+        "spoken_text": "Oh, you live in the countryside! Now, would you like to ask me where I live?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      },
+      "next_state": {
+        "session_id": "live-pipecat-smoke",
+        "unit_id": "grade05.unit01",
+        "state_version": 1,
+        "stage_id": "lesson-01",
+        "activity_id": "lesson-01.ask-luna",
+        "objective_id": "unit01.lesson01.pattern.live_in",
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "lesson-01.introduce-city",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.introduce-class",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.introduce-countryside",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.place-meaning",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.class",
+            "status": "completed",
+            "attempt_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": false,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          },
+          {
+            "activity_id": "lesson-01.home",
+            "status": "support_limit_reached",
+            "attempt_count": 1,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": "support limit reached"
+          }
+        ],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": true
+          }
+        ],
+        "review_queue": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "difficulty": "target_form",
+            "evidence_quote": null,
+            "support_level": "independent",
+            "last_seen_turn_id": "role-handover-1",
+            "learner_context": "I live countryside."
+          }
+        ],
+        "completed_stage_ids": [
+          "warm-up"
+        ],
+        "applied_turn_ids": [
+          "role-handover-1"
+        ],
+        "last_teacher_turn": "Oh, you live in the countryside! Now, would you like to ask me where I live?",
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      }
+    }
+  ]
+}

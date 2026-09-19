@@ -13,13 +13,34 @@ _MARKDOWN = re.compile(r'(^|\s)(#{1,6}\s|[-*]\s|\*\*|__|```)', re.MULTILINE)
 _FORCED_REPEAT = re.compile(r'\b(repeat after me|say it again|repeat it)\b', re.IGNORECASE)
 
 
+def _contains_recast(text: str, correction: str) -> bool:
+    """Permit conversational person changes, preserving the corrected construction."""
+    def tokens(value):
+        return re.findall(r"\w+(?:'\w+)?", value.replace('’', "'").casefold())
+
+    reference = correction.replace('’', "'").casefold()
+    addressed = reference
+    for pattern, replacement in (
+        (r"\bi'm\b", "you're"), (r'\bi am\b', 'you are'),
+        (r'\bi was\b', 'you were'), (r'\bmy\b', 'your'), (r'\bi\b', 'you'),
+    ):
+        addressed = re.sub(pattern, replacement, addressed)
+    spoken = tokens(text)
+    for variant in (reference, addressed):
+        expected = tokens(variant)
+        if expected and any(spoken[i:i + len(expected)] == expected
+                            for i in range(len(spoken) - len(expected) + 1)):
+            return True
+    return False
+
+
 def _valid_spoken_text(text: str, request: TeacherTurnRequest) -> bool:
     return (
         bool(text.strip())
         and not _MARKDOWN.search(text)
         and not _FORCED_REPEAT.search(text)
         and text.count('?') <= request.constraints.max_questions
-        and (request.corrected_form is None or request.corrected_form in text)
+        and (request.corrected_form is None or _contains_recast(text, request.corrected_form))
     )
 
 

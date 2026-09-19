@@ -70,6 +70,7 @@ async def test_teacher_gets_prior_question_and_actual_next_activity_content(stat
     assert request.activity_context.kind == activity.kind
     assert request.activity_context.examples == tuple(activity.examples)
     assert request.activity_context.objectives
+    assert 'wait for his question' in request.next_teaching_move
 
 
 @pytest.mark.asyncio
