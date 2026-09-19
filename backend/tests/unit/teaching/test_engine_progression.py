@@ -124,16 +124,16 @@ def test_free_talk_requires_all_prerequisite_stages(engine, state, evidence, uni
 @pytest.mark.parametrize(('activity', 'status', 'next_id'), [
     ('warm-up.hello', 'in_progress', None),
     ('warm-up.hello', 'completed', 'warm-up.feelings'),
-    ('warm-up.feelings', 'in_progress', 'warm-up.start'),
+    ('warm-up.feelings', 'in_progress', 'lesson-01.introduce-city'),
 ])
-def test_warm_up_only_traverses_greeting_emotion_and_bridge(engine, state, evidence, unit_01, activity, status, next_id):
+def test_warm_up_greeting_and_feelings_bridge_directly_to_lesson(engine, state, evidence, unit_01, activity, status, next_id):
     prior = () if activity == 'warm-up.hello' else (ActivityProgress(activity_id='warm-up.hello', status='completed'),)
     state = state.model_copy(update={'stage_id': 'warm-up', 'activity_id': activity,
         'objective_id': None, 'completed_stage_ids': (), 'activity_progress': (*prior,
             ActivityProgress(activity_id=activity, status=status, response_opportunity_given=True))})
     decision = engine.decide(state, evidence(), unit_01)
     assert decision.next_activity_id == next_id
-    assert decision.next_objective_id is None
+    assert decision.next_objective_id == (CITY if activity == 'warm-up.feelings' else None)
     assert decision.mastery_updates == []
     assert not decision.count_attempt
 
@@ -150,4 +150,17 @@ def test_summary_can_finish_without_objective_mastery(engine, state, evidence, u
         'objective_id': None, 'activity_progress': (ActivityProgress(activity_id='summary.reflect', status='completed'),)})
     decision = engine.decide(state, evidence(items=[]), unit_01)
     assert decision.progression_action == 'finish'
+    assert decision.mastery_updates == []
+
+
+def test_answered_warmup_bridges_directly_to_first_learning_opportunity(engine, state, evidence, unit_01):
+    state = state.model_copy(update={'stage_id': 'warm-up', 'activity_id': 'warm-up.feelings',
+        'objective_id': None, 'completed_stage_ids': (), 'activity_progress': (
+            ActivityProgress(activity_id='warm-up.hello', status='completed'),
+            ActivityProgress(activity_id='warm-up.feelings', status='in_progress',
+                             response_opportunity_given=True))})
+    decision = engine.decide(state, evidence(items=[]), unit_01)
+    assert decision.next_stage_id == 'lesson-01'
+    assert decision.next_activity_id == 'lesson-01.introduce-city'
+    assert not decision.count_attempt
     assert decision.mastery_updates == []

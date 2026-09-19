@@ -1,7 +1,7 @@
 """Bounded Teacher wording over deterministic teaching decisions."""
 
 import json
-from importlib.resources import files
+from luna_tutor.prompts.loader import load_system_prompt
 import re
 
 from pydantic import ValidationError
@@ -97,8 +97,7 @@ def _fallback(request: TeacherTurnRequest) -> TeacherUtterance:
 class GeminiTeacher:
     def __init__(self, client):
         self._client = client
-        self._prompt = files('luna_tutor.prompts').joinpath(
-            'teacher-system.md').read_text(encoding='utf-8')
+        self._prompt = load_system_prompt('teacher-system.yaml')
 
     async def respond(self, request: TeacherTurnRequest) -> TeacherUtterance:
         feedback = []

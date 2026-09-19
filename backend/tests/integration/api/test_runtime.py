@@ -49,3 +49,17 @@ def test_initial_greeting_records_authored_text_delivery(tmp_path):
                     if p.activity_id == 'warm-up.hello')
     assert greeting.status == 'completed'
     assert stored.state.last_teacher_turn == session['messages'][0]['text']
+
+
+def test_new_session_greeting_already_opens_feelings_response(tmp_path):
+    from luna_tutor.storage.session_repository import SessionRepository
+    database = tmp_path / 'ready-greeting.sqlite3'
+    app = build_runtime_app({'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',
+                             'TUTOR_DATABASE_PATH': str(database)})
+    with TestClient(app) as api:
+        session = api.post('/api/sessions').json()
+    stored = SessionRepository(database).get_session(session['session_id'])
+    assert stored.state.activity_id == 'warm-up.feelings'
+    assert 'How are you' in session['messages'][0]['text']
+    assert next(p for p in stored.state.activity_progress
+                if p.activity_id == 'warm-up.feelings').response_opportunity_given

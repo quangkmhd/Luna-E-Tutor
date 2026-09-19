@@ -28,12 +28,25 @@ scenarios:
     source: {heading: "Kịch bản 4 — Học sinh nói I fine", line: 77, numbered: true}
     initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R06]
-    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "I fine.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [acknowledge_and_continue], teacher_criteria: [natural_greeting_recast, no_repetition_request, greeting_only]}]
+    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "I fine.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [acknowledge_and_continue], teacher_criteria: [natural_greeting_recast, no_repetition_request, no_greeting_drill_before_authorized_lesson]}]
   - id: warmup-05
     source: {heading: "Kịch bản 5 — Học sinh im lặng", line: 85, numbered: true}
     initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}
     rule_ids: [R02, R08, R09]
-    turns: [{expected_state_effects: {count_attempt: false, progression_action: stay, activity_id: warm-up.feelings}, teacher_turn: "Hi, Quang! How are you today?", learner_text: "[simulated no response]", input_event: no_response, evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: false}, allowed_feedback_actions: [offer_support], teacher_criteria: [gentle_choice_about_feelings, no_academic_practice, no_mastery_claim]}]
+    turns:
+      - expected_state_effects: {count_attempt: false, progression_action: stay, activity_id: warm-up.feelings}
+        teacher_turn: "Hi, Quang! How are you today?"
+        learner_text: "[simulated no response]"
+        input_event: no_response
+        evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: false}
+        allowed_feedback_actions: [offer_support]
+        teacher_criteria: [gentle_choice_about_feelings, no_academic_practice, no_mastery_claim]
+      - expected_state_effects: {count_attempt: false, stage_id: lesson-01, activity_id: lesson-01.introduce-city}
+        learner_text: "[simulated no response]"
+        input_event: no_response
+        evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: false}
+        allowed_feedback_actions: [offer_support]
+        teacher_criteria: [gently_moves_on_after_second_silence, models_new_word_twice, invites_word_use, does_not_blame_child]
   - id: warmup-06
     source: {heading: "Kịch bản 6 — Học sinh nói đang mệt", line: 95, numbered: true}
     initial_state: {activity_id: warm-up.feelings, stage_id: warm-up}

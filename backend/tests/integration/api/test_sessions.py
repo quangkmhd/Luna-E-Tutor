@@ -37,3 +37,17 @@ def test_get_missing_session_returns_stable_404(tmp_path):
 def test_request_models_forbid_unknown_fields(tmp_path):
     response = client(tmp_path).post('/api/sessions', json={'api_key': 'forbidden'})
     assert response.status_code == 422
+
+
+def test_historical_session_keeps_original_opening_text(tmp_path):
+    from luna_tutor.domain.state import LessonState
+    repository = SessionRepository(tmp_path / 'old.sqlite3')
+    repository.create_session(LessonState(session_id='old-session', unit_id='grade05.unit01',
+        stage_id='warm-up', activity_id='warm-up.hello',
+        last_teacher_turn="Hello, Quang! I'm Luna. It's lovely to see you today!"))
+    api = TestClient(create_app(repository=repository, turn_service=UnusedTurnService()))
+    old = api.get('/api/sessions/old-session').json()
+    new = api.post('/api/sessions').json()
+    assert old['messages'][0]['text'] == "Hello, Quang! I'm Luna. It's lovely to see you today!"
+    assert new['messages'][0]['text'] != old['messages'][0]['text']
+    assert repository.get_session(new['session_id']).state.opening_message == new['messages'][0]['text']

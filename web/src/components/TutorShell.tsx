@@ -20,7 +20,22 @@ export function TutorShell({ api = tutorApi }: { api?: TutorApi }) {
     catch (reason) { if ((reason as Error).name !== 'AbortError') setError(reason as ApiError); } finally { setBusy(false); }
   })(); return () => controller.abort(); }, [api]);
   function replaceSession(session: SessionView) { setCurrent(session); setSessions((items) => [session, ...items.filter((item) => item.session_id !== session.session_id)]); }
-  async function send(text: string) { if (!current || busy) return; setBusy(true); setError(null); try { const response = await api.submitTurn(current.session_id, { turn_id: newTurnId(), expected_state_version: current.state_version, learner_text: text }); replaceSession(response.session); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
+  async function send(text: string) {
+    if (!current || busy) return;
+    const previous = current;
+    const turnId = newTurnId();
+    setCurrent({ ...previous, messages: [...previous.messages, { role: 'learner', text, turn_id: turnId }] });
+    setBusy(true); setError(null);
+    try {
+      const response = await api.submitTurn(previous.session_id, {
+        turn_id: turnId, expected_state_version: previous.state_version, learner_text: text,
+      });
+      replaceSession(response.session);
+    } catch (reason) {
+      setCurrent(previous);
+      setError(reason as ApiError);
+    } finally { setBusy(false); }
+  }
   async function select(id: string) { setBusy(true); setError(null); try { replaceSession(await api.getSession(id)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   async function startNew() { if (current?.status === 'active' && !window.confirm('Start over? This session will stay in history.')) return; setBusy(true); setError(null); try { if (current?.status === 'active') { const old = await api.abandonSession(current.session_id); setSessions((items) => items.map((item) => item.session_id === old.session_id ? old : item)); } replaceSession(await api.createSession()); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   async function finish() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.finishSession(current.session_id, current.state_version)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }

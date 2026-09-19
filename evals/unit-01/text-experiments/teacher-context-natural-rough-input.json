@@ -1,0 +1,222 @@
+{
+  "scope": "isolated_teacher_diagnostic",
+  "model": "google/gemini-3.5-flash-lite",
+  "prompt_sha256": "55b65165971148127731c8005b5f09fcdcd67040ac3172016c6dcc7af16b2df4",
+  "records": [
+    {
+      "case": "meaning",
+      "request": {
+        "turn_id": "context-meaning",
+        "feedback_action": "explain_meaning",
+        "corrected_form": null,
+        "learner_meaning": "What does city mean?",
+        "next_teaching_move": "Explain the meaning Quang asked about with one concrete example. Check understanding with one easy meaning question or choice; do not ask him to repeat the word or restart the introduction.",
+        "emotional_support": false,
+        "previous_teacher_turn": "City. City. Where can you see tall buildings?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.introduce-city",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "Vocabulary: city"
+          ],
+          "target_words": [
+            "city"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "city"
+          ],
+          "model_repetitions": 2,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "response_opportunity_required": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "additional": []
+        }
+      },
+      "output": {
+        "spoken_text": "A city is a big place with lots of tall buildings, shops, and cars, like London or New York. Would you find many tall buildings in a city or on a quiet farm?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      },
+      "raw": {
+        "spoken_text": "A city is a big place with lots of tall buildings, shops, and cars, like London or New York. Would you find many tall buildings in a city or on a quiet farm?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      }
+    },
+    {
+      "case": "short",
+      "request": {
+        "turn_id": "context-short",
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "Countryside.",
+        "next_teaching_move": "Invite Quang to describe where he lives. Accept one-word or Vietnamese meaning; record English form separately.",
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": true,
+          "response_opportunity_required": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "additional": []
+        }
+      },
+      "output": {
+        "spoken_text": "You live in the countryside! What is it like near your home?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      },
+      "raw": {
+        "spoken_text": "You live in the countryside! What is it like near your home?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      }
+    },
+    {
+      "case": "teacher",
+      "request": {
+        "turn_id": "context-teacher",
+        "feedback_action": "answer_teacher_question",
+        "corrected_form": null,
+        "learner_meaning": "Where do you live?",
+        "next_teaching_move": "Answer the specific question Quang just asked using the correct person and recent context. An additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked you; do not instruct him to ask the same question again.",
+        "emotional_support": false,
+        "previous_teacher_turn": "Can you ask me where I live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.ask-luna",
+          "kind": "ask_teacher",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": true,
+          "response_opportunity_required": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "additional": []
+        }
+      },
+      "output": {
+        "spoken_text": "Let us take a moment, Quang. We can try that together.",
+        "delivery_intent": "encouraging",
+        "generation_mode": "fallback"
+      },
+      "raw": {
+        "spoken_text": "I live in a small city. Where do you live, Quang?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      }
+    },
+    {
+      "case": "rough-input",
+      "request": {
+        "turn_id": "context-rough-input",
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "CD",
+        "next_teaching_move": "Model a class introduction, then invite Quang to share his own class.",
+        "emotional_support": false,
+        "previous_teacher_turn": "Which place usually has tall buildings, a city or the countryside?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.class",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: Can you tell me about yourself? – I'm in ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "Can you tell me about yourself? – I'm in ___."
+          ],
+          "examples": [
+            "I'm in Class 5A.",
+            "I'm in Class 5B."
+          ],
+          "model_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": true,
+          "response_opportunity_required": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "additional": []
+        }
+      },
+      "output": {
+        "spoken_text": "A city has tall buildings! For example, I am in Class 5A. What class are you in?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      },
+      "raw": {
+        "spoken_text": "A city has tall buildings! For example, I am in Class 5A. What class are you in?",
+        "delivery_intent": "warm",
+        "generation_mode": "model"
+      }
+    }
+  ]
+}

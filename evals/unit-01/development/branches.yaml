@@ -57,7 +57,7 @@ scenarios:
     - acknowledge_and_continue
     teacher_turn: How are you today?
     expected_state_effects:
-      activity_id: warm-up.start
+      activity_id: lesson-01.introduce-city
     teacher_criteria:
     - acknowledges_vietnamese_feeling
     - brief_english_bridge

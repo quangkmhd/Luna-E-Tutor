@@ -120,7 +120,7 @@ class EvalRunner:
 
     def write_report(self, records: list[EvalRecord], output_dir: Path) -> ReportArtifacts:
         output_dir.mkdir(parents=True, exist_ok=True)
-        prompt = self.root / 'backend/src/luna_tutor/prompts/evaluator.md'
+        prompt = self.root / 'backend/src/luna_tutor/prompts/evaluator.yaml'
         prompt_hash = hashlib.sha256(prompt.read_bytes()).hexdigest()
         curriculum_paths = list((self.root / 'curriculum/grade-05/unit-01').rglob('*.yaml'))
         curriculum_hash = _sha(curriculum_paths)

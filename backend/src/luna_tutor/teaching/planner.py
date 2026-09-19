@@ -9,11 +9,15 @@ from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.domain.state import ActivityProgress, LessonState, ReviewItem
 
 
+from luna_tutor.teaching.descriptions import TeacherDescriptions
+
+
 class TurnPlanner:
     def __init__(self, evaluator, engine, curriculum: UnitCurriculum):
         self._evaluator = evaluator
         self._engine = engine
         self._curriculum = curriculum
+        self._descriptions = TeacherDescriptions()
 
     async def plan(self, state: LessonState, learner_text: str, turn_id: str,
                    *, transcript_status: TranscriptStatus = 'final',
@@ -54,9 +58,7 @@ class TurnPlanner:
             remaining = set(activity.completion_rule.meaning_objective_ids) - demonstrated
             if remaining and demonstrated and not evidence.needs_clarification:
                 descriptions = [o.description for o in self._curriculum.objectives if o.id in remaining]
-                next_move = ('Acknowledge the information Quang already provided. Ask only for '
-                             'the remaining information, without repeating completed questions: '
-                             + '; '.join(descriptions))
+                next_move = self._descriptions.remaining(descriptions)
         teacher_request = TeacherTurnRequest(
             turn_id=turn_id,
             feedback_action=decision.feedback_action,
@@ -71,10 +73,7 @@ class TurnPlanner:
             activity_context=self._teacher_context(target_activity, state, enforce_delivery=(
                 target_activity.id != activity.id or decision.feedback_action not in {
                     'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'})),
-            constraints=TeacherConstraints(additional=(
-                'Never require Quang to repeat a correction.',
-                'Speak one short, natural turn without Markdown.',
-            )),
+            constraints=TeacherConstraints(additional=self._descriptions.constraints),
         )
         proposed = self._apply(state, redacted.text, turn_id, decision, evidence)
         return PlannedTurn(
@@ -138,51 +137,28 @@ class TurnPlanner:
 
     def _next_move_text(self, current: Activity, decision, evidence=None) -> str:
         if decision.feedback_action == 'privacy_redirect':
-            return ('Gently keep real phone numbers private. Practise only the phrase phone number, '
-                    'not a sequence of digits, then connect to the current learning topic.')
+            return self._descriptions.branch(1)
         if decision.feedback_action == 'clarify':
-            return ('The input is not reliable enough to assess. Ask one short question to '
-                    'confirm what Quang meant, using the previous question for context. '
-                    'Do not treat a partial word as a successful answer, infer a pronunciation '
-                    'error, ask for imitation, or restart the activity introduction.')
+            return self._descriptions.branch(2)
         if decision.feedback_action == 'explain_meaning':
-            return ('Explain the meaning Quang asked about with one concrete example. '
-                    'Check understanding with one easy meaning question or choice; '
-                    'do not ask him to repeat the word or restart the introduction.')
+            return self._descriptions.branch(3)
         if decision.feedback_action == 'answer_teacher_question' and decision.next_activity_id:
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
-            return ('First answer the specific question Quang just asked, before changing roles '
-                    'or introducing new material. Acknowledging that he asked is not an answer. '
-                    'Then carry out this next activity in the same short turn: ' + target.instruction)
+            return self._descriptions.branch(4, target=target)
         if decision.feedback_action == 'answer_teacher_question':
-            return ('Answer the specific question Quang just asked using the correct person and '
-                    'recent context. An additional follow-up is optional, not required. Avoid '
-                    'rhetorical tags such as remember? He has already asked you; '
-                    'do not instruct him to ask the same question again.')
+            return self._descriptions.branch(5)
         if evidence is not None and evidence.response_kind == 'no_response':
             if not decision.next_activity_id:
-                return ('Give Quang time without blaming him. Offer one easy choice question '
-                        'on the current topic. Do not claim he does not know or answered wrongly.')
+                return self._descriptions.branch(6)
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
             if target.completion_rule.mode == 'delivered':
-                return ('Gently let the unanswered greeting go and offer a short reassuring '
-                        'transition without another question. Next activity: ' + target.instruction)
-            return ('Gently let the unanswered item go for now. Make the next step easier with '
-                    'one question containing two concrete answer choices. An open question alone '
-                    'does not reduce difficulty. If this is ask_teacher, instead supply the '
-                    'exact short question Quang can ask you and invite him to use it. '
-                    'Do not announce mastery or request the same answer again. Next activity: '
-                    + target.instruction)
+                return self._descriptions.branch(7, target=target)
+            return self._descriptions.branch(8, target=target)
         stage = next(s for s in self._curriculum.stages if s.id == current.stage_id)
         if stage.review is not None and not decision.next_activity_id:
-            return ('Continue the role in activity_context naturally; do not announce the role again '
-                    'or end the scene. Respond to Quang and follow his current interest. '
-                    'If review_objective is present, weave just that one goal into a related question, '
-                    'without announcing a test or asking for a repeat. If absent, continue the '
-                    'conversation without inventing a review target. Keep support concrete and gentle '
-                    'when requested. Only an explicit end request closes the conversation.')
+            return self._descriptions.branch(9)
         if (decision.feedback_action == 'offer_support'
                 or decision.progression_action == 'reduce_difficulty'
                 or decision.support_limit_exit
@@ -190,31 +166,19 @@ class TurnPlanner:
             target = next((a for a in self._curriculum.activities
                            if a.id == decision.next_activity_id), current)
             if target.kind == 'ask_teacher':
-                return ('Make the next step easy: supply one short question Quang can ask you '
-                        'on the authorized topic and invite him to use it. Do not answer it yet.')
+                return self._descriptions.branch(10)
             if target.kind == 'vocabulary_introduction' and target.id != current.id:
-                return 'Keep the new-word step short and reassuring. ' + target.instruction
-            return ('Briefly acknowledge any expressed feeling or confusion. Make the authorized '
-                    'activity easier with one question containing two concrete, simple answer choices. '
-                    'A one-word choice is enough; do not demand a full sentence, an abstract drawback '
-                    'explanation, or another attempt at the same difficult wording. If the learner '
-                    'gave the wrong semantic category, first explain that distinction briefly. '
-                    'Use the activity context for the CURRENT target, even after a transition. '
-                    'Do not re-ask a fact Quang already gave or repeat the previous question. '
-                    'Choose a missing part of the goal: if he already gave a drawback such as crowding, '
-                    'ask about a positive feature instead. For an addition goal, ask about another '
-                    'positive feature. Choices are possible answers, never asserted learner facts.')
+                return self._descriptions.branch(11, target=target)
+            return self._descriptions.branch(12)
         if decision.progression_action == 'finish':
-            return 'Give one warm closing sentence.'
+            return self._descriptions.branch(13)
         if decision.next_activity_id:
             target = next(a for a in self._curriculum.activities
                           if a.id == decision.next_activity_id)
             if target.kind == 'ask_teacher':
-                return ('After responding to Quang, invite HIM to ask YOU about the target topic; '
-                        'wait for his question. Do not answer on your own behalf yet, and do not '
-                        'ask him to answer the previous question again. Topic: ' + target.instruction)
-            return target.instruction
-        return current.instruction
+                return self._descriptions.branch(14, target=target)
+            return self._descriptions.branch(15, target=target)
+        return self._descriptions.branch(16, current=current)
 
     def _apply(self, state: LessonState, learner_text: str, turn_id: str, decision, evidence) -> LessonState:
         objective_progress = {item.objective_id: item for item in state.objective_progress}

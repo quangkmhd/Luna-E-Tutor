@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { TutorShell } from '@/components/TutorShell';
+import { ChatPanel } from '@/components/ChatPanel';
 import { ApiError, TutorApi } from '@/lib/api';
 import type { SessionView } from '@/lib/types';
 
@@ -46,6 +47,39 @@ describe('TutorShell', () => {
     await user.dblClick(screen.getByRole('button', { name: 'Send' }));
     expect(api.submitTurn).toHaveBeenCalledOnce();
     expect(await screen.findByText('Nice to see you!')).toBeVisible();
+  });
+
+  it('shows Quang’s message while the teacher response is still pending', async () => {
+    let resolveTurn: ((value: { turn_id: string; session: SessionView }) => void) | undefined;
+    const pendingTurn = new Promise<{ turn_id: string; session: SessionView }>((resolve) => { resolveTurn = resolve; });
+    const api = mockApi({ submitTurn: vi.fn().mockReturnValue(pendingTurn) });
+    const user = userEvent.setup();
+    render(<TutorShell api={api} />);
+
+    await user.type(await screen.findByLabelText('Your answer'), 'I am in Class 5A.');
+    await user.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(screen.getByText('I am in Class 5A.')).toBeVisible();
+    resolveTurn?.({ turn_id: 't1', session: session({ state_version: 1, messages: [
+      { role: 'teacher', text: 'Hello, Quang!' },
+      { role: 'learner', text: 'I am in Class 5A.' },
+      { role: 'teacher', text: 'Nice to see you!' },
+    ] }) });
+    expect(await screen.findByText('Nice to see you!')).toBeVisible();
+  });
+
+  it('scrolls the conversation to the latest message after messages change', async () => {
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true, value: scrollIntoView,
+    });
+    const { rerender } = render(<ChatPanel messages={[{ role: 'teacher', text: 'Hello, Quang!' }]} />);
+    rerender(<ChatPanel messages={[
+      { role: 'teacher', text: 'Hello, Quang!' },
+      { role: 'learner', text: 'Hi, Luna!' },
+    ]} />);
+
+    await waitFor(() => expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'smooth', block: 'end' }));
   });
 
   it('shows retryable provider errors without inventing a message', async () => {

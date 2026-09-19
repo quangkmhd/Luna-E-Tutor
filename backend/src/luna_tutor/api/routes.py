@@ -14,7 +14,8 @@ from luna_tutor.storage.session_repository import (
 )
 
 
-GREETING = "Hello, Quang! I'm Luna. It's lovely to see you today!"
+LEGACY_GREETING = "Hello, Quang! I'm Luna. It's lovely to see you today!"
+GREETING = "Hello, Quang! I'm Luna. How are you today?"
 
 
 def _summary(stored: StoredSession) -> SummaryView:
@@ -36,7 +37,7 @@ def _summary(stored: StoredSession) -> SummaryView:
 
 
 def session_view(stored: StoredSession) -> SessionView:
-    messages = [MessageView(role='teacher', text=GREETING)]
+    messages = [MessageView(role='teacher', text=stored.state.opening_message or LEGACY_GREETING)]
     for completed in stored.turns:
         messages.extend([
             MessageView(role='learner', text=completed.plan.learner_text,
@@ -76,9 +77,11 @@ def build_router(repository, turn_service) -> APIRouter:
         session_id = str(uuid4())
         state = LessonState(
             session_id=session_id, unit_id='grade05.unit01', stage_id='warm-up',
-            activity_id='warm-up.hello', last_teacher_turn=GREETING,
+            activity_id='warm-up.feelings', last_teacher_turn=GREETING, opening_message=GREETING,
             activity_progress=(ActivityProgress(
-                activity_id='warm-up.hello', status='completed'),))
+                activity_id='warm-up.hello', status='completed'),
+                ActivityProgress(activity_id='warm-up.feelings', status='in_progress',
+                                 response_opportunity_given=True)))
         return session_view(repository.create_session(state))
 
     @router.get('/sessions', response_model=list[SessionView])

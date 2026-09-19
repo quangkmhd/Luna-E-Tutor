@@ -48,7 +48,7 @@ async def test_second_warmup_silence_moves_on_without_academic_attempts(engine, 
     planner = TurnPlanner(GeminiEvaluator(NoCalls()), engine, unit_01)
     first = await planner.plan(state, '', 'silent-1', input_event='no_response')
     second = await planner.plan(first.proposed_next_state, '', 'silent-2', input_event='no_response')
-    assert second.decision.next_activity_id == 'warm-up.start'
+    assert second.decision.next_activity_id == 'lesson-01.introduce-city'
     assert not second.decision.count_attempt
     assert second.proposed_next_state.objective_progress == ()
     assert second.proposed_next_state.review_queue == ()

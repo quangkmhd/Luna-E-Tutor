@@ -5,7 +5,7 @@ export function Composer({ disabled, onSend }: { disabled: boolean; onSend(text:
   const [text, setText] = useState('');
   async function submit(event: FormEvent) {
     event.preventDefault(); const value = text.trim(); if (!value || disabled) return;
-    await onSend(value); setText('');
+    setText(''); await onSend(value);
   }
   return <form className="composer" onSubmit={submit}>
     <label className="sr-only" htmlFor="learner-message">Your answer</label>

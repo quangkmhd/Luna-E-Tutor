@@ -75,7 +75,8 @@ opening:
     stage_id: warm-up
     kind: bridge
     objective_ids: []
-    required: true
+    # Kept for persisted sessions; new sessions bridge directly after feelings.
+    required: false
     max_attempts: 1
     completion_rule:
       mode: delivered

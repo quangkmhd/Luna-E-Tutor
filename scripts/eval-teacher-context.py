@@ -29,12 +29,15 @@ async def run(label: str, env_file: Path | None):
     builder = TurnPlanner(None, None, unit)
     values = {**(dotenv_values(env_file) if env_file else {}), **os.environ}
     cases = [
-        ('meaning', 'lesson-01.introduce-city', 'What does city mean?',
+        ('meaning', 'lesson-01.introduce-city', 'City nghĩa là gì hả cô?',
          'City. City. Where can you see tall buildings?', 'explain_meaning'),
         ('short', 'lesson-01.home', 'Countryside.', 'Where do you live?',
          'acknowledge_and_continue'),
         ('teacher', 'lesson-01.ask-luna', 'Where do you live?',
          'Can you ask me where I live?', 'answer_teacher_question'),
+        ('rough-input', 'lesson-01.class', 'CD',
+         'Which place usually has tall buildings, a city or the countryside?',
+         'acknowledge_and_continue'),
     ]
     records = []
     async with OpenRouterClient(Settings(openrouter_api_key=values['OPENROUTER_API_KEY'])) as client:
@@ -64,7 +67,7 @@ async def run(label: str, env_file: Path | None):
             reply = await teacher.respond(request)
             records.append({'case': name, 'request': request.model_dump(mode='json'),
                             'output': reply.model_dump(mode='json'), **captured})
-    prompt = root / 'backend/src/luna_tutor/prompts/teacher-system.md'
+    prompt = root / 'backend/src/luna_tutor/prompts/teacher-system.yaml'
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({
         'scope': 'isolated_teacher_diagnostic',

@@ -65,6 +65,7 @@ class LessonState(Contract):
     applied_turn_ids: SnapshotItems[Text] = ()
     last_teacher_turn: SanitizedText = ''
     recent_context: SnapshotItems[ContextTurn] = Field(default=(), max_length=6)
+    opening_message: SanitizedText | None = None
     closing_message: SanitizedText | None = None
     elapsed_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] = 0.0
     last_success_at_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] | None = None
