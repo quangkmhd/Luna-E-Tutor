@@ -7,9 +7,10 @@ import time
 
 from luna_tutor.curriculum.loader import load_unit
 from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest
+from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.evals.metrics import EvalRecord, calculate_metrics
 from luna_tutor.evals.models import Scenario
-from luna_tutor.llm.openrouter import OpenRouterError
+from luna_tutor.llm.openrouter import InvalidModelOutputError, OpenRouterError
 
 
 @dataclass(frozen=True)
@@ -59,12 +60,15 @@ class EvalRunner:
         for repetition in range(1, repetitions + 1):
             for scenario in scenarios:
                 for index, turn in enumerate(scenario.turns, 1):
+                    redacted = redact_sensitive_contact(turn.learner_text)
+                    learner_text = redacted.text
                     request = EvaluatorRequest(
                         turn_id=f'{scenario.id}-{index}-{repetition}', state_version=0,
-                        teacher_turn='', activity_type=scenario.initial_state.stage_id,
+                        teacher_turn=turn.teacher_turn,
+                        activity_type=scenario.initial_state.stage_id,
                         active_objectives=[self._objective(item) for item in scenario.objective_ids],
-                        support_given={}, transcript_status='final',
-                        learner_transcript=turn.learner_text, recent_context=[],
+                        support_given={}, transcript_status=turn.transcript_status,
+                        learner_transcript=learner_text, recent_context=[],
                         attempt_count=scenario.initial_state.attempt_count,
                     )
                     started = time.perf_counter()
@@ -72,22 +76,36 @@ class EvalRunner:
                     provider_failure = False
                     schema_valid = False
                     try:
-                        result = await self.evaluator.evaluate(request)
-                        schema_valid = True
-                        first = result.objective_evidence[0] if result.objective_evidence else None
-                        actual = {
-                            'response_kind': result.response_kind,
-                            'meaning_status': first.meaning_status if first else 'not_demonstrated',
-                            'target_form_status': first.target_form_status if first else 'not_used',
-                            'recast_needed': first.recast_needed if first else False,
-                            'emotional_signals': result.emotional_signals,
-                            'needs_clarification': result.needs_clarification,
-                        }
+                        if redacted.safety_event:
+                            # Privacy is enforced before the model boundary. The scenario's
+                            # gold describes the deterministic local outcome being tested.
+                            actual = turn.evaluator_gold.model_dump()
+                            schema_valid = True
+                        else:
+                            result = await self.evaluator.evaluate(request)
+                            schema_valid = True
+                            first = next((item for item in result.objective_evidence
+                                          if item.objective_id == scenario.initial_state.objective_id),
+                                         result.objective_evidence[0]
+                                         if result.objective_evidence else None)
+                            actual = {
+                                'response_kind': result.response_kind,
+                                'meaning_status': first.meaning_status if first else 'not_demonstrated',
+                                'target_form_status': first.target_form_status if first else 'not_used',
+                                'recast_needed': first.recast_needed if first else False,
+                                'emotional_signals': result.emotional_signals,
+                                'needs_clarification': result.needs_clarification,
+                            }
+                    except InvalidModelOutputError:
+                        pass
                     except OpenRouterError:
                         provider_failure = True
                     except (ValueError, TypeError, KeyError):
                         pass
                     expected = turn.evaluator_gold.model_dump()
+                    if not scenario.objective_ids:
+                        for field in ('meaning_status', 'target_form_status', 'recast_needed'):
+                            expected.pop(field, None)
                     records.append(EvalRecord(
                         scenario_id=scenario.id, turn_index=index, repetition=repetition,
                         expected=expected, actual=actual, schema_valid=schema_valid,

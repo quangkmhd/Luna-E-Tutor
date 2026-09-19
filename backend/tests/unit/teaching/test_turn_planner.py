@@ -35,8 +35,7 @@ async def test_planner_redacts_then_evaluates_decides_and_proposes_state(state, 
     evaluator = FakeEvaluator(result())
     planner = TurnPlanner(evaluator, TeachingEngine(), unit_01)
     plan = await planner.plan(state, 'I live countryside. My number is 0912 345 678.', 'turn-7')
-    sent = evaluator.requests[0]
-    assert '0912' not in sent.learner_transcript
+    assert evaluator.requests == []
     assert plan.privacy_event
     assert plan.evidence.turn_id == 'turn-7'
     assert plan.decision.feedback_action == 'privacy_redirect'

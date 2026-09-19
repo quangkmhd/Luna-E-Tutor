@@ -33,7 +33,7 @@ scenarios:
     source: {heading: "Kịch bản 5 — Học sinh im lặng", line: 85, numbered: true}
     initial_state: {stage_id: warm-up}
     rule_ids: [R02, R08, R09]
-    turns: [{learner_text: "[silence]", evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, reassure]}]
+    turns: [{learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, reassure]}]
   - id: warmup-06
     source: {heading: "Kịch bản 6 — Học sinh nói đang mệt", line: 95, numbered: true}
     initial_state: {stage_id: warm-up}
@@ -48,7 +48,7 @@ scenarios:
     source: {heading: "Kịch bản 8 — Học sinh trả lời lạc đề", line: 111, numbered: true}
     initial_state: {stage_id: warm-up}
     rule_ids: [R02, R11]
-    turns: [{learner_text: "I played a game all night.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect, acknowledge_and_continue]}]
+    turns: [{teacher_turn: "Hello, Quang!", learner_text: "I played a game all night.", evaluator_gold: {response_kind: answer, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect, acknowledge_and_continue]}]
   - id: warmup-09
     source: {heading: "Kịch bản 9 — Học sinh kể quá nhiều ngay khi chào", line: 121, numbered: true}
     initial_state: {stage_id: warm-up}
@@ -79,7 +79,7 @@ scenarios:
     turns: [{learner_text: "Countryside.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station1-04
     source: {heading: "Trạm 1 — Kịch bản 4 — Học sinh trả lời sai nghĩa từ vựng", line: 238, numbered: true}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.city}
+    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
     objective_ids: [unit01.lesson01.vocabulary.city, unit01.lesson01.vocabulary.countryside]
     turns: [{learner_text: "Countryside means a place with many tall buildings.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
   - id: station1-05
@@ -92,7 +92,7 @@ scenarios:
     initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.countryside}
     objective_ids: [unit01.lesson01.vocabulary.countryside]
     rule_ids: [R18, R19]
-    turns: [{learner_text: "[uncertain transcript: countryside]", evaluator_gold: {meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
+    turns: [{learner_text: "[uncertain transcript: countryside]", transcript_status: uncertain, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
   - id: station1-07
     source: {heading: "Trạm 1 — Kịch bản 7 — Học sinh trả lời bằng tiếng Việt", line: 278, numbered: true}
     initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
@@ -102,7 +102,7 @@ scenarios:
     source: {heading: "Trạm 1 — Kịch bản 8 — Học sinh nói lạc đề", line: 292, numbered: true}
     initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
     objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "My cat is orange.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
+    turns: [{teacher_turn: "Where do you live?", learner_text: "My cat is orange.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
   - id: station1-09
     source: {heading: "Trạm 1 — Kịch bản 9 — Học sinh nói quá dài", line: 304, numbered: true}
     initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
@@ -118,7 +118,7 @@ scenarios:
     source: {heading: "Trạm 2 — Kịch bản 1 — Học sinh trả lời đúng và chủ động hỏi lại", line: 420, numbered: true}
     initial_state: {stage_id: lesson-02, objective_id: unit01.lesson02.pattern.favourite}
     objective_ids: [unit01.lesson02.vocabulary.dolphin, unit01.lesson02.vocabulary.pink, unit01.lesson02.vocabulary.sandwich, unit01.lesson02.vocabulary.table_tennis, unit01.lesson02.pattern.favourite]
-    turns: [{learner_text: "My favourite animal is a dolphin. What's your favourite animal?", evaluator_gold: {response_kind: asks_teacher}, allowed_feedback_actions: [answer_teacher_question]}]
+    turns: [{learner_text: "My favourite animal is a dolphin. What's your favourite animal?", evaluator_gold: {response_kind: asks_teacher, target_form_status: valid_alternative}, allowed_feedback_actions: [answer_teacher_question]}]
   - id: station2-02
     source: {heading: "Trạm 2 — Kịch bản 2 — Học sinh chưa biết nghĩa hobby", line: 434, numbered: true}
     initial_state: {stage_id: level-02, objective_id: unit01.level02.vocabulary.hobby}
@@ -133,7 +133,7 @@ scenarios:
     source: {heading: "Trạm 2 — Kịch bản 4 — Học sinh trả lời sai loại từ", line: 462, numbered: true}
     initial_state: {stage_id: lesson-02, objective_id: unit01.lesson02.pattern.favourite}
     objective_ids: [unit01.lesson02.pattern.favourite]
-    turns: [{learner_text: "My favourite animal is pink.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: correct_target_form}, allowed_feedback_actions: [offer_support]}]
+    turns: [{learner_text: "My favourite animal is pink.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: valid_alternative}, allowed_feedback_actions: [offer_support]}]
   - id: station2-05
     source: {heading: "Trạm 2 — Kịch bản 5 — Học sinh nói sai ngữ pháp về sở thích", line: 474, numbered: true}
     initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
@@ -164,7 +164,7 @@ scenarios:
     source: {heading: "Trạm 2 — Kịch bản 10 — Học sinh im lặng hai lần", line: 534, numbered: true}
     initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby, attempt_count: 1}
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "[silence]", evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, offer_support]}]
+    turns: [{learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify, offer_support]}]
 
   - id: station3-01
     source: {heading: "Trạm 3 — Kịch bản 1 — Học sinh dùng được câu nâng cao", line: 619, numbered: true}
@@ -205,14 +205,14 @@ scenarios:
     source: {heading: "Trạm 3 — Kịch bản 8 — Học sinh nói lạc đề", line: 703, numbered: true}
     initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
     objective_ids: [unit01.level03.pattern.however]
-    turns: [{learner_text: "I like dolphins.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
+    turns: [{teacher_turn: "Tell me about your city using however.", learner_text: "I like dolphins.", evaluator_gold: {response_kind: off_topic, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [redirect]}]
   - id: station3-09
     source: {heading: "Trạm 3 — Kịch bản 9 — Học sinh nói quá dài", line: 715, numbered: true}
     initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.moreover}
     objective_ids: [unit01.level03.pattern.moreover]
-    turns: [{learner_text: "My town has schools, shops, a park, many people, buses, and moreover there is an amusement park near my home.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{learner_text: "My town has schools, shops, a park, many people, buses, and moreover there is an amusement park near my home.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-10
     source: {heading: "Trạm 3 — Kịch bản 10 — Học sinh mệt hoặc lặp lỗi hai lần", line: 727, numbered: true}
     initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however, attempt_count: 1}
     objective_ids: [unit01.level03.vocabulary.crowded, unit01.level03.pattern.however]
-    turns: [{learner_text: "I'm tired. City crowded but I don't know.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true, emotional_signals: [tired]}, allowed_feedback_actions: [recast, reassure]}]
+    turns: [{learner_text: "I'm tired. City crowded but I don't know.", evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true, emotional_signals: [tired]}, allowed_feedback_actions: [recast, reassure]}]

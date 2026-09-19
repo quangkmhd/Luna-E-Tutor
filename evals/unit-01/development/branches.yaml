@@ -32,7 +32,7 @@ scenarios:
     initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
     branch_ids: [station2-silent-hobby]
     objective_ids: [unit01.level02.pattern.hobby]
-    turns: [{learner_text: "[silence]", evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
+    turns: [{learner_text: "[silence]", transcript_status: incomplete, evaluator_gold: {response_kind: insufficient_data, meaning_status: uncertain, target_form_status: uncertain, needs_clarification: true}, allowed_feedback_actions: [clarify]}]
   - id: branch-station2-wrong-hobby-form
     source: {heading: "Nhánh: học sinh dùng sai cấu trúc sở thích", line: 377, numbered: false}
     initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}
@@ -56,29 +56,33 @@ scenarios:
     initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
     branch_ids: [station3-no-linker]
     objective_ids: [unit01.level03.pattern.however, unit01.level03.pattern.moreover]
-    turns: [{learner_text: "My city is big. It is crowded.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue, offer_support]}]
+    turns: [{learner_text: "My city is big. It is crowded.", evaluator_gold: {meaning_status: satisfied, target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue, offer_support]}]
   - id: free-talk-city
     source: {heading: "Nhánh Free Talk: học sinh sống ở thành phố", line: 783, numbered: false}
     branch_ids: [free-talk-city, free-talk-main-flow, role-entry]
+    objective_ids: [unit01.lesson01.pattern.live_in]
     rule_ids: [R15, R16, R17, R20]
-    turns: [{learner_text: "I live in a city with many vehicles.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
+    turns: [{learner_text: "I live in a city with many vehicles.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: free-talk-short
     source: {heading: "Nhánh Free Talk: học sinh trả lời quá ngắn", line: 796, numbered: false}
     branch_ids: [free-talk-short]
+    objective_ids: [unit01.lesson01.vocabulary.city]
     rule_ids: [R07, R16, R17]
     turns: [{learner_text: "City.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue, offer_support]}]
   - id: free-talk-vietnamese
     source: {heading: "Nhánh Free Talk: học sinh nói tiếng Việt", line: 807, numbered: false}
     branch_ids: [free-talk-vietnamese]
+    objective_ids: [unit01.lesson01.pattern.live_in]
     rule_ids: [R12, R16]
     turns: [{learner_text: "Thành phố của con đông nhưng vui.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: free-talk-grammar
     source: {heading: "Nhánh Free Talk: học sinh sai ngữ pháp", line: 816, numbered: false}
     branch_ids: [free-talk-grammar]
+    objective_ids: [unit01.level03.pattern.moreover]
     rule_ids: [R06, R16]
-    turns: [{learner_text: "My city have many shop.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
+    turns: [{learner_text: "My town have good schools; moreover, there is an amusement park.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
   - id: role-exit-summary
     source: {heading: "Kết thúc vai", line: 825, numbered: false}
     branch_ids: [role-exit, summary-ending]
     rule_ids: [R15, R18, R20]
-    turns: [{learner_text: "Let's finish now.", evaluator_gold: {response_kind: does_not_know, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [stop, acknowledge_and_continue]}]
+    turns: [{learner_text: "Let's finish now.", evaluator_gold: {response_kind: answer, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [stop, acknowledge_and_continue]}]

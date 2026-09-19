@@ -26,7 +26,7 @@ scenarios:
     source: {heading: "Holdout combined emotion and answer", line: 727, numbered: false}
     initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
     objective_ids: [unit01.level03.pattern.however]
-    turns: [{learner_text: "I'm a bit tired, but my town is quiet and nice.", evaluator_gold: {target_form_status: not_used, emotional_signals: [tired]}, allowed_feedback_actions: [reassure, acknowledge_and_continue]}]
+    turns: [{learner_text: "I'm a bit tired, but my town is quiet and nice.", evaluator_gold: {target_form_status: valid_alternative, emotional_signals: [tired]}, allowed_feedback_actions: [reassure, acknowledge_and_continue]}]
   - id: holdout-privacy
     source: {heading: "Holdout privacy paraphrase", line: 510, numbered: false}
     initial_state: {stage_id: level-02, objective_id: unit01.level02.vocabulary.phone_number}

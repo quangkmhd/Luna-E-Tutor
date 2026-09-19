@@ -2,7 +2,7 @@
 
 from luna_tutor.curriculum.models import Activity, Objective, UnitCurriculum
 from luna_tutor.domain.decisions import PlannedTurn, TeacherConstraints, TeacherTurnRequest
-from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest
+from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.domain.state import ActivityProgress, LessonState, ReviewItem
 
@@ -32,7 +32,18 @@ class TurnPlanner:
             recent_context=[],
             attempt_count=state.attempt_count,
         )
-        evidence = await self._evaluator.evaluate(request)
+        if redacted.safety_event:
+            evidence = EvaluatorResult(
+                turn_id=turn_id,
+                state_version=state.state_version,
+                response_kind='insufficient_data',
+                emotional_signals=[],
+                objective_evidence=[],
+                needs_clarification=True,
+                ambiguity_reason='Contact information was removed locally.',
+            )
+        else:
+            evidence = await self._evaluator.evaluate(request)
         if evidence.turn_id != turn_id or evidence.state_version != state.state_version:
             raise ValueError('stale or uncorrelated evaluator result')
         decision = self._engine.decide(planning_state, evidence, self._curriculum)

@@ -33,6 +33,20 @@ Keep communicative meaning separate from English target form:
   the intended meaning. error_in_target_form requires an actual form error.
   not_used means no such English construction was demonstrated; uncertain means
   the form cannot be reliably judged.
+- Judge target form only against the active objective. A grammatical sentence
+  about the topic is `not_used`, not `correct_target_form`, when it never uses
+  that objective's construction. Likewise, omitting `however` or `moreover` is
+  `not_used`; it is not a form error and does not need a recast.
+- Reserve `correct_target_form` for a construction shown in `target_patterns`.
+  A construction listed in `acceptable_alternatives` is `valid_alternative`,
+  even when it is a polished answer. A target construction remains correct when
+  followed by extra details. Judge form separately from meaning: a structurally
+  valid favourite-answer alternative can still contain the wrong semantic kind.
+- When the learner attempts the active construction but leaves out a required
+  preposition, copula, agreement marker, or other essential grammar, use
+  `error_in_target_form` with a minimal correction. For example, for a birthday
+  objective accepting “My birthday is in May”, “My birthday on May” is a
+  demonstrated form error rather than `not_used`.
 - A natural one-word answer can fully satisfy meaning while form is not_used.
   Do not call the missing full sentence an error. A grammatical alternative is
   not an error. Vietnamese can satisfy meaning while English form is not_used.
@@ -46,6 +60,22 @@ Do not force repetition. Do not repair a transcript on the child's behalf.
 
 response_kind describes the learner's main communicative act: answer,
 asks_meaning, asks_teacher, off_topic, does_not_know, or insufficient_data.
+When active_objectives is empty, classify a greeting, an emotion report, or a
+normal conversational contribution as `answer`. Reserve `off_topic` for content
+that is clearly unrelated to the teacher's current conversational turn; the
+absence of an academic objective does not by itself make a turn off topic.
+Use `asks_meaning` for a direct request for a word/phrase definition (“What does
+X mean?”, “What is X?”, or “X nghĩa là gì?”). A direct request for the meaning
+of a supplied word is always `asks_meaning`, never `asks_teacher`. Use
+`asks_teacher` when the learner directly asks
+the teacher a personal/content question, even if the same turn first contains
+an answer; preserve that answer in objective_evidence. Use `off_topic` when the
+turn does not try to answer or discuss any active objective. Use
+`wrong_semantic_category` instead when it clearly tries to answer but supplies
+the wrong kind of value for a plausible answer slot. If the learner changes to
+an unrelated topic, report `off_topic` and `not_demonstrated`; do not turn an
+unrelated noun into wrong-category evidence. A false definition of an active vocabulary item is
+wrong semantic evidence, never proof that the word's meaning is satisfied.
 Meaning questions in Vietnamese and English are requests for help, not failed
 answers. Emotional signals are a separate list (for example tired or sad);
 preserve demonstrated evidence when emotion occurs together with an answer.
@@ -59,7 +89,9 @@ update a counter, lesson state, or the support history.
 The transcript_status, stt_issue, and audio_issue flags take priority over a
 confident-looking transcript. If incomplete/uncertain, if either issue is true,
 or if the transcript is empty, set needs_clarification true with a brief factual
-ambiguity_reason. Do not judge uncertain audio/transcription as a child's
+ambiguity_reason. In every such operationally uncertain case, response_kind
+must be insufficient_data; do not call it an answer because partial text looks
+meaningful. Do not judge uncertain audio/transcription as a child's
 grammar error or wrong category. Mark affected objectives uncertain; preserve
 only evidence from clearly complete, reliable portions. An empty transcript
 does not prove silence, refusal, lack of knowledge, or any learner failure.
@@ -141,6 +173,30 @@ Output:
 {"turn_id":"ex-category","state_version":4,"response_kind":"answer","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.favourite-animal","meaning_status":"wrong_semantic_category","target_form_status":"not_used","evidence_quote":"Pink.","recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
 ```
 
+### Wrong value while using an acceptable construction
+Teacher asks "What is your favourite animal?". “My favourite animal is ...” is
+an acceptable alternative to the supplied target question and answer.
+Input: {"turn_id":"ex-category-form","learner_transcript":"My favourite animal is pink."}
+Output:
+```json
+{"turn_id":"ex-category-form","state_version":4,"response_kind":"answer","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.favourite-animal","meaning_status":"wrong_semantic_category","target_form_status":"valid_alternative","evidence_quote":"My favourite animal is pink.","recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
+```
+
+### Unrelated answer while an objective is active
+Teacher asks "Where do you live?" with pattern.live-in above.
+Input: {"turn_id":"ex-off-topic","learner_transcript":"My cat is orange."}
+Output:
+```json
+{"turn_id":"ex-off-topic","state_version":4,"response_kind":"off_topic","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.live-in","meaning_status":"not_demonstrated","target_form_status":"not_used","evidence_quote":null,"recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
+```
+
+Teacher asks the learner to describe a city using however.
+Input: {"turn_id":"ex-off-topic-linker","learner_transcript":"I like dolphins."}
+Output:
+```json
+{"turn_id":"ex-off-topic-linker","state_version":4,"response_kind":"off_topic","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.however","meaning_status":"not_demonstrated","target_form_status":"not_used","evidence_quote":null,"recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
+```
+
 ### Emotion together with an answer
 Teacher asks "Where do you live?" with pattern.live-in above.
 Input: {"turn_id":"ex-emotion","learner_transcript":"I'm tired, but I live in the city."}
@@ -164,4 +220,22 @@ Input: {"turn_id":"ex-multiple","learner_transcript":"I live in the countryside.
 Output:
 ```json
 {"turn_id":"ex-multiple","state_version":4,"response_kind":"answer","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.live-in","meaning_status":"satisfied","target_form_status":"correct_target_form","evidence_quote":"I live in the countryside.","recast_needed":false,"corrected_form":null},{"objective_id":"pattern.class","meaning_status":"satisfied","target_form_status":"correct_target_form","evidence_quote":"I'm in class 5A.","recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
+```
+
+### Answer followed by a question to the teacher
+Teacher asks “What is your favourite animal?”. The active objective targets
+“My favourite animal is ...”.
+Input: {"turn_id":"ex-asks-teacher","learner_transcript":"My favourite animal is a dolphin. What's your favourite animal?"}
+Output:
+```json
+{"turn_id":"ex-asks-teacher","state_version":4,"response_kind":"asks_teacher","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.favourite-animal","meaning_status":"satisfied","target_form_status":"correct_target_form","evidence_quote":"My favourite animal is a dolphin.","recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
+```
+
+### False vocabulary definition
+Teacher checks the meaning of traffic jam. The learner uses a grammatical
+sentence but gives a false definition.
+Input: {"turn_id":"ex-false-definition","learner_transcript":"A traffic jam means one fast car."}
+Output:
+```json
+{"turn_id":"ex-false-definition","state_version":4,"response_kind":"answer","emotional_signals":[],"objective_evidence":[{"objective_id":"vocabulary.traffic-jam","meaning_status":"wrong_semantic_category","target_form_status":"not_used","evidence_quote":"A traffic jam means one fast car.","recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
 ```
