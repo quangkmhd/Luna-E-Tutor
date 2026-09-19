@@ -181,8 +181,11 @@ objectives:
   vocabulary_ids: []
   pattern_ids:
   - however
-  evidence_criteria: Express a contrast about the learner’s town. Record however usage separately from
-    the success of the contrast.
+  evidence_criteria: Express two contrasting aspects of the learner's town, such as a benefit
+    and a drawback. A single property alone is partially_satisfied, even when it answers
+    the Teacher's easier choice question or repeats an earlier answer. The word town/city
+    is not a second contrasting aspect. Do not supply missing facts from Teacher examples.
+    Record however usage separately from the success of the contrast.
 - id: unit01.level03.pattern.moreover
   source:
     file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx

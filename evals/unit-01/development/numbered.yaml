@@ -239,5 +239,5 @@ scenarios:
       - learner_text: "My town crowded."
         evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true}
         allowed_feedback_actions: [offer_support, recast]
-        expected_state_effects: {count_attempt: true, activity_id: level-03.addition, review_queue_contains: [unit01.level03.pattern.however]}
+        expected_state_effects: {count_attempt: true, support_limit_exit: true, activity_id: level-03.addition, review_queue_contains: [unit01.level03.pattern.however]}
         teacher_criteria: [reduces_difficulty_on_next_activity, does_not_claim_mastery, does_not_require_correction_repetition]

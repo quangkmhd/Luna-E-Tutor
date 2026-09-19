@@ -47,7 +47,7 @@ class BehaviorRunner:
                 choices_given=initial.support == 'choices', sentence_starter_given=initial.support == 'starter'))
 
     async def run(self, scenarios):
-        supported = {'count_attempt', 'stage_id', 'activity_id', 'progression_action', 'review_queue_contains', 'review_queue_excludes', 'objective_id'}
+        supported = {'support_limit_exit', 'count_attempt', 'stage_id', 'activity_id', 'progression_action', 'review_queue_contains', 'review_queue_excludes', 'objective_id'}
         for scenario in scenarios:
             for turn in scenario.turns:
                 unknown = set(turn.expected_state_effects) - supported
@@ -88,7 +88,8 @@ class BehaviorRunner:
                 failures = record['failures']
                 if decision.feedback_action not in turn.allowed_feedback_actions:
                     failures.append('feedback_action')
-                actual = {'count_attempt': decision.count_attempt,
+                actual = {'support_limit_exit': decision.support_limit_exit,
+                          'count_attempt': decision.count_attempt,
                           'stage_id': completed.next_state.stage_id,
                           'activity_id': completed.next_state.activity_id,
                           'progression_action': decision.progression_action,

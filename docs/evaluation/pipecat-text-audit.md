@@ -317,3 +317,19 @@ Full numbered session **22564 is terminal**, exit 0. Artifact has 40 scenarios /
 - Warm-up ends at the delivered bridge and still requires a further learner input before first vocabulary; the live browser smoke confirmed this. Audit automatic progression of delivery-only activities against the source's direct bridge, avoiding a fabricated learner turn.
 
 After adding the Vietnamese scenario, data/schema tests also passed (8). No experiment process from this section remains active. The goal is not complete.
+
+## Scaffold answers versus complete objective evidence
+
+Applied prompt-engineer skill and consulted Google's current primary prompting guide again: https://ai.google.dev/gemini-api/docs/prompting-strategies . Used explicit evidence boundaries and an unrelated comparison example, preserving JSON-only evidence output and the division of responsibilities.
+
+Added three derived, pre-edit probes in `scaffold-meaning-regressions.yaml`: one town feature after a simplified choice, one feature with missing copula, and a complete contrast using a natural `but` alternative. `scaffold-meaning-baseline.json` passed the implemented checks and had correct evidence labels in all three. These are controls, not claims that a failing baseline was reproduced for each wording. Original observed failure remains station3-10 in the full numbered run.
+
+Evaluator instructions now distinguish a scaffold answer from the whole objective and grammar errors from stylistic preferences; also removed contradictory wording that labeled all omitted however/moreover as not_used even when a valid alternative was supplied. `scaffold-meaning-revised.json` (6 turns) had correct partial/complete meaning, no needless recast for station3-09's wordy addition, and the correct support-limit reason on station3-10. Teacher still sometimes repeats an already known property and awkwardly prefixes a question with moreover; these are not resolved by evidence-classification success.
+
+Strengthened the eval runner with an independent `support_limit_exit` assertion. Both positive and negative assertion tests first failed as unsupported, then passed after implementation. Added this expectation to station3-10's second turn. Fresh backend+voice tests: 398 passed, 1 skipped, existing dependency warning.
+
+`scaffold-transition-reason.json` exposed recurrence: second “My town crowded” became satisfied again, and the newly added reason check failed. Preserve this failed run. Prompt-only improvement is not established as stable. Root context review found the curriculum criterion only said “express a contrast”; clarified that it requires two contrasting aspects, and a single feature after an easier question is partial. Teacher examples cannot supply missing learner facts. The source target sentence remains unchanged.
+
+Latest focused content run is exec session **89215**, `contrast-criteria-revised.json`, log `/tmp/luna-contrast-criteria.log`; verify terminal state and results before continuing. Final tests after the criterion change are running separately. No STT/TTS or service/model changes.
+
+Session 89215 is terminal, exit 0: five turns passed implemented checks, including the new support-limit reason assertion. Direct evidence review: incomplete single-feature responses remain partial, the complete `but` alternative remains satisfied/valid, and the repeated error moves on with review preserved and a park/beach choice. This is one focused successful run after content clarification, not proof of stable full coverage. Teacher's repeated quiet/peaceful question and awkward moreover question remain open. Session 33748 is also terminal: **398 passed, 1 skipped**, same dependency warning. `git diff --check` clean. No experiment remains running from this section.

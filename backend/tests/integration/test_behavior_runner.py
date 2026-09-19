@@ -96,3 +96,15 @@ async def test_review_assertions_reject_fixture_that_never_selects_or_resolves_r
     records = await BehaviorRunner(ROOT, FixtureTurnService()).run([scenario])
     assert failure in records[0]['failures']
     assert records[0]['initial_state']['review_queue'][0]['objective_id'] == 'unit01.level03.vocabulary.traffic_jam'
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('expected', [True, False])
+async def test_runner_checks_support_limit_reason_not_just_destination(expected):
+    from luna_tutor.evals.behavior import BehaviorRunner
+    scenario = next(s for s in load_scenarios(ROOT / 'evals/unit-01') if s.id == 'warmup-01')
+    scenario = scenario.model_copy(update={'turns': [scenario.turns[0].model_copy(update={
+        'expected_state_effects': {'support_limit_exit': expected}})]})
+    records = await BehaviorRunner(ROOT, FixtureTurnService()).run([scenario])
+    assert ('state:support_limit_exit' in records[0]['failures']) is expected
+    assert 'support_limit_exit' in records[0]['checked']

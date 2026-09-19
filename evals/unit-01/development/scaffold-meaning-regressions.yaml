@@ -1,0 +1,41 @@
+source_file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+defaults:
+  scenario:
+    objective_ids: [unit01.level03.pattern.however]
+    rule_ids: [R06, R07]
+    branch_ids: []
+    state_snapshots: []
+  initial_state:
+    stage_id: level-03
+    activity_id: level-03.contrast
+    objective_id: unit01.level03.pattern.however
+    prior_activities_handled: true
+    response_opportunity_given: true
+  turn:
+    evaluator_gold: {response_kind: answer, meaning_status: partially_satisfied, target_form_status: not_used}
+    allowed_feedback_actions: [offer_support]
+    forbidden_behaviors: [forced_repetition, fabricated_pronunciation_claim]
+    expected_state_effects: {activity_id: level-03.contrast}
+    teacher_criteria: [acknowledges_partial_answer, supports_missing_contrast, does_not_invent_town_facts]
+scenarios:
+- id: scaffold-single-feature
+  source: {heading: 'Derived contrast: easy question is not whole objective', line: 727, numbered: false}
+  turns:
+  - teacher_turn: Is your town busy or peaceful?
+    learner_text: My town is busy.
+- id: scaffold-single-feature-error
+  source: {heading: 'Derived contrast: grammar correction does not add a missing idea', line: 727, numbered: false}
+  turns:
+  - teacher_turn: Is your village quiet or noisy?
+    learner_text: My village quiet.
+    evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}
+    allowed_feedback_actions: [recast]
+- id: scaffold-full-alternative
+  source: {heading: 'Derived contrast: natural alternative expresses both sides', line: 604, numbered: false}
+  turns:
+  - teacher_turn: What is a good thing and a drawback of your town?
+    learner_text: Our town has lovely parks, but the roads are noisy.
+    evaluator_gold: {meaning_status: satisfied, target_form_status: valid_alternative}
+    allowed_feedback_actions: [acknowledge_and_continue]
+    expected_state_effects: {activity_id: level-03.addition}
+    teacher_criteria: [accepts_natural_alternative, does_not_require_exact_pattern, moves_to_addition]

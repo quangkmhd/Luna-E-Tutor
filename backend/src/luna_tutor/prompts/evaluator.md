@@ -22,6 +22,15 @@ context and the teacher's actually delivered turn can explain a pronoun or a
 short answer, but teacher words and earlier learner words are not evidence of
 what the learner demonstrated on this turn. Never invent or translate a quote.
 
+The objective's evidence_criteria remain the assessment standard when the
+Teacher simplifies a question. Answering that easier question correctly may
+show only one part of a multi-part objective. For example, if the goal is to
+compare two things, answering "Blue" to "What colour is the first one?" gives
+one feature, not a comparison. Record partial meaning; do not invent the other
+feature or award satisfied because this is a later attempt. The Teaching Engine
+handles support limits separately. A one-word answer still fully satisfies a
+single-slot goal such as stating a favourite colour when that slot is clear.
+
 Keep communicative meaning separate from English target form:
 - satisfied means the learner answers the communicative goal; partially_satisfied
   means only part is demonstrated. wrong_semantic_category means an answer is
@@ -36,11 +45,16 @@ Keep communicative meaning separate from English target form:
 - Judge target form only against the active objective. A grammatical sentence
   about the topic is `not_used`, not `correct_target_form`, when it never uses
   that objective's construction. Likewise, omitting `however` or `moreover` is
-  `not_used`; it is not a form error and does not need a recast.
+  `not_used` unless a valid alternative construction was used; omission alone
+  is not a form error and does not need a recast.
 - Reserve `correct_target_form` for a construction shown in `target_patterns`.
   A construction listed in `acceptable_alternatives` is `valid_alternative`,
   even when it is a polished answer. A target construction remains correct when
-  followed by extra details. Judge form separately from meaning: a structurally
+  followed by extra details. Do not confuse stylistic preferences with grammar
+  errors: length, repetitive connectives, optional punctuation, or a less elegant
+  but grammatical phrase do not justify recast. Preserve the child's details;
+  a corrected_form is not a summary or a rewrite to match an example.
+  Judge form separately from meaning: a structurally
   valid favourite-answer alternative can still contain the wrong semantic kind.
 - When the learner attempts the active construction but leaves out a required
   preposition, copula, agreement marker, or other essential grammar, use
