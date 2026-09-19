@@ -175,3 +175,117 @@ async def test_invalid_request_copy_is_rejected_before_network(respx_mock, evalu
         with pytest.raises(ValueError, match='Invalid evaluator request'):
             await GeminiEvaluator(client).evaluate(request)
     assert respx_mock.calls.call_count == 0
+
+
+async def test_numeric_correlation_ids_round_trip_without_collapsing(
+        respx_mock, completion_response, evaluator_request, evaluator_result):
+    provider_turn_ids = []
+
+    def respond(http_request):
+        payload = json.loads(json.loads(http_request.content)['messages'][-1]['content'])
+        provider_turn_ids.append(payload['turn_id'])
+        return completion_response(evaluator_result | {
+            'turn_id': payload['turn_id'], 'state_version': payload['state_version'],
+            'objective_evidence': [evaluator_result['objective_evidence'][0] | {
+                'objective_id': objective['objective_id'],
+            } for objective in payload['active_objectives']],
+        })
+
+    respx_mock.post(ENDPOINT).mock(side_effect=respond)
+    objective_ids = ['pattern.12345678', 'pattern.87654321']
+    objectives = [evaluator_request.active_objectives[0].model_copy(update={'objective_id': value})
+                  for value in objective_ids]
+    async with OpenRouterClient(Settings('test-key')) as client:
+        evaluator = GeminiEvaluator(client)
+        for turn_id in ['turn-12345678', 'turn-87654321']:
+            result = await evaluator.evaluate(evaluator_request.model_copy(update={
+                'turn_id': turn_id, 'state_version': 12345678, 'active_objectives': objectives,
+            }))
+            assert result.turn_id == turn_id
+            assert result.state_version == 12345678
+            assert [item.objective_id for item in result.objective_evidence] == objective_ids
+    assert provider_turn_ids[0] != provider_turn_ids[1]
+
+
+@pytest.mark.parametrize('turn_id', ['turn-12345678', 'turn-87654321'])
+async def test_changed_turn_id_cannot_be_accepted_after_redaction(
+        turn_id, respx_mock, completion_response, evaluator_request, evaluator_result):
+    respx_mock.post(ENDPOINT).mock(return_value=completion_response(
+        evaluator_result | {'turn_id': 'turn-[REDACTED_PHONE]'}))
+    async with OpenRouterClient(Settings('test-key')) as client:
+        with pytest.raises(InvalidEvaluatorResultError):
+            await GeminiEvaluator(client).evaluate(evaluator_request.model_copy(
+                update={'turn_id': turn_id}))
+
+
+async def test_another_turns_provider_id_is_rejected(
+        respx_mock, completion_response, evaluator_request, evaluator_result):
+    provider_turn_ids = []
+
+    def respond(http_request):
+        payload = json.loads(json.loads(http_request.content)['messages'][-1]['content'])
+        provider_turn_ids.append(payload['turn_id'])
+        return completion_response(evaluator_result | {'turn_id': provider_turn_ids[0]})
+
+    respx_mock.post(ENDPOINT).mock(side_effect=respond)
+    async with OpenRouterClient(Settings('test-key')) as client:
+        evaluator = GeminiEvaluator(client)
+        await evaluator.evaluate(evaluator_request.model_copy(update={'turn_id': 'turn-12345678'}))
+        with pytest.raises(InvalidEvaluatorResultError):
+            await evaluator.evaluate(evaluator_request.model_copy(update={'turn_id': 'turn-87654321'}))
+
+
+async def test_provider_alias_cannot_collide_with_a_literal_caller_id(
+        respx_mock, completion_response, evaluator_request, evaluator_result):
+    provider_turn_ids = []
+
+    def respond(http_request):
+        payload = json.loads(json.loads(http_request.content)['messages'][-1]['content'])
+        provider_turn_ids.append(payload['turn_id'])
+        return completion_response(evaluator_result | {'turn_id': payload['turn_id']})
+
+    respx_mock.post(ENDPOINT).mock(side_effect=respond)
+    async with OpenRouterClient(Settings('test-key')) as client:
+        evaluator = GeminiEvaluator(client)
+        first = await evaluator.evaluate(evaluator_request.model_copy(update={'turn_id': 'turn-12345678'}))
+        literal_id = provider_turn_ids[0]
+        second = await evaluator.evaluate(evaluator_request.model_copy(update={'turn_id': literal_id}))
+    assert first.turn_id == 'turn-12345678'
+    assert second.turn_id == literal_id
+    assert provider_turn_ids[0] != provider_turn_ids[1]
+
+
+@pytest.mark.parametrize(('transcript', 'quote'), [
+    ('[REDACTED_PHONE]', 'PHONE'),
+    ('[REDACTED_PHONE]', 'REDACTED'),
+    ('[REDACTED_PHONE]', '[REDACTED'),
+    ('[REDACTED_PHONE]', 'PHONE]'),
+    ('[REDACTED_PHONE]', '_'),
+    ('[REDACTED_PHONE] [REDACTED_PHONE]', 'PHONE'),
+    ('My [REDACTED_PHONE] is private.', 'PHONE] is private.'),
+    ('My [REDACTED_PHONE] is private.', 'My [REDACTED'),
+    ('My [REDACTED_PHONE] is private.', 'My [REDACTED_PHONE] is private.'),
+    ('ci[REDACTED_PHONE]ty', 'city'),
+])
+async def test_evidence_requires_an_occurrence_outside_redaction_spans(
+        transcript, quote, respx_mock, completion_response, evaluator_request, evaluator_result):
+    evaluator_result['objective_evidence'][0]['evidence_quote'] = quote
+    respx_mock.post(ENDPOINT).mock(return_value=completion_response(evaluator_result))
+    async with OpenRouterClient(Settings('test-key')) as client:
+        with pytest.raises(InvalidEvaluatorResultError):
+            await GeminiEvaluator(client).evaluate(evaluator_request.model_copy(
+                update={'learner_transcript': transcript}))
+
+
+@pytest.mark.parametrize('transcript', [
+    'PHONE [REDACTED_PHONE]', '[REDACTED_PHONE] PHONE',
+    '[REDACTED_PHONE] PHONE [REDACTED_PHONE]',
+])
+async def test_real_quote_is_allowed_when_same_text_also_occurs_inside_a_marker(
+        transcript, respx_mock, completion_response, evaluator_request, evaluator_result):
+    evaluator_result['objective_evidence'][0]['evidence_quote'] = 'PHONE'
+    respx_mock.post(ENDPOINT).mock(return_value=completion_response(evaluator_result))
+    async with OpenRouterClient(Settings('test-key')) as client:
+        result = await GeminiEvaluator(client).evaluate(evaluator_request.model_copy(
+            update={'learner_transcript': transcript}))
+    assert result.objective_evidence[0].evidence_quote == 'PHONE'
