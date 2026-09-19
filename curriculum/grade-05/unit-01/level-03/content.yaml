@@ -171,8 +171,10 @@ objectives:
   vocabulary_ids: []
   pattern_ids:
   - describe-countryside
-  evidence_criteria: Describe the home environment; do not treat the example as a required fact about
-    the learner.
+  evidence_criteria: State where the learner lives and give at least one quality or feature
+    of that place. A location plus one quality is sufficient; the learner does not need
+    both calm and fresh air, or every detail in the example. Do not impose countryside
+    or any example fact on a learner who lives elsewhere.
 - id: unit01.level03.pattern.however
   source:
     file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx

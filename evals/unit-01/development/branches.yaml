@@ -1,112 +1,414 @@
 source_file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
 defaults:
-  scenario: {objective_ids: [], rule_ids: [R11, R13], state_snapshots: []}
-  initial_state: {stage_id: free-talk, activity_id: free-talk.conversation, objective_id: null, attempt_count: 0, support: independent}
+  scenario:
+    objective_ids: []
+    rule_ids:
+    - R11
+    - R13
+    state_snapshots: []
+  initial_state:
+    stage_id: free-talk
+    activity_id: free-talk.conversation
+    objective_id: null
+    attempt_count: 0
+    support: independent
+    prior_activities_handled: true
+    response_opportunity_given: true
   turn:
-    evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: valid_alternative, recast_needed: false, emotional_signals: [], needs_clarification: false}
-    allowed_feedback_actions: [acknowledge_and_continue]
-    forbidden_behaviors: [forced_repetition, abrupt_topic_switch, fabricated_mastery]
-    expected_state_effects: {preserve_open_review: true}
-    teacher_criteria: [stays_in_role, responds_to_content, asks_at_most_one_question]
+    evaluator_gold:
+      response_kind: answer
+      meaning_status: satisfied
+      target_form_status: valid_alternative
+      recast_needed: false
+      emotional_signals: []
+      needs_clarification: false
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    forbidden_behaviors:
+    - forced_repetition
+    - abrupt_topic_switch
+    - fabricated_mastery
+    expected_state_effects: {}
+    teacher_criteria:
+    - stays_in_role
+    - responds_to_content
+    - asks_at_most_one_question
 scenarios:
-  - id: branch-warmup-vietnamese
-    source: {heading: "Nhánh: học sinh chào bằng tiếng Việt", line: 40, numbered: false}
-    initial_state: {stage_id: warm-up}
-    branch_ids: [warmup-vietnamese]
-    rule_ids: [R01, R02, R12]
-    turns: [{learner_text: "Chào cô Luna.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
-  - id: branch-station1-confuses-place
-    source: {heading: "Nhánh: học sinh lẫn nghĩa city và countryside", line: 172, numbered: false}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.vocabulary.city}
-    branch_ids: [station1-confuses-city-countryside]
-    objective_ids: [unit01.lesson01.vocabulary.city, unit01.lesson01.vocabulary.countryside]
-    turns: [{learner_text: "A city is a quiet place with fields.", evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
-  - id: branch-station1-no-home-answer
-    source: {heading: "Nhánh: học sinh không trả lời được nơi ở", line: 183, numbered: false}
-    initial_state: {stage_id: lesson-01, objective_id: unit01.lesson01.pattern.live_in}
-    branch_ids: [station1-no-home-answer]
-    objective_ids: [unit01.lesson01.pattern.live_in]
-    turns: [{learner_text: "I don't know.", evaluator_gold: {response_kind: does_not_know, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [offer_support]}]
-  - id: branch-station2-silent-hobby
-    source: {heading: "Nhánh: học sinh im lặng khi nói về sở thích", line: 367, numbered: false}
-    initial_state: {stage_id: level-02, activity_id: level-02.hobby, objective_id: unit01.level02.pattern.hobby, prior_activities_handled: true, response_opportunity_given: true}
-    branch_ids: [station2-silent-hobby]
-    objective_ids: [unit01.level02.pattern.hobby]
-    turns:
-      - teacher_turn: "What's your hobby?"
-        learner_text: "[simulated no response]"
-        input_event: no_response
-        evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used}
-        allowed_feedback_actions: [offer_support]
-        expected_state_effects: {activity_id: level-02.hobby, count_attempt: true}
-        teacher_criteria: [offers_easy_hobby_choice, allows_time, does_not_blame_child]
-      - learner_text: "My hobby is table tennis."
-        evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: correct_target_form}
-        allowed_feedback_actions: [acknowledge_and_continue]
-        expected_state_effects: {activity_id: level-02.subject}
-        teacher_criteria: [accepts_supported_answer, continues_without_forced_repeat]
-  - id: branch-station2-wrong-hobby-form
-    source: {heading: "Nhánh: học sinh dùng sai cấu trúc sở thích", line: 377, numbered: false}
-    initial_state: {stage_id: level-02, activity_id: level-02.hobby, objective_id: unit01.level02.pattern.hobby, prior_activities_handled: true, response_opportunity_given: true}
-    branch_ids: [station2-wrong-hobby-form]
-    objective_ids: [unit01.level02.pattern.hobby]
-    turns:
-      - teacher_turn: "What's your hobby?"
-        learner_text: "I hobby is table tennis."
-        evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}
-        allowed_feedback_actions: [recast]
-        expected_state_effects: {activity_id: level-02.subject, review_queue_contains: [unit01.level02.pattern.hobby]}
-        teacher_criteria: [natural_minimal_recast, preserves_learner_hobby, continues_without_forced_repeat]
-  - id: branch-station2-one-word
-    source: {heading: "Nhánh: học sinh chỉ nói một từ", line: 386, numbered: false}
-    initial_state: {stage_id: level-02, activity_id: level-02.birthday, objective_id: unit01.level02.pattern.birthday, prior_activities_handled: true, response_opportunity_given: true}
-    branch_ids: [station2-one-word]
-    objective_ids: [unit01.level02.pattern.birthday]
-    turns:
-      - teacher_turn: "When's your birthday?"
-        learner_text: "May."
-        evaluator_gold: {target_form_status: not_used}
-        allowed_feedback_actions: [acknowledge_and_continue]
-        expected_state_effects: {activity_id: level-02.hobby}
-        teacher_criteria: [accepts_short_meaningful_answer, acknowledges_birthday_month, does_not_call_fragment_error, continues_without_forced_repeat]
-  - id: branch-station3-countryside
-    source: {heading: "Nhánh: học sinh sống ở nông thôn", line: 593, numbered: false}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.describe_countryside}
-    branch_ids: [station3-countryside]
-    objective_ids: [unit01.level03.pattern.describe_countryside]
-    turns: [{learner_text: "My cottage is in a calm village.", evaluator_gold: {}, allowed_feedback_actions: [acknowledge_and_continue]}]
-  - id: branch-station3-no-linker
-    source: {heading: "Nhánh: chưa tự dùng however hoặc moreover", line: 604, numbered: false}
-    initial_state: {stage_id: level-03, objective_id: unit01.level03.pattern.however}
-    branch_ids: [station3-no-linker]
-    objective_ids: [unit01.level03.pattern.however, unit01.level03.pattern.moreover]
-    turns: [{learner_text: "My city is big. It is crowded.", evaluator_gold: {meaning_status: satisfied, target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue, offer_support]}]
-  - id: free-talk-city
-    source: {heading: "Nhánh Free Talk: học sinh sống ở thành phố", line: 783, numbered: false}
-    branch_ids: [free-talk-city, free-talk-main-flow, role-entry]
-    objective_ids: [unit01.lesson01.pattern.live_in]
-    rule_ids: [R15, R16, R17, R20]
-    turns: [{learner_text: "I live in a city with many vehicles.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
-  - id: free-talk-short
-    source: {heading: "Nhánh Free Talk: học sinh trả lời quá ngắn", line: 796, numbered: false}
-    branch_ids: [free-talk-short]
-    objective_ids: [unit01.lesson01.vocabulary.city]
-    rule_ids: [R07, R16, R17]
-    turns: [{learner_text: "City.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue, offer_support]}]
-  - id: free-talk-vietnamese
-    source: {heading: "Nhánh Free Talk: học sinh nói tiếng Việt", line: 807, numbered: false}
-    branch_ids: [free-talk-vietnamese]
-    objective_ids: [unit01.lesson01.pattern.live_in]
-    rule_ids: [R12, R16]
-    turns: [{learner_text: "Thành phố của con đông nhưng vui.", evaluator_gold: {target_form_status: not_used}, allowed_feedback_actions: [acknowledge_and_continue]}]
-  - id: free-talk-grammar
-    source: {heading: "Nhánh Free Talk: học sinh sai ngữ pháp", line: 816, numbered: false}
-    branch_ids: [free-talk-grammar]
-    objective_ids: [unit01.level03.pattern.moreover]
-    rule_ids: [R06, R16]
-    turns: [{learner_text: "My town have good schools; moreover, there is an amusement park.", evaluator_gold: {target_form_status: error_in_target_form, recast_needed: true}, allowed_feedback_actions: [recast]}]
-  - id: role-exit-summary
-    source: {heading: "Kết thúc vai", line: 825, numbered: false}
-    branch_ids: [role-exit, summary-ending]
-    rule_ids: [R15, R18, R20]
-    turns: [{learner_text: "Let's finish now.", evaluator_gold: {response_kind: answer, meaning_status: not_demonstrated, target_form_status: not_used}, allowed_feedback_actions: [stop, acknowledge_and_continue]}]
+- id: branch-warmup-vietnamese
+  source:
+    heading: 'Nhánh: học sinh chào bằng tiếng Việt'
+    line: 40
+    numbered: false
+  initial_state:
+    stage_id: warm-up
+    activity_id: warm-up.feelings
+  branch_ids:
+  - warmup-vietnamese
+  rule_ids:
+  - R01
+  - R02
+  - R12
+  turns:
+  - learner_text: Con khỏe.
+    evaluator_gold:
+      target_form_status: not_used
+      meaning_status: not_demonstrated
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    teacher_turn: How are you today?
+    expected_state_effects:
+      activity_id: warm-up.start
+    teacher_criteria:
+    - acknowledges_vietnamese_feeling
+    - brief_english_bridge
+    - no_vocabulary_drill
+- id: branch-station1-confuses-place
+  source:
+    heading: 'Nhánh: học sinh lẫn nghĩa city và countryside'
+    line: 172
+    numbered: false
+  initial_state:
+    stage_id: lesson-01
+    objective_id: unit01.lesson01.vocabulary.city
+    activity_id: lesson-01.place-meaning
+  branch_ids:
+  - station1-confuses-city-countryside
+  objective_ids:
+  - unit01.lesson01.vocabulary.city
+  - unit01.lesson01.vocabulary.countryside
+  turns:
+  - learner_text: A city is a quiet place with fields.
+    evaluator_gold:
+      meaning_status: wrong_semantic_category
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - offer_support
+    teacher_turn: What is a city like?
+    expected_state_effects:
+      activity_id: lesson-01.place-meaning
+    teacher_criteria:
+    - gently_explains_place_difference
+    - offers_easy_choice
+    - does_not_demand_repeat
+- id: branch-station1-no-home-answer
+  source:
+    heading: 'Nhánh: học sinh không trả lời được nơi ở'
+    line: 183
+    numbered: false
+  initial_state:
+    stage_id: lesson-01
+    objective_id: unit01.lesson01.pattern.live_in
+    activity_id: lesson-01.home
+  branch_ids:
+  - station1-no-home-answer
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  turns:
+  - learner_text: I don't know.
+    evaluator_gold:
+      response_kind: does_not_know
+      meaning_status: not_demonstrated
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - offer_support
+    teacher_turn: Where do you live?
+    expected_state_effects:
+      activity_id: lesson-01.home
+    teacher_criteria:
+    - offers_place_choice
+    - does_not_blame_child
+- id: branch-station2-silent-hobby
+  source:
+    heading: 'Nhánh: học sinh im lặng khi nói về sở thích'
+    line: 367
+    numbered: false
+  initial_state:
+    stage_id: level-02
+    activity_id: level-02.hobby
+    objective_id: unit01.level02.pattern.hobby
+    prior_activities_handled: true
+    response_opportunity_given: true
+  branch_ids:
+  - station2-silent-hobby
+  objective_ids:
+  - unit01.level02.pattern.hobby
+  turns:
+  - teacher_turn: What's your hobby?
+    learner_text: '[simulated no response]'
+    input_event: no_response
+    evaluator_gold:
+      response_kind: no_response
+      meaning_status: not_demonstrated
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - offer_support
+    expected_state_effects:
+      activity_id: level-02.hobby
+      count_attempt: true
+    teacher_criteria:
+    - offers_easy_hobby_choice
+    - allows_time
+    - does_not_blame_child
+  - learner_text: My hobby is table tennis.
+    evaluator_gold:
+      response_kind: answer
+      meaning_status: satisfied
+      target_form_status: correct_target_form
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    expected_state_effects:
+      activity_id: level-02.subject
+    teacher_criteria:
+    - accepts_supported_answer
+    - continues_without_forced_repeat
+- id: branch-station2-wrong-hobby-form
+  source:
+    heading: 'Nhánh: học sinh dùng sai cấu trúc sở thích'
+    line: 377
+    numbered: false
+  initial_state:
+    stage_id: level-02
+    activity_id: level-02.hobby
+    objective_id: unit01.level02.pattern.hobby
+    prior_activities_handled: true
+    response_opportunity_given: true
+  branch_ids:
+  - station2-wrong-hobby-form
+  objective_ids:
+  - unit01.level02.pattern.hobby
+  turns:
+  - teacher_turn: What's your hobby?
+    learner_text: I hobby is table tennis.
+    evaluator_gold:
+      target_form_status: error_in_target_form
+      recast_needed: true
+    allowed_feedback_actions:
+    - recast
+    expected_state_effects:
+      activity_id: level-02.subject
+      review_queue_contains:
+      - unit01.level02.pattern.hobby
+    teacher_criteria:
+    - natural_minimal_recast
+    - preserves_learner_hobby
+    - continues_without_forced_repeat
+- id: branch-station2-one-word
+  source:
+    heading: 'Nhánh: học sinh chỉ nói một từ'
+    line: 386
+    numbered: false
+  initial_state:
+    stage_id: level-02
+    activity_id: level-02.birthday
+    objective_id: unit01.level02.pattern.birthday
+    prior_activities_handled: true
+    response_opportunity_given: true
+  branch_ids:
+  - station2-one-word
+  objective_ids:
+  - unit01.level02.pattern.birthday
+  turns:
+  - teacher_turn: When's your birthday?
+    learner_text: May.
+    evaluator_gold:
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    expected_state_effects:
+      activity_id: level-02.hobby
+    teacher_criteria:
+    - accepts_short_meaningful_answer
+    - acknowledges_birthday_month
+    - does_not_call_fragment_error
+    - continues_without_forced_repeat
+- id: branch-station3-countryside
+  source:
+    heading: 'Nhánh: học sinh sống ở nông thôn'
+    line: 593
+    numbered: false
+  initial_state:
+    stage_id: level-03
+    objective_id: unit01.level03.pattern.describe_countryside
+    activity_id: level-03.home-description
+  branch_ids:
+  - station3-countryside
+  objective_ids:
+  - unit01.level03.pattern.describe_countryside
+  turns:
+  - learner_text: I live in the countryside. It is calm.
+    evaluator_gold: {}
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    teacher_turn: Tell me about where you live.
+    expected_state_effects:
+      activity_id: level-03.contrast
+    teacher_criteria:
+    - acknowledges_home_description
+    - does_not_invent_learner_facts
+    - continues_naturally
+- id: branch-station3-no-linker
+  source:
+    heading: 'Nhánh: chưa tự dùng however hoặc moreover'
+    line: 604
+    numbered: false
+  initial_state:
+    stage_id: level-03
+    objective_id: unit01.level03.pattern.however
+    activity_id: level-03.contrast
+  branch_ids:
+  - station3-no-linker
+  objective_ids:
+  - unit01.level03.pattern.however
+  - unit01.level03.pattern.moreover
+  turns:
+  - learner_text: My city has lovely parks. It is crowded.
+    evaluator_gold:
+      meaning_status: satisfied
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    - offer_support
+    teacher_turn: Tell me a good thing and a drawback of your city.
+    expected_state_effects:
+      activity_id: level-03.addition
+    teacher_criteria:
+    - accepts_contrast_without_exact_linker
+    - does_not_call_missing_linker_grammar_error
+    - models_next_idea_naturally
+- id: free-talk-city
+  source:
+    heading: 'Nhánh Free Talk: học sinh sống ở thành phố'
+    line: 783
+    numbered: false
+  branch_ids:
+  - free-talk-city
+  - free-talk-main-flow
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  rule_ids:
+  - R15
+  - R16
+  - R17
+  - R20
+  turns:
+  - learner_text: I live in a big city. It is crowded.
+    evaluator_gold:
+      target_form_status: correct_target_form
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    teacher_turn: I'm Emma from England! Where do you live?
+    expected_state_effects:
+      activity_id: free-talk.conversation
+    teacher_criteria:
+    - stays_in_role
+    - follows_city_topic
+    - does_not_invent_learner_facts
+  initial_state:
+    activity_id: free-talk.conversation
+- id: free-talk-short
+  source:
+    heading: 'Nhánh Free Talk: học sinh trả lời quá ngắn'
+    line: 796
+    numbered: false
+  branch_ids:
+  - free-talk-short
+  objective_ids:
+  - unit01.lesson01.vocabulary.countryside
+  rule_ids:
+  - R07
+  - R16
+  - R17
+  turns:
+  - learner_text: Countryside.
+    evaluator_gold:
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    - offer_support
+    teacher_turn: I'm Emma from England! Where do you live?
+    expected_state_effects:
+      activity_id: free-talk.conversation
+    teacher_criteria:
+    - expands_home_answer
+    - offers_easy_followup
+    - does_not_force_full_sentence
+  initial_state:
+    activity_id: free-talk.conversation
+- id: free-talk-vietnamese
+  source:
+    heading: 'Nhánh Free Talk: học sinh nói tiếng Việt'
+    line: 807
+    numbered: false
+  branch_ids:
+  - free-talk-vietnamese
+  objective_ids:
+  - unit01.level03.vocabulary.vehicles
+  rule_ids:
+  - R12
+  - R16
+  turns:
+  - learner_text: Ở chỗ con có nhiều xe.
+    evaluator_gold:
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    teacher_turn: I'm Emma from England! What is it like near your home?
+    expected_state_effects:
+      activity_id: free-talk.conversation
+    teacher_criteria:
+    - acknowledges_vehicle_meaning_in_english
+    - follows_child_topic
+    - does_not_force_repeat
+  initial_state:
+    activity_id: free-talk.conversation
+- id: free-talk-grammar
+  source:
+    heading: 'Nhánh Free Talk: học sinh sai ngữ pháp'
+    line: 816
+    numbered: false
+  branch_ids:
+  - free-talk-grammar
+  objective_ids:
+  - unit01.level03.pattern.moreover
+  rule_ids:
+  - R06
+  - R16
+  turns:
+  - learner_text: My town have good schools; moreover, there is an amusement park.
+    evaluator_gold:
+      target_form_status: error_in_target_form
+      recast_needed: true
+    allowed_feedback_actions:
+    - recast
+    teacher_turn: I'm Emma from England! What good things does your town have?
+    expected_state_effects:
+      activity_id: free-talk.conversation
+      review_queue_contains:
+      - unit01.level03.pattern.moreover
+    teacher_criteria:
+    - natural_recast
+    - stays_in_role
+    - does_not_require_correction_repetition
+  initial_state:
+    activity_id: free-talk.conversation
+- id: role-exit-summary
+  source:
+    heading: Kết thúc vai
+    line: 825
+    numbered: false
+  branch_ids:
+  - role-exit
+  - summary-ending
+  rule_ids:
+  - R15
+  - R18
+  - R20
+  turns:
+  - learner_text: Let's finish now.
+    evaluator_gold:
+      response_kind: answer
+      meaning_status: not_demonstrated
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - stop
+    - acknowledge_and_continue

@@ -65,3 +65,17 @@ def test_level2_named_branches_have_executable_source_aligned_context():
     short = next(s for s in branches if s.id == 'branch-station2-one-word')
     assert short.initial_state.activity_id == 'level-02.birthday'
     assert short.turns[0].learner_text == 'May.'
+
+
+def test_named_teaching_branches_have_consistent_activity_and_question():
+    from luna_tutor.evals.behavior import BehaviorRunner
+    runner = BehaviorRunner(ROOT, None)
+    scenarios = [s for s in load_scenarios(ROOT / 'evals/unit-01')
+                 if s.id.startswith(('branch-', 'free-talk-'))]
+    assert len(scenarios) == 12
+    for scenario in scenarios:
+        state = runner.initial_state(scenario)
+        assert state.last_teacher_turn.strip(), scenario.id
+        assert scenario.initial_state.response_opportunity_given, scenario.id
+        for turn in scenario.turns:
+            assert 'preserve_open_review' not in turn.expected_state_effects, scenario.id
