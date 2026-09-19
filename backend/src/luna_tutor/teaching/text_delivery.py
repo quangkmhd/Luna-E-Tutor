@@ -6,7 +6,7 @@ must confirm playback instead; a generated string is not proof of spoken audio.
 import re
 
 from luna_tutor.domain.decisions import PlannedTurn, TeacherUtterance
-from luna_tutor.domain.evidence import SupportGiven
+from luna_tutor.domain.evidence import ContextTurn, SupportGiven
 from luna_tutor.domain.state import ActivityProgress
 from luna_tutor.domain.text_observations import observe_delivery
 
@@ -48,6 +48,9 @@ def confirm_text_delivery(plan: PlannedTurn, utterance: TeacherUtterance,
     )
     delivered = state.model_copy(update={
         'activity_progress': tuple(progress.values()), 'support_given': support,
+        'recent_context': (*state.recent_context,
+            ContextTurn(role='learner', text=plan.learner_text[:2000]),
+            ContextTurn(role='teacher', text=utterance.spoken_text[:2000]))[-6:],
     })
     # A refined proposal remains uncommitted until the outer repository stores
     # both this receipt and the validated wording in one transaction.

@@ -1,0 +1,3263 @@
+{
+  "scope": "real_pipecat_evaluator_engine_teacher_text",
+  "pipecat_version": "1.11.0",
+  "hashes": {
+    "backend/src/luna_tutor/__init__.py": "ead7225a1886655145af376d31daea52f74122928d4d11620c870a6445e6f0fe",
+    "backend/src/luna_tutor/api/__init__.py": "c4eefddde4bba7166de7b2557a1dadf04512571c97f3be56b440f9eeb688f27b",
+    "backend/src/luna_tutor/api/app.py": "46ed2ee93445465e0dc98e5013427dc1cf423602676b621ec7a0e199d6eabdeb",
+    "backend/src/luna_tutor/api/routes.py": "c49ff7456dfd95bc70ae2749c0af615eab3722c967e36fdf133e61d7e6071b4d",
+    "backend/src/luna_tutor/api/runtime.py": "36878a10034fc409f8c9e1c832f20715910e000410583facb53895842ae14497",
+    "backend/src/luna_tutor/api/schemas.py": "5a992a98b263189fafaa5caa16dfed987a8321290600fdb2aa9eca6fb6b11a93",
+    "backend/src/luna_tutor/config.py": "57143e14de463f7085834fe1d95c98495aefe7a3250d6e204f97da7877e81c2a",
+    "backend/src/luna_tutor/curriculum/__init__.py": "1fee533a87192cda0025d27a9280c312ca6a043c3e2f95ff5653468d10cb472b",
+    "backend/src/luna_tutor/curriculum/excel_importer.py": "c3bc42698c295092f57c85ab99f3a174688db2dc41b0dbc9e7c9e1c936966fd0",
+    "backend/src/luna_tutor/curriculum/loader.py": "aef1cc9932008c1c56528ef73c7ea7c13a6c52b4296e752bf6d44344557b8ef4",
+    "backend/src/luna_tutor/curriculum/models.py": "4609a8114d95878b2382509e79cd779a42f9b412d64f441c3eee4b042d0fd95c",
+    "backend/src/luna_tutor/domain/__init__.py": "16030cfa3ffe28c848affc3396f607319501a96dcb9ee91f5d14cdb99f84b99c",
+    "backend/src/luna_tutor/domain/contracts.py": "3153b012fe218513652bdd52832c4664c075d7d08f4809de1dc0abd4fe284819",
+    "backend/src/luna_tutor/domain/decisions.py": "370e8ed207277dd1768a23573688f99fb89bd59fc7c6187e6bad2d1c2821be70",
+    "backend/src/luna_tutor/domain/evidence.py": "0829d197f3c7d503f38c2229920b64f44ddf702873be18de5bb33c157f00ba71",
+    "backend/src/luna_tutor/domain/privacy.py": "4397e4b9c63deb7933442bab9f31d0d1850198d3c5ec59fc15fe976fa346d45f",
+    "backend/src/luna_tutor/domain/state.py": "e2e3f7b621a0a17d92a56a8d9753b9e1acaded5556f3e2d5ec9f9a93ce938063",
+    "backend/src/luna_tutor/domain/text_observations.py": "73bc87f0235db1aabaf0de29db25c8f1bffbf8e694274997af1c7ce5bc9783a3",
+    "backend/src/luna_tutor/evals/__init__.py": "f3bc7810ace28f8bfd1fa95462eb05a2717774b708d6b7ab2a81ff455d76b8b7",
+    "backend/src/luna_tutor/evals/behavior.py": "bf3f4ca0b14b5d488a0cb5b845e74496b98b863ddd688f11ab6ce701cbddb027",
+    "backend/src/luna_tutor/evals/cli.py": "a1b54e14db6dc37fecac1e5343939b6d14b6b10296c47ad8c0edfe8a0400a363",
+    "backend/src/luna_tutor/evals/loader.py": "c29f86486dd93cb986215e3f68007b49f37812c350358d60451b14a29874a5cc",
+    "backend/src/luna_tutor/evals/metrics.py": "290c9a06d74d509856ab51ccefa2d4e6425c8cf2f38944976852bb7c7016e0d6",
+    "backend/src/luna_tutor/evals/models.py": "02438eddceb01851595be100c7e5f618c21116f11470e8be40729ef2beb7ad22",
+    "backend/src/luna_tutor/evals/runner.py": "7b5082e6826b53bcbc0521d35d97487b1e8f8d46f50bb89a375a6daaf31bc4b0",
+    "backend/src/luna_tutor/llm/__init__.py": "2fcf8d80271bb97a44714fe9aecace78d24c1433193b0a1d1a6043ff9ad7bc4f",
+    "backend/src/luna_tutor/llm/evaluator.py": "9d45e2b5fa8c3e0ad10d7fb1fb5e36ee0d7a97ef79d42062e4bef444396d8553",
+    "backend/src/luna_tutor/llm/openrouter.py": "6bbc83ea42584c503dafbae3662d5a8df20ca3a1bdfef04be4eea91cbaf15a39",
+    "backend/src/luna_tutor/llm/teacher.py": "64b1b4ee9a5c1e6d9d04ecefa14aa313bed4404ef7c7630fd373be5007040003",
+    "backend/src/luna_tutor/prompts/__init__.py": "56a67b31a2526c2ff8757ddf82d68e1a50f3ee108978029657e24acdbc073a71",
+    "backend/src/luna_tutor/prompts/evaluator.md": "614cc7727a7e5069487be6c3484c200ab6e73ceb4d8640e7641d78c11b1a35e4",
+    "backend/src/luna_tutor/prompts/teacher-system.md": "a4d2a0bea40b1966ae86b59fb19fd0375ba2a9c2b85e38541340cada72e9277c",
+    "backend/src/luna_tutor/storage/__init__.py": "e0d0ad5036c622475a92a60f26acda5285634df6d71ad4d6ae1bf343609a2d18",
+    "backend/src/luna_tutor/storage/session_repository.py": "02951ae0c65d9238bb8aba33b6b22e59247fb112d39ff61d279dd8dc6dca237d",
+    "backend/src/luna_tutor/storage/sqlite.py": "297b003dbe46689a8a57be31dda9ffccaa0c01e4b9fed0abb66db38c016602cb",
+    "backend/src/luna_tutor/teaching/closing.py": "17e4e02233e4f079e48f31f726d5b75c6095b6b9537538a34a25e0f726a28023",
+    "backend/src/luna_tutor/teaching/engine.py": "368f56860600a25044b99edf90345a596b9e8b9b26315ec64a25a4cc634fee17",
+    "backend/src/luna_tutor/teaching/planner.py": "f04ee59c42191dda003908ab078560ec396d586b8803493c30f87a6f873a4a3a",
+    "backend/src/luna_tutor/teaching/text_delivery.py": "09efa3bd5f470455ed86ad49bdcaf06362c8055f1be09ac8b493fef52b476071",
+    "backend/src/luna_tutor/teaching/turn_service.py": "7e2410aaf0b065e49acebc3bdb1b3dca1f9e45b08f5a1fdd47650804c97cb1fb",
+    "curriculum/grade-05/unit-01/free-talk/content.yaml": "8b74dd9c91f432c20e1a5942a3579e060091657532e6af76f0c66b870f9f5f0d",
+    "curriculum/grade-05/unit-01/lesson-01/content.yaml": "bf4174c313fff98502e3a367850f21a2a1ee2143a553e44714c3f0e06e65f505",
+    "curriculum/grade-05/unit-01/lesson-02/content.yaml": "5b19560f0bd8b44d12ab3ff5f29dc6ab28b384521b0df0447bd00585210dbee2",
+    "curriculum/grade-05/unit-01/lesson-03/content.yaml": "b9ae25e6678246d2ea808f7b93793dc11533db88e7088acbdf0a8261c1f1291e",
+    "curriculum/grade-05/unit-01/level-02/content.yaml": "2a8e1c2d1c092730bec6d9c6b8cd69b93bc988af4e771a6e5e79b9652f68cd4c",
+    "curriculum/grade-05/unit-01/level-03/content.yaml": "d14918482fffa48613bd03252491fb7b1c259d13b9e0f0adccab12c361249d4a",
+    "curriculum/grade-05/unit-01/unit.yaml": "0e0060ab396397829e9a64e8d221e624b714da9adcaefdb0b14013c1d5f02908",
+    "evals/unit-01/development/branches.yaml": "c65469e052607b1aac9d642d59147a8604ef908709a05f3d4d0c54be5db55c9d",
+    "evals/unit-01/development/context-regressions.yaml": "1ae6c2e4fe3043ca313541b3a75e283dfcefee26381637dd245bdecfa4a1c287",
+    "evals/unit-01/development/free-talk-regressions.yaml": "63201e9e309267b2e487ed68c0251b5925314002ef5947693fadc7b855549645",
+    "evals/unit-01/development/interaction-regressions.yaml": "09297c6a472be08bc6d9ac8d66d526f761eb6f4a28359fd6060b414aa96cfd59",
+    "evals/unit-01/development/numbered.yaml": "b2a9178b478745077fc2c9f2f0ec4d2074cc2a14ae0c08187143741ccd6d7db6",
+    "scripts/eval-pipecat-text.py": "0a8f7ea437d6c5daebf12887041d328546c47b82a0d4ae79fc4c56010e638f3d",
+    "voice/server/bot.py": "ee6ec4cc26b3f2bd440f6532406f60f9d26f441d55a08b3b88b8dcea80d3e676",
+    "voice/server/text_flows.py": "635764ae40c81f0a8b909e3c46e0e77c8c450935507831dee0343f23e9f3ff82",
+    "voice/server/text_frames.py": "e34f8b58f7bc7ab78f2c8e590d7eb2d9ec40b4adc5813f6bcae0554534b9cda3",
+    "voice/server/text_pipeline.py": "2faad4a79430f96f9b3beca2d8ef2e2aa1b2248e3af58da8b43797de6580b69a",
+    "voice/server/text_runtime.py": "902f879292fa2e4a3012ce955198c9f00eac486559702feb4ea3743fb4241670"
+  },
+  "semantic_review": "pending",
+  "complete": true,
+  "records": [
+    {
+      "scenario_id": "context-family-and-place",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-context-family-and-place",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "free-talk",
+        "activity_id": "free-talk.conversation",
+        "objective_id": null,
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "free-talk.conversation",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03",
+          "level-02",
+          "level-03"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "I'm Emma from England! What do you like doing after school?",
+        "recent_context": [],
+        "closing_message": null,
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "follows_child_topic",
+        "does_not_reintroduce_emma",
+        "does_not_invent_learner_facts"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "context-family-and-place-0",
+          "state_version": 0,
+          "learner_text": "My dad and I play table tennis after school.",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "context-family-and-place-0",
+            "state_version": 0,
+            "response_kind": "answer",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.city",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.dolphin",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.pink",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.sandwich",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "My dad and I play table tennis after school.",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "My dad and I play table tennis after school.",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.phone_number",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.subject",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "meaning_status": "satisfied",
+                "target_form_status": "valid_alternative",
+                "evidence_quote": "My dad and I play table tennis after school.",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.cottage",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.calm",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.crowded",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.vehicles",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.traffic_jam",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.pavement",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.drawback",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.amusement_park",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.describe_countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.however",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.moreover",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "acknowledge_and_continue",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false,
+            "support_limit_exit": false
+          },
+          "teacher_request": {
+            "turn_id": "context-family-and-place-0",
+            "feedback_action": "acknowledge_and_continue",
+            "corrected_form": null,
+            "learner_meaning": "My dad and I play table tennis after school.",
+            "next_teaching_move": "Continue the role in activity_context naturally; do not announce the role again or end the scene. Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal into a related question, without announcing a test or asking for a repeat. If absent, continue the conversation without inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request closes the conversation.",
+            "emotional_support": false,
+            "previous_teacher_turn": "I'm Emma from England! What do you like doing after school?",
+            "activity_context": {
+              "stage_id": "free-talk",
+              "activity_id": "free-talk.conversation",
+              "kind": "roleplay",
+              "objectives": [],
+              "target_words": [],
+              "target_patterns": [],
+              "examples": [],
+              "model_repetitions": 0,
+              "remaining_model_repetitions": 0,
+              "needs_response_invitation": false,
+              "response_opportunity_required": true,
+              "delivery_only": false,
+              "role_name": "Emma",
+              "role_country": "England"
+            },
+            "review_objective": null,
+            "recent_context": [],
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-context-family-and-place",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "free-talk",
+            "activity_id": "free-talk.conversation",
+            "objective_id": null,
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "free-talk.conversation",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson02.vocabulary.table_tennis",
+                  "unit01.level02.pattern.hobby",
+                  "unit01.level02.vocabulary.hobby"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02",
+              "level-03"
+            ],
+            "applied_turn_ids": [
+              "context-family-and-place-0"
+            ],
+            "last_teacher_turn": "I'm Emma from England! What do you like doing after school?",
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "My dad and I play table tennis after school."
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play table tennis after school! Where do you play?"
+              }
+            ],
+            "closing_message": null,
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "You and your dad play table tennis after school! Where do you play?",
+          "delivery_intent": "roleplay",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-context-family-and-place",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "free-talk",
+          "activity_id": "free-talk.conversation",
+          "objective_id": null,
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "free-talk.conversation",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson02.vocabulary.table_tennis",
+                "unit01.level02.pattern.hobby",
+                "unit01.level02.vocabulary.hobby"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.vocabulary.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.pattern.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02",
+            "level-03"
+          ],
+          "applied_turn_ids": [
+            "context-family-and-place-0"
+          ],
+          "last_teacher_turn": "You and your dad play table tennis after school! Where do you play?",
+          "recent_context": [
+            {
+              "role": "learner",
+              "text": "My dad and I play table tennis after school."
+            },
+            {
+              "role": "teacher",
+              "text": "You and your dad play table tennis after school! Where do you play?"
+            }
+          ],
+          "closing_message": null,
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [],
+      "latency_ms": 7520.684888993856
+    },
+    {
+      "scenario_id": "context-family-and-place",
+      "turn_index": 2,
+      "initial_state": {
+        "session_id": "behavior-context-family-and-place",
+        "unit_id": "grade05.unit01",
+        "state_version": 1,
+        "stage_id": "free-talk",
+        "activity_id": "free-talk.conversation",
+        "objective_id": null,
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "free-talk.conversation",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [
+              "unit01.lesson02.vocabulary.table_tennis",
+              "unit01.level02.pattern.hobby",
+              "unit01.level02.vocabulary.hobby"
+            ],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": true,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.level02.vocabulary.hobby",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.level02.pattern.hobby",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03",
+          "level-02",
+          "level-03"
+        ],
+        "applied_turn_ids": [
+          "context-family-and-place-0"
+        ],
+        "last_teacher_turn": "You and your dad play table tennis after school! Where do you play?",
+        "recent_context": [
+          {
+            "role": "learner",
+            "text": "My dad and I play table tennis after school."
+          },
+          {
+            "role": "teacher",
+            "text": "You and your dad play table tennis after school! Where do you play?"
+          }
+        ],
+        "closing_message": null,
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "follows_child_topic",
+        "does_not_reintroduce_emma",
+        "does_not_invent_learner_facts"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "context-family-and-place-1",
+          "state_version": 1,
+          "learner_text": "We usually play in the school yard. I walk home afterwards.",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "context-family-and-place-1",
+            "state_version": 1,
+            "response_kind": "answer",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.city",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.dolphin",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.pink",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.sandwich",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "We usually play in the school yard.",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.phone_number",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.subject",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.cottage",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.calm",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.crowded",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.vehicles",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.traffic_jam",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.pavement",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.drawback",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.amusement_park",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.describe_countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.however",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.moreover",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "acknowledge_and_continue",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false,
+            "support_limit_exit": false
+          },
+          "teacher_request": {
+            "turn_id": "context-family-and-place-1",
+            "feedback_action": "acknowledge_and_continue",
+            "corrected_form": null,
+            "learner_meaning": "We usually play in the school yard. I walk home afterwards.",
+            "next_teaching_move": "Continue the role in activity_context naturally; do not announce the role again or end the scene. Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal into a related question, without announcing a test or asking for a repeat. If absent, continue the conversation without inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request closes the conversation.",
+            "emotional_support": false,
+            "previous_teacher_turn": "You and your dad play table tennis after school! Where do you play?",
+            "activity_context": {
+              "stage_id": "free-talk",
+              "activity_id": "free-talk.conversation",
+              "kind": "roleplay",
+              "objectives": [],
+              "target_words": [],
+              "target_patterns": [],
+              "examples": [],
+              "model_repetitions": 0,
+              "remaining_model_repetitions": 0,
+              "needs_response_invitation": false,
+              "response_opportunity_required": true,
+              "delivery_only": false,
+              "role_name": "Emma",
+              "role_country": "England"
+            },
+            "review_objective": null,
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "My dad and I play table tennis after school."
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play table tennis after school! Where do you play?"
+              }
+            ],
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-context-family-and-place",
+            "unit_id": "grade05.unit01",
+            "state_version": 2,
+            "stage_id": "free-talk",
+            "activity_id": "free-talk.conversation",
+            "objective_id": null,
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "free-talk.conversation",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson02.vocabulary.table_tennis",
+                  "unit01.level02.pattern.hobby",
+                  "unit01.level02.vocabulary.hobby"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02",
+              "level-03"
+            ],
+            "applied_turn_ids": [
+              "context-family-and-place-0",
+              "context-family-and-place-1"
+            ],
+            "last_teacher_turn": "You and your dad play table tennis after school! Where do you play?",
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "My dad and I play table tennis after school."
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play table tennis after school! Where do you play?"
+              },
+              {
+                "role": "learner",
+                "text": "We usually play in the school yard. I walk home afterwards."
+              },
+              {
+                "role": "teacher",
+                "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+              }
+            ],
+            "closing_message": null,
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?",
+          "delivery_intent": "roleplay",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-context-family-and-place",
+          "unit_id": "grade05.unit01",
+          "state_version": 2,
+          "stage_id": "free-talk",
+          "activity_id": "free-talk.conversation",
+          "objective_id": null,
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "free-talk.conversation",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson02.vocabulary.table_tennis",
+                "unit01.level02.pattern.hobby",
+                "unit01.level02.vocabulary.hobby"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.vocabulary.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.pattern.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02",
+            "level-03"
+          ],
+          "applied_turn_ids": [
+            "context-family-and-place-0",
+            "context-family-and-place-1"
+          ],
+          "last_teacher_turn": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?",
+          "recent_context": [
+            {
+              "role": "learner",
+              "text": "My dad and I play table tennis after school."
+            },
+            {
+              "role": "teacher",
+              "text": "You and your dad play table tennis after school! Where do you play?"
+            },
+            {
+              "role": "learner",
+              "text": "We usually play in the school yard. I walk home afterwards."
+            },
+            {
+              "role": "teacher",
+              "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+            }
+          ],
+          "closing_message": null,
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [],
+      "latency_ms": 6558.720093991724
+    },
+    {
+      "scenario_id": "context-family-and-place",
+      "turn_index": 3,
+      "initial_state": {
+        "session_id": "behavior-context-family-and-place",
+        "unit_id": "grade05.unit01",
+        "state_version": 2,
+        "stage_id": "free-talk",
+        "activity_id": "free-talk.conversation",
+        "objective_id": null,
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "free-talk.conversation",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [
+              "unit01.lesson02.vocabulary.table_tennis",
+              "unit01.level02.pattern.hobby",
+              "unit01.level02.vocabulary.hobby"
+            ],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": true,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.level02.vocabulary.hobby",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.level02.pattern.hobby",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03",
+          "level-02",
+          "level-03"
+        ],
+        "applied_turn_ids": [
+          "context-family-and-place-0",
+          "context-family-and-place-1"
+        ],
+        "last_teacher_turn": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?",
+        "recent_context": [
+          {
+            "role": "learner",
+            "text": "My dad and I play table tennis after school."
+          },
+          {
+            "role": "teacher",
+            "text": "You and your dad play table tennis after school! Where do you play?"
+          },
+          {
+            "role": "learner",
+            "text": "We usually play in the school yard. I walk home afterwards."
+          },
+          {
+            "role": "teacher",
+            "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+          }
+        ],
+        "closing_message": null,
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "answers_dad_from_prior_learner_context",
+        "does_not_claim_teacher_plays_with_dad"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "context-family-and-place-2",
+          "state_version": 2,
+          "learner_text": "Who do I play table tennis with?",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "context-family-and-place-2",
+            "state_version": 2,
+            "response_kind": "asks_teacher",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "Who do I play table tennis with?",
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "answer_teacher_question",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 2,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false,
+            "support_limit_exit": false
+          },
+          "teacher_request": {
+            "turn_id": "context-family-and-place-2",
+            "feedback_action": "answer_teacher_question",
+            "corrected_form": null,
+            "learner_meaning": "Who do I play table tennis with?",
+            "next_teaching_move": "Answer the specific question Quang just asked using the correct person and recent context. An additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked you; do not instruct him to ask the same question again.",
+            "emotional_support": false,
+            "previous_teacher_turn": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?",
+            "activity_context": {
+              "stage_id": "free-talk",
+              "activity_id": "free-talk.conversation",
+              "kind": "roleplay",
+              "objectives": [],
+              "target_words": [],
+              "target_patterns": [],
+              "examples": [],
+              "model_repetitions": 0,
+              "remaining_model_repetitions": 0,
+              "needs_response_invitation": false,
+              "response_opportunity_required": true,
+              "delivery_only": false,
+              "role_name": "Emma",
+              "role_country": "England"
+            },
+            "review_objective": null,
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "My dad and I play table tennis after school."
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play table tennis after school! Where do you play?"
+              },
+              {
+                "role": "learner",
+                "text": "We usually play in the school yard. I walk home afterwards."
+              },
+              {
+                "role": "teacher",
+                "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+              }
+            ],
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-context-family-and-place",
+            "unit_id": "grade05.unit01",
+            "state_version": 3,
+            "stage_id": "free-talk",
+            "activity_id": "free-talk.conversation",
+            "objective_id": null,
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "free-talk.conversation",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson02.vocabulary.table_tennis",
+                  "unit01.level02.pattern.hobby",
+                  "unit01.level02.vocabulary.hobby"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": true,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 2,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02",
+              "level-03"
+            ],
+            "applied_turn_ids": [
+              "context-family-and-place-0",
+              "context-family-and-place-1",
+              "context-family-and-place-2"
+            ],
+            "last_teacher_turn": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?",
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "My dad and I play table tennis after school."
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play table tennis after school! Where do you play?"
+              },
+              {
+                "role": "learner",
+                "text": "We usually play in the school yard. I walk home afterwards."
+              },
+              {
+                "role": "teacher",
+                "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+              },
+              {
+                "role": "learner",
+                "text": "Who do I play table tennis with?"
+              },
+              {
+                "role": "teacher",
+                "text": "You play table tennis with your dad!"
+              }
+            ],
+            "closing_message": null,
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "You play table tennis with your dad!",
+          "delivery_intent": "roleplay",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-context-family-and-place",
+          "unit_id": "grade05.unit01",
+          "state_version": 3,
+          "stage_id": "free-talk",
+          "activity_id": "free-talk.conversation",
+          "objective_id": null,
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "free-talk.conversation",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson02.vocabulary.table_tennis",
+                "unit01.level02.pattern.hobby",
+                "unit01.level02.vocabulary.hobby"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": true,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 2,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.vocabulary.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.pattern.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02",
+            "level-03"
+          ],
+          "applied_turn_ids": [
+            "context-family-and-place-0",
+            "context-family-and-place-1",
+            "context-family-and-place-2"
+          ],
+          "last_teacher_turn": "You play table tennis with your dad!",
+          "recent_context": [
+            {
+              "role": "learner",
+              "text": "My dad and I play table tennis after school."
+            },
+            {
+              "role": "teacher",
+              "text": "You and your dad play table tennis after school! Where do you play?"
+            },
+            {
+              "role": "learner",
+              "text": "We usually play in the school yard. I walk home afterwards."
+            },
+            {
+              "role": "teacher",
+              "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+            },
+            {
+              "role": "learner",
+              "text": "Who do I play table tennis with?"
+            },
+            {
+              "role": "teacher",
+              "text": "You play table tennis with your dad!"
+            }
+          ],
+          "closing_message": null,
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [],
+      "latency_ms": 2874.064695002744
+    },
+    {
+      "scenario_id": "context-family-and-place",
+      "turn_index": 4,
+      "initial_state": {
+        "session_id": "behavior-context-family-and-place",
+        "unit_id": "grade05.unit01",
+        "state_version": 3,
+        "stage_id": "free-talk",
+        "activity_id": "free-talk.conversation",
+        "objective_id": null,
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "free-talk.conversation",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [
+              "unit01.lesson02.vocabulary.table_tennis",
+              "unit01.level02.pattern.hobby",
+              "unit01.level02.vocabulary.hobby"
+            ],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": true,
+            "learner_asked_teacher": true,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 2,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.level02.vocabulary.hobby",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.level02.pattern.hobby",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03",
+          "level-02",
+          "level-03"
+        ],
+        "applied_turn_ids": [
+          "context-family-and-place-0",
+          "context-family-and-place-1",
+          "context-family-and-place-2"
+        ],
+        "last_teacher_turn": "You play table tennis with your dad!",
+        "recent_context": [
+          {
+            "role": "learner",
+            "text": "My dad and I play table tennis after school."
+          },
+          {
+            "role": "teacher",
+            "text": "You and your dad play table tennis after school! Where do you play?"
+          },
+          {
+            "role": "learner",
+            "text": "We usually play in the school yard. I walk home afterwards."
+          },
+          {
+            "role": "teacher",
+            "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+          },
+          {
+            "role": "learner",
+            "text": "Who do I play table tennis with?"
+          },
+          {
+            "role": "teacher",
+            "text": "You play table tennis with your dad!"
+          }
+        ],
+        "closing_message": null,
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "answers_school_yard_from_prior_context",
+        "does_not_invent_home_or_park"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "context-family-and-place-3",
+          "state_version": 3,
+          "learner_text": "And where do we play?",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "context-family-and-place-3",
+            "state_version": 3,
+            "response_kind": "asks_teacher",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.city",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.dolphin",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.pink",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.sandwich",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "And where do we play?",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.phone_number",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.subject",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.cottage",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.calm",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.crowded",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.vehicles",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.traffic_jam",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.pavement",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.drawback",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.amusement_park",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.describe_countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.however",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.moreover",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "answer_teacher_question",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 2,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false,
+            "support_limit_exit": false
+          },
+          "teacher_request": {
+            "turn_id": "context-family-and-place-3",
+            "feedback_action": "answer_teacher_question",
+            "corrected_form": null,
+            "learner_meaning": "And where do we play?",
+            "next_teaching_move": "Answer the specific question Quang just asked using the correct person and recent context. An additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked you; do not instruct him to ask the same question again.",
+            "emotional_support": false,
+            "previous_teacher_turn": "You play table tennis with your dad!",
+            "activity_context": {
+              "stage_id": "free-talk",
+              "activity_id": "free-talk.conversation",
+              "kind": "roleplay",
+              "objectives": [],
+              "target_words": [],
+              "target_patterns": [],
+              "examples": [],
+              "model_repetitions": 0,
+              "remaining_model_repetitions": 0,
+              "needs_response_invitation": false,
+              "response_opportunity_required": true,
+              "delivery_only": false,
+              "role_name": "Emma",
+              "role_country": "England"
+            },
+            "review_objective": null,
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "My dad and I play table tennis after school."
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play table tennis after school! Where do you play?"
+              },
+              {
+                "role": "learner",
+                "text": "We usually play in the school yard. I walk home afterwards."
+              },
+              {
+                "role": "teacher",
+                "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+              },
+              {
+                "role": "learner",
+                "text": "Who do I play table tennis with?"
+              },
+              {
+                "role": "teacher",
+                "text": "You play table tennis with your dad!"
+              }
+            ],
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-context-family-and-place",
+            "unit_id": "grade05.unit01",
+            "state_version": 4,
+            "stage_id": "free-talk",
+            "activity_id": "free-talk.conversation",
+            "objective_id": null,
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "free-talk.conversation",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson02.vocabulary.table_tennis",
+                  "unit01.level02.pattern.hobby",
+                  "unit01.level02.vocabulary.hobby"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": true,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 2,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 0,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02",
+              "level-03"
+            ],
+            "applied_turn_ids": [
+              "context-family-and-place-0",
+              "context-family-and-place-1",
+              "context-family-and-place-2",
+              "context-family-and-place-3"
+            ],
+            "last_teacher_turn": "You play table tennis with your dad!",
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "We usually play in the school yard. I walk home afterwards."
+              },
+              {
+                "role": "teacher",
+                "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+              },
+              {
+                "role": "learner",
+                "text": "Who do I play table tennis with?"
+              },
+              {
+                "role": "teacher",
+                "text": "You play table tennis with your dad!"
+              },
+              {
+                "role": "learner",
+                "text": "And where do we play?"
+              },
+              {
+                "role": "teacher",
+                "text": "You and your dad play in the school yard!"
+              }
+            ],
+            "closing_message": null,
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "You and your dad play in the school yard!",
+          "delivery_intent": "roleplay",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-context-family-and-place",
+          "unit_id": "grade05.unit01",
+          "state_version": 4,
+          "stage_id": "free-talk",
+          "activity_id": "free-talk.conversation",
+          "objective_id": null,
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "free-talk.conversation",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson02.vocabulary.table_tennis",
+                "unit01.level02.pattern.hobby",
+                "unit01.level02.vocabulary.hobby"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": true,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 2,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.vocabulary.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 0,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.level02.pattern.hobby",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02",
+            "level-03"
+          ],
+          "applied_turn_ids": [
+            "context-family-and-place-0",
+            "context-family-and-place-1",
+            "context-family-and-place-2",
+            "context-family-and-place-3"
+          ],
+          "last_teacher_turn": "You and your dad play in the school yard!",
+          "recent_context": [
+            {
+              "role": "learner",
+              "text": "We usually play in the school yard. I walk home afterwards."
+            },
+            {
+              "role": "teacher",
+              "text": "You usually play in the school yard and walk home afterwards! Do you walk home with your dad?"
+            },
+            {
+              "role": "learner",
+              "text": "Who do I play table tennis with?"
+            },
+            {
+              "role": "teacher",
+              "text": "You play table tennis with your dad!"
+            },
+            {
+              "role": "learner",
+              "text": "And where do we play?"
+            },
+            {
+              "role": "teacher",
+              "text": "You and your dad play in the school yard!"
+            }
+          ],
+          "closing_message": null,
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [],
+      "latency_ms": 5252.231030011899
+    },
+    {
+      "scenario_id": "context-character-is-not-learner",
+      "turn_index": 1,
+      "initial_state": {
+        "session_id": "behavior-context-character-is-not-learner",
+        "unit_id": "grade05.unit01",
+        "state_version": 0,
+        "stage_id": "free-talk",
+        "activity_id": "free-talk.conversation",
+        "objective_id": null,
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "free-talk.conversation",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": false,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03",
+          "level-02",
+          "level-03"
+        ],
+        "applied_turn_ids": [],
+        "last_teacher_turn": "I'm Emma from England! Where do you live?",
+        "recent_context": [],
+        "closing_message": null,
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "follows_child_topic",
+        "does_not_reintroduce_emma",
+        "does_not_invent_learner_facts"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "context-character-is-not-learner-0",
+          "state_version": 0,
+          "learner_text": "I live in the countryside in Vietnam.",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "context-character-is-not-learner-0",
+            "state_version": 0,
+            "response_kind": "answer",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "satisfied",
+                "target_form_status": "not_used",
+                "evidence_quote": "I live in the countryside in Vietnam.",
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "meaning_status": "satisfied",
+                "target_form_status": "correct_target_form",
+                "evidence_quote": "I live in the countryside in Vietnam.",
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "acknowledge_and_continue",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "count_attempt": false,
+            "support_limit_exit": false
+          },
+          "teacher_request": {
+            "turn_id": "context-character-is-not-learner-0",
+            "feedback_action": "acknowledge_and_continue",
+            "corrected_form": null,
+            "learner_meaning": "I live in the countryside in Vietnam.",
+            "next_teaching_move": "Continue the role in activity_context naturally; do not announce the role again or end the scene. Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal into a related question, without announcing a test or asking for a repeat. If absent, continue the conversation without inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request closes the conversation.",
+            "emotional_support": false,
+            "previous_teacher_turn": "I'm Emma from England! Where do you live?",
+            "activity_context": {
+              "stage_id": "free-talk",
+              "activity_id": "free-talk.conversation",
+              "kind": "roleplay",
+              "objectives": [],
+              "target_words": [],
+              "target_patterns": [],
+              "examples": [],
+              "model_repetitions": 0,
+              "remaining_model_repetitions": 0,
+              "needs_response_invitation": false,
+              "response_opportunity_required": true,
+              "delivery_only": false,
+              "role_name": "Emma",
+              "role_country": "England"
+            },
+            "review_objective": null,
+            "recent_context": [],
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-context-character-is-not-learner",
+            "unit_id": "grade05.unit01",
+            "state_version": 1,
+            "stage_id": "free-talk",
+            "activity_id": "free-talk.conversation",
+            "objective_id": null,
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "free-talk.conversation",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson01.pattern.live_in",
+                  "unit01.lesson01.vocabulary.countryside"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": false,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02",
+              "level-03"
+            ],
+            "applied_turn_ids": [
+              "context-character-is-not-learner-0"
+            ],
+            "last_teacher_turn": "I'm Emma from England! Where do you live?",
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "I live in the countryside in Vietnam."
+              },
+              {
+                "role": "teacher",
+                "text": "You live in the countryside in Vietnam! What is your favourite thing to do there?"
+              }
+            ],
+            "closing_message": null,
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "You live in the countryside in Vietnam! What is your favourite thing to do there?",
+          "delivery_intent": "roleplay",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-context-character-is-not-learner",
+          "unit_id": "grade05.unit01",
+          "state_version": 1,
+          "stage_id": "free-talk",
+          "activity_id": "free-talk.conversation",
+          "objective_id": null,
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "free-talk.conversation",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson01.pattern.live_in",
+                "unit01.lesson01.vocabulary.countryside"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": false,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson01.vocabulary.countryside",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02",
+            "level-03"
+          ],
+          "applied_turn_ids": [
+            "context-character-is-not-learner-0"
+          ],
+          "last_teacher_turn": "You live in the countryside in Vietnam! What is your favourite thing to do there?",
+          "recent_context": [
+            {
+              "role": "learner",
+              "text": "I live in the countryside in Vietnam."
+            },
+            {
+              "role": "teacher",
+              "text": "You live in the countryside in Vietnam! What is your favourite thing to do there?"
+            }
+          ],
+          "closing_message": null,
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [],
+      "latency_ms": 2223.6929409991717
+    },
+    {
+      "scenario_id": "context-character-is-not-learner",
+      "turn_index": 2,
+      "initial_state": {
+        "session_id": "behavior-context-character-is-not-learner",
+        "unit_id": "grade05.unit01",
+        "state_version": 1,
+        "stage_id": "free-talk",
+        "activity_id": "free-talk.conversation",
+        "objective_id": null,
+        "status": "active",
+        "attempt_count": 0,
+        "support_given": {
+          "model_spoken_recently": false,
+          "choices_given": false,
+          "sentence_starter_given": false
+        },
+        "activity_progress": [
+          {
+            "activity_id": "free-talk.conversation",
+            "status": "in_progress",
+            "attempt_count": 0,
+            "demonstrated_meaning_ids": [
+              "unit01.lesson01.pattern.live_in",
+              "unit01.lesson01.vocabulary.countryside"
+            ],
+            "no_response_count": 0,
+            "model_repetitions_delivered": 0,
+            "response_opportunity_given": true,
+            "feedback_delivered": true,
+            "learner_asked_teacher": false,
+            "completion_reason": null
+          }
+        ],
+        "objective_progress": [
+          {
+            "objective_id": "unit01.lesson01.vocabulary.countryside",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          },
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "review_queue": [],
+        "completed_stage_ids": [
+          "warm-up",
+          "lesson-01",
+          "lesson-02",
+          "lesson-03",
+          "level-02",
+          "level-03"
+        ],
+        "applied_turn_ids": [
+          "context-character-is-not-learner-0"
+        ],
+        "last_teacher_turn": "You live in the countryside in Vietnam! What is your favourite thing to do there?",
+        "recent_context": [
+          {
+            "role": "learner",
+            "text": "I live in the countryside in Vietnam."
+          },
+          {
+            "role": "teacher",
+            "text": "You live in the countryside in Vietnam! What is your favourite thing to do there?"
+          }
+        ],
+        "closing_message": null,
+        "elapsed_seconds": 0.0,
+        "last_success_at_seconds": null,
+        "stop_requested": false,
+        "privacy_event": false
+      },
+      "semantic_criteria": [
+        "says_learner_lives_in_vietnam",
+        "keeps_emma_england_fact_separate"
+      ],
+      "semantic_review_status": "pending",
+      "failures": [],
+      "input_event": "transcript",
+      "transcript_status": "final",
+      "evidence_source": "evaluator",
+      "input_mode": "typed_text",
+      "completed_turn": {
+        "plan": {
+          "turn_id": "context-character-is-not-learner-1",
+          "state_version": 1,
+          "learner_text": "Do I live in England?",
+          "privacy_event": false,
+          "evidence": {
+            "turn_id": "context-character-is-not-learner-1",
+            "state_version": 1,
+            "response_kind": "asks_teacher",
+            "emotional_signals": [],
+            "objective_evidence": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.city",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.class",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.dolphin",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.pink",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.sandwich",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.vocabulary.table_tennis",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.lesson02.pattern.favourite",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.hobby",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.phone_number",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.vocabulary.subject",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.birthday",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level02.pattern.hobby",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.cottage",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.calm",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.crowded",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.vehicles",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.traffic_jam",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.pavement",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.drawback",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.vocabulary.amusement_park",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.describe_countryside",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.however",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              },
+              {
+                "objective_id": "unit01.level03.pattern.moreover",
+                "meaning_status": "not_demonstrated",
+                "target_form_status": "not_used",
+                "evidence_quote": null,
+                "recast_needed": false,
+                "corrected_form": null
+              }
+            ],
+            "needs_clarification": false,
+            "ambiguity_reason": null
+          },
+          "decision": {
+            "feedback_action": "answer_teacher_question",
+            "progression_action": "stay",
+            "corrected_form": null,
+            "emotional_support": false,
+            "next_objective_id": null,
+            "next_activity_id": null,
+            "next_stage_id": null,
+            "review_queue_add": [],
+            "review_queue_remove": [],
+            "mastery_updates": [],
+            "count_attempt": false,
+            "support_limit_exit": false
+          },
+          "teacher_request": {
+            "turn_id": "context-character-is-not-learner-1",
+            "feedback_action": "answer_teacher_question",
+            "corrected_form": null,
+            "learner_meaning": "Do I live in England?",
+            "next_teaching_move": "Answer the specific question Quang just asked using the correct person and recent context. An additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked you; do not instruct him to ask the same question again.",
+            "emotional_support": false,
+            "previous_teacher_turn": "You live in the countryside in Vietnam! What is your favourite thing to do there?",
+            "activity_context": {
+              "stage_id": "free-talk",
+              "activity_id": "free-talk.conversation",
+              "kind": "roleplay",
+              "objectives": [],
+              "target_words": [],
+              "target_patterns": [],
+              "examples": [],
+              "model_repetitions": 0,
+              "remaining_model_repetitions": 0,
+              "needs_response_invitation": false,
+              "response_opportunity_required": true,
+              "delivery_only": false,
+              "role_name": "Emma",
+              "role_country": "England"
+            },
+            "review_objective": null,
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "I live in the countryside in Vietnam."
+              },
+              {
+                "role": "teacher",
+                "text": "You live in the countryside in Vietnam! What is your favourite thing to do there?"
+              }
+            ],
+            "constraints": {
+              "max_questions": 1,
+              "require_repetition": false,
+              "allow_pronunciation_claims": false,
+              "plain_spoken_text": true,
+              "additional": [
+                "Never require Quang to repeat a correction.",
+                "Speak one short, natural turn without Markdown."
+              ]
+            }
+          },
+          "proposed_next_state": {
+            "session_id": "behavior-context-character-is-not-learner",
+            "unit_id": "grade05.unit01",
+            "state_version": 2,
+            "stage_id": "free-talk",
+            "activity_id": "free-talk.conversation",
+            "objective_id": null,
+            "status": "active",
+            "attempt_count": 0,
+            "support_given": {
+              "model_spoken_recently": false,
+              "choices_given": false,
+              "sentence_starter_given": false
+            },
+            "activity_progress": [
+              {
+                "activity_id": "free-talk.conversation",
+                "status": "in_progress",
+                "attempt_count": 0,
+                "demonstrated_meaning_ids": [
+                  "unit01.lesson01.pattern.live_in",
+                  "unit01.lesson01.vocabulary.countryside"
+                ],
+                "no_response_count": 0,
+                "model_repetitions_delivered": 0,
+                "response_opportunity_given": true,
+                "feedback_delivered": true,
+                "learner_asked_teacher": true,
+                "completion_reason": null
+              }
+            ],
+            "objective_progress": [
+              {
+                "objective_id": "unit01.lesson01.vocabulary.countryside",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              },
+              {
+                "objective_id": "unit01.lesson01.pattern.live_in",
+                "introduced": false,
+                "attempted": true,
+                "supported_uses": 0,
+                "independent_uses": 1,
+                "needs_review": false
+              }
+            ],
+            "review_queue": [],
+            "completed_stage_ids": [
+              "warm-up",
+              "lesson-01",
+              "lesson-02",
+              "lesson-03",
+              "level-02",
+              "level-03"
+            ],
+            "applied_turn_ids": [
+              "context-character-is-not-learner-0",
+              "context-character-is-not-learner-1"
+            ],
+            "last_teacher_turn": "You live in the countryside in Vietnam! What is your favourite thing to do there?",
+            "recent_context": [
+              {
+                "role": "learner",
+                "text": "I live in the countryside in Vietnam."
+              },
+              {
+                "role": "teacher",
+                "text": "You live in the countryside in Vietnam! What is your favourite thing to do there?"
+              },
+              {
+                "role": "learner",
+                "text": "Do I live in England?"
+              },
+              {
+                "role": "teacher",
+                "text": "No, you do not live in England, you live in the countryside in Vietnam!"
+              }
+            ],
+            "closing_message": null,
+            "elapsed_seconds": 0.0,
+            "last_success_at_seconds": null,
+            "stop_requested": false,
+            "privacy_event": false
+          }
+        },
+        "teacher_utterance": {
+          "spoken_text": "No, you do not live in England, you live in the countryside in Vietnam!",
+          "delivery_intent": "roleplay",
+          "generation_mode": "model"
+        },
+        "next_state": {
+          "session_id": "behavior-context-character-is-not-learner",
+          "unit_id": "grade05.unit01",
+          "state_version": 2,
+          "stage_id": "free-talk",
+          "activity_id": "free-talk.conversation",
+          "objective_id": null,
+          "status": "active",
+          "attempt_count": 0,
+          "support_given": {
+            "model_spoken_recently": false,
+            "choices_given": false,
+            "sentence_starter_given": false
+          },
+          "activity_progress": [
+            {
+              "activity_id": "free-talk.conversation",
+              "status": "in_progress",
+              "attempt_count": 0,
+              "demonstrated_meaning_ids": [
+                "unit01.lesson01.pattern.live_in",
+                "unit01.lesson01.vocabulary.countryside"
+              ],
+              "no_response_count": 0,
+              "model_repetitions_delivered": 0,
+              "response_opportunity_given": true,
+              "feedback_delivered": true,
+              "learner_asked_teacher": true,
+              "completion_reason": null
+            }
+          ],
+          "objective_progress": [
+            {
+              "objective_id": "unit01.lesson01.vocabulary.countryside",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            },
+            {
+              "objective_id": "unit01.lesson01.pattern.live_in",
+              "introduced": false,
+              "attempted": true,
+              "supported_uses": 0,
+              "independent_uses": 1,
+              "needs_review": false
+            }
+          ],
+          "review_queue": [],
+          "completed_stage_ids": [
+            "warm-up",
+            "lesson-01",
+            "lesson-02",
+            "lesson-03",
+            "level-02",
+            "level-03"
+          ],
+          "applied_turn_ids": [
+            "context-character-is-not-learner-0",
+            "context-character-is-not-learner-1"
+          ],
+          "last_teacher_turn": "No, you do not live in England, you live in the countryside in Vietnam!",
+          "recent_context": [
+            {
+              "role": "learner",
+              "text": "I live in the countryside in Vietnam."
+            },
+            {
+              "role": "teacher",
+              "text": "You live in the countryside in Vietnam! What is your favourite thing to do there?"
+            },
+            {
+              "role": "learner",
+              "text": "Do I live in England?"
+            },
+            {
+              "role": "teacher",
+              "text": "No, you do not live in England, you live in the countryside in Vietnam!"
+            }
+          ],
+          "closing_message": null,
+          "elapsed_seconds": 0.0,
+          "last_success_at_seconds": null,
+          "stop_requested": false,
+          "privacy_event": false
+        }
+      },
+      "checked": [
+        "feedback_action",
+        "count_attempt",
+        "activity_id",
+        "teacher_fallback",
+        "forced_repetition",
+        "pronunciation_claim",
+        "markdown",
+        "too_many_questions"
+      ],
+      "unmeasured_forbidden_behaviors": [],
+      "latency_ms": 5571.244271006435
+    }
+  ]
+}

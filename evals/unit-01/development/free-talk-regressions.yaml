@@ -50,3 +50,11 @@ scenarios:
       objective_id: null
       review_queue_contains: [unit01.level03.vocabulary.traffic_jam]
     teacher_criteria: [follows_table_tennis_topic, does_not_force_traffic_topic, stays_in_emma_role]
+- id: free-review-vietnamese-meaning
+  source: {heading: 'Derived Free Talk: meaning is not English word retrieval', line: 746, numbered: false}
+  turns:
+  - teacher_turn: What is the road near your school like?
+    learner_text: Đường gần trường con bị tắc vì có nhiều xe.
+    expected_state_effects:
+      review_queue_contains: [unit01.level03.vocabulary.traffic_jam]
+    teacher_criteria: [acknowledges_traffic_fact, supports_english_gently, does_not_announce_review, does_not_force_repetition]

@@ -204,6 +204,7 @@ async def test_free_talk_passes_only_selected_review_and_clears_resolved_focus(f
     assert plan.teacher_request.review_objective.objective_id == traffic
     assert 'traffic jam' in plan.teacher_request.review_objective.communicative_goal
     assert plan.teacher_request.activity_context.objectives == ()
+    assert plan.teacher_request.activity_context.examples == ()  # No repeated role-entry examples.
 
     from luna_tutor.teaching.turn_service import TurnService
     from luna_tutor.domain.decisions import TeacherUtterance
@@ -229,3 +230,23 @@ async def test_free_talk_passes_only_selected_review_and_clears_resolved_focus(f
     assert plan.proposed_next_state.attempt_count == 0
     assert plan.teacher_request.review_objective is None
     assert plan.proposed_next_state.review_queue == ()
+
+
+@pytest.mark.asyncio
+async def test_exhausted_existing_review_is_not_immediately_selected_again(free_state, unit_01):
+    from luna_tutor.domain.state import ReviewItem
+    home = 'unit01.lesson01.pattern.live_in'
+    state = free_state.model_copy(update={'objective_id': home, 'attempt_count': 1,
+        'applied_turn_ids': ('old-turn', 'intervening-turn'),
+        'review_queue': (ReviewItem(objective_id=home, difficulty='target_form',
+            learner_context='city', last_seen_turn_id='old-turn'),)})
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0, response_kind='answer',
+        emotional_signals=[], objective_evidence=[ObjectiveEvidence(objective_id=home,
+            meaning_status='satisfied', target_form_status='not_used', evidence_quote='City.',
+            recast_needed=False, corrected_form=None)], needs_clarification=False, ambiguity_reason=None)
+    planner = TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01)
+    first = await planner.plan(state, 'City.', 'exhausted-now')
+    assert first.proposed_next_state.objective_id is None
+    assert first.proposed_next_state.review_queue[0].last_seen_turn_id == 'exhausted-now'
+    second = await planner.plan(first.proposed_next_state, 'City.', 'next-turn')
+    assert second.decision.next_objective_id is None

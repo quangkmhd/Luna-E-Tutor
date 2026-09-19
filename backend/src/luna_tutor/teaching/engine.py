@@ -27,10 +27,10 @@ def _independent(state: LessonState) -> bool:
 def _english_success(item: ObjectiveEvidence, curriculum: UnitCurriculum) -> bool:
     if item.meaning_status != 'satisfied':
         return False
-    if item.target_form_status in _SUCCESSFUL_FORMS:
-        return True
     objective = next(o for o in curriculum.objectives if o.id == item.objective_id)
-    if objective.pattern_ids or item.target_form_status != 'not_used':
+    if objective.pattern_ids:
+        return item.target_form_status in _SUCCESSFUL_FORMS
+    if item.target_form_status not in _SUCCESSFUL_FORMS | {'not_used'}:
         return False
     # Vocabulary has no sentence-form target. Require the actual English word,
     # so a Vietnamese explanation alone is not counted as English word use.

@@ -76,3 +76,38 @@ async def test_delivery_never_invents_missing_target_models(unit_01, text, mode,
                                Teacher(text, mode)).process(state, 'What does city mean?', 'one')
     progress = next(p for p in result.next_state.activity_progress if p.activity_id == state.activity_id)
     assert progress.model_repetitions_delivered == expected
+
+
+@pytest.mark.asyncio
+async def test_recent_context_is_bounded_persisted_and_shared_without_contact_data(unit_01):
+    class RecordingEvaluator(MeaningEvaluator):
+        def __init__(self):
+            self.requests = []
+        async def evaluate(self, request):
+            self.requests.append(request)
+            return await super().evaluate(request)
+    class RecordingTeacher(Teacher):
+        def __init__(self):
+            super().__init__('A city has many buildings. What would you like to know?')
+            self.requests = []
+        async def respond(self, request):
+            self.requests.append(request)
+            return await super().respond(request)
+    evaluator, teacher = RecordingEvaluator(), RecordingTeacher()
+    service = TurnService(TurnPlanner(evaluator, TeachingEngine(), unit_01), teacher)
+    state = city_state(unit_01)
+    inputs = ['What is a city?', 'Does it have schools?',
+              'My number is 0912 345 678.', 'Are there parks?']
+    for index, text in enumerate(inputs):
+        completed = await service.process(state, text, f'memory-{index}')
+        state = LessonState.model_validate_json(completed.next_state.model_dump_json())
+    assert len(state.recent_context) == 6
+    assert state.recent_context[0].text == 'Does it have schools?'
+    assert state.recent_context[-1].role == 'teacher'
+    assert '0912 345 678' not in state.model_dump_json()
+    assert '[REDACTED_PHONE]' in state.recent_context[2].text
+    before = state.model_dump_json()
+    await service.process(state, 'What about shops?', 'memory-next')
+    assert evaluator.requests[-1].recent_context == list(state.recent_context)
+    assert teacher.requests[-1].recent_context == state.recent_context
+    assert state.model_dump_json() == before

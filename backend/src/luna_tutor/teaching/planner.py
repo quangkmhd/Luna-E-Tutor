@@ -33,7 +33,7 @@ class TurnPlanner:
             support_given=state.support_given,
             transcript_status=transcript_status, input_event=input_event,
             learner_transcript=redacted.text,
-            recent_context=[],
+            recent_context=list(state.recent_context),
             attempt_count=state.attempt_count,
         )
         if redacted.safety_event:
@@ -65,6 +65,7 @@ class TurnPlanner:
             next_teaching_move=next_move,
             emotional_support=decision.emotional_support,
             previous_teacher_turn=state.last_teacher_turn,
+            recent_context=state.recent_context,
             review_objective=(self._active_objective(decision.next_objective_id)
                               if target_activity.kind == 'roleplay' and decision.next_objective_id else None),
             activity_context=self._teacher_context(target_activity, state, enforce_delivery=(
@@ -103,7 +104,8 @@ class TurnPlanner:
                                if item.id in word_ids),
             target_patterns=tuple(item.text for item in self._curriculum.patterns
                                   if item.id in pattern_ids),
-            examples=tuple(activity.examples),
+            examples=(() if stage.review and state and state.stage_id == activity.stage_id
+                      else tuple(activity.examples)),
             model_repetitions=activity.completion_rule.model_repetitions,
             remaining_model_repetitions=remaining_models, needs_response_invitation=needs_invitation,
             response_opportunity_required=activity.completion_rule.response_opportunity_required,
@@ -154,8 +156,9 @@ class TurnPlanner:
                     'or introducing new material. Acknowledging that he asked is not an answer. '
                     'Then carry out this next activity in the same short turn: ' + target.instruction)
         if decision.feedback_action == 'answer_teacher_question':
-            return ('Answer the question Quang just asked, then connect one short follow-up '
-                    'to his answer or the current topic. He has already asked you; '
+            return ('Answer the specific question Quang just asked using the correct person and '
+                    'recent context. An additional follow-up is optional, not required. Avoid '
+                    'rhetorical tags such as remember? He has already asked you; '
                     'do not instruct him to ask the same question again.')
         if evidence is not None and evidence.response_kind == 'no_response':
             if not decision.next_activity_id:
@@ -220,13 +223,16 @@ class TurnPlanner:
         review = {item.objective_id: item for item in state.review_queue
                   if item.objective_id not in decision.review_queue_remove}
         for objective_id in decision.review_queue_add:
-            review.setdefault(objective_id, ReviewItem(
+            if objective_id in review:
+                review[objective_id] = review[objective_id].model_copy(update={'last_seen_turn_id': turn_id})
+                continue
+            review[objective_id] = ReviewItem(
                 objective_id=objective_id,
                 difficulty='target_form' if decision.corrected_form else 'word_recall',
                 evidence_quote=None,
                 learner_context=learner_text,
                 last_seen_turn_id=turn_id,
-            ))
+            )
 
         progress = {item.activity_id: item for item in state.activity_progress}
         current = self._activity(state)

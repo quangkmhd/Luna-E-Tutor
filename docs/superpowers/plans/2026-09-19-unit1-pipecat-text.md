@@ -17,8 +17,8 @@ User-approved scope: integrate Pipecat using typed input and text output first. 
 
 - [ ] 1. Audit and repair evaluation measurement and scenario data. Preserve previous reports as historical, qualify their narrower claims.
 - [x] 2. Adapt CLI scaffold to text-only dependencies, verify current Pipecat and Flow APIs with CLI/source. Add failing pipeline integration tests before implementation.
-- [ ] 3. Wire existing Planner, Teacher validation and SQLite into Pipecat and Flows; use the existing web interface to exercise it.
-- [ ] 4. Add behavioral runner with actual stage/activity context and independent assertions; run baseline over 30 source scenarios and extended Unit 1 paths.
+- [x] 3. Wire existing Planner, Teacher validation and SQLite into Pipecat and Flows; use the existing web interface to exercise it.
+- [x] 4. Add behavioral runner with actual stage/activity context and independent assertions; run baseline over 30 source scenarios and extended Unit 1 paths.
 - [ ] 5. Improve prompt/content/logic and invalid data based on evidence; rerun development and fresh paraphrases; review representative outputs and all failures.
 - [ ] 6. Verify backend, browser and live Pipecat text results, document commands and remaining limitations.
 
@@ -28,3 +28,7 @@ User-approved scope: integrate Pipecat using typed input and text output first. 
 - Privacy actual output was copied from evaluator_gold. Regression reproduced by intentionally changing gold; production privacy result must be reused independently of gold.
 - Browser tests use fixtures, including a direct Free Talk jump, so they establish UI behavior rather than a complete real-model learning journey.
 - Google prompt guidance consulted: https://ai.google.dev/gemini-api/docs/prompting-strategies . Apply explicit tasks, relevant context, representative examples and iterative evaluation; keep general identity/rules separate from curriculum and current turn.
+
+## Verified integration checkpoint
+
+Tasks 3–4 are implemented: production native Flows and atomic SQLite path have integration coverage; the live-provider browser test reached city -> class and survived reload. The behavioral runner has actual context, independent assertions, and preserved full numbered baselines plus extended targeted experiments. These checked tasks do not imply all pedagogical criteria passed. Source-data repair, semantic review, fresh paraphrases, and final acceptance remain open in tasks 1, 5 and 6; see docs/evaluation/pipecat-text-audit.md.

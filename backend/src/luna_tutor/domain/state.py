@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Self
 from pydantic import Field, model_validator
 
 from luna_tutor.domain.contracts import AttemptCount, Contract, Identifier, SnapshotItems, Text, Version
-from luna_tutor.domain.evidence import SupportGiven
+from luna_tutor.domain.evidence import ContextTurn, SupportGiven
 from luna_tutor.domain.privacy import SanitizedText
 
 SupportLevel = Literal['independent', 'context_hint', 'choices', 'sentence_starter', 'model']
@@ -64,6 +64,7 @@ class LessonState(Contract):
     completed_stage_ids: SnapshotItems[Identifier] = ()
     applied_turn_ids: SnapshotItems[Text] = ()
     last_teacher_turn: SanitizedText = ''
+    recent_context: SnapshotItems[ContextTurn] = Field(default=(), max_length=6)
     closing_message: SanitizedText | None = None
     elapsed_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] = 0.0
     last_success_at_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] | None = None
