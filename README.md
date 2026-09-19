@@ -43,12 +43,12 @@ NEXT_PUBLIC_TUTOR_API_URL=http://localhost:8000 npm run dev
 ## Verification
 
 ```bash
-cd backend
-uv run pytest -q
-uv run python -m luna_tutor.evals.cli verify-baseline ../evals/unit-01/baseline.json
+uv run --project voice/server python -m pytest -q
+uv run --project backend python -m luna_tutor.evals.cli verify-baseline evals/unit-01/baseline.json
 
-cd ../web
-npm test -- --run
+npm install
+npm test
+cd web
 npm run lint
 npm run build
 npx playwright install chromium

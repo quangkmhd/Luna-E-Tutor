@@ -61,7 +61,7 @@ async def run(args):
     unit = load_unit(ROOT / 'curriculum/grade-05/unit-01')
     sources = sorted(set(
         [Path(__file__).resolve()] + list((ROOT / 'backend/src/luna_tutor').rglob('*.py'))
-        + list((ROOT / 'backend/src/luna_tutor/prompts').glob('*.md'))
+        + list((ROOT / 'backend/src/luna_tutor/prompts').glob('*.yaml'))
         + list((ROOT / 'curriculum/grade-05/unit-01').rglob('*.yaml'))
         + list((ROOT / 'evals/unit-01/development').glob('*.yaml'))
         + list((ROOT / 'voice/server').glob('*.py'))))

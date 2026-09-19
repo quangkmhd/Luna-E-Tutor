@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'server'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'voice/server'))
 
 from luna_tutor.api.runtime import FixtureTurnService
 from luna_tutor.domain.state import LessonState

@@ -1,0 +1,9 @@
+{
+  "name": "luna-tutor-workspace",
+  "private": true,
+  "workspaces": ["web"],
+  "scripts": {
+    "test": "npm run test --workspace web -- --run",
+    "test:e2e": "npm run test:e2e --workspace web"
+  }
+}

@@ -1,346 +1,229 @@
 planner_branches:
 - order: 1
-  source_line: 141
-  when:
-  - decision.feedback_action == 'privacy_redirect'
-  description_en: |-
-    Gently keep real phone numbers private. Practise only the phrase phone number, not a sequence of digits, then connect to the current learning topic.
+  description_en: Gently keep real phone numbers private. Practise only the phrase phone number, not a sequence
+    of digits, then connect to the current learning topic.
 - order: 2
-  source_line: 144
-  when:
-  - decision.feedback_action == 'clarify'
-  description_en: |-
-    The input is not reliable enough to assess. Ask one short question to confirm what Quang meant, using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation error, ask for imitation, or restart the activity introduction.
+  description_en: The input is not reliable enough to assess. Ask one short question to confirm what Quang meant,
+    using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation
+    error, ask for imitation, or restart the activity introduction.
 - order: 3
-  source_line: 149
-  when:
-  - decision.feedback_action == 'explain_meaning'
-  description_en: |-
-    Explain the meaning Quang asked about with one concrete example. Check understanding with one easy meaning question or choice; do not ask him to repeat the word or restart the introduction.
+  description_en: Explain the meaning Quang asked about with one concrete example. Check understanding with one
+    easy meaning question or choice; do not ask him to repeat the word or restart the introduction.
 - order: 4
-  source_line: 155
-  when:
-  - decision.feedback_action == 'answer_teacher_question' and decision.next_activity_id
-  description_en: |-
-    First answer the specific question Quang just asked, before changing roles or introducing new material. Acknowledging that he asked is not an answer. Then carry out this next activity in the same short turn: {target.instruction}
+  description_en: 'First answer the specific question Quang just asked, before changing roles or introducing new
+    material. Acknowledging that he asked is not an answer. Then carry out this next activity in the same short
+    turn: {target.instruction}'
 - order: 5
-  source_line: 159
-  when:
-  - decision.feedback_action == 'answer_teacher_question'
-  description_en: |-
-    Answer the specific question Quang just asked using the correct person and recent context. An additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked you; do not instruct him to ask the same question again.
+  description_en: Answer the specific question Quang just asked using the correct person and recent context. An
+    additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked
+    you; do not instruct him to ask the same question again.
 - order: 6
-  source_line: 165
-  when:
-  - evidence is not None and evidence.response_kind == 'no_response'
-  - not decision.next_activity_id
-  description_en: |-
-    Give Quang time without blaming him. Offer one easy choice question on the current topic. Do not claim he does not know or answered wrongly.
+  description_en: Give Quang time without blaming him. Offer one easy choice question on the current topic. Do not
+    claim he does not know or answered wrongly.
 - order: 7
-  source_line: 170
-  when:
-  - evidence is not None and evidence.response_kind == 'no_response'
-  - target.completion_rule.mode == 'delivered'
-  description_en: |-
-    Gently let the unanswered greeting go and offer a short reassuring transition without another question. Next activity: {target.instruction}
+  description_en: 'Gently let the unanswered greeting go and offer a short reassuring transition without another
+    question. Next activity: {target.instruction}'
 - order: 8
-  source_line: 172
-  when:
-  - evidence is not None and evidence.response_kind == 'no_response'
-  description_en: |-
-    Gently let the unanswered item go for now. Make the next step easier with one question containing two concrete answer choices. An open question alone does not reduce difficulty. If this is ask_teacher, instead supply the exact short question Quang can ask you and invite him to use it. Do not announce mastery or request the same answer again. Next activity: {target.instruction}
+  description_en: 'Gently let the unanswered item go for now. Make the next step easier with one question containing
+    two concrete answer choices. An open question alone does not reduce difficulty. If this is ask_teacher, instead
+    supply the exact short question Quang can ask you and invite him to use it. Do not announce mastery or request
+    the same answer again. Next activity: {target.instruction}'
 - order: 9
-  source_line: 180
-  when:
-  - stage.review is not None and (not decision.next_activity_id)
-  description_en: |-
-    Continue the role in activity_context naturally; do not announce the role again or end the scene. Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal into a related question, without announcing a test or asking for a repeat. If absent, continue the conversation without inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request closes the conversation.
+  description_en: Continue the role in activity_context naturally; do not announce the role again or end the scene.
+    Respond to Quang and follow his current interest. If review_objective is present, weave just that one goal into
+    a related question, without announcing a test or asking for a repeat. If absent, continue the conversation without
+    inventing a review target. Keep support concrete and gentle when requested. Only an explicit end request closes
+    the conversation.
 - order: 10
-  source_line: 193
-  when:
-  - |-
-    decision.feedback_action == 'offer_support' or decision.progression_action == 'reduce_difficulty' or decision.support_limit_exit or (decision.feedback_action == 'recast' and decision.progression_action == 'stay')
-  - target.kind == 'ask_teacher'
-  description_en: |-
-    Make the next step easy: supply one short question Quang can ask you on the authorized topic and invite him to use it. Do not answer it yet.
+  description_en: 'Make the next step easy: supply one short question Quang can ask you on the authorized topic
+    and invite him to use it. Do not answer it yet.'
 - order: 11
-  source_line: 196
-  when:
-  - |-
-    decision.feedback_action == 'offer_support' or decision.progression_action == 'reduce_difficulty' or decision.support_limit_exit or (decision.feedback_action == 'recast' and decision.progression_action == 'stay')
-  - target.kind == 'vocabulary_introduction' and target.id != current.id
   description_en: Keep the new-word step short and reassuring. {target.instruction}
 - order: 12
-  source_line: 197
-  when:
-  - |-
-    decision.feedback_action == 'offer_support' or decision.progression_action == 'reduce_difficulty' or decision.support_limit_exit or (decision.feedback_action == 'recast' and decision.progression_action == 'stay')
-  description_en: |-
-    Briefly acknowledge any expressed feeling or confusion. Make the authorized activity easier with one question containing two concrete, simple answer choices. A one-word choice is enough; do not demand a full sentence, an abstract drawback explanation, or another attempt at the same difficult wording. If the learner gave the wrong semantic category, first explain that distinction briefly. Use the activity context for the CURRENT target, even after a transition. Do not re-ask a fact Quang already gave or repeat the previous question. Choose a missing part of the goal: if he already gave a drawback such as crowding, ask about a positive feature instead. For an addition goal, ask about another positive feature. Choices are possible answers, never asserted learner facts.
+  description_en: 'Briefly acknowledge any expressed feeling or confusion. Make the authorized activity easier with
+    one question containing two concrete, simple answer choices. A one-word choice is enough; do not demand a full
+    sentence, an abstract drawback explanation, or another attempt at the same difficult wording. If the learner
+    gave the wrong semantic category, first explain that distinction briefly. Use the activity context for the CURRENT
+    target, even after a transition. Do not re-ask a fact Quang already gave or repeat the previous question. Choose
+    a missing part of the goal: if he already gave a drawback such as crowding, ask about a positive feature instead.
+    For an addition goal, ask about another positive feature. Choices are possible answers, never asserted learner
+    facts.'
 - order: 13
-  source_line: 208
-  when:
-  - decision.progression_action == 'finish'
   description_en: Give one warm closing sentence.
 - order: 14
-  source_line: 213
-  when:
-  - decision.next_activity_id
-  - target.kind == 'ask_teacher'
-  description_en: |-
-    After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question. Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: {target.instruction}
+  description_en: 'After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question.
+    Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: {target.instruction}'
 - order: 15
-  source_line: 216
-  when:
-  - decision.next_activity_id
   description_en: '{target.instruction}'
 - order: 16
-  source_line: 217
-  when:
-  - fallback
   description_en: '{current.instruction}'
 override_after_branch_selection:
-  description_en: |-
-    Acknowledge the information Quang already provided. Ask only for the remaining information, without repeating completed questions: {remaining_objective_descriptions}
+  description_en: 'Acknowledge the information Quang already provided. Ask only for the remaining information, without
+    repeating completed questions: {remaining_objective_descriptions}'
 additional_constraints:
 - description_en: Never require Quang to repeat a correction.
 - description_en: Speak one short, natural turn without Markdown.
 activity_instructions:
 - activity_id: warm-up.hello
-  stage_id: warm-up
-  kind: greeting
   description_en: Greet Quang warmly. On the first meeting introduce Luna as his English tutor.
 - activity_id: warm-up.feelings
-  stage_id: warm-up
-  kind: emotion_check
-  description_en: |-
-    Ask how Quang feels. Acknowledge emotion, allow a short or Vietnamese answer, and offer a gentle choice after silence. Do not teach vocabulary.
+  description_en: Ask how Quang feels. Acknowledge emotion, allow a short or Vietnamese answer, and offer a gentle
+    choice after silence. Do not teach vocabulary.
 - activity_id: warm-up.start
-  stage_id: warm-up
-  kind: bridge
   description_en: Bridge directly to Lesson 1, adjusting pace to the learner’s mood.
 - activity_id: lesson-01.introduce-city
-  stage_id: lesson-01
-  kind: vocabulary_introduction
-  description_en: |-
-    Model city twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model city twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-01.introduce-class
-  stage_id: lesson-01
-  kind: vocabulary_introduction
-  description_en: |-
-    Model class twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model class twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-01.introduce-countryside
-  stage_id: lesson-01
-  kind: vocabulary_introduction
-  description_en: |-
-    Model countryside twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model countryside twice, invite Quang to say the target word (not answer a topic question yet),
+    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
+    learning for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-01.place-meaning
-  stage_id: lesson-01
-  kind: comprehension
   description_en: Ask which place usually has tall buildings, then trees. Give a choice if needed; move on within
     the attempt limit.
 - activity_id: lesson-01.class
-  stage_id: lesson-01
-  kind: guided_response
   description_en: Model a class introduction, then invite Quang to share his own class.
 - activity_id: lesson-01.home
-  stage_id: lesson-01
-  kind: guided_response
   description_en: Invite Quang to describe where he lives. Accept one-word or Vietnamese meaning; record English
     form separately.
 - activity_id: lesson-01.ask-luna
-  stage_id: lesson-01
-  kind: ask_teacher
-  description_en: |-
-    Create an opportunity to ask Luna where she lives. If still difficult after support, record the opportunity as handled without claiming the learner asked.
+  description_en: Create an opportunity to ask Luna where she lives. If still difficult after support, record the
+    opportunity as handled without claiming the learner asked.
 - activity_id: lesson-02.introduce-dolphin
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model dolphin twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model dolphin twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-02.introduce-pink
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model pink twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model pink twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-02.introduce-sandwich
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model sandwich twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model sandwich twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-02.introduce-table-tennis
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model table tennis twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model table tennis twice, invite Quang to say the target word (not answer a topic question yet),
+    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
+    learning for review. Do not claim phoneme accuracy from text.
 - activity_id: lesson-02.favourite-animal
-  stage_id: lesson-02
-  kind: guided_response
   description_en: Ask about the favourite animal; accept any appropriate animal, not only the textbook example.
 - activity_id: lesson-02.favourite-colour
-  stage_id: lesson-02
-  kind: guided_response
   description_en: Ask about the favourite colour; accept any appropriate colour, not only the textbook example.
 - activity_id: lesson-02.favourite-food
-  stage_id: lesson-02
-  kind: guided_response
   description_en: Ask about the favourite food; accept any appropriate food, not only the textbook example.
 - activity_id: lesson-02.favourite-sport
-  stage_id: lesson-02
-  kind: guided_response
   description_en: Ask about the favourite sport; accept any appropriate sport, not only the textbook example.
 - activity_id: lesson-02.ask-luna
-  stage_id: lesson-02
-  kind: ask_teacher
-  description_en: |-
-    Invite Quang to ask Luna about a favourite thing. Offer a starter if needed; record unresolved questioning for review after the support limit.
+  description_en: Invite Quang to ask Luna about a favourite thing. Offer a starter if needed; record unresolved
+    questioning for review after the support limit.
 - activity_id: lesson-03.introductions
-  stage_id: lesson-03
-  kind: review
-  description_en: |-
-    Ask Quang to tell you both his class and where he lives in one short prompt. City and countryside are alternative home answers; class and home are two separate facts, not alternatives. Do not restart new-word teaching.
+  description_en: Ask Quang to tell you both his class and where he lives in one short prompt. City and countryside
+    are alternative home answers; class and home are two separate facts, not alternatives. Do not restart new-word
+    teaching.
 - activity_id: lesson-03.favourites
-  stage_id: lesson-03
-  kind: review
-  description_en: |-
-    Review favourite things with the Lesson 2 objectives. Create a meaningful choice or short response, not a word-list drill.
+  description_en: Review favourite things with the Lesson 2 objectives. Create a meaningful choice or short response,
+    not a word-list drill.
 - activity_id: lesson-03.ask-luna
-  stage_id: lesson-03
-  kind: ask_teacher
   description_en: Offer a turn to ask Luna a favourite-things question. Record the real outcome or support-limit
     exit.
 - activity_id: level-02.introduce-birthday
-  stage_id: level-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model birthday twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model birthday twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-02.introduce-hobby
-  stage_id: level-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model hobby twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model hobby twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-02.introduce-phone-number
-  stage_id: level-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model phone number twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text. Practise only the words or fictional examples; never ask for a real phone number.
+  description_en: Model phone number twice, invite Quang to say the target word (not answer a topic question yet),
+    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
+    learning for review. Do not claim phoneme accuracy from text. Practise only the words or fictional examples;
+    never ask for a real phone number.
 - activity_id: level-02.introduce-subject
-  stage_id: level-02
-  kind: vocabulary_introduction
-  description_en: |-
-    Model subject twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model subject twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-02.birthday
-  stage_id: level-02
-  kind: guided_response
   description_en: Ask which month Quang's birthday is in, then wait for his answer.
 - activity_id: level-02.hobby
-  stage_id: level-02
-  kind: guided_response
   description_en: Ask about a hobby, accepting natural alternatives such as I enjoy playing table tennis.
 - activity_id: level-02.subject
-  stage_id: level-02
-  kind: guided_response
   description_en: Ask about a favourite school subject.
 - activity_id: level-02.ask-luna
-  stage_id: level-02
-  kind: ask_teacher
   description_en: Invite Quang to ask Luna about her hobby or birthday month. Do not ask for contact information.
 - activity_id: level-03.introduce-cottage
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model cottage twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model cottage twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-calm
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model calm twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model calm twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-crowded
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model crowded twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model crowded twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-vehicles
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model vehicles twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model vehicles twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-traffic-jam
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model traffic jam twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model traffic jam twice, invite Quang to say the target word (not answer a topic question yet),
+    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
+    learning for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-pavement
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model pavement twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model pavement twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-drawback
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model drawback twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model drawback twice, invite Quang to say the target word (not answer a topic question yet), wait,
+    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
+    for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.introduce-amusement-park
-  stage_id: level-03
-  kind: vocabulary_introduction
-  description_en: |-
-    Model amusement park twice, invite Quang to say the target word (not answer a topic question yet), wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme accuracy from text.
+  description_en: Model amusement park twice, invite Quang to say the target word (not answer a topic question yet),
+    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
+    learning for review. Do not claim phoneme accuracy from text.
 - activity_id: level-03.home-description
-  stage_id: level-03
-  kind: guided_response
   description_en: Invite a description of the learner’s own home environment; city and countryside answers are both
     valid.
 - activity_id: level-03.contrast
-  stage_id: level-03
-  kind: guided_response
-  description_en: |-
-    Give one short example with a positive feature before however and a drawback after it, then invite Quang to share a drawback. Use the activity examples as models. Being big or small alone is not the positive feature; busy and noisy are two related drawbacks, not a contrast. Do not infer use of however merely from hearing Luna model it.
+  description_en: Give one short example with a positive feature before however and a drawback after it, then invite
+    Quang to share a drawback. Use the activity examples as models. Being big or small alone is not the positive
+    feature; busy and noisy are two related drawbacks, not a contrast. Do not infer use of however merely from hearing
+    Luna model it.
 - activity_id: level-03.addition
-  stage_id: level-03
-  kind: guided_response
   description_en: Model moreover as an addition, then invite one more good thing about the learner’s town.
 - activity_id: level-03.use-cottage
-  stage_id: level-03
-  kind: guided_response
   description_en: Create a contextual opportunity for this target. Accept the learner’s own facts; offer support
     at most twice.
 - activity_id: level-03.use-vehicles
-  stage_id: level-03
-  kind: guided_response
   description_en: Create a contextual opportunity for this target. Accept the learner’s own facts; offer support
     at most twice.
 - activity_id: level-03.use-traffic-jam
-  stage_id: level-03
-  kind: guided_response
   description_en: Create a contextual opportunity for this target. Accept the learner’s own facts; offer support
     at most twice.
 - activity_id: level-03.use-pavement
-  stage_id: level-03
-  kind: guided_response
   description_en: Create a contextual opportunity for this target. Accept the learner’s own facts; offer support
     at most twice.
 - activity_id: level-03.use-drawback
-  stage_id: level-03
-  kind: guided_response
   description_en: Create a contextual opportunity for this target. Accept the learner’s own facts; offer support
     at most twice.
 - activity_id: level-03.use-amusement-park
-  stage_id: level-03
-  kind: guided_response
   description_en: Create a contextual opportunity for this target. Accept the learner’s own facts; offer support
     at most twice.
 - activity_id: level-03.ask-luna
-  stage_id: level-03
-  kind: ask_teacher
   description_en: Invite Quang to ask Luna about her town. Offer a question starter; record whether he actually
     asked.
 - activity_id: free-talk.conversation
-  stage_id: free-talk
-  kind: roleplay
-  description_en: |-
-    Announce Luna is playing Emma from England. Meet for the first time; follow Quang’s interests with short questions and invite him to ask Emma. Weave at most one relevant pending review target into a turn; cancel a planned prompt if he independently uses it. End on user request even if review remains open; save those items for next time. Announce the end of the role.
+  description_en: Announce Luna is playing Emma from England. Meet for the first time; follow Quang’s interests
+    with short questions and invite him to ask Emma. Weave at most one relevant pending review target into a turn;
+    cancel a planned prompt if he independently uses it. End on user request even if review remains open; save those
+    items for next time. Announce the end of the role.
 - activity_id: summary.reflect
-  stage_id: summary
-  kind: summary
-  description_en: |-
-    End the Emma role, acknowledge evidenced successes, summarize what Quang actually did, and preserve unresolved review for next time. Do not claim mastery from imitation.
+  description_en: End the Emma role, acknowledge evidenced successes, summarize what Quang actually did, and preserve
+    unresolved review for next time. Do not claim mastery from imitation.

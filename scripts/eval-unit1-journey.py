@@ -68,7 +68,7 @@ async def main(args):
         raise RuntimeError("Will not overwrite")
     sources = (
         list((ROOT / "backend/src/luna_tutor").rglob("*.py"))
-        + list((ROOT / "backend/src/luna_tutor/prompts").glob("*.md"))
+        + list((ROOT / "backend/src/luna_tutor/prompts").glob("*.yaml"))
         + list((ROOT / "voice/server").glob("*.py"))
         + list((ROOT / "curriculum/grade-05/unit-01").rglob("*.yaml"))
     )
