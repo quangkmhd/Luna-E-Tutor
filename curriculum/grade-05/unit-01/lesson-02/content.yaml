@@ -1,0 +1,286 @@
+schema_version: 1
+stage:
+  id: lesson-02
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  title: Lesson 02
+  level: 1
+  lesson: 2
+  exits:
+  - lesson-03
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: dolphin
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  text: dolphin
+  usage: taught
+- id: pink
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  text: pink
+  usage: taught
+- id: sandwich
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  text: sandwich
+  usage: taught
+- id: table-tennis
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  text: table tennis
+  usage: taught
+patterns:
+- id: favourite
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E3
+  text: What's your favourite ___? – It's ___.
+  examples: &id001
+  - What's your favourite animal? – It's a dolphin.
+  - What's your favourite colour? – It's pink.
+  - What's your favourite food? – It's a sandwich.
+  acceptable_alternatives:
+  - My favourite animal is a dolphin.
+objectives:
+- id: unit01.lesson02.vocabulary.dolphin
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  description: 'Vocabulary: dolphin'
+  vocabulary_ids:
+  - dolphin
+  pattern_ids: []
+  evidence_criteria: Understand or use dolphin in context; imitation alone is not independent use.
+- id: unit01.lesson02.vocabulary.pink
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  description: 'Vocabulary: pink'
+  vocabulary_ids:
+  - pink
+  pattern_ids: []
+  evidence_criteria: Understand or use pink in context; imitation alone is not independent use.
+- id: unit01.lesson02.vocabulary.sandwich
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  description: 'Vocabulary: sandwich'
+  vocabulary_ids:
+  - sandwich
+  pattern_ids: []
+  evidence_criteria: Understand or use sandwich in context; imitation alone is not independent use.
+- id: unit01.lesson02.vocabulary.table_tennis
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D3
+  description: 'Vocabulary: table tennis'
+  vocabulary_ids:
+  - table-tennis
+  pattern_ids: []
+  evidence_criteria: Understand or use table tennis in context; imitation alone is not independent use.
+- id: unit01.lesson02.pattern.favourite
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E3
+  description: 'Pattern: What''s your favourite ___? – It''s ___.'
+  vocabulary_ids: []
+  pattern_ids:
+  - favourite
+  evidence_criteria: Answer or ask about a favourite in the requested semantic category. Pink does not
+    answer an animal question.
+activities:
+- id: lesson-02.introduce-dolphin
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson02.vocabulary.dolphin
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model dolphin twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - dolphin
+- id: lesson-02.introduce-pink
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson02.vocabulary.pink
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model pink twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - pink
+- id: lesson-02.introduce-sandwich
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson02.vocabulary.sandwich
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model sandwich twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - sandwich
+- id: lesson-02.introduce-table-tennis
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson02.vocabulary.table_tennis
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model table tennis twice, invite one response, wait, then give evidence-based feedback
+    and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - table tennis
+- id: lesson-02.favourite-animal
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  - unit01.lesson02.vocabulary.dolphin
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask about the favourite animal; accept any appropriate animal, not only the textbook example.
+  examples: *id001
+- id: lesson-02.favourite-colour
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  - unit01.lesson02.vocabulary.pink
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask about the favourite colour; accept any appropriate colour, not only the textbook example.
+  examples: *id001
+- id: lesson-02.favourite-food
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  - unit01.lesson02.vocabulary.sandwich
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask about the favourite food; accept any appropriate food, not only the textbook example.
+  examples: *id001
+- id: lesson-02.favourite-sport
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  - unit01.lesson02.vocabulary.table_tennis
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask about the favourite sport; accept any appropriate sport, not only the textbook example.
+  examples: *id001
+- id: lesson-02.ask-luna
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 3 — Trạm 2: Level 1, Lessons 2–3 và Level 2'
+  stage_id: lesson-02
+  kind: ask_teacher
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite Quang to ask Luna about a favourite thing. Offer a starter if needed; record unresolved
+    questioning for review after the support limit.
+  examples: *id001

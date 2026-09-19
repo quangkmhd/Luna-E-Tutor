@@ -1,0 +1,87 @@
+schema_version: 1
+stage:
+  id: lesson-03
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Học liệu sử dụng / Level 1 — Lesson 3
+  title: Lesson 03
+  level: 1
+  lesson: 3
+  exits:
+  - level-02
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary: []
+patterns: []
+objectives: []
+activities:
+- id: lesson-03.introductions
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Học liệu sử dụng / Level 1 — Lesson 3
+  stage_id: lesson-03
+  kind: review
+  objective_ids:
+  - unit01.lesson01.vocabulary.city
+  - unit01.lesson01.vocabulary.class
+  - unit01.lesson01.vocabulary.countryside
+  - unit01.lesson01.pattern.class
+  - unit01.lesson01.pattern.live_in
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Review class and home with the Lesson 1 objectives. Do not restart new-word teaching.
+  examples: []
+- id: lesson-03.favourites
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Học liệu sử dụng / Level 1 — Lesson 3
+  stage_id: lesson-03
+  kind: review
+  objective_ids:
+  - unit01.lesson02.vocabulary.dolphin
+  - unit01.lesson02.vocabulary.pink
+  - unit01.lesson02.vocabulary.sandwich
+  - unit01.lesson02.vocabulary.table_tennis
+  - unit01.lesson02.pattern.favourite
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Review favourite things with the Lesson 2 objectives. Create a meaningful choice or short
+    response, not a word-list drill.
+  examples: []
+- id: lesson-03.ask-luna
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Học liệu sử dụng / Level 1 — Lesson 3
+  stage_id: lesson-03
+  kind: ask_teacher
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Offer a turn to ask Luna a favourite-things question. Record the real outcome or support-limit
+    exit.
+  examples:
+  - What's your favourite animal? – It's a dolphin.
+  - What's your favourite colour? – It's pink.
+  - What's your favourite food? – It's a sandwich.

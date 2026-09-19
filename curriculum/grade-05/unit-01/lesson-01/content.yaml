@@ -1,0 +1,249 @@
+schema_version: 1
+stage:
+  id: lesson-01
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  title: Lesson 01
+  level: 1
+  lesson: 1
+  exits:
+  - lesson-02
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: city
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D2
+  text: city
+  usage: taught
+- id: class
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D2
+  text: class
+  usage: taught
+- id: countryside
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D2
+  text: countryside
+  usage: taught
+patterns:
+- id: class
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E2
+  text: Can you tell me about yourself? – I'm in ___.
+  examples: &id001
+  - I'm in Class 5A.
+  - I'm in Class 5B.
+  acceptable_alternatives:
+  - My class is 5A.
+- id: live-in
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E2
+  text: I live in the ___.
+  examples: &id002
+  - I live in the city.
+  - I live in the countryside.
+  acceptable_alternatives:
+  - My home is in the countryside.
+  - I live in a city.
+objectives:
+- id: unit01.lesson01.vocabulary.city
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D2
+  description: 'Vocabulary: city'
+  vocabulary_ids:
+  - city
+  pattern_ids: []
+  evidence_criteria: Understand or use city in context; imitation alone is not independent use.
+- id: unit01.lesson01.vocabulary.class
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D2
+  description: 'Vocabulary: class'
+  vocabulary_ids:
+  - class
+  pattern_ids: []
+  evidence_criteria: Understand or use class in context; imitation alone is not independent use.
+- id: unit01.lesson01.vocabulary.countryside
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D2
+  description: 'Vocabulary: countryside'
+  vocabulary_ids:
+  - countryside
+  pattern_ids: []
+  evidence_criteria: Understand or use countryside in context; imitation alone is not independent use.
+- id: unit01.lesson01.pattern.class
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E2
+  description: 'Pattern: Can you tell me about yourself? – I''m in ___.'
+  vocabulary_ids: []
+  pattern_ids:
+  - class
+  evidence_criteria: State the learner’s class; do not infer it from their age or grade.
+- id: unit01.lesson01.pattern.live_in
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E2
+  description: 'Pattern: I live in the ___.'
+  vocabulary_ids: []
+  pattern_ids:
+  - live-in
+  evidence_criteria: Communicate where the learner lives without requesting an exact address. A short
+    answer can satisfy meaning without demonstrating the full target form.
+activities:
+- id: lesson-01.introduce-city
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson01.vocabulary.city
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model city twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - city
+- id: lesson-01.introduce-class
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson01.vocabulary.class
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model class twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - class
+- id: lesson-01.introduce-countryside
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson01.vocabulary.countryside
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model countryside twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - countryside
+- id: lesson-01.place-meaning
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: comprehension
+  objective_ids:
+  - unit01.lesson01.vocabulary.city
+  - unit01.lesson01.vocabulary.countryside
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask which place usually has tall buildings, then trees. Give a choice if needed; move on
+    within the attempt limit.
+  examples:
+  - Which place has many tall buildings — a city or the countryside?
+- id: lesson-01.class
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson01.pattern.class
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model a class introduction, then invite Quang to share his own class.
+  examples: *id001
+- id: lesson-01.home
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite Quang to describe where he lives. Accept one-word or Vietnamese meaning; record
+    English form separately.
+  examples: *id002
+- id: lesson-01.ask-luna
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 2 — Trạm 1: Level 1, từ vựng và giới thiệu cơ bản'
+  stage_id: lesson-01
+  kind: ask_teacher
+  objective_ids:
+  - unit01.lesson01.pattern.live_in
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create an opportunity to ask Luna where she lives. If still difficult after support, record
+    the opportunity as handled without claiming the learner asked.
+  examples: *id002

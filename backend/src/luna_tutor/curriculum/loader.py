@@ -1,0 +1,42 @@
+"""Load a unit manifest, its ordered content, and shared teaching policy."""
+
+from pathlib import Path
+
+import yaml
+
+from luna_tutor.curriculum.models import (
+    ContentFragment, GradeProfiles, SpeechStyle, TeachingPolicy,
+    UnitCurriculum, UnitManifest,
+)
+
+
+def _read_yaml(path: Path):
+    with path.open(encoding='utf-8') as stream:
+        return yaml.safe_load(stream)
+
+
+def load_unit(path: Path) -> UnitCurriculum:
+    """Load a unit directory or unit.yaml; validate all cross-file references."""
+    manifest_path = path / 'unit.yaml' if path.is_dir() else path
+    manifest = UnitManifest.model_validate(_read_yaml(manifest_path))
+    root = manifest_path.parent
+    shared = root / manifest.shared_dir
+    fragments = [manifest.opening]
+    for name in manifest.content_files:
+        content_path = (root / name).resolve()
+        if not content_path.is_relative_to(root.resolve()):
+            raise ValueError('Content file must be inside the unit directory')
+        fragments.append(ContentFragment.model_validate(_read_yaml(content_path)))
+    fragments.append(manifest.closing)
+    return UnitCurriculum(
+        **manifest.model_dump(exclude={'content_files', 'shared_dir', 'opening', 'closing'}),
+        stages=[fragment.stage for fragment in fragments],
+        vocabulary=[item for fragment in fragments for item in fragment.vocabulary],
+        patterns=[item for fragment in fragments for item in fragment.patterns],
+        objectives=[item for fragment in fragments for item in fragment.objectives],
+        activities=[item for fragment in fragments for item in fragment.activities],
+        teacher_prompt=(shared / 'teacher.md').read_text(encoding='utf-8'),
+        teaching_policy=TeachingPolicy.model_validate(_read_yaml(shared / 'teaching-policy.yaml')),
+        speech_style=SpeechStyle.model_validate(_read_yaml(shared / 'speech-style.yaml')),
+        grade_profiles=GradeProfiles.model_validate(_read_yaml(shared / 'grade-profiles.yaml')),
+    )

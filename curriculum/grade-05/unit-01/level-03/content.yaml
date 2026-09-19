@@ -1,0 +1,574 @@
+schema_version: 1
+stage:
+  id: level-03
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  title: Level 03
+  level: 3
+  lesson: null
+  exits:
+  - free-talk
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: cottage
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: cottage
+  usage: taught
+- id: calm
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: calm
+  usage: taught
+- id: crowded
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: crowded
+  usage: taught
+- id: vehicles
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: vehicles
+  usage: taught
+- id: traffic-jam
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: traffic jam
+  usage: taught
+- id: pavement
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: pavement
+  usage: taught
+- id: drawback
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: drawback
+  usage: taught
+- id: amusement-park
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  text: amusement park
+  usage: taught
+patterns:
+- id: describe-countryside
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!I2
+  text: I live in the countryside. It's calm and the air is fresh.
+  examples: &id001
+  - I live in the countryside. It's calm and the air is fresh.
+  acceptable_alternatives:
+  - My home is in the countryside. It is peaceful.
+- id: however
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!I2
+  text: I live in a big city; however, it is very crowded.
+  examples: &id002
+  - I live in a big city; however, it is very crowded.
+  acceptable_alternatives:
+  - My city is exciting, but it is crowded.
+- id: moreover
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!I2
+  text: My town has good schools; moreover, there is an amusement park.
+  examples: &id003
+  - My town has good schools; moreover, there is an amusement park.
+  acceptable_alternatives:
+  - My town has good schools and also a park.
+objectives:
+- id: unit01.level03.vocabulary.cottage
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: cottage'
+  vocabulary_ids:
+  - cottage
+  pattern_ids: []
+  evidence_criteria: Understand or use cottage in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.calm
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: calm'
+  vocabulary_ids:
+  - calm
+  pattern_ids: []
+  evidence_criteria: Understand or use calm in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.crowded
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: crowded'
+  vocabulary_ids:
+  - crowded
+  pattern_ids: []
+  evidence_criteria: Understand or use crowded in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.vehicles
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: vehicles'
+  vocabulary_ids:
+  - vehicles
+  pattern_ids: []
+  evidence_criteria: Understand or use vehicles in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.traffic_jam
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: traffic jam'
+  vocabulary_ids:
+  - traffic-jam
+  pattern_ids: []
+  evidence_criteria: Understand or use traffic jam in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.pavement
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: pavement'
+  vocabulary_ids:
+  - pavement
+  pattern_ids: []
+  evidence_criteria: Understand or use pavement in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.drawback
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: drawback'
+  vocabulary_ids:
+  - drawback
+  pattern_ids: []
+  evidence_criteria: Understand or use drawback in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.amusement_park
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!H2
+  description: 'Vocabulary: amusement park'
+  vocabulary_ids:
+  - amusement-park
+  pattern_ids: []
+  evidence_criteria: Understand or use amusement park in context; imitation alone is not independent use.
+- id: unit01.level03.pattern.describe_countryside
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!I2
+  description: 'Pattern: I live in the countryside. It''s calm and the air is fresh.'
+  vocabulary_ids: []
+  pattern_ids:
+  - describe-countryside
+  evidence_criteria: Describe the home environment; do not treat the example as a required fact about
+    the learner.
+- id: unit01.level03.pattern.however
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!I2
+  description: 'Pattern: I live in a big city; however, it is very crowded.'
+  vocabulary_ids: []
+  pattern_ids:
+  - however
+  evidence_criteria: Express a contrast about the learner’s town. Record however usage separately from
+    the success of the contrast.
+- id: unit01.level03.pattern.moreover
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!I2
+  description: 'Pattern: My town has good schools; moreover, there is an amusement park.'
+  vocabulary_ids: []
+  pattern_ids:
+  - moreover
+  evidence_criteria: Add another positive fact about the town. Record moreover usage separately from meaning.
+activities:
+- id: level-03.introduce-cottage
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.cottage
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model cottage twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - cottage
+- id: level-03.introduce-calm
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.calm
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model calm twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - calm
+- id: level-03.introduce-crowded
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.crowded
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model crowded twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - crowded
+- id: level-03.introduce-vehicles
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.vehicles
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model vehicles twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - vehicles
+- id: level-03.introduce-traffic-jam
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.traffic_jam
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model traffic jam twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - traffic jam
+- id: level-03.introduce-pavement
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.pavement
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model pavement twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - pavement
+- id: level-03.introduce-drawback
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.drawback
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model drawback twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - drawback
+- id: level-03.introduce-amusement-park
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.amusement_park
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model amusement park twice, invite one response, wait, then give evidence-based feedback
+    and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - amusement park
+- id: level-03.home-description
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.describe_countryside
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite a description of the learner’s own home environment; city and countryside answers
+    are both valid.
+  examples: *id001
+- id: level-03.contrast
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.however
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model however as a contrast, then create an opportunity to mention a drawback. Do not infer
+    use of however merely from hearing Luna model it.
+  examples: *id002
+- id: level-03.addition
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.moreover
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model moreover as an addition, then invite one more good thing about the learner’s town.
+  examples: *id003
+- id: level-03.use-cottage
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.vocabulary.cottage
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create a contextual opportunity for this target. Accept the learner’s own facts; offer
+    support at most twice.
+  examples:
+  - Is there a cottage near your home?
+- id: level-03.use-vehicles
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.vocabulary.vehicles
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create a contextual opportunity for this target. Accept the learner’s own facts; offer
+    support at most twice.
+  examples:
+  - Are there many vehicles on the road?
+- id: level-03.use-traffic-jam
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.vocabulary.traffic_jam
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create a contextual opportunity for this target. Accept the learner’s own facts; offer
+    support at most twice.
+  examples:
+  - Do you sometimes have a traffic jam?
+- id: level-03.use-pavement
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.vocabulary.pavement
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create a contextual opportunity for this target. Accept the learner’s own facts; offer
+    support at most twice.
+  examples:
+  - Is the pavement near your home clean or busy?
+- id: level-03.use-drawback
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.vocabulary.drawback
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create a contextual opportunity for this target. Accept the learner’s own facts; offer
+    support at most twice.
+  examples:
+  - What is one drawback of your town?
+- id: level-03.use-amusement-park
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.vocabulary.amusement_park
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Create a contextual opportunity for this target. Accept the learner’s own facts; offer
+    support at most twice.
+  examples:
+  - What do you like doing at an amusement park?
+- id: level-03.ask-luna
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: 'Màn 4 — Trạm 3: Level 3, nói sâu hơn về nơi ở'
+  stage_id: level-03
+  kind: ask_teacher
+  objective_ids:
+  - unit01.level03.pattern.describe_countryside
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite Quang to ask Luna about her town. Offer a question starter; record whether he actually
+    asked.
+  examples: *id001

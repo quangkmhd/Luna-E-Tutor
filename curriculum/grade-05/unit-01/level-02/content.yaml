@@ -1,0 +1,285 @@
+schema_version: 1
+stage:
+  id: level-02
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  title: Level 02
+  level: 2
+  lesson: null
+  exits:
+  - level-03
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: birthday
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  text: birthday
+  usage: taught
+- id: hobby
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  text: hobby
+  usage: taught
+- id: phone-number
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  text: phone number
+  usage: taught
+- id: subject
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  text: subject
+  usage: taught
+patterns:
+- id: birthday
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G2
+  text: When's your birthday? – It's in ___.
+  examples: &id001
+  - When's your birthday? – It's in May.
+  acceptable_alternatives:
+  - My birthday is in May.
+- id: hobby
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G2
+  text: What's your hobby? – My hobby is ___.
+  examples: &id002
+  - What's your hobby? – My hobby is table tennis.
+  acceptable_alternatives:
+  - I enjoy playing table tennis.
+  - I like playing table tennis.
+objectives:
+- id: unit01.level02.vocabulary.birthday
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  description: 'Vocabulary: birthday'
+  vocabulary_ids:
+  - birthday
+  pattern_ids: []
+  evidence_criteria: Understand or use birthday in context; imitation alone is not independent use.
+- id: unit01.level02.vocabulary.hobby
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  description: 'Vocabulary: hobby'
+  vocabulary_ids:
+  - hobby
+  pattern_ids: []
+  evidence_criteria: Understand or use hobby in context; imitation alone is not independent use.
+- id: unit01.level02.vocabulary.phone_number
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  description: 'Vocabulary: phone number'
+  vocabulary_ids:
+  - phone-number
+  pattern_ids: []
+  evidence_criteria: Understand or use phone number in context; imitation alone is not independent use.
+- id: unit01.level02.vocabulary.subject
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F2
+  description: 'Vocabulary: subject'
+  vocabulary_ids:
+  - subject
+  pattern_ids: []
+  evidence_criteria: Understand or use subject in context; imitation alone is not independent use.
+- id: unit01.level02.pattern.birthday
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G2
+  description: 'Pattern: When''s your birthday? – It''s in ___.'
+  vocabulary_ids: []
+  pattern_ids:
+  - birthday
+  evidence_criteria: Give a birthday month; a month alone satisfies meaning but does not demonstrate the
+    full form. Do not request full birth date.
+- id: unit01.level02.pattern.hobby
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G2
+  description: 'Pattern: What''s your hobby? – My hobby is ___.'
+  vocabulary_ids: []
+  pattern_ids:
+  - hobby
+  evidence_criteria: Describe an enjoyable activity; accept a valid alternative without recast. Record
+    target-form evidence separately.
+activities:
+- id: level-02.introduce-birthday
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level02.vocabulary.birthday
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model birthday twice, invite one response, wait, then give evidence-based feedback and
+    bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text.
+  examples:
+  - birthday
+- id: level-02.introduce-hobby
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level02.vocabulary.hobby
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model hobby twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - hobby
+- id: level-02.introduce-phone-number
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level02.vocabulary.phone_number
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model phone number twice, invite one response, wait, then give evidence-based feedback
+    and bridge. After at most two attempts move on and queue unresolved learning for review. Do not claim
+    phoneme accuracy from text. Practise only the words or fictional examples; never ask for a real phone
+    number.
+  examples:
+  - phone number
+- id: level-02.introduce-subject
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level02.vocabulary.subject
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model subject twice, invite one response, wait, then give evidence-based feedback and bridge.
+    After at most two attempts move on and queue unresolved learning for review. Do not claim phoneme
+    accuracy from text.
+  examples:
+  - subject
+- id: level-02.birthday
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: guided_response
+  objective_ids:
+  - unit01.level02.pattern.birthday
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask only for the birthday month. Support with two month choices if needed.
+  examples: *id001
+- id: level-02.hobby
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: guided_response
+  objective_ids:
+  - unit01.level02.pattern.hobby
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask about a hobby, accepting natural alternatives such as I enjoy playing table tennis.
+  examples: *id002
+- id: level-02.subject
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson02.pattern.favourite
+  - unit01.level02.vocabulary.subject
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Ask about a favourite school subject.
+  examples:
+  - What's your favourite animal? – It's a dolphin.
+  - What's your favourite colour? – It's pink.
+  - What's your favourite food? – It's a sandwich.
+- id: level-02.ask-luna
+  source:
+    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
+    section: Bổ sung Level 2 — từ mới mở rộng
+  stage_id: level-02
+  kind: ask_teacher
+  objective_ids:
+  - unit01.level02.pattern.hobby
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite Quang to ask Luna about her hobby or birthday month. Do not ask for contact information.
+  examples: *id002
