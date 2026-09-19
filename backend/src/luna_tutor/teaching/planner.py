@@ -166,6 +166,27 @@ class TurnPlanner:
                     'exact short question Quang can ask you and invite him to use it. '
                     'Do not announce mastery or request the same answer again. Next activity: '
                     + target.instruction)
+        if (decision.feedback_action == 'offer_support'
+                or decision.progression_action == 'reduce_difficulty'
+                or decision.support_limit_exit
+                or (decision.feedback_action == 'recast' and decision.progression_action == 'stay')):
+            target = next((a for a in self._curriculum.activities
+                           if a.id == decision.next_activity_id), current)
+            if target.kind == 'ask_teacher':
+                return ('Make the next step easy: supply one short question Quang can ask you '
+                        'on the authorized topic and invite him to use it. Do not answer it yet.')
+            if target.kind == 'vocabulary_introduction' and target.id != current.id:
+                return 'Keep the new-word step short and reassuring. ' + target.instruction
+            return ('Briefly acknowledge any expressed feeling or confusion. Make the authorized '
+                    'activity easier with one question containing two concrete, simple answer choices. '
+                    'A one-word choice is enough; do not demand a full sentence, an abstract drawback '
+                    'explanation, or another attempt at the same difficult wording. If the learner '
+                    'gave the wrong semantic category, first explain that distinction briefly. '
+                    'Use the activity context for the CURRENT target, even after a transition. '
+                    'Do not re-ask a fact Quang already gave or repeat the previous question. '
+                    'Choose a missing part of the goal: if he already gave a drawback such as crowding, '
+                    'ask about a positive feature instead. For an addition goal, ask about another '
+                    'positive feature. Choices are possible answers, never asserted learner facts.')
         if decision.progression_action == 'finish':
             return 'Give one warm closing sentence.'
         if decision.next_activity_id:
@@ -198,7 +219,7 @@ class TurnPlanner:
         old = progress.get(current.id, ActivityProgress(activity_id=current.id))
         leaving = decision.progression_action in {
             'move_to_next_objective', 'move_to_next_stage', 'finish'}
-        reached_limit = leaving and bool(decision.review_queue_add)
+        reached_limit = leaving and decision.support_limit_exit
         progress[current.id] = old.model_copy(update={
             'status': ('support_limit_reached' if reached_limit else 'completed')
                       if leaving else 'in_progress',

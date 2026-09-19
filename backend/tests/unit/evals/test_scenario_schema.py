@@ -41,6 +41,7 @@ def test_numbered_behavior_cases_have_unambiguous_activity_and_prior_teacher_tur
         assert activity.stage_id == scenario.initial_state.stage_id
         if scenario.initial_state.objective_id:
             assert scenario.initial_state.objective_id in activity.objective_ids, scenario.id
+        # Only the initial prompt is seeded; later turns use the actual Teacher output.
+        assert scenario.turns[0].teacher_turn.strip(), scenario.id
         for turn in scenario.turns:
-            assert turn.teacher_turn.strip(), scenario.id
             assert 'attempt_delta' not in turn.expected_state_effects, scenario.id

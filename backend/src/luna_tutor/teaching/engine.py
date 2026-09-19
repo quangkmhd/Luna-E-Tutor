@@ -241,7 +241,9 @@ class TeachingEngine:
             add.extend(oid for oid in (sorted(targets if activity.kind == 'ask_teacher' else targets - demonstrated) if targets else [])
                        if oid not in add and oid not in remove)
             if activity.completion_rule.allow_support_limit_exit:
-                return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
+                move = _next_move(state, curriculum, stage, activity)
+                return TeachingDecision(support_limit_exit=move['progression_action'] != 'stay',
+                                        **move, **base)
             return TeachingDecision(progression_action='reduce_difficulty', **base)
         last_success = state.last_success_at_seconds or 0.0
         if state.elapsed_seconds - last_success >= curriculum.teaching_policy.reduce_difficulty_after_seconds:

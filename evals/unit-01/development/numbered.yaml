@@ -227,6 +227,17 @@ scenarios:
     turns: [{expected_state_effects: {count_attempt: true}, teacher_turn: "Tell me what your town has, and add another good thing.", learner_text: "My town has schools, shops, a park, many people, buses, and moreover there is an amusement park near my home.", evaluator_gold: {target_form_status: valid_alternative}, allowed_feedback_actions: [acknowledge_and_continue]}]
   - id: station3-10
     source: {heading: "Trạm 3 — Kịch bản 10 — Học sinh mệt hoặc lặp lỗi hai lần", line: 727, numbered: true}
-    initial_state: {activity_id: level-03.contrast, stage_id: level-03, objective_id: unit01.level03.pattern.however, attempt_count: 1}
-    objective_ids: [unit01.level03.vocabulary.crowded, unit01.level03.pattern.however]
-    turns: [{expected_state_effects: {count_attempt: false}, teacher_turn: "Is your city calm or crowded?", learner_text: "I'm tired. City crowded but I don't know.", evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true, emotional_signals: [tired]}, allowed_feedback_actions: [recast, reassure]}]
+    initial_state: {activity_id: level-03.contrast, stage_id: level-03, objective_id: unit01.level03.pattern.however}
+    objective_ids: [unit01.level03.pattern.however]
+    turns:
+      - teacher_turn: "Tell me one good thing and one drawback of your town."
+        learner_text: "My town crowded."
+        evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true}
+        allowed_feedback_actions: [offer_support, recast]
+        expected_state_effects: {count_attempt: true, activity_id: level-03.contrast}
+        teacher_criteria: [offers_simple_choice, does_not_demand_full_sentence]
+      - learner_text: "My town crowded."
+        evaluator_gold: {meaning_status: partially_satisfied, target_form_status: error_in_target_form, recast_needed: true}
+        allowed_feedback_actions: [offer_support, recast]
+        expected_state_effects: {count_attempt: true, activity_id: level-03.addition, review_queue_contains: [unit01.level03.pattern.however]}
+        teacher_criteria: [reduces_difficulty_on_next_activity, does_not_claim_mastery, does_not_require_correction_repetition]

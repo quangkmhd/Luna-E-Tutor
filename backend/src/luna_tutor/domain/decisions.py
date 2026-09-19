@@ -31,6 +31,7 @@ class TeachingDecision(Contract):
     # a mastery score or a claim that one correct answer proves mastery.
     mastery_updates: list[ObjectiveProgress] = Field(default_factory=list)
     count_attempt: bool = False
+    support_limit_exit: bool = False
 
     @model_validator(mode='after')
     def consistent_correction(self) -> Self:

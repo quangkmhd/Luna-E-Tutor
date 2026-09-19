@@ -139,3 +139,48 @@ def test_teacher_context_requires_only_undelivered_models(unit_01):
     explanation = planner._teacher_context(activity,state,enforce_delivery=False)
     assert explanation.remaining_model_repetitions == 0
     assert not explanation.needs_response_invitation
+
+
+@pytest.mark.asyncio
+async def test_reduced_difficulty_requests_concrete_choice_not_normal_lesson_script(unit_01):
+    from luna_tutor.domain.state import LessonState, ActivityProgress
+    state = LessonState(session_id='tired', unit_id=unit_01.id, stage_id='level-03',
+        activity_id='level-03.contrast', objective_id='unit01.level03.pattern.however',
+        last_teacher_turn='What is one good thing and one drawback of your town?',
+        activity_progress=(ActivityProgress(activity_id='level-03.contrast',
+            response_opportunity_given=True),))
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0,
+        response_kind='does_not_know', emotional_signals=['tired'], objective_evidence=[],
+        needs_clarification=False, ambiguity_reason=None)
+    plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
+        state, "I'm tired. I don't know.", 'tired')
+    assert plan.decision.progression_action == 'reduce_difficulty'
+    assert plan.decision.count_attempt is False
+    directive = plan.teacher_request.next_teaching_move
+    assert 'two concrete' in directive
+    assert 'full sentence' in directive
+    assert 'Model however as a contrast' not in directive
+
+
+@pytest.mark.asyncio
+async def test_successful_recast_is_not_recorded_as_exhausted_support(state, unit_01):
+    plan = await TurnPlanner(FakeEvaluator(result()), TeachingEngine(), unit_01).plan(
+        state, 'I live countryside', 'recast-success')
+    progress = next(p for p in plan.proposed_next_state.activity_progress
+                    if p.activity_id == state.activity_id)
+    assert progress.status == 'completed'
+    assert progress.completion_reason != 'support limit reached'
+    assert plan.decision.review_queue_add == [state.objective_id]
+
+
+@pytest.mark.asyncio
+async def test_second_unresolved_response_records_actual_support_limit(state, unit_01):
+    evidence = EvaluatorResult(turn_id='placeholder', state_version=0, response_kind='does_not_know',
+        emotional_signals=[], objective_evidence=[], needs_clarification=False, ambiguity_reason=None)
+    state = state.model_copy(update={'attempt_count': 1})
+    plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
+        state, "I don't know", 'support-limit')
+    progress = next(p for p in plan.proposed_next_state.activity_progress
+                    if p.activity_id == state.activity_id)
+    assert progress.status == 'support_limit_reached'
+    assert plan.decision.support_limit_exit

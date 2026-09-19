@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from luna_tutor.domain.decisions import TeacherTurnRequest, TeacherUtterance
 from luna_tutor.domain.text_observations import observe_delivery
-from luna_tutor.llm.openrouter import OpenRouterError, InvalidModelOutputError
+from luna_tutor.llm.openrouter import OpenRouterError, InvalidModelOutputError, ProviderError
 
 
 class InvalidTeacherResultError(InvalidModelOutputError):
@@ -101,8 +101,10 @@ class GeminiTeacher:
                     {'role': 'system', 'content': self._prompt},
                     {'role': 'user', 'content': json.dumps(payload, ensure_ascii=False)},
                 ], TeacherUtterance.model_json_schema(), request.turn_id)
+            except ProviderError:
+                # Preserve service failures for API/eval classification; they are not bad wording.
+                raise
             except OpenRouterError:
-                # Network/provider failures are handled by the client/API, not a wording repair loop.
                 return _fallback(request)
             try:
                 utterance = TeacherUtterance.model_validate(raw)

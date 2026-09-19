@@ -209,3 +209,27 @@ scenarios:
     - consistent_luna_profile
     - models_dolphin_twice
     - invites_word_practice
+- id: regression-tired-contrast
+  source:
+    heading: 'Derived regression: tired learner needs an easier response opportunity'
+    line: 727
+    numbered: false
+  initial_state:
+    stage_id: level-03
+    activity_id: level-03.contrast
+    objective_id: unit01.level03.pattern.however
+  objective_ids: [unit01.level03.pattern.however]
+  turns:
+  - teacher_turn: Tell me one good thing and one drawback of your town.
+    learner_text: I'm tired. I don't know.
+    evaluator_gold:
+      response_kind: does_not_know
+      meaning_status: not_demonstrated
+      target_form_status: not_used
+      emotional_signals: [tired]
+    allowed_feedback_actions: [reassure]
+    expected_state_effects:
+      count_attempt: false
+      progression_action: reduce_difficulty
+      activity_id: level-03.contrast
+    teacher_criteria: [acknowledges_tiredness, offers_simple_choice, does_not_demand_full_sentence]

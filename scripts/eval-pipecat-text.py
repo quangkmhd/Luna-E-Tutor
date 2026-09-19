@@ -19,12 +19,35 @@ from luna_tutor.curriculum.loader import load_unit
 from luna_tutor.evals.behavior import BehaviorRunner
 from luna_tutor.evals.loader import load_scenarios
 from luna_tutor.llm.evaluator import GeminiEvaluator
-from luna_tutor.llm.openrouter import OpenRouterClient
+from luna_tutor.llm.openrouter import OpenRouterClient, OpenRouterError, _redact_contact
 from luna_tutor.llm.teacher import GeminiTeacher
 from luna_tutor.teaching.engine import TeachingEngine
 from luna_tutor.teaching.planner import TurnPlanner
 from luna_tutor.teaching.turn_service import TurnService
 from text_pipeline import PipecatTurnService
+
+
+class DiagnosticClient(OpenRouterClient):
+    """Synthetic eval-only diagnostics; never retain HTTP requests or credentials."""
+
+    def __init__(self, settings):
+        super().__init__(settings)
+        self.calls = []
+
+    async def structured_chat(self, messages, schema, request_id):
+        call = {'turn_id': request_id,
+                'component': 'teacher' if 'spoken_text' in schema.get('properties', {}) else 'evaluator',
+                'input': _redact_contact(json.loads(messages[-1]['content']))}
+        self.calls.append(call)
+        try:
+            output = await super().structured_chat(messages, schema, request_id)
+        except Exception as error:
+            call['error_type'] = type(error).__name__
+            if isinstance(error, OpenRouterError):
+                call.update(error_status=error.status_code, error_reason=error.reason)
+            raise
+        call['parsed_output'] = _redact_contact(output)
+        return output
 
 
 async def run(args):
@@ -37,7 +60,7 @@ async def run(args):
     settings = Settings(openrouter_api_key=values['OPENROUTER_API_KEY'])
     unit = load_unit(ROOT / 'curriculum/grade-05/unit-01')
     sources = sorted(set(
-        list((ROOT / 'backend/src/luna_tutor').rglob('*.py'))
+        [Path(__file__).resolve()] + list((ROOT / 'backend/src/luna_tutor').rglob('*.py'))
         + list((ROOT / 'backend/src/luna_tutor/prompts').glob('*.md'))
         + list((ROOT / 'curriculum/grade-05/unit-01').rglob('*.yaml'))
         + list((ROOT / 'evals/unit-01/development').glob('*.yaml'))
@@ -57,12 +80,18 @@ async def run(args):
             output.truncate()
             output.flush()
         checkpoint()
-        async with OpenRouterClient(settings) as client:
+        async with DiagnosticClient(settings) as client:
             service = PipecatTurnService(TurnService(
                 TurnPlanner(GeminiEvaluator(client), TeachingEngine(), unit), GeminiTeacher(client)))
             runner = BehaviorRunner(ROOT, service)
             for scenario in scenarios:
+                client.calls.clear()
                 records = await runner.run([scenario])
+                for record in records:
+                    if 'turn_execution' in record['failures']:
+                        failed_turn = f"{scenario.id}-{record['turn_index'] - 1}"
+                        record['model_diagnostics'] = [call for call in client.calls
+                                                       if call['turn_id'] == failed_turn]
                 payload['records'].extend(records)
                 checkpoint()
                 print(scenario.id, [r['failures'] for r in records], flush=True)

@@ -122,8 +122,9 @@ async def test_teacher_repair_is_bounded():
 async def test_teacher_does_not_retry_provider_outage():
     from luna_tutor.llm.openrouter import ProviderError
     client = FakeClient(error=ProviderError(status_code=503, request_id='t', reason='unavailable'))
-    result = await GeminiTeacher(client).respond(request())
-    assert result.generation_mode == 'fallback'
+    with pytest.raises(ProviderError) as caught:
+        await GeminiTeacher(client).respond(request())
+    assert caught.value.status_code == 503
     assert len(client.calls) == 1
 
 
