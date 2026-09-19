@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 
 from luna_tutor.curriculum.loader import load_unit
-from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest
+from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.evals.metrics import EvalRecord, calculate_metrics
 from luna_tutor.evals.models import Scenario
@@ -77,25 +77,23 @@ class EvalRunner:
                     schema_valid = False
                     try:
                         if redacted.safety_event:
-                            # Privacy is enforced before the model boundary. The scenario's
-                            # gold describes the deterministic local outcome being tested.
-                            actual = turn.evaluator_gold.model_dump()
-                            schema_valid = True
+                            result = EvaluatorResult.contact_removed(
+                                request.turn_id, request.state_version)
                         else:
                             result = await self.evaluator.evaluate(request)
-                            schema_valid = True
-                            first = next((item for item in result.objective_evidence
-                                          if item.objective_id == scenario.initial_state.objective_id),
-                                         result.objective_evidence[0]
-                                         if result.objective_evidence else None)
-                            actual = {
-                                'response_kind': result.response_kind,
-                                'meaning_status': first.meaning_status if first else 'not_demonstrated',
-                                'target_form_status': first.target_form_status if first else 'not_used',
-                                'recast_needed': first.recast_needed if first else False,
-                                'emotional_signals': result.emotional_signals,
-                                'needs_clarification': result.needs_clarification,
-                            }
+                        schema_valid = True
+                        first = next((item for item in result.objective_evidence
+                                      if item.objective_id == scenario.initial_state.objective_id),
+                                     result.objective_evidence[0]
+                                     if result.objective_evidence else None)
+                        actual = {
+                            'response_kind': result.response_kind,
+                            'meaning_status': first.meaning_status if first else 'not_demonstrated',
+                            'target_form_status': first.target_form_status if first else 'not_used',
+                            'recast_needed': first.recast_needed if first else False,
+                            'emotional_signals': result.emotional_signals,
+                            'needs_clarification': result.needs_clarification,
+                        }
                     except InvalidModelOutputError:
                         pass
                     except OpenRouterError:
@@ -136,6 +134,8 @@ class EvalRunner:
         json_path = Path(f'{base}.json')
         markdown_path = Path(f'{base}.md')
         payload = {
+            'evaluation_scope': 'evaluator_classification_only',
+            'teaching_behavior_evaluated': False,
             'prompt_sha256': prompt_hash, 'curriculum_sha256': curriculum_hash,
             'metrics': metrics.model_dump(mode='json'),
             'records': [record.model_dump(mode='json') for record in records],
@@ -143,6 +143,8 @@ class EvalRunner:
         json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
         markdown_path.write_text(
             '# Unit 1 evaluation\n\n'
+            'Scope: Evaluator classification only. Teaching Engine, Teacher, '
+            'Pipecat transitions and teaching hard rules were not evaluated.\n\n'
             f'- Prompt SHA-256: `{prompt_hash}`\n'
             f'- Curriculum SHA-256: `{curriculum_hash}`\n'
             f'- Records: {metrics.total}\n'
@@ -153,6 +155,7 @@ class EvalRunner:
             f'- Hard-rule failures: {json.dumps(metrics.hard_rule_failures)}\n'
             f'- Unstable: {", ".join(metrics.unstable_scenarios) or "none"}\n'
             f'- Latency p50/p95: {metrics.latency_p50_ms:.1f}/{metrics.latency_p95_ms:.1f} ms\n'
-            f'- Accepted: {metrics.accepted}\n', encoding='utf-8')
+            f'- Evaluator structural gate accepted: {metrics.accepted} '
+            '(does not gate semantic accuracy or teaching behavior)\n', encoding='utf-8')
         return ReportArtifacts(json_path, markdown_path, prompt_hash, curriculum_hash,
                                metrics.accepted)

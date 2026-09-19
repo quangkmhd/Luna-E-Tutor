@@ -154,7 +154,7 @@ scenarios:
     initial_state: {stage_id: level-02, objective_id: unit01.level02.vocabulary.phone_number}
     objective_ids: [unit01.level02.vocabulary.phone_number, unit01.level02.vocabulary.subject]
     rule_ids: [R14]
-    turns: [{learner_text: "My phone number is 0912 345 678.", evaluator_gold: {meaning_status: satisfied, target_form_status: not_used}, allowed_feedback_actions: [privacy_redirect]}]
+    turns: [{learner_text: "My phone number is 0912 345 678.", evaluator_gold: {response_kind: insufficient_data, meaning_status: not_demonstrated, target_form_status: not_used, needs_clarification: true}, allowed_feedback_actions: [privacy_redirect]}]
   - id: station2-09
     source: {heading: "Trạm 2 — Kịch bản 9 — Học sinh nói rất dài", line: 522, numbered: true}
     initial_state: {stage_id: level-02, objective_id: unit01.level02.pattern.hobby}

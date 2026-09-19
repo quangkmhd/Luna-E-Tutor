@@ -1,5 +1,7 @@
 # Unit 1 Pipecat Voice Integration Implementation Plan
 
+> Deferred by the user on 2026-09-19. Active scope: `2026-09-19-unit1-pipecat-text.md`. Audio tasks below are future work, not current acceptance gates.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a locally testable SmallWebRTC voice tutor using Pipecat 1.11-compatible APIs, Soniox STT/TTS, OpenRouter Gemini, Pipecat Flows, and the validated Unit 1 teaching core.

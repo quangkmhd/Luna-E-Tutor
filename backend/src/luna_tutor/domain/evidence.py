@@ -92,6 +92,16 @@ class EvaluatorResult(Contract):
     needs_clarification: bool
     ambiguity_reason: Text | None
 
+    @classmethod
+    def contact_removed(cls, turn_id: str, state_version: int) -> 'EvaluatorResult':
+        """Local privacy outcome shared by production and evaluation."""
+        return cls(
+            turn_id=turn_id, state_version=state_version,
+            response_kind='insufficient_data', emotional_signals=[],
+            objective_evidence=[], needs_clarification=True,
+            ambiguity_reason='Contact information was removed locally.',
+        )
+
     @model_validator(mode='after')
     def consistent_result(self) -> Self:
         if self.needs_clarification and self.ambiguity_reason is None:

@@ -1,0 +1,31 @@
+# Pipecat text evaluation audit — 2026-09-19
+
+Scope: real typed input → Pipecat → evaluated teaching decision → Teacher output. STT/TTS are deferred by user instruction. This document records findings, not completion.
+
+## Verified corrections
+
+1. `EvalRunner` copied `evaluator_gold` into actual output for contact information. A mutation regression deliberately supplies wrong gold and was observed failing. Production and eval now share `EvaluatorResult.contact_removed`; expected and actual are independent. The corresponding privacy gold now records no learning evidence, rather than claiming satisfied meaning from removed contact information.
+2. Evaluator reports now explicitly identify classification-only scope and unmeasured teaching behavior. Historical reports remain intact, with an audit note in `unit-01-report.md` correcting broad acceptance claims.
+
+## Open findings requiring implementation and reruns
+
+| Layer | Evidence | Required correction |
+|---|---|---|
+| Scenario context | Numbered YAML has 40 source-numbered cases: 10 warm-up plus the 30 station cases. 37 lack a prior teacher turn. 39 lack a specific activity ID. Many objective/stage combinations match multiple activities. | Review against source dialogue; explicitly select actual activity, prior teacher utterance and preceding delivery/support. Do not infer arbitrary contexts just to get passing scores. |
+| Scenario state assertions | Every numbered case inherits `attempt_delta: 1`, including privacy, warm-up and uncertain transcript events. | Author scenario-specific effects from the agreed rules; operational uncertainty must not count as learner failure. |
+| Runtime delivery | Engine reads `response_opportunity_given` and `model_repetitions_delivered`; planner/TurnService/API do not update them. Greeting creation does not record delivery. | Add verified text-delivery effects and a real multi-turn progression test. Do not bypass the engine or pre-complete activities solely in fixtures. |
+| Teacher context | `TeacherTurnRequest` carries learner text, feedback and an instruction but no preceding teacher question or structured curriculum targets. | Supply bounded relevant task context, support and review intent; preserve reusable system identity/rules. Verify output follows the teaching move rather than relying on vocabulary guessed by the model. |
+| Behavioral measurement | Existing EvalRunner never executes Engine or Teacher. `hard_rule_failures` always empty. | Run the actual pipeline and assert decision, state effects, no forced correction repetition, permitted questioning, semantic relevance, review handling and progression. Clearly mark non-text requirements deferred. |
+| Browser evidence | Browser fixture contains a magic Free Talk jump. | Retain it for UI testing, add real pipeline integration and a complete learning journey without magic transitions. |
+
+## Prompt research
+
+Official Google guidance: https://ai.google.dev/gemini-api/docs/prompting-strategies . Use explicit instructions, relevant context and representative examples; test variants empirically. Wording similarity is not an acceptance criterion. Teacher decisions, support, reaction to meaning and curriculum direction are.
+
+## Next experimental sequence
+
+1. Repair scenario context/state fixtures against source requirements and test the eval oracle with deliberately incorrect results.
+2. Integrate Pipecat text pipeline and activity-level Flows with the existing deterministic core and SQLite. Keep one output per accepted input.
+3. Run a baseline of actual pipeline outputs and multi-turn trajectories.
+4. Classify each failure as data, content, prompt, engine or integration. Preserve outputs and hashes before changes.
+5. Improve the responsible layer, rerun development cases and fresh paraphrases, and review all remaining failures. Never change gold solely to agree with current output.

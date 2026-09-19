@@ -36,6 +36,9 @@ async def test_runner_writes_versioned_json_and_markdown_without_raw_transcript(
     text = report.json_path.read_text()
     assert scenarios[0].turns[0].learner_text not in text
     payload = __import__('json').loads(text)
+    assert payload['evaluation_scope'] == 'evaluator_classification_only'
+    assert payload['teaching_behavior_evaluated'] is False
+    assert 'not evaluated' in report.markdown_path.read_text()
     assert 'meaning_status' not in payload['records'][0]['expected']
     assert 'target_form_status' not in payload['records'][0]['expected']
     assert len(list(tmp_path.glob('*.json'))) == 1
@@ -67,6 +70,24 @@ async def test_runner_redacts_scenario_contact_before_request(tmp_path):
     payload = __import__('json').loads(report.json_path.read_text())
     assert payload['records'][0]['schema_valid']
     assert payload['records'][0]['hard_rule_failures'] == []
+
+
+@pytest.mark.asyncio
+async def test_privacy_actual_is_independent_of_gold_labels(tmp_path):
+    scenario = next(item for item in load_scenarios(ROOT / 'evals/unit-01')
+                    if item.id == 'station2-08')
+    turn = scenario.turns[0]
+    wrong_gold = turn.evaluator_gold.model_copy(update={
+        'response_kind': 'answer', 'meaning_status': 'satisfied',
+        'needs_clarification': False,
+    })
+    scenario = scenario.model_copy(update={
+        'turns': [turn.model_copy(update={'evaluator_gold': wrong_gold})]})
+    report = await EvalRunner(ROOT, FakeEvaluator()).run([scenario], 1, tmp_path)
+    record = __import__('json').loads(report.json_path.read_text())['records'][0]
+    assert record['actual']['response_kind'] == 'insufficient_data'
+    assert record['actual']['meaning_status'] == 'not_demonstrated'
+    assert record['differences'], 'A deliberately incorrect gold label must fail scoring'
 
 
 @pytest.mark.asyncio

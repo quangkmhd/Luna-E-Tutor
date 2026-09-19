@@ -33,15 +33,7 @@ class TurnPlanner:
             attempt_count=state.attempt_count,
         )
         if redacted.safety_event:
-            evidence = EvaluatorResult(
-                turn_id=turn_id,
-                state_version=state.state_version,
-                response_kind='insufficient_data',
-                emotional_signals=[],
-                objective_evidence=[],
-                needs_clarification=True,
-                ambiguity_reason='Contact information was removed locally.',
-            )
+            evidence = EvaluatorResult.contact_removed(turn_id, state.state_version)
         else:
             evidence = await self._evaluator.evaluate(request)
         if evidence.turn_id != turn_id or evidence.state_version != state.state_version:

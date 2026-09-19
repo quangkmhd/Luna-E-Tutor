@@ -1,5 +1,7 @@
 # Unit 1 evaluation report
 
+> Audit correction (2026-09-19): these are historical Evaluator-only measurements and ten separate Teacher samples, not an end-to-end Pipecat or full teaching-behavior acceptance. The runner did not execute hard-rule assertions, so "zero hard-rule failures" below means none recorded, not verified compliance. The privacy case copied its gold into actual output; it is invalid evidence and is being replaced with an independently produced local result. Browser fixture tests also do not prove a real-model complete Unit 1 journey. See the Pipecat text plan for the active acceptance gates.
+
 ## Accepted baseline
 
 The evaluated model is `google/gemini-3.5-flash-lite` through OpenRouter. The final holdout run contained 15 records (five sealed paraphrases, each repeated three times) and achieved 100% exact-record agreement, 100% schema validity, zero provider failures, zero invalid responses, and zero hard-rule failures. Median latency was 1,388 ms and p95 latency was 1,486 ms.
