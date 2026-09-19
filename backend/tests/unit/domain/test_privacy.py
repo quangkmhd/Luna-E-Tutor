@@ -1,6 +1,7 @@
 import pytest
+from pydantic import TypeAdapter, ValidationError
 
-from luna_tutor.domain.privacy import redact_sensitive_contact
+from luna_tutor.domain.privacy import SanitizedText, redact_sensitive_contact
 
 
 @pytest.mark.parametrize('phone', [
@@ -32,3 +33,38 @@ def test_redacts_every_contact_and_is_idempotent():
     result = redact_sensitive_contact('0912345678 or +1-202-555-0123')
     assert result.text == '[REDACTED_PHONE] or [REDACTED_PHONE]'
     assert redact_sensitive_contact(result.text).text == result.text
+
+
+@pytest.mark.parametrize(('text', 'expected'), [
+    ('My phone is0912345678.', 'My phone is[REDACTED_PHONE].'),
+    ('Call 0912345678please.', 'Call [REDACTED_PHONE]please.'),
+    ('0912 345 678please', '[REDACTED_PHONE]please'),
+    ('Call0912.345.678please', 'Call[REDACTED_PHONE]please'),
+])
+def test_redacts_entire_contact_span_even_when_words_adjoin_it(text, expected):
+    result = redact_sensitive_contact(text)
+    assert result.text == expected
+    assert result.safety_event is True
+    assert not any(char.isdecimal() for char in result.model_dump_json())
+    with pytest.raises(ValidationError):
+        TypeAdapter(SanitizedText).validate_python(text)
+    assert TypeAdapter(SanitizedText).validate_python(result.text) == expected
+
+
+@pytest.mark.parametrize('separator', ['. ', '.\t', '.\u00a0', '.\u202f', '.\n'])
+def test_contact_stops_before_sentence_boundary_and_preserves_following_year(separator):
+    text = f'My phone is 0912 345 678{separator}2015 is my birth year.'
+    result = redact_sensitive_contact(text)
+    assert result.text == f'My phone is [REDACTED_PHONE]{separator}2015 is my birth year.'
+    assert result.safety_event is True
+
+
+@pytest.mark.parametrize('text', [
+    'I studied in 2025-2026.', 'I studied in 2025 - 2026.',
+    'I studied in 2025–2026.', 'I am in class5A.', '5A and 6B',
+])
+def test_preserves_school_year_ranges_and_short_class_identifiers(text):
+    result = redact_sensitive_contact(text)
+    assert result.text == text
+    assert result.safety_event is False
+    assert TypeAdapter(SanitizedText).validate_python(text) == text

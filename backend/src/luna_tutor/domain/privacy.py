@@ -8,10 +8,17 @@ from pydantic import AfterValidator
 
 from luna_tutor.domain.contracts import Contract
 
-# Horizontal separators only: unrelated lines must not become one candidate.
-_PHONE = re.compile(r'(?<!\w)(?:\+?\d|\(\d{2,4}\))[\d(). \t\u00a0\u202f-]*\d(?!\w)')
+# Digit boundaries keep a whole contact even when a word adjoins it. Only
+# horizontal separators are allowed; a dot must directly precede another
+# digit, so sentence-ending punctuation cannot swallow the next sentence.
+_PHONE = re.compile(
+    r'(?<!\d)(?:\+?\d|\(\d{2,4}\))'
+    r'(?:[\d() \t\u00a0\u202f-]|\.(?=\d))*\d(?!\d)'
+)
 _DATE = re.compile(r'(?:\d{4}-\d{1,2}-\d{1,2}|\d{1,2}-\d{1,2}-\d{4})')
-_YEARS = re.compile(r'(?:19|20)\d{2}(?:[ \t]+(?:19|20)\d{2})*')
+_YEARS = re.compile(
+    r'(?:19|20)\d{2}(?:(?:[ \t]+|[ \t]*-[ \t]*)(?:19|20)\d{2})*'
+)
 
 
 class RedactedText(Contract):
