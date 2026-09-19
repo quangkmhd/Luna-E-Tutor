@@ -8,8 +8,8 @@ if [[ -f "$project_root/.env" ]]; then
 fi
 
 cleanup() {
-  kill "${backend_pid:-}" "${web_pid:-}" 2>/dev/null || true
-  wait "${backend_pid:-}" "${web_pid:-}" 2>/dev/null || true
+  kill "${backend_pid:-}" "${web_pid:-}" "${voice_pid:-}" 2>/dev/null || true
+  wait "${backend_pid:-}" "${web_pid:-}" "${voice_pid:-}" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
@@ -21,9 +21,15 @@ trap cleanup EXIT INT TERM
 backend_pid=$!
 
 (
+  cd "$project_root/voice/server"
+  uv run python speaking_bot.py --host 127.0.0.1 --port 7860
+) &
+voice_pid=$!
+
+(
   cd "$project_root/web"
   NEXT_PUBLIC_TUTOR_API_URL="${NEXT_PUBLIC_TUTOR_API_URL:-http://localhost:8000}" npm run dev
 ) &
 web_pid=$!
 
-wait -n "$backend_pid" "$web_pid"
+wait -n "$backend_pid" "$web_pid" "$voice_pid"
