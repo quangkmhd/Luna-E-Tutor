@@ -1,6 +1,8 @@
 # Phòng luyện nói theo chủ đề — lớp 5
 
-Ngày: 2026-09-19. Trạng thái: chờ người dùng duyệt đặc tả; chưa phê duyệt triển khai.
+Ngày: 2026-09-19. Trạng thái: người dùng đã duyệt đặc tả; kế hoạch triển khai đã được viết.
+
+Cập nhật sau duyệt: người dùng yêu cầu lấy cấu hình STT/TTS/LLM từ `/home/quangnhvn34/dev/massko/E-Voice-Tutor-v1/.env`. Đã kiểm tra có `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `SONIOX_API_KEY`, `SONIOX_VOICE_ID`; không lưu giá trị khóa vào tài liệu. Người dùng đã chọn STT Soniox; `.env` gốc đã đặt `STT_PROVIDER=soniox`. TTS dùng Soniox với voice ID hiện có; LLM dùng `OPENROUTER_MODEL` và khóa OpenRouter trong cùng file.
 
 ## 1. Mục tiêu đã thống nhất
 

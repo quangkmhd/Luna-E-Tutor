@@ -20,6 +20,7 @@
 - Không chấm phát âm từ transcript.
 - Không ghi đè các thay đổi OpenPronounce hiện có; không đưa chúng vào commit tính năng vô tình.
 - Không đổi khóa, model hoặc voice ID. Kiểm tra sự hiện diện của biến môi trường trước live test, không in giá trị.
+- Theo yêu cầu của người dùng, nguồn cấu hình là `/home/quangnhvn34/dev/massko/E-Voice-Tutor-v1/.env`: backend và voice nạp đường dẫn rõ ràng, không sao chép secrets vào worktree, frontend, report hay git. STT và TTS dùng Soniox; LLM dùng OpenRouter theo biến hiện có.
 - Không scaffold lại ứng dụng. Đọc AGENTS.md và kiểm chứng mọi API Pipecat mới bằng Context Hub hoặc source của bản cài.
 
 ## Review Focus
@@ -124,6 +125,7 @@ def test_cannot_create_grade_four(client):
 
 - [ ] Chạy `uv run --project voice/server python -m pytest tests/backend/integration/api/test_speaking.py -q`, xác nhận routes chưa có.
 - [ ] Wire service/kho riêng vào runtime. Dùng chung lifespan OpenRouter client. Fixtures chỉ bật với `ENV=test` và `TUTOR_LLM_MODE=fixture`; có scenario English/Vietnamese/help/end/failure. Trả lỗi an toàn, không exception chứa khóa.
+- [ ] Model phòng speaking đọc `OPENROUTER_MODEL` từ nguồn cấu hình nói trên. Adapter hiện khóa model trong `llm/openrouter.py`; thêm cấu hình model explicit cho speaking client và tests chọn model từ env, giữ default/contract Unit 1. Không dùng `LLM_MODEL` làm fallback ngầm khi đồng thời có `OPENROUTER_MODEL`; không hardcode lại model trong speaking service.
 - [ ] Lịch sử trả replies với delivered_text/status; không giả định text displayed là audio heard. Văn bản mode đánh dấu presented riêng; audio mode delivery do server audio xác nhận. Route delivery nội bộ dùng credential server-only, không cho browser tự khai nghe đủ để ghi bằng chứng.
 - [ ] Thêm test API cũ vẫn tạo Unit 1; chạy toàn bộ `tests/backend/integration/api`, commit Task 4.
 
