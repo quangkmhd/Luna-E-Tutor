@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { ChatPanel } from './ChatPanel';
 import { Composer } from './Composer';
 import { HistoryPanel } from './HistoryPanel';
@@ -41,7 +40,7 @@ export function TutorShell({ api = tutorApi }: { api?: TutorApi }) {
   async function startNew() { if (current?.status === 'active' && !window.confirm('Start over? This session will stay in history.')) return; setBusy(true); setError(null); try { if (current?.status === 'active') { const old = await api.abandonSession(current.session_id); setSessions((items) => items.map((item) => item.session_id === old.session_id ? old : item)); } replaceSession(await api.createSession()); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   async function finish() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.finishSession(current.session_id, current.state_version)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   if (!current) return <main className="loading"><div className="logo-mark">L</div><p>{error ? error.message : 'Opening your lesson…'}</p></main>;
-  return <main className="app-shell"><header className="topbar"><div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Unit 1</small></div></div><div className="top-actions"><Link href="/speaking">Luyện nói lớp 5</Link><span className={`status-pill ${current.status}`}>{current.status}</span><NewSessionButton busy={busy} onClick={startNew} /></div></header>
+  return <main className="app-shell"><header className="topbar"><div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Unit 1</small></div></div><div className="top-actions"><span className={`status-pill ${current.status}`}>{current.status}</span><NewSessionButton busy={busy} onClick={startNew} /></div></header>
     <div className="workspace"><section className="lesson-card"><div className="lesson-heading"><div><span className="eyebrow">All about me!</span><h1>Practice with Luna</h1></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><ChatPanel messages={current.messages} />
       {error && <div className="error-banner" role="alert"><strong>{error.retryable ? 'Please try again.' : 'Something changed.'}</strong> {error.message}</div>}
       {current.status === 'active' && <Composer disabled={busy} onSend={send} />}
