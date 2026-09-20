@@ -47,6 +47,14 @@ class SummaryView(Contract):
     not_yet_observed: list[str]
 
 
+class LearningStageFocusView(Contract):
+    stage_id: str
+    stage_title: str
+    target_words: list[str]
+    target_patterns: list[str]
+    highlighted: bool
+
+
 class SessionView(Contract):
     session_id: str
     unit_id: str
@@ -55,6 +63,7 @@ class SessionView(Contract):
     stage_id: str
     activity_id: str | None
     objective_id: str | None
+    learning_focus: list[LearningStageFocusView]
     status: str
     messages: list[MessageView]
     review_queue: list[ReviewItem]

@@ -45,6 +45,13 @@ export type SessionView = {
   stage_id: string;
   activity_id?: string | null;
   objective_id?: string | null;
+  learning_focus: Array<{
+    stage_id: string;
+    stage_title: string;
+    target_words: string[];
+    target_patterns: string[];
+    highlighted: boolean;
+  }>;
   status: 'active' | 'paused' | 'completed' | 'abandoned';
   messages: Message[];
   review_queue: Array<{ objective_id: string; difficulty: string }>;

@@ -196,6 +196,11 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
             await client.aclose()
 
     origins = ['http://localhost:3000']
+    if env_origins := (environment.get('ALLOWED_ORIGINS') or environment.get('CORS_ORIGINS') or '').strip():
+        for item in env_origins.split(','):
+            cleaned = item.strip()
+            if cleaned and cleaned not in origins:
+                origins.append(cleaned)
     if environment.get('ENV') == 'test':
         origins.append('http://localhost:3090')
         if e2e_web_origin := environment.get('E2E_WEB_ORIGIN', '').strip():

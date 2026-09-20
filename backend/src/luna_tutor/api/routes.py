@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from luna_tutor.api.schemas import (
     CreateSessionRequest,
+    LearningStageFocusView,
     MessageView,
     ReviewRequest,
     SessionView,
@@ -46,6 +47,56 @@ def _summary(stored: StoredSession) -> SummaryView:
                        not_yet_observed=[] if observed else ['No learning evidence recorded yet'])
 
 
+def _learning_focus(curriculum, current_stage_id: str) -> list[LearningStageFocusView]:
+    stage_positions = {stage.id: index for index, stage in enumerate(curriculum.stages)}
+    current_position = stage_positions[current_stage_id]
+    candidates = []
+    for stage in curriculum.stages:
+        if stage.id in {'warm-up', 'free-talk', 'summary'}:
+            continue
+        objective_ids = {
+            objective_id
+            for activity in curriculum.activities
+            if activity.stage_id == stage.id
+            for objective_id in activity.objective_ids
+        }
+        objectives = [item for item in curriculum.objectives if item.id in objective_ids]
+        vocabulary_ids = {
+            vocabulary_id for objective in objectives
+            for vocabulary_id in objective.vocabulary_ids
+        }
+        pattern_ids = {
+            pattern_id for objective in objectives
+            for pattern_id in objective.pattern_ids
+        }
+        target_words = [
+            item.text for item in curriculum.vocabulary if item.id in vocabulary_ids
+        ]
+        target_patterns = [
+            item.text for item in curriculum.patterns if item.id in pattern_ids
+        ]
+        if target_words or target_patterns:
+            candidates.append((stage, target_words, target_patterns))
+
+    highlighted_stage_id = current_stage_id if any(
+        stage.id == current_stage_id for stage, _, _ in candidates
+    ) else next((
+        stage.id for stage, _, _ in candidates
+        if stage_positions[stage.id] > current_position
+    ), None)
+
+    return [
+        LearningStageFocusView(
+            stage_id=stage.id,
+            stage_title=stage.title,
+            target_words=target_words,
+            target_patterns=target_patterns,
+            highlighted=stage.id == highlighted_stage_id,
+        )
+        for stage, target_words, target_patterns in candidates
+    ]
+
+
 def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
     messages = [MessageView(role='teacher', text=stored.state.opening_message or LEGACY_GREETING)]
     for completed in stored.turns:
@@ -70,6 +121,7 @@ def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
         ),
         state_version=state.state_version, stage_id=state.stage_id,
         activity_id=state.activity_id, objective_id=state.objective_id,
+        learning_focus=_learning_focus(curriculum, state.stage_id),
         status=state.status, messages=messages,
         review_queue=list(state.review_queue),
         objective_progress=list(state.objective_progress),

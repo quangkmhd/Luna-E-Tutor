@@ -40,3 +40,16 @@ test('selects, persists, and renders Unit 2 without Unit 1 content', async ({
   expect(persisted.unit_id).toBe('grade05.unit02');
   expect(persisted.unit.title).toBe('Our homes');
 });
+
+test('opens Unit 2 directly at its canonical URL and returns to the selector', async ({ page }) => {
+  await page.goto('/unit2');
+
+  await expect(page).toHaveURL(/\/unit2$/);
+  await expect(page.getByText('English Tutor · Unit 2')).toBeVisible();
+  await expect(page.getByText('Our homes')).toBeVisible();
+  await expect(page.getByText('All about me!')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Choose another unit' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { name: 'Choose a unit' })).toBeVisible();
+});

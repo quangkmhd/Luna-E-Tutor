@@ -52,6 +52,51 @@ def test_lists_enabled_units_and_creates_selected_unit(tmp_path):
     }
     assert body["stage_id"] == "warm-up"
     assert body["activity_id"] == "warm-up.feelings"
+    assert [item["stage_id"] for item in body["learning_focus"]] == [
+        "lesson-01", "lesson-02", "lesson-03", "level-02", "level-03",
+    ]
+    assert body["learning_focus"][0] == {
+        "stage_id": "lesson-01",
+        "stage_title": "Lesson 01",
+        "target_words": ["building", "flat", "house", "tower"],
+        "target_patterns": [
+            "Do you live in this/that ___? – Yes, I do./No, I don't."
+        ],
+        "highlighted": True,
+    }
+
+
+def test_session_exposes_only_the_current_units_stage_targets(tmp_path):
+    root = Path(__file__).resolve().parents[4]
+    registry = CurriculumRegistry(
+        root / "curriculum",
+        ("grade05.unit01", "grade05.unit02"),
+    )
+    repository = SessionRepository(tmp_path / "focus.sqlite3")
+    repository.create_session(LessonState(
+        session_id="unit-2-lesson-1",
+        unit_id="grade05.unit02",
+        stage_id="lesson-01",
+        activity_id="lesson-01.introduce-house",
+    ))
+    api = TestClient(create_app(
+        repository=repository,
+        turn_service=UnusedTurnService(),
+        curriculum_registry=registry,
+    ))
+
+    body = api.get("/api/sessions/unit-2-lesson-1").json()
+
+    assert body["learning_focus"][0] == {
+        "stage_id": "lesson-01",
+        "stage_title": "Lesson 01",
+        "target_words": ["building", "flat", "house", "tower"],
+        "target_patterns": [
+            "Do you live in this/that ___? – Yes, I do./No, I don't."
+        ],
+        "highlighted": True,
+    }
+    assert sum(item["highlighted"] for item in body["learning_focus"]) == 1
 
 
 def test_create_requires_known_unit(tmp_path):
