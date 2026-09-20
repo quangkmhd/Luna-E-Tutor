@@ -28,7 +28,13 @@ function VoicePhaseIcon({ phase }: { phase: VoicePhase }) {
   return <span className={styles.statusDot} aria-hidden="true" />;
 }
 
-export function VoiceControls() {
+export function VoiceControls({
+  startLabel = 'Start voice lesson',
+  stopLabel = 'Stop voice lesson',
+}: {
+  startLabel?: string;
+  stopLabel?: string;
+}) {
   const voice = useVoiceLesson();
   const active = voice.transportState === 'connected' || voice.transportState === 'ready';
   const pending = ['initializing', 'connecting', 'authenticating'].includes(
@@ -43,7 +49,7 @@ export function VoiceControls() {
       <div className={styles.actions}>
         {!active ? (
           <button type="button" className={styles.primary} disabled={pending} onClick={() => void voice.start()}>
-            {pending ? 'Connecting…' : 'Start voice lesson'}
+            {pending ? 'Connecting…' : startLabel}
           </button>
         ) : (
           <>
@@ -55,7 +61,7 @@ export function VoiceControls() {
               )}
             </PipecatClientMicToggle>
             <button type="button" className={styles.secondary} onClick={() => void voice.stop()}>
-              Stop voice lesson
+              {stopLabel}
             </button>
           </>
         )}

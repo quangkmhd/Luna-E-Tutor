@@ -73,6 +73,50 @@ describe('PipecatVoiceProvider', () => {
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
   });
 
+  it('connects Talk with topic metadata and Talk-specific labels', async () => {
+    const user = userEvent.setup();
+    render(
+      <PipecatVoiceProvider
+        endpoint="http://localhost:7863"
+        requestBody={{ topic: 'Animals' }}
+      >
+        <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+      </PipecatVoiceProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Start conversation' }));
+
+    expect(sdk.startBotAndConnect).toHaveBeenCalledWith({
+      endpoint: 'http://localhost:7863/start',
+      requestData: {
+        transport: 'webrtc',
+        body: { topic: 'Animals' },
+      },
+    });
+  });
+
+  it('can stop twice and unmount without starting a second client', async () => {
+    const user = userEvent.setup();
+    const view = render(
+      <PipecatVoiceProvider endpoint="http://localhost:7863" requestBody={{ topic: 'Animals' }}>
+        <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+      </PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+    };
+
+    await user.click(screen.getByRole('button', { name: 'Start conversation' }));
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
+    view.unmount();
+
+    expect(sdk.startBotAndConnect).toHaveBeenCalledOnce();
+    expect(sdk.disconnect).toHaveBeenCalledTimes(3);
+  });
+
   it('disconnects the old client when the active session changes', async () => {
     const view = render(
       <PipecatVoiceProvider key="old" sessionId="old"><span>lesson</span></PipecatVoiceProvider>,

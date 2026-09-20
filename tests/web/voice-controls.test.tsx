@@ -58,4 +58,19 @@ describe('VoiceControls', () => {
       'Allow microphone access in your browser settings, then try again.',
     );
   });
+
+  it('uses custom labels for a non-lesson voice room', () => {
+    render(
+      <PipecatVoiceProvider sessionId="s1">
+        <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+      </PipecatVoiceProvider>,
+    );
+    expect(screen.getByRole('button', { name: 'Start conversation' })).toBeInTheDocument();
+
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    expect(screen.getByRole('button', { name: 'Stop conversation' })).toBeInTheDocument();
+  });
 });

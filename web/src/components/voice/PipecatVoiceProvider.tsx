@@ -29,6 +29,15 @@ export type VoicePhase = 'off' | 'connecting' | 'ready' | 'listening' | 'thinkin
 
 const VoiceContext = createContext<VoiceContextValue | null>(null);
 
+type PipecatVoiceProviderProps = {
+  children: React.ReactNode;
+  enabled?: boolean;
+  endpoint?: string;
+  onSessionChanged?: () => void | Promise<void>;
+  requestBody?: Record<string, unknown>;
+  sessionId?: string;
+};
+
 function deviceErrorMessage(error: DeviceError): string {
   if (error.type === 'permissions') {
     return 'Allow microphone access in your browser settings, then try again.';
@@ -67,12 +76,9 @@ export function PipecatVoiceProvider({
   children,
   onSessionChanged,
   enabled = true,
-}: {
-  sessionId: string;
-  children: React.ReactNode;
-  onSessionChanged?: () => void | Promise<void>;
-  enabled?: boolean;
-}) {
+  endpoint,
+  requestBody,
+}: PipecatVoiceProviderProps) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
   const [error, setError] = useState<string | null>(null);
@@ -135,11 +141,16 @@ export function PipecatVoiceProvider({
     setError(null);
     setPhase('connecting');
     try {
+      const resolvedEndpoint = endpoint
+        ?? process.env.NEXT_PUBLIC_PIPECAT_URL
+        ?? 'http://localhost:7860';
+      const body = requestBody ?? (sessionId ? { session_id: sessionId } : null);
+      if (!body) throw new Error('Voice connection metadata is missing.');
       await client.startBotAndConnect({
-        endpoint: `${process.env.NEXT_PUBLIC_PIPECAT_URL ?? 'http://localhost:7860'}/start`,
+        endpoint: `${resolvedEndpoint}/start`,
         requestData: {
           transport: 'webrtc',
-          body: { session_id: sessionId },
+          body,
         },
       });
     } catch (reason) {
