@@ -7,7 +7,7 @@ from luna_tutor.curriculum.loader import load_unit
 
 ROOT = Path(__file__).resolve().parents[4]
 WORKBOOK = ROOT / "docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx"
-IMPLEMENTED_UNIT_IDS = (1, 2, 3)
+IMPLEMENTED_UNIT_IDS = (1, 2, 3, 4)
 STAGE_ORDER = [
     "warm-up",
     "lesson-01",
@@ -31,6 +31,14 @@ UNIT3_VOCABULARY = {
     "traditional-clothes", "samba-parade", "chuseok", "rice-cakes",
     "lucky-money", "celebration",
 }
+UNIT4_VOCABULARY = {
+    "go-for-a-walk", "play-the-violin", "surf-the-internet",
+    "water-the-flowers", "always", "often", "sometimes", "usually",
+    "collect-stamps", "do-puzzles", "play-board-games", "ride-a-bike",
+    "electric-guitar", "drum-kit", "flute", "orchestra",
+    "percussion-instruments", "wind-instruments", "string-instruments",
+    "hit", "interact", "amazed",
+}
 
 
 @pytest.fixture(params=IMPLEMENTED_UNIT_IDS, ids=lambda number: f"unit-{number:02d}")
@@ -48,6 +56,37 @@ def unit_02():
 @pytest.fixture
 def unit_03():
     return load_unit(ROOT / "curriculum/grade-05/unit-03")
+
+
+@pytest.fixture
+def unit_04():
+    return load_unit(ROOT / "curriculum/grade-05/unit-04")
+
+
+def test_unit4_targets_and_internet_safety_match_reviewed_source(unit_04):
+    assert unit_04.vocabulary_ids() == UNIT4_VOCABULARY
+    assert {pattern.id for pattern in unit_04.patterns} == {
+        "free-time-like", "weekend-routine", "invitation", "frequency",
+        "comparative-cost", "superlative-singer", "correlative-preference",
+    }
+    assert all("/" not in item.text for item in unit_04.vocabulary)
+    instructions = " ".join(
+        activity.instruction for activity in unit_04.activities
+    ).lower()
+    assert "never ask for an internet username" in instructions
+    imported = import_workbook(WORKBOOK, grade=5, unit=4)
+    assert {
+        item.id: (item.text, item.source.section)
+        for item in unit_04.vocabulary
+    } == {
+        item.id: (item.text, item.source.section)
+        for item in imported.vocabulary
+    }
+    assert {
+        (item.text, item.source.section) for item in unit_04.patterns
+    } == {
+        (item.text, item.source.section) for item in imported.patterns
+    }
 
 
 def test_unit3_targets_and_fictional_cast_match_reviewed_source(unit_03):

@@ -1,0 +1,46 @@
+source_file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+numbered_scenario_ids:
+- unit04-liked-activity
+- unit04-weekend-frequency
+- unit04-invitation-acceptance
+- unit04-frequency-follow-up
+- unit04-music-comparison
+- unit04-valid-alternative
+- unit04-silence
+- unit04-vietnamese-meaning
+- unit04-two-failure-exit
+- unit04-internet-safety
+- unit04-free-talk
+- unit04-summary
+required_rule_ids: []
+required_branch_ids:
+- lesson-01.free-time-like
+- lesson-02.weekend-routine
+- level-02.invitation
+- level-02.frequency
+- level-03.comparative-cost
+- lesson-01.introduce-play-the-violin
+- lesson-01.introduce-surf-the-internet
+- free-talk.conversation
+- summary.reflect
+required_objective_ids:
+- unit04.lesson01.pattern.free_time_like
+- unit04.lesson02.pattern.weekend_routine
+- unit04.lesson02.vocabulary.usually
+- unit04.level02.pattern.invitation
+- unit04.level02.pattern.frequency
+- unit04.level03.pattern.comparative_cost
+- unit04.lesson01.vocabulary.play_the_violin
+- unit04.lesson01.vocabulary.surf_the_internet
+- unit04.level03.pattern.correlative_preference
+rule_scenarios: {}
+branch_scenarios:
+  lesson-01.free-time-like: [unit04-liked-activity, unit04-valid-alternative, unit04-vietnamese-meaning]
+  lesson-02.weekend-routine: [unit04-weekend-frequency]
+  level-02.invitation: [unit04-invitation-acceptance]
+  level-02.frequency: [unit04-frequency-follow-up, unit04-silence]
+  level-03.comparative-cost: [unit04-music-comparison]
+  lesson-01.introduce-play-the-violin: [unit04-two-failure-exit]
+  lesson-01.introduce-surf-the-internet: [unit04-internet-safety]
+  free-talk.conversation: [unit04-free-talk]
+  summary.reflect: [unit04-summary]

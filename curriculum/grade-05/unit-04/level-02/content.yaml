@@ -1,0 +1,266 @@
+schema_version: 1
+stage:
+  id: level-02
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11:G11
+  title: Level 02
+  level: 2
+  lesson: null
+  exits:
+  - level-03
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: collect-stamps
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  text: collect stamps
+  usage: taught
+- id: do-puzzles
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  text: do puzzles
+  usage: taught
+- id: play-board-games
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  text: play board games
+  usage: taught
+- id: ride-a-bike
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  text: ride a bike
+  usage: taught
+patterns:
+- id: invitation
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  text: Do you want to ___ with me? – Yes, I'd love to.
+  examples:
+  - Do you want to go for a walk with me? – Yes, I'd love to.
+  acceptable_alternatives: []
+- id: frequency
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  text: How often do you ___?
+  examples:
+  - How often do you go for a walk?
+  acceptable_alternatives: []
+objectives:
+- id: unit04.level02.vocabulary.collect_stamps
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  description: 'Vocabulary: collect stamps'
+  vocabulary_ids:
+  - collect-stamps
+  pattern_ids: []
+  evidence_criteria: Understand or use collect stamps in context; imitation alone
+    is not independent use.
+- id: unit04.level02.vocabulary.do_puzzles
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  description: 'Vocabulary: do puzzles'
+  vocabulary_ids:
+  - do-puzzles
+  pattern_ids: []
+  evidence_criteria: Understand or use do puzzles in context; imitation alone is not
+    independent use.
+- id: unit04.level02.vocabulary.play_board_games
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  description: 'Vocabulary: play board games'
+  vocabulary_ids:
+  - play-board-games
+  pattern_ids: []
+  evidence_criteria: Understand or use play board games in context; imitation alone
+    is not independent use.
+- id: unit04.level02.vocabulary.ride_a_bike
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  description: 'Vocabulary: ride a bike'
+  vocabulary_ids:
+  - ride-a-bike
+  pattern_ids: []
+  evidence_criteria: Understand or use ride a bike in context; imitation alone is
+    not independent use.
+- id: unit04.level02.pattern.invitation
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  description: 'Pattern: Do you want to ___ with me? – Yes, I''d love to.'
+  vocabulary_ids: []
+  pattern_ids:
+  - invitation
+  evidence_criteria: Record meaning and target form separately; accept short answers
+    and valid alternatives.
+- id: unit04.level02.pattern.frequency
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  description: 'Pattern: How often do you ___?'
+  vocabulary_ids: []
+  pattern_ids:
+  - frequency
+  evidence_criteria: Record meaning and target form separately; accept short answers
+    and valid alternatives.
+activities:
+- id: level-02.introduce-collect-stamps
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.level02.vocabulary.collect_stamps
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model collect stamps twice, invite Quang to say it, wait, and give
+    evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
+    accuracy.
+  examples:
+  - collect stamps
+- id: level-02.introduce-do-puzzles
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.level02.vocabulary.do_puzzles
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model do puzzles twice, invite Quang to say it, wait, and give evidence-based
+    feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
+  examples:
+  - do puzzles
+- id: level-02.introduce-play-board-games
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.level02.vocabulary.play_board_games
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model play board games twice, invite Quang to say it, wait, and give
+    evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
+    accuracy.
+  examples:
+  - play board games
+- id: level-02.introduce-ride-a-bike
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!F11
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.level02.vocabulary.ride_a_bike
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model ride a bike twice, invite Quang to say it, wait, and give evidence-based
+    feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
+  examples:
+  - ride a bike
+- id: level-02.invitation
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  stage_id: level-02
+  kind: guided_response
+  objective_ids:
+  - unit04.level02.pattern.invitation
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Practise this free-time or music pattern with fictional or general
+    examples.
+  examples:
+  - Do you want to go for a walk with me? – Yes, I'd love to.
+- id: level-02.frequency
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  stage_id: level-02
+  kind: guided_response
+  objective_ids:
+  - unit04.level02.pattern.frequency
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Practise this free-time or music pattern with fictional or general
+    examples.
+  examples:
+  - How often do you go for a walk?
+- id: level-02.ask-luna
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!G11
+  stage_id: level-02
+  kind: ask_teacher
+  objective_ids:
+  - unit04.level02.pattern.invitation
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite Quang to ask Luna the target question; support without fabricating
+    the question.
+  examples:
+  - Do you want to ___ with me? – Yes, I'd love to.

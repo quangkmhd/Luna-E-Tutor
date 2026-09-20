@@ -119,7 +119,8 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
     repository = SessionRepository(database_path)
     registry = CurriculumRegistry(
         root / 'curriculum', (
-            'grade05.unit01', 'grade05.unit02', 'grade05.unit03'))
+            'grade05.unit01', 'grade05.unit02', 'grade05.unit03',
+            'grade05.unit04'))
     mode = environment.get('TUTOR_LLM_MODE', 'live')
     if mode == 'fixture':
         if environment.get('ENV') != 'test':
