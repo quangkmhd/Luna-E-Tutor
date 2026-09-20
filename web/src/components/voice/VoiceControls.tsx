@@ -31,15 +31,23 @@ function VoicePhaseIcon({ phase }: { phase: VoicePhase }) {
 export function VoiceControls({
   startLabel = 'Start voice lesson',
   stopLabel = 'Stop voice lesson',
+  onStopped,
 }: {
   startLabel?: string;
   stopLabel?: string;
+  onStopped?: () => void;
 }) {
   const voice = useVoiceLesson();
   const active = voice.transportState === 'connected' || voice.transportState === 'ready';
   const pending = ['initializing', 'connecting', 'authenticating'].includes(
     voice.transportState,
   );
+
+  async function stop() {
+    await voice.stop();
+    onStopped?.();
+  }
+
   return (
     <div className={styles.voiceControls} aria-label="Voice lesson controls">
       <span className={`${styles.state} ${styles[voice.phase]}`} aria-live="polite">
@@ -60,7 +68,7 @@ export function VoiceControls({
                 </button>
               )}
             </PipecatClientMicToggle>
-            <button type="button" className={styles.secondary} onClick={() => void voice.stop()}>
+            <button type="button" className={styles.secondary} onClick={() => void stop()}>
               {stopLabel}
             </button>
           </>

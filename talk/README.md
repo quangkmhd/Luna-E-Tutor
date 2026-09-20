@@ -51,13 +51,15 @@ This project includes behavioral evals: scripted conversations that drive the bo
 From `server/`, run the bot with the eval transport, then drive scenarios against it from a second terminal (the bot stays up across runs):
 
 ```bash
-uv run bot.py -t eval
+uv run bot.py -t eval --runner-body evals/runner-body.yaml --port 7864
 # In another terminal:
-uv run pipecat eval run evals/starter_text.yaml -v    # fast text-mode check
-uv run pipecat eval run evals/starter_audio.yaml -v   # full audio round trip (local models, no API keys)
+uv run pipecat eval run evals/starter_text.yaml --bot-url ws://localhost:7864 -v
+uv run pipecat eval run evals/starter_audio.yaml --bot-url ws://localhost:7864 -v
 ```
 
-`eval:` criteria are scored by a judge LLM — a local Ollama by default (`ollama pull gemma4:12b`). The comments in the scenario files cover the schema and how to use an OpenAI judge instead.
+`eval:` criteria are scored by the local Ollama model selected in the scenarios:
+`ollama pull gemma4:12b-it-qat`. Audio mode additionally initializes the local
+Kokoro and Moonshine models and may download their assets on its first run.
 
 ## Project Structure
 

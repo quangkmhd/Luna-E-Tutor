@@ -106,7 +106,11 @@ export function TalkRoom() {
             <div className={styles.voiceRoom}>
               <ChatPanel messages={[]} />
               <div className={styles.controls}>
-                <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+                <VoiceControls
+                  startLabel="Start conversation"
+                  stopLabel="Stop conversation"
+                  onStopped={() => setActiveTopic(null)}
+                />
               </div>
             </div>
           </PipecatVoiceProvider>

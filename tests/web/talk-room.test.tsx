@@ -17,8 +17,19 @@ vi.mock('@/components/voice/PipecatVoiceProvider', () => ({
   },
 }));
 vi.mock('@/components/voice/VoiceControls', () => ({
-  VoiceControls: ({ startLabel }: { startLabel?: string }) => (
-    <button type="button">{startLabel}</button>
+  VoiceControls: ({
+    startLabel,
+    stopLabel,
+    onStopped,
+  }: {
+    startLabel?: string;
+    stopLabel?: string;
+    onStopped?: () => void;
+  }) => (
+    <>
+      <button type="button">{startLabel}</button>
+      <button type="button" onClick={onStopped}>{stopLabel}</button>
+    </>
   ),
 }));
 vi.mock('@/components/ChatPanel', () => ({
@@ -81,6 +92,18 @@ describe('TalkRoom', () => {
     expect(screen.getByTestId('talk-provider')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Change topic' }));
+
+    expect(screen.queryByTestId('talk-provider')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Start Free Talk' })).toBeEnabled();
+  });
+
+  it('returns to setup after stopping so a restart gets a fresh transcript store', async () => {
+    const user = userEvent.setup();
+    render(<TalkRoom />);
+    await user.click(screen.getByRole('button', { name: 'Animals' }));
+    await user.click(screen.getByRole('button', { name: 'Start Free Talk' }));
+
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
 
     expect(screen.queryByTestId('talk-provider')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Start Free Talk' })).toBeEnabled();

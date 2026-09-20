@@ -64,7 +64,7 @@ function voiceServiceErrorMessage(message: RTVIMessage): string {
   const data = message.data as ErrorData;
   if (data.fatal) {
     console.error('Pipecat reported a fatal voice error:', data.error);
-    return 'The voice session ended. Stop and reconnect.';
+    return 'The voice session ended. Reconnect when you are ready.';
   }
   console.warn('Pipecat reported a recoverable voice error:', data.error);
   return 'Voice audio was interrupted. Please try speaking again.';
@@ -95,12 +95,13 @@ export function PipecatVoiceProvider({
   const [, setUserStoppedAt] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [conversationStore] = useState(createStore);
-  const [client] = useState(() => new PipecatClient({
-    transport: new SmallWebRTCTransport(),
-    enableMic: true,
-    enableCam: false,
-    disconnectOnBotDisconnect: true,
-    callbacks: {
+  const [client] = useState(() => {
+    const voiceClient = new PipecatClient({
+      transport: new SmallWebRTCTransport(),
+      enableMic: true,
+      enableCam: false,
+      disconnectOnBotDisconnect: true,
+      callbacks: {
       onTransportStateChanged: (state: TransportState) => {
         setTransportState(state);
         if (['initializing', 'connecting', 'authenticating'].includes(state)) {
@@ -142,10 +143,22 @@ export function PipecatVoiceProvider({
         });
       },
       onDeviceError: (reason: DeviceError) => setError(deviceErrorMessage(reason)),
-      onError: (message: RTVIMessage) => setError(voiceServiceErrorMessage(message)),
+      onError: (message: RTVIMessage) => {
+        const data = message.data as ErrorData;
+        setError(voiceServiceErrorMessage(message));
+        if (!data.fatal) return;
+        void voiceClient.disconnect()
+          .catch(() => undefined)
+          .finally(() => {
+            setTransportState('disconnected');
+            setPhase('off');
+          });
+      },
       onMessageError: () => setError('The voice service could not process that message. Try again.'),
-    },
-  }));
+      },
+    });
+    return voiceClient;
+  });
 
   async function start() {
     setError(null);

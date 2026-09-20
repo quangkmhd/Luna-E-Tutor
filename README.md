@@ -10,7 +10,10 @@ Requirements: Python 3.12 or newer, `uv`, Node.js, and npm.
 
 ```bash
 cp .env.example .env
-# Add the existing OPENROUTER_API_KEY to .env.
+# Unit 1: OPENROUTER_API_KEY, SONIOX_API_KEY, SONIOX_TTS_VOICE.
+# Free Talk: GEMINI_API_KEY, SONIOX_API_KEY, SONIOX_VOICE_ID.
+# The checked-in model defaults can be overridden with TUTOR_EVALUATOR_MODEL
+# and TALK_LLM_MODEL.
 
 cd backend
 uv sync
@@ -55,8 +58,8 @@ NEXT_PUBLIC_TALK_PIPECAT_URL=http://localhost:7863 npm run dev
 ## Verification
 
 ```bash
-uv run --project voice/server python -m pytest -q
-uv run --project talk/server pytest -q
+uv run --project voice/server pytest -q tests/voice tests/scripts tests/ops
+uv run --project talk/server pytest -q talk/server/tests
 uv run --project talk/server ruff check talk/server
 uv run --project talk/server pyright talk/server
 uv run --project backend python -m luna_tutor.evals.cli verify-baseline evals/unit-01/baseline.json
@@ -73,3 +76,5 @@ npm run test:e2e
 The browser suite uses a deterministic fixture service that is accepted only when both `ENV=test` and `TUTOR_LLM_MODE=fixture` are set. Production/local live mode cannot accidentally enable it.
 
 Evaluation details and the reviewed Teacher samples are in `docs/evaluation/unit-01-report.md`.
+The standalone room's provider-backed browser and eval evidence is retained in
+`docs/evaluation/free-talk-room-verification.md`.

@@ -183,14 +183,17 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.queryByText(/stop and reconnect/i)).not.toBeInTheDocument();
   });
 
-  it('asks for a reconnect only when Pipecat reports a fatal service error', () => {
+  it('disconnects and becomes startable again when Pipecat reports a fatal service error', async () => {
     render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
     );
     const callbacks = sdk.options?.callbacks as {
       onError(message: { data: { error: string; fatal: boolean } }): void;
+      onTransportStateChanged(state: string): void;
     };
 
+    act(() => callbacks.onTransportStateChanged('ready'));
+    expect(screen.getByRole('button', { name: 'Stop voice lesson' })).toBeInTheDocument();
     act(() => callbacks.onError({
       data: {
         error: 'The voice worker stopped',
@@ -199,8 +202,10 @@ describe('PipecatVoiceProvider', () => {
     }));
 
     expect(screen.getByRole('alert')).toHaveTextContent(
-      'The voice session ended. Stop and reconnect.',
+      'The voice session ended. Reconnect when you are ready.',
     );
+    await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+    expect(screen.getByRole('button', { name: 'Start voice lesson' })).toBeInTheDocument();
   });
 
   it('shows Pipecat listening, thinking, and speaking states in the voice controls', () => {
