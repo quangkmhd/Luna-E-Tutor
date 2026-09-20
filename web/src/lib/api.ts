@@ -11,12 +11,13 @@ type Fetcher = typeof fetch;
 
 export class TutorApi {
   constructor(
-    private baseUrl = process.env.NEXT_PUBLIC_TUTOR_API_URL ?? 'http://localhost:8000',
+    private baseUrl = process.env.NEXT_PUBLIC_TUTOR_API_URL ?? '',
     private fetcher: Fetcher = (input, init) => globalThis.fetch(input, init),
   ) {}
 
   private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
-    const response = await this.fetcher(`${this.baseUrl}${path}`, {
+    const base = this.baseUrl ? this.baseUrl.replace(/\/api\/?$/, '') : '';
+    const response = await this.fetcher(`${base}${path}`, {
       ...init,
       headers: { 'Content-Type': 'application/json', ...init.headers },
     });

@@ -69,7 +69,7 @@ services:
       context: .
       dockerfile: web/Dockerfile
       args:
-        - NEXT_PUBLIC_TUTOR_API_URL=${NEXT_PUBLIC_TUTOR_API_URL:-/api}
+        - NEXT_PUBLIC_TUTOR_API_URL=${NEXT_PUBLIC_TUTOR_API_URL:-}
         - NEXT_PUBLIC_PIPECAT_URL=${NEXT_PUBLIC_PIPECAT_URL:-/voice-bot}
         - NEXT_PUBLIC_TALK_PIPECAT_URL=${NEXT_PUBLIC_TALK_PIPECAT_URL:-/talk-bot}
     container_name: luna-web
