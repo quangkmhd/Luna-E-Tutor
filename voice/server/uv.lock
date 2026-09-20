@@ -1993,7 +1993,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "luna-tutor", editable = "../../backend" },
-    { name = "pipecat-ai", extras = ["openrouter"], specifier = "==1.11.0" },
+    { name = "pipecat-ai", extras = ["openrouter", "soniox"], specifier = "==1.11.0" },
 ]
 
 [package.metadata.requires-dev]
