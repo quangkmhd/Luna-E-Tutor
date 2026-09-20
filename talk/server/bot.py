@@ -2,6 +2,7 @@
 
 import os
 from collections.abc import Mapping
+from pathlib import Path
 from typing import cast
 
 from dotenv import load_dotenv
@@ -19,7 +20,7 @@ from pipecat.processors.aggregators.llm_response_universal import (
 )
 from pipecat.runner.types import RunnerArguments
 from pipecat.runner.utils import create_transport
-from pipecat.services.google.llm import GoogleLLMService
+from pipecat.services.openrouter.llm import OpenRouterLLMService
 from pipecat.services.soniox.stt import SonioxSTTService
 from pipecat.services.soniox.tts import SonioxTTSService
 from pipecat.transcriptions.language import Language
@@ -30,7 +31,8 @@ from free_talk.prompts import build_free_talk_opening_message, build_free_talk_s
 from session_config import TalkSessionConfig, parse_talk_session_config
 from voice_config import TalkVoiceConfig
 
-load_dotenv(override=True)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 
 class TalkVoiceWorker(PipelineWorker):
@@ -73,9 +75,9 @@ def build_talk_worker(
             language_hints_strict=False,
         ),
     )
-    llm = GoogleLLMService(
-        api_key=config.gemini_api_key,
-        settings=GoogleLLMService.Settings(
+    llm = OpenRouterLLMService(
+        api_key=config.openrouter_api_key,
+        settings=OpenRouterLLMService.Settings(
             model=config.llm_model,
             system_instruction=build_free_talk_system_prompt(),
         ),

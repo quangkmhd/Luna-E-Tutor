@@ -8,7 +8,7 @@ from dataclasses import dataclass
 class TalkVoiceConfig:
     soniox_api_key: str
     voice_id: str
-    gemini_api_key: str
+    openrouter_api_key: str
     llm_model: str
 
     @classmethod
@@ -16,8 +16,8 @@ class TalkVoiceConfig:
         names = (
             "SONIOX_API_KEY",
             "SONIOX_VOICE_ID",
-            "GEMINI_API_KEY",
-            "TALK_LLM_MODEL",
+            "OPENROUTER_API_KEY",
+            "OPENROUTER_MODEL",
         )
         missing = [name for name in names if not environment.get(name, "").strip()]
         if missing:

@@ -2,6 +2,7 @@
 
 import os
 from collections.abc import Mapping
+from pathlib import Path
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -31,7 +32,8 @@ from voice_teaching import (
     VoiceTeachingProcessor,
 )
 
-load_dotenv(override=True)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 
 class LunaVoiceWorker(PipelineWorker):

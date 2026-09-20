@@ -8,7 +8,7 @@ def test_configuration_reports_all_missing_provider_values():
         TalkVoiceConfig.from_environment({})
     assert str(error.value) == (
         "Missing required Talk configuration: SONIOX_API_KEY, SONIOX_VOICE_ID, "
-        "GEMINI_API_KEY, TALK_LLM_MODEL"
+        "OPENROUTER_API_KEY, OPENROUTER_MODEL"
     )
 
 
@@ -17,9 +17,10 @@ def test_configuration_accepts_explicit_values():
         {
             "SONIOX_API_KEY": "soniox",
             "SONIOX_VOICE_ID": "Colleen",
-            "GEMINI_API_KEY": "gemini",
-            "TALK_LLM_MODEL": "gemini-3.5-flash-lite",
+            "OPENROUTER_API_KEY": "openrouter",
+            "OPENROUTER_MODEL": "google/gemini-3.5-flash-lite",
         }
     )
     assert config.voice_id == "Colleen"
-    assert config.llm_model == "gemini-3.5-flash-lite"
+    assert config.openrouter_api_key == "openrouter"
+    assert config.llm_model == "google/gemini-3.5-flash-lite"

@@ -27,11 +27,13 @@ A Pipecat AI voice agent built with a cascade pipeline (STT → LLM → TTS).
    uv sync
    ```
 
-3. **Configure environment variables**:
+3. **Configure environment variables once at the repository root**:
 
    ```bash
+   cd ../..
    cp .env.example .env
-   # Edit .env and add your API keys
+   # Edit E-Voice-Tutor-v1/.env and add your API keys
+   cd voice/server
    ```
 
 4. **Run the bot**:
@@ -67,12 +69,13 @@ voice/
 │   ├── bot.py           # Main bot implementation
 │   ├── evals/           # Behavioral eval scenarios
 │   ├── pyproject.toml   # Python dependencies
-│   ├── .env.example     # Environment variables template
-│   ├── .env             # Your API keys (git-ignored)
 │   └── ...
 ├── .gitignore           # Git ignore patterns
 └── README.md            # This file
 ```
+
+All Voice credentials are loaded from the repository-root `.env`; do not create
+`voice/server/.env`.
 ## Building with an AI coding agent
 
 Extending this bot with Claude Code, Codex, or another AI coding assistant? Give it live, accurate Pipecat context instead of stale training data with the **Pipecat Context Hub** — a local index of Pipecat docs, examples, and API source your agent queries over MCP:

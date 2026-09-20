@@ -11,9 +11,9 @@ Requirements: Python 3.12 or newer, `uv`, Node.js, and npm.
 ```bash
 cp .env.example .env
 # Unit 1: OPENROUTER_API_KEY, SONIOX_API_KEY, SONIOX_TTS_VOICE.
-# Free Talk: GEMINI_API_KEY, SONIOX_API_KEY, SONIOX_VOICE_ID.
+# Free Talk: OPENROUTER_API_KEY, OPENROUTER_MODEL, SONIOX_API_KEY, SONIOX_VOICE_ID.
 # The checked-in model defaults can be overridden with TUTOR_EVALUATOR_MODEL
-# and TALK_LLM_MODEL.
+# and OPENROUTER_MODEL.
 
 cd backend
 uv sync
@@ -28,7 +28,7 @@ cd ../../web
 npm install
 ```
 
-The Gemini Teacher is pinned to `google/gemini-3.5-flash-lite`. Select the real-learning evaluator with `TUTOR_EVALUATOR_MODEL`: use `~typesafe/jev-latest` or `google/gemini-3.5-flash-lite`. The checked-in example selects Jev. Real keys stay in `.env` and are never sent to the browser. The same selection is used by the web API and Pipecat voice runtime.
+The Gemini Teacher and standalone Free Talk room use `OPENROUTER_MODEL=google/gemini-3.5-flash-lite` through OpenRouter. Select the real-learning evaluator with `TUTOR_EVALUATOR_MODEL`: use `~typesafe/jev-latest` or `google/gemini-3.5-flash-lite`. The checked-in example selects Jev. Real keys stay in `.env` and are never sent to the browser. The same selection is used by the web API and Pipecat voice runtimes.
 
 ## Run the web experiment
 

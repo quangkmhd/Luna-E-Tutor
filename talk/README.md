@@ -27,11 +27,13 @@ A Pipecat AI voice agent built with a cascade pipeline (STT → LLM → TTS).
    uv sync
    ```
 
-3. **Configure environment variables**:
+3. **Configure environment variables once at the repository root**:
 
    ```bash
+   cd ../..
    cp .env.example .env
-   # Edit .env and add your API keys
+   # Edit E-Voice-Tutor-v1/.env and add your API keys
+   cd talk/server
    ```
 
 4. **Run the bot**:
@@ -55,8 +57,8 @@ uv run bot.py -t eval --runner-body evals/runner-body.yaml --port 7864
 # In another terminal:
 uv run pipecat eval run evals/starter_text.yaml --bot-url ws://localhost:7864 -v
 uv run pipecat eval run evals/starter_audio.yaml --bot-url ws://localhost:7864 -v
-# Provider-backed simple-language check (uses GEMINI_API_KEY from .env):
-PYTHONPATH=. uv run pipecat eval run evals/simple_language_text.yaml --bot-url ws://localhost:7864 -v
+# Provider-backed judge check (uses GEMINI_API_KEY from the repository-root .env):
+PYTHONPATH=. uv run --env-file ../../.env pipecat eval run evals/simple_language_text.yaml --bot-url ws://localhost:7864 -v
 ```
 
 `eval:` criteria are scored by the local Ollama model selected in the scenarios:
@@ -71,12 +73,13 @@ talk/
 │   ├── bot.py           # Main bot implementation
 │   ├── evals/           # Behavioral eval scenarios
 │   ├── pyproject.toml   # Python dependencies
-│   ├── .env.example     # Environment variables template
-│   ├── .env             # Your API keys (git-ignored)
 │   └── ...
 ├── .gitignore           # Git ignore patterns
 └── README.md            # This file
 ```
+
+All Talk credentials are loaded from the repository-root `.env`; do not create
+`talk/server/.env`.
 ## Building with an AI coding agent
 
 Extending this bot with Claude Code, Codex, or another AI coding assistant? Give it live, accurate Pipecat context instead of stale training data with the **Pipecat Context Hub** — a local index of Pipecat docs, examples, and API source your agent queries over MCP:
