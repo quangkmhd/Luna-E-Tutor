@@ -54,7 +54,7 @@ services:
     container_name: luna-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
@@ -63,6 +63,8 @@ services:
       - talk
     networks:
       - luna-network
+    profiles:
+      - standalone-nginx
 
   # Optional web service for running frontend on VPS instead of Vercel
   web:
