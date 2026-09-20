@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const sdk = vi.hoisted(() => {
   const startBotAndConnect = vi.fn().mockResolvedValue(undefined);
@@ -38,6 +38,8 @@ describe('PipecatVoiceProvider', () => {
     sdk.options = undefined;
   });
 
+  afterEach(() => vi.useRealTimers());
+
   it('connects SmallWebRTC with the active REST session and disconnects on cleanup', async () => {
     const user = userEvent.setup();
     const view = render(
@@ -68,6 +70,31 @@ describe('PipecatVoiceProvider', () => {
       <PipecatVoiceProvider key="new" sessionId="new"><span>lesson</span></PipecatVoiceProvider>,
     );
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+  });
+
+  it('disconnects when the lesson is no longer active', async () => {
+    const view = render(
+      <PipecatVoiceProvider sessionId="session-7" enabled><span>lesson</span></PipecatVoiceProvider>,
+    );
+    view.rerender(
+      <PipecatVoiceProvider sessionId="session-7" enabled={false}><span>lesson</span></PipecatVoiceProvider>,
+    );
+    await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+  });
+
+  it('cancels a pending session refresh on cleanup', () => {
+    vi.useFakeTimers();
+    const onSessionChanged = vi.fn();
+    const view = render(
+      <PipecatVoiceProvider sessionId="session-7" onSessionChanged={onSessionChanged}>
+        <span>lesson</span>
+      </PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as { onBotStoppedSpeaking(): void };
+    act(() => callbacks.onBotStoppedSpeaking());
+    view.unmount();
+    act(() => vi.advanceTimersByTime(200));
+    expect(onSessionChanged).not.toHaveBeenCalled();
   });
 
   it('shows interim speech without submitting it as a typed turn', async () => {

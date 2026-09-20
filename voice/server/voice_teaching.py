@@ -56,7 +56,7 @@ class VoiceTeachingProcessor(FrameProcessor):
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
-        if isinstance(frame, InterruptionFrame):
+        if isinstance(frame, (InterruptionFrame, ErrorFrame, CancelFrame)):
             self.exchange.discard_pending()
             await self.push_frame(frame, direction)
             return

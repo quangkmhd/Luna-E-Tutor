@@ -10,6 +10,7 @@ from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
 from pipecat.frames.frames import (
     BotStoppedSpeakingFrame,
+    ErrorFrame,
     InterimTranscriptionFrame,
     InterruptionFrame,
     LLMMessagesAppendFrame,
@@ -141,6 +142,24 @@ async def test_interruption_discards_unspoken_pending_completion(tmp_path, monke
     commit = VoiceCommitProcessor(exchange)
 
     await commit.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
+    await commit.process_frame(BotStoppedSpeakingFrame(), FrameDirection.DOWNSTREAM)
+
+    stored = exchange.repository.get_session(exchange.session_id)
+    assert stored.state.state_version == 0
+    assert stored.turns == ()
+
+
+@pytest.mark.asyncio
+async def test_upstream_provider_error_prevents_later_speech_stop_commit(tmp_path):
+    from voice_teaching import VoiceCommitProcessor
+
+    exchange, teaching, service = make_exchange(tmp_path)
+    exchange.pending_completion = await service.fixture.process(
+        exchange.state, "I am fine.", "voice:u:error"
+    )
+    commit = VoiceCommitProcessor(exchange)
+
+    await teaching.process_frame(ErrorFrame("Soniox TTS failed"), FrameDirection.UPSTREAM)
     await commit.process_frame(BotStoppedSpeakingFrame(), FrameDirection.DOWNSTREAM)
 
     stored = exchange.repository.get_session(exchange.session_id)

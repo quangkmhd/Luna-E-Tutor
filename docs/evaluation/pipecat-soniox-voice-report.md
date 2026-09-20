@@ -20,12 +20,14 @@ No credential value was printed, copied into a test, or written to this report.
 | Area | Command | Result |
 | --- | --- | --- |
 | Backend | `uv run --project backend pytest tests/backend -q` | 410 passed, 1 skipped |
-| Voice and local runner | `uv run --project voice/server pytest tests/voice tests/scripts/test_run_local.py -q` | 23 passed |
-| Web | `npm --prefix web test -- --run` | 18 passed |
+| Voice and local runner | `uv run --project voice/server pytest tests/voice tests/scripts/test_run_local.py -q` | 24 passed |
+| Web | `npm --prefix web test -- --run` | 20 passed |
 | Web lint | `npm --prefix web run lint` | passed |
 | Web production build | `npm --prefix web run build` | passed |
 
 The voice suite covers final-only transcript handling, duplicate final transcripts, commit-after-speech, interruption/error/disconnect rollback, exact canonical pipeline order, request session selection, and complete Pipecat `LLMSettings` initialization.
+
+The final independent review added two lifecycle regressions: an upstream provider `ErrorFrame` must clear pending teaching state before any later speech-stop frame, and a completed lesson must disconnect the Pipecat client even though its voice controls disappear. The client also cancels delayed REST refresh timers on cleanup.
 
 ## Live provider evidence
 

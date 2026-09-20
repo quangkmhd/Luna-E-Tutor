@@ -51,16 +51,19 @@ export function PipecatVoiceProvider({
   sessionId,
   children,
   onSessionChanged,
+  enabled = true,
 }: {
   sessionId: string;
   children: React.ReactNode;
   onSessionChanged?: () => void | Promise<void>;
+  enabled?: boolean;
 }) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [error, setError] = useState<string | null>(null);
   const [interimTranscript, setInterimTranscript] = useState('');
   const [finalTranscript, setFinalTranscript] = useState('');
   const [botOutput, setBotOutput] = useState('');
+  const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [client] = useState(() => new PipecatClient({
     transport: new SmallWebRTCTransport(),
     enableMic: true,
@@ -80,7 +83,13 @@ export function PipecatVoiceProvider({
       onBotOutput: (data: BotOutputData) => setBotOutput(data.text),
       onBotStoppedSpeaking: () => {
         if (!onSessionChanged) return;
-        setTimeout(() => void onSessionChanged(), 150);
+        setRefreshTimer((previous) => {
+          if (previous) clearTimeout(previous);
+          return setTimeout(() => {
+            setRefreshTimer(null);
+            void onSessionChanged();
+          }, 150);
+        });
       },
       onDeviceError: (reason: DeviceError) => setError(deviceErrorMessage(reason)),
       onError: () => setError('The voice service reported an error. Stop and reconnect.'),
@@ -106,6 +115,14 @@ export function PipecatVoiceProvider({
   async function stop() {
     await client.disconnect();
   }
+
+  useEffect(() => {
+    if (!enabled) void client.disconnect();
+  }, [client, enabled]);
+
+  useEffect(() => () => {
+    if (refreshTimer) clearTimeout(refreshTimer);
+  }, [refreshTimer]);
 
   useEffect(() => () => {
     void client.disconnect();
