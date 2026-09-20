@@ -1,17 +1,54 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import { SpeakingVoiceClient } from '@/lib/speaking-voice';
 
-export function VoiceControls({sessionId, onRefresh}: {sessionId: string; onRefresh: () => Promise<void>}) {
-  const voice = useRef<SpeakingVoiceClient | null>(null);
-  const [status, setStatus] = useState<'off'|'connecting'|'on'|'blocked'|'error'>('off');
-  useEffect(() => { if (status !== 'on') return; const id = window.setInterval(() => void onRefresh(), 1000); return () => window.clearInterval(id); }, [status, onRefresh]);
-  useEffect(() => () => { void voice.current?.disconnect(); }, []);
+import { TransportStateEnum } from '@pipecat-ai/client-js';
+import {
+  usePipecatClient,
+  usePipecatClientMicControl,
+  usePipecatClientTransportState,
+} from '@pipecat-ai/client-react';
+
+export function VoiceControls({sessionId, onConnectionError}: {
+  sessionId: string;
+  onConnectionError: (message: string) => void;
+}) {
+  const client = usePipecatClient();
+  const transportState = usePipecatClientTransportState();
+  const {enableMic, isMicEnabled} = usePipecatClientMicControl();
+  const connected = transportState === TransportStateEnum.CONNECTED
+    || transportState === TransportStateEnum.READY;
+  const pending = transportState === TransportStateEnum.INITIALIZING
+    || transportState === TransportStateEnum.CONNECTING;
+
   async function toggle() {
-    if (status === 'on') { await voice.current?.disconnect(); setStatus('off'); return; }
-    setStatus('connecting');
-    try { voice.current = new SpeakingVoiceClient(() => setStatus('blocked')); await voice.current.connect(sessionId); setStatus('on'); }
-    catch { setStatus('error'); }
+    onConnectionError('');
+    try {
+      if (connected) {
+        enableMic(!isMicEnabled);
+        return;
+      }
+      if (!client) throw new Error('Pipecat client is not ready');
+      await client.initDevices();
+      await client.startBotAndConnect({
+        endpoint: 'http://localhost:7860/start',
+        requestData: {body: {speaking_session_id: sessionId}},
+        timeout: 10_000,
+      });
+    } catch (error) {
+      onConnectionError(error instanceof Error ? error.message : String(error));
+    }
   }
-  return <div><button type="button" onClick={toggle} disabled={status === 'connecting'}>{status === 'on' ? 'Tắt micro' : status === 'connecting' ? 'Đang kết nối…' : 'Bật micro'}</button>{status === 'blocked' && <button type="button" onClick={() => { void voice.current?.resumeAudio().then(() => setStatus('on')); }}>Bật âm thanh</button>}{status === 'error' && <span role="alert"> Không kết nối được micro. Em vẫn có thể nhập câu trả lời.</span>}</div>;
+
+  const label = pending
+    ? 'Đang kết nối…'
+    : connected && isMicEnabled
+      ? 'Tắt micro'
+      : 'Bật micro';
+
+  return (
+    <div className="voice-controls">
+      <button className="secondary-button" type="button" onClick={toggle} disabled={pending}>
+        {label}
+      </button>
+    </div>
+  );
 }
