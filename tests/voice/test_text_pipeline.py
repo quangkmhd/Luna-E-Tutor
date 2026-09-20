@@ -42,6 +42,7 @@ async def test_provider_failure_survives_pipeline_and_does_not_mutate_state():
 @pytest.mark.asyncio
 async def test_parallel_sessions_do_not_share_results():
     import asyncio
+
     from text_pipeline import PipecatTurnService
     service = PipecatTurnService(FixtureTurnService())
     a, b = await asyncio.gather(

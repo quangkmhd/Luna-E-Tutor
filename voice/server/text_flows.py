@@ -1,8 +1,10 @@
 """Native activity Flows for typed tutoring; Engine is the only transition authority."""
 
 from dataclasses import dataclass, field
+from typing import Any, cast
 
 from luna_tutor.domain.decisions import PlannedTurn, TeacherTurnRequest
+from luna_tutor.domain.evidence import InputEvent, TranscriptStatus
 from luna_tutor.domain.state import LessonState
 from luna_tutor.teaching.turn_service import TurnService
 from pipecat.flows import ContextStrategy, ContextStrategyConfig, FlowManager
@@ -80,10 +82,11 @@ class PlanProcessor(FrameProcessor):
 class BoundedTeacherLLM(LLMService):
     """Use the existing Gemini prompt/schema/validation through native LLM frames."""
 
-    def __init__(self, exchange):
+    def __init__(self, exchange, *, end_after_response=True):
         super().__init__()
         self.exchange = exchange
-        self.responded = False
+        self.end_after_response = end_after_response
+        self.responded_turn_ids = set()
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
@@ -92,13 +95,20 @@ class BoundedTeacherLLM(LLMService):
             return
         exchange = self.exchange
         try:
-            if self.responded or exchange.plan is None:
+            if exchange.plan is None:
                 raise RuntimeError("Flow must request exactly one authorized Teacher response")
-            self.responded = True
-            messages = frame.context.get_messages()
-            if len(messages) != 1 or messages[0]["role"] != "developer":
+            turn_id = exchange.plan.turn_id
+            if turn_id in self.responded_turn_ids:
+                raise RuntimeError("Flow must request exactly one authorized Teacher response")
+            self.responded_turn_ids.add(turn_id)
+            generation_epoch = getattr(exchange, "generation_epoch", None)
+            messages = cast(list[dict[str, Any]], frame.context.get_messages())
+            if len(messages) != 1 or messages[0].get("role") != "developer":
                 raise ValueError("Unexpected teaching node context")
-            request = TeacherTurnRequest.model_validate_json(messages[0]["content"])
+            content = messages[0].get("content")
+            if not isinstance(content, str):
+                raise ValueError("Unexpected teaching node content")
+            request = TeacherTurnRequest.model_validate_json(content)
             if (
                 request != exchange.plan.teacher_request
                 or exchange.flow.current_node != exchange.plan.proposed_next_state.activity_id
@@ -106,17 +116,31 @@ class BoundedTeacherLLM(LLMService):
                 raise ValueError("Flow node and teaching authorization disagree")
             utterance = await exchange.service.respond(request)
             completed = exchange.service.complete(exchange.state, exchange.plan, utterance)
+            if (
+                generation_epoch is not None
+                and generation_epoch != exchange.generation_epoch
+            ):
+                return
+            if hasattr(exchange, "pending_completion"):
+                exchange.pending_completion = completed
             await self.push_frame(LLMFullResponseStartFrame())
             await self.push_frame(LLMTextFrame(completed.teacher_utterance.spoken_text))
             await self.push_frame(LLMFullResponseEndFrame())
             await self.push_frame(CompletedTeachingFrame(completed))
-            await exchange.worker.queue_frame(EndFrame())
+            if self.end_after_response:
+                await exchange.worker.queue_frame(EndFrame())
         except Exception as error:
             await exchange.fail(error)
 
 
 async def run_teaching_flow(
-    service, state, learner_text, turn_id, *, transcript_status="final", input_event="transcript"
+    service,
+    state,
+    learner_text,
+    turn_id,
+    *,
+    transcript_status: TranscriptStatus = "final",
+    input_event: InputEvent = "transcript",
 ):
     exchange = Exchange(service, state)
     context = LLMContext()
