@@ -1,0 +1,19 @@
+name: free_talk_simple_language
+
+judge:
+  modality: text
+  eval:
+    factory: evals.factories.build_gemini_judge
+    model: gemini-3.5-flash-lite
+
+scenarios:
+  - name: short_easy_free_talk
+    turns:
+      - expect:
+          - event: response
+            eval: "The complete response uses only common A1-A2 everyday words, has 1 or 2 short sentences, contains no more than 25 words, avoids idioms, metaphors, and detailed imagined scenes, and asks exactly one simple question about animals. Count a standalone greeting such as 'Hello!' as one sentence, so a greeting plus two more sentences must fail."
+
+      - user: "I like dogs."
+        expect:
+          - event: response
+            eval: "The complete response uses only common A1-A2 everyday words, has 1 or 2 short sentences, contains no more than 25 words, responds naturally to liking dogs, and asks at most one simple question."

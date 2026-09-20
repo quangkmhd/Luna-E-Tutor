@@ -55,6 +55,8 @@ uv run bot.py -t eval --runner-body evals/runner-body.yaml --port 7864
 # In another terminal:
 uv run pipecat eval run evals/starter_text.yaml --bot-url ws://localhost:7864 -v
 uv run pipecat eval run evals/starter_audio.yaml --bot-url ws://localhost:7864 -v
+# Provider-backed simple-language check (uses GEMINI_API_KEY from .env):
+PYTHONPATH=. uv run pipecat eval run evals/simple_language_text.yaml --bot-url ws://localhost:7864 -v
 ```
 
 `eval:` criteria are scored by the local Ollama model selected in the scenarios:

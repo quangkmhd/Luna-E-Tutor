@@ -20,11 +20,12 @@ def test_eval_metadata_and_scenarios_cover_free_talk_contract():
     criteria = [turn["expect"][0].get("eval", "") for turn in scenario["turns"]]
     assert all(turn["expect"][0]["event"] == "response" for turn in scenario["turns"])
     assert all(criteria)
-    assert "one open question" in criteria[0].lower()
-    assert "balanced" in criteria[1].lower()
+    assert "one simple question" in criteria[0].lower()
+    assert "likes dogs" in criteria[1].lower()
     assert "vietnamese" in criteria[2].lower()
     assert "school" in criteria[3].lower()
     assert "safe alternative" in criteria[4].lower()
+    assert all("25" in criterion for criterion in criteria)
 
     audio = yaml.safe_load(root.joinpath("evals/starter_audio.yaml").read_text())
     audio_scenario = audio["scenarios"][0]
