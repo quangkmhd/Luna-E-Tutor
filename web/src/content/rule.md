@@ -1,14 +1,4 @@
-import type { Metadata } from 'next';
-
-import { DesignRulesPage } from '@/components/DesignRulesPage';
-import { parseRuleMarkdown } from '@/lib/design-rules';
-
-export const metadata: Metadata = {
-  title: 'Nguyên tắc thiết kế Luna',
-  description: 'Các nguyên tắc sư phạm và hội thoại của Luna English Tutor.',
-};
-
-const RULE_MARKDOWN = `**Các quy tắc tôi sẽ đưa vào thiết kế**
+**Các quy tắc tôi sẽ đưa vào thiết kế**
 
 | Nhóm                        | Cách áp dụng                                                                                                                     |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -25,8 +15,3 @@ const RULE_MARKDOWN = `**Các quy tắc tôi sẽ đưa vào thiết kế**
 |                              |                                                                                                                                     |
 | Free Talk                    | Chỉ mở sau ba level; ôn toàn Unit, tạo cơ hội dùng từ/cấu trúc còn thiếu                                               |
 |                              |                                                                                                                                     |
-`;
-
-export default function DesignPage() {
-  return <DesignRulesPage document={parseRuleMarkdown(RULE_MARKDOWN)} />;
-}
