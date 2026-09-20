@@ -48,3 +48,9 @@ runtime correctly refuses to invent or bypass that required credential.
 Therefore this report does not claim live STT/LLM/TTS audio evidence. The
 provider-construction boundary and Unit 2 voice routing are covered by the
 15 passing voice integration tests above.
+
+Later in the final Units 2–5 verification run, both provider keys were
+available and the evaluator-only Unit 2 CLI was exercised against OpenRouter.
+That newer evidence is recorded in `units-02-05-report.md`. It does not replace
+the limitation above: no successful microphone/STT/TTS round trip was observed
+for Unit 2 in this smoke run.
