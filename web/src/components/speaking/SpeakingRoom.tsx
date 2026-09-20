@@ -1,18 +1,14 @@
 'use client';
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {useEffect, useState} from 'react';
 import Link from 'next/link';
 import type { SpeakingApi } from '@/lib/speaking-api';
 import { speakingApi } from '@/lib/speaking-api';
-import type { SpeakingState, Summary, Topic } from '@/lib/speaking-types';
+import type {SpeakingState, Topic} from '@/lib/speaking-types';
 import styles from './speaking.module.css';
-import { VoiceControls } from './VoiceControls';
+import {ActiveSpeakingRoom} from './ActiveSpeakingRoom';
+import {SpeakingPipecatProvider} from './SpeakingPipecatProvider';
 
-type Message = {role: 'luna'|'learner'; text: string};
 type SuggestedWord = {word: string; meaning_vi: string; example: string};
-const turnId = () => globalThis.crypto?.randomUUID?.() ?? `turn-${Date.now()}`;
-const displayMessages = (state: SpeakingState): Message[] => state.messages.map((message) => ({
-  role: message.role === 'teacher' ? 'luna' : 'learner', text: message.text,
-}));
 
 export function SpeakingRoom({api = speakingApi}: {api?: SpeakingApi}) {
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -21,20 +17,15 @@ export function SpeakingRoom({api = speakingApi}: {api?: SpeakingApi}) {
   const [words, setWords] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<SuggestedWord[]>([]);
   const [session, setSession] = useState<SpeakingState|null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [answer, setAnswer] = useState('');
-  const [summary, setSummary] = useState<Summary|null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const pending = useRef<{turn_id: string; text: string; expected_version: number}|null>(null);
 
   useEffect(() => { void api.topics().then(setTopics).catch((e) => setError(e.message)); }, [api]);
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('session');
     if (!id) return;
-    void api.get(id).then((value) => {
-      setSession(value); setMessages(displayMessages(value));
-    }).catch(() => window.history.replaceState(null, '', window.location.pathname));
+    void api.get(id).then(setSession)
+      .catch(() => window.history.replaceState(null, '', window.location.pathname));
   }, [api]);
 
   function addWord() {
@@ -57,63 +48,37 @@ export function SpeakingRoom({api = speakingApi}: {api?: SpeakingApi}) {
     setBusy(true); setError('');
     try {
       const value = await api.create({grade: 5, topic, words});
-      setSession(value); setMessages(displayMessages(value));
+      setSession(value);
       window.history.replaceState(null, '', `?session=${encodeURIComponent(value.session_id)}`);
     } catch (e) { setError((e as Error).message); }
     finally { setBusy(false); }
   }
 
-  async function send(event: FormEvent) {
-    event.preventDefault();
-    if (!session || !answer.trim() || busy) return;
-    const text = answer.trim();
-    const turn = pending.current ?? {turn_id: turnId(), text, expected_version: session.version};
-    pending.current = turn; setAnswer(''); setBusy(true); setError('');
-    try {
-      const result = await api.submit(session.session_id, turn);
-      pending.current = null; setSession(result.state); setMessages(displayMessages(result.state));
-    } catch (e) { setAnswer(text); setError((e as Error).message); }
-    finally { setBusy(false); }
-  }
-
-  async function finish() {
-    if (!session) return;
-    setBusy(true);
-    try { const value = await api.finish(session.session_id, session.version); setSummary(value); setSession(value.state); }
-    catch (e) { setError((e as Error).message); }
-    finally { setBusy(false); }
-  }
-
-  const refresh = useCallback(async () => {
-    if (!session) return;
-    const value = await api.get(session.session_id);
-    setSession(value); setMessages(displayMessages(value));
-  }, [api, session]);
-
-  if (!session) return <main className={styles.page}>
-    <Link href="/">← Phòng học</Link>
-    <section className={styles.card}>
-      <span className={styles.eyebrow}>Lớp 5</span><h1>Luyện nói theo chủ đề</h1>
-      <p>Chọn điều em thích và những từ em muốn dùng.</p>
-      <div className={styles.topics}>{topics.map((item) => <button type="button" key={item.id} className={topic === item.name_en ? styles.selected : ''} onClick={() => { setTopic(item.name_en); setSuggestions(item.words.map((word) => ({word, meaning_vi: '', example: ''}))); }}>{item.name_en}</button>)}</div>
-      <label>Chủ đề của em<input value={topic} onChange={(e) => { setTopic(e.target.value); setSuggestions([]); }} /></label>
-      <button type="button" disabled={busy} onClick={suggest}>Gợi ý từ cho chủ đề này</button>
-      {suggestions.length > 0 && <div className={styles.suggestions}>{suggestions.map((item) => <button type="button" key={item.word} disabled={words.includes(item.word) || words.length >= 5} onClick={() => setWords([...words, item.word])}><strong>{item.word}</strong>{item.meaning_vi && <span>{item.meaning_vi}</span>}{item.example && <small>{item.example}</small>}</button>)}</div>}
-      <label>Tự nhập từ muốn luyện<input value={wordInput} onChange={(e) => setWordInput(e.target.value)} /></label>
-      <button type="button" onClick={addWord}>Thêm từ</button>
-      <div className={styles.chips}>{words.map((word) => <button type="button" key={word} onClick={() => setWords(words.filter((item) => item !== word))}>{word} ×</button>)}</div>
-      {error && <p role="alert">{error}</p>}
-      <button className={styles.primary} disabled={busy} onClick={start}>Bắt đầu nói</button>
-    </section>
+  if (!session) return <main className="app-shell">
+    <header className="topbar">
+      <div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Topic Speaking</small></div></div>
+      <div className="top-actions"><Link className="secondary-button" href="/">Unit 1</Link></div>
+    </header>
+    <div className={`workspace ${styles.setupWorkspace}`}>
+      <section className="lesson-card">
+        <div className="lesson-heading"><div><span className="eyebrow">Lớp 5 · Luyện nói</span><h1>Chọn chủ đề của em</h1></div><span className="stage-chip">Chuẩn bị</span></div>
+        <div className={styles.setupContent}>
+          <p className={styles.lead}>Chọn điều em thích và tối đa năm từ em muốn dùng trong cuộc trò chuyện với Luna.</p>
+          <div className={styles.topics}>{topics.map((item) => <button type="button" key={item.id} className={topic === item.name_en ? styles.selected : ''} onClick={() => { setTopic(item.name_en); setSuggestions(item.words.map((word) => ({word, meaning_vi: '', example: ''}))); }}>{item.name_en}</button>)}</div>
+          <label className={styles.field}>Chủ đề của em<input value={topic} onChange={(e) => { setTopic(e.target.value); setSuggestions([]); }} /></label>
+          <button className="secondary-button" type="button" disabled={busy} onClick={suggest}>Gợi ý từ cho chủ đề này</button>
+          {suggestions.length > 0 && <div className={styles.suggestions}>{suggestions.map((item) => <button type="button" key={item.word} disabled={words.includes(item.word) || words.length >= 5} onClick={() => setWords([...words, item.word])}><strong>{item.word}</strong>{item.meaning_vi && <span>{item.meaning_vi}</span>}{item.example && <small>{item.example}</small>}</button>)}</div>}
+          <div className={styles.wordEntry}><label className={styles.field}>Tự nhập từ muốn luyện<input value={wordInput} onChange={(e) => setWordInput(e.target.value)} /></label><button className="secondary-button" type="button" onClick={addWord}>Thêm từ</button></div>
+          <div className={styles.chips}>{words.map((word) => <button type="button" key={word} onClick={() => setWords(words.filter((item) => item !== word))}>{word} ×</button>)}</div>
+          {error && <div className="error-banner" role="alert">{error}</div>}
+          <button className={styles.primary} disabled={busy} onClick={start}>Bắt đầu nói</button>
+        </div>
+      </section>
+      <aside className="sidebar"><section className="panel"><div className="panel-heading"><span className="eyebrow">Cách học</span><h2>Speak your way</h2></div><p className="muted">Em có thể nói bằng micro hoặc nhập câu trả lời. Luna sẽ giúp em tiếp tục bằng những câu hỏi ngắn.</p></section></aside>
+    </div>
   </main>;
 
-  return <main className={styles.page}><section className={styles.card}>
-    <header><span className={styles.eyebrow}>{session.config.topic}</span><h1>Talk with Luna</h1>{session.status === 'active' && <VoiceControls sessionId={session.session_id} onRefresh={refresh} />}</header>
-    <div className={styles.chat}>{messages.map((message, index) => <p className={message.role === 'luna' ? styles.luna : styles.learner} key={index}>{message.text}</p>)}</div>
-    {error && <p role="alert">{error}</p>}
-    {summary ? <section><h2>Good work!</h2><p>{summary.next_practice}</p><p>Đã tự dùng: {summary.independent.join(', ') || 'Chưa có bằng chứng'}</p></section> : <>
-      <form onSubmit={send}><label>Câu trả lời<input value={answer} onChange={(e) => { setAnswer(e.target.value); if (pending.current && e.target.value !== pending.current.text) pending.current = null; }} disabled={busy}/></label><button className={styles.primary} disabled={busy}>Gửi</button></form>
-      <button type="button" disabled={busy} onClick={finish}>Kết thúc</button>
-    </>}
-  </section></main>;
+  return <SpeakingPipecatProvider key={session.session_id}>
+    <ActiveSpeakingRoom initialSession={session} api={api}/>
+  </SpeakingPipecatProvider>;
 }
