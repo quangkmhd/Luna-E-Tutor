@@ -19,6 +19,7 @@ import {
 type VoiceContextValue = {
   error: string | null;
   phase: VoicePhase;
+  ttfaSeconds: number | null;
   start: () => Promise<void>;
   stop: () => Promise<void>;
   transportState: TransportState;
@@ -75,6 +76,8 @@ export function PipecatVoiceProvider({
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
   const [error, setError] = useState<string | null>(null);
+  const [ttfaSeconds, setTtfaSeconds] = useState<number | null>(null);
+  const [, setUserStoppedAt] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [client] = useState(() => new PipecatClient({
     transport: new SmallWebRTCTransport(),
@@ -94,10 +97,23 @@ export function PipecatVoiceProvider({
         setError(null);
         setPhase('ready');
       },
-      onUserStartedSpeaking: () => setPhase('listening'),
-      onUserStoppedSpeaking: () => setPhase('thinking'),
+      onUserStartedSpeaking: () => {
+        setUserStoppedAt(null);
+        setTtfaSeconds(null);
+        setPhase('listening');
+      },
+      onUserStoppedSpeaking: () => {
+        setUserStoppedAt(Date.now());
+        setPhase('thinking');
+      },
       onBotLlmStarted: () => setPhase('thinking'),
-      onBotStartedSpeaking: () => setPhase('speaking'),
+      onBotStartedSpeaking: () => {
+        setUserStoppedAt((stoppedAt) => {
+          if (stoppedAt !== null) setTtfaSeconds((Date.now() - stoppedAt) / 1_000);
+          return null;
+        });
+        setPhase('speaking');
+      },
       onBotStoppedSpeaking: () => {
         setPhase('ready');
         if (!onSessionChanged) return;
@@ -154,6 +170,7 @@ export function PipecatVoiceProvider({
     phase,
     start,
     stop,
+    ttfaSeconds,
     transportState,
   };
 

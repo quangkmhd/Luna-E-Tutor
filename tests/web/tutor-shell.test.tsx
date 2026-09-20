@@ -9,7 +9,7 @@ import type { SessionView } from '@/lib/types';
 
 vi.mock('@/components/voice/PipecatVoiceProvider', () => ({
   PipecatVoiceProvider: ({ children }: { children: React.ReactNode }) => children,
-  useOptionalVoiceLesson: () => null,
+  useOptionalVoiceLesson: () => ({ ttfaSeconds: 2.84 }),
 }));
 vi.mock('@/components/voice/VoiceControls', () => ({
   VoiceControls: () => <button type="button">Start voice lesson</button>,
@@ -45,6 +45,15 @@ function mockApi(overrides: Record<string, unknown> = {}) {
 }
 
 describe('TutorShell', () => {
+  it('shows latency beside Luna on the latest teacher message', async () => {
+    render(<TutorShell api={mockApi()} />);
+
+    const heading = await screen.findByRole('heading', { name: /Practice with Luna/ });
+    expect(heading).not.toHaveTextContent('2.84s');
+    const greeting = screen.getByText('Hello, Quang!').closest('.bubble');
+    expect(greeting?.querySelector('.speaker')).toHaveTextContent('Luna2.84s');
+  });
+
   it('starts with a fresh session and renders the server greeting without history', async () => {
     const api = mockApi(); render(<TutorShell api={api} />);
     expect(await screen.findByText('Hello, Quang!')).toBeVisible();

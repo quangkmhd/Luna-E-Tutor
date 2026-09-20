@@ -37,6 +37,7 @@ vi.mock('@pipecat-ai/client-react', () => ({
 
 import { PipecatVoiceProvider } from '@/components/voice/PipecatVoiceProvider';
 import { VoiceControls } from '@/components/voice/VoiceControls';
+import { VoiceLatency } from '@/components/voice/VoiceLatency';
 import { ChatPanel } from '@/components/ChatPanel';
 
 describe('PipecatVoiceProvider', () => {
@@ -163,6 +164,26 @@ describe('PipecatVoiceProvider', () => {
 
     act(() => callbacks.onBotStoppedSpeaking());
     expect(screen.getByText('Ready')).toBeInTheDocument();
+  });
+
+  it('shows perceived TTFA seconds after Luna starts speaking', () => {
+    const now = vi.spyOn(Date, 'now')
+      .mockReturnValueOnce(1_000)
+      .mockReturnValueOnce(3_840);
+    render(
+      <PipecatVoiceProvider sessionId="session-7"><VoiceLatency /></PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onUserStoppedSpeaking(): void;
+      onBotStartedSpeaking(): void;
+    };
+
+    act(() => callbacks.onUserStoppedSpeaking());
+    expect(screen.queryByText('2.84s')).not.toBeInTheDocument();
+    act(() => callbacks.onBotStartedSpeaking());
+
+    expect(screen.getByText('2.84s')).toBeInTheDocument();
+    now.mockRestore();
   });
 
   it('cancels a pending session refresh on cleanup', () => {

@@ -15,6 +15,17 @@ def test_teacher_prompt_requires_standard_vietnamese_diacritics():
     assert 'Never omit tone marks or other Vietnamese diacritics' in prompt
 
 
+def test_teacher_prompt_and_descriptions_quote_repeated_target_words_for_tts():
+    prompt = load_system_prompt('teacher-system.yaml')
+    catalog = yaml.safe_load(descriptions.CATALOG_PATH.read_text())
+    constraints = ' '.join(item['description_en'] for item in catalog['additional_constraints'])
+
+    assert 'Never write isolated vocabulary repetitions as separate punctuated sentences' in prompt
+    assert '“class”' in prompt
+    assert 'Never write isolated vocabulary repetitions as separate punctuated sentences' in constraints
+    assert '“class”' in constraints
+
+
 @pytest.mark.asyncio
 async def test_yaml_edits_reach_planner_and_teacher(tmp_path, monkeypatch, unit_01):
     data = yaml.safe_load(descriptions.CATALOG_PATH.read_text())

@@ -1,111 +1,25 @@
-"""Bounded Teacher wording over deterministic teaching decisions."""
+"""Teacher wording over deterministic teaching decisions."""
 
 import json
-from luna_tutor.prompts.loader import load_system_prompt
-import re
-
-from pydantic import ValidationError
+import logging
 
 from luna_tutor.domain.decisions import TeacherTurnRequest, TeacherUtterance
-from luna_tutor.domain.text_observations import observe_delivery
-from luna_tutor.llm.openrouter import OpenRouterError, InvalidModelOutputError, ProviderError
+from luna_tutor.domain.privacy import redact_sensitive_contact
+from luna_tutor.llm.openrouter import InvalidModelOutputError, OpenRouterError, ProviderError
+from luna_tutor.prompts.loader import load_system_prompt
 
 
 class InvalidTeacherResultError(InvalidModelOutputError):
-    """Teacher output cannot safely fulfill the proposed teaching turn."""
+    """Retained for compatibility with API callers handling older results."""
 
 
-_MARKDOWN = re.compile(r'(^|\s)(#{1,6}\s|[-*]\s|\*\*|__|```)', re.MULTILINE)
-_FORCED_REPEAT = re.compile(r'\b(repeat after me|say it again|repeat it)\b', re.IGNORECASE)
-_ENCOURAGEMENT = re.compile(
-    r'\b(good answer|good job|great answer|great job|great thought|great thinking|'
-    r'nice answer|nice thinking|nice work|smart answer|smart thought|smart thinking|smart connection|'
-    r'well done|excellent|brilliant|wonderful)\b|'
-    r'(giỏi|tốt lắm|hay lắm|đúng lắm|xuất sắc|thông minh)',
-    re.IGNORECASE,
-)
-_ENCOURAGEMENT_FEEDBACK = (
-    "Add one explicit, brief encouragement for the learner's answer, such as Good answer, "
-    'Nice thinking, or Con giỏi lắm, while varying the wording naturally. A bare yes, right, '
-    'or you got it acknowledges correctness but is not encouragement.'
-)
+logger = logging.getLogger(__name__)
 
 
-def _contains_recast(text: str, correction: str) -> bool:
-    """Check corrected clauses, allowing person, contraction and clause-boundary variation.
-
-    This lexical guard is not a semantic proof or a general paraphrase judge.
-    """
-    def tokens(value):
-        normalized = value.replace('’', "'").casefold()
-        for short, full in {"you're": 'you are', "i'm": 'i am',
-                            "it's": 'it is', "there's": 'there is', "that's": 'that is',
-                            "we're": 'we are', "they're": 'they are'}.items():
-            normalized = re.sub(r'\b' + re.escape(short) + r'\b', full, normalized)
-        return re.findall(r"\w+(?:'\w+)?", normalized)
-
-    reference = correction.replace('’', "'").casefold()
-    addressed = reference
-    for pattern, replacement in (
-        (r"\bi'm\b", "you're"), (r'\bi am\b', 'you are'),
-        (r'\bi was\b', 'you were'), (r'\bmy\b', 'your'), (r'\bi\b', 'you'),
-    ):
-        addressed = re.sub(pattern, replacement, addressed)
-    spoken = tokens(text)
-    clauses = [tokens(clause) for clause in re.split(r'[.;!?]+', addressed) if tokens(clause)]
-    return bool(clauses) and all(
-        any(spoken[i:i + len(clause)] == clause
-            for i in range(len(spoken) - len(clause) + 1))
-        for clause in clauses)
-
-
-def teacher_output_issues(text: str, request: TeacherTurnRequest) -> list[str]:
-    issues = []
-    if not text.strip() or _MARKDOWN.search(text):
-        issues.append('Use non-empty plain spoken text without Markdown.')
-    if request.feedback_action == 'recast' and _FORCED_REPEAT.search(text):
-        issues.append('Do not demand repetition of the correction; use a natural response invitation.')
-    if text.count('?') > request.constraints.max_questions:
-        issues.append(f'Ask at most {request.constraints.max_questions} question(s). Combine or choose; do not ask an open question then a separate choice question.')
-    if request.constraints.encouragement_required and not _ENCOURAGEMENT.search(text):
-        issues.append(_ENCOURAGEMENT_FEEDBACK)
-    if request.corrected_form and not _contains_recast(text, request.corrected_form):
-        issues.append("Recast the child's meaning once using you/your, retaining the corrected grammar. Do not claim their first-person fact as your own biography.")
-    if request.activity_context:
-        context = request.activity_context
-        models, invitation = observe_delivery(context, text)
-        if models < context.remaining_model_repetitions:
-            issues.append(f'Model each target word {context.remaining_model_repetitions} time(s) in this reply.')
-        if context.needs_response_invitation and context.kind == 'vocabulary_introduction':
-            invitation = bool(re.search(r'\b(say|saying|repeat|try|your turn|use the word)\b', text, re.IGNORECASE))
-        if context.needs_response_invitation and not invitation:
-            issues.append('Invite Quang to respond to the authorized activity. For a new word, invite him to say/use that word; do not replace his practice turn with a topic question. Example invitation: Can you say ' + ', '.join(context.target_words) + '?')
-    return issues
-
-
-def _fallback(request: TeacherTurnRequest) -> TeacherUtterance:
-    if request.feedback_action == 'recast' and request.corrected_form:
-        text = f'Oh, {request.corrected_form}'
-    elif request.feedback_action == 'explain_meaning':
-        text = 'Let us look at that together, Quang.'
-    elif request.feedback_action == 'privacy_redirect':
-        text = 'Keep your real number private. We are practising the words phone number.'
-    elif request.feedback_action == 'clarify':
-        text = 'I did not hear that clearly. Could you tell me again?'
-    elif request.feedback_action == 'stop':
-        text = 'Okay, Quang. We can stop here for today.'
-    elif request.emotional_support:
-        text = 'That is okay, Quang. We can take it one small step at a time.'
-    else:
-        text = 'Let us take a moment, Quang. We can try that together.'
-    # Activity instructions are internal directives, never learner-facing text.
-    text = re.sub(r'[*_#`]', '', text).strip()
-    if text.count('?') > request.constraints.max_questions:
-        first, *_ = text.split('?', 1)
-        text = first.rstrip() + ('?' if request.constraints.max_questions else '.')
-    return TeacherUtterance(spoken_text=text, delivery_intent=(
-        'reassuring' if request.emotional_support else 'encouraging'),
-        generation_mode='fallback')
+def _log_text(text: str, limit: int = 500) -> str:
+    """Keep diagnostics useful without retaining contact details or huge output."""
+    sanitized = redact_sensitive_contact(text).text.replace('\n', '\\n')
+    return sanitized if len(sanitized) <= limit else sanitized[:limit] + '...[truncated]'
 
 
 class GeminiTeacher:
@@ -114,36 +28,37 @@ class GeminiTeacher:
         self._prompt = load_system_prompt('teacher-system.yaml')
 
     async def respond(self, request: TeacherTurnRequest) -> TeacherUtterance:
-        feedback = []
-        max_attempts = 3 if request.constraints.encouragement_required else 2
-        for attempt in range(max_attempts):
-            payload = request.model_dump(mode='json')
-            if feedback:
-                repair_feedback = list(feedback)
-                if (request.constraints.encouragement_required
-                        and _ENCOURAGEMENT_FEEDBACK not in repair_feedback):
-                    repair_feedback.append(_ENCOURAGEMENT_FEEDBACK)
-                payload['validation_feedback'] = repair_feedback
-            try:
-                text = await self._client.text_chat([
-                    {'role': 'system', 'content': self._prompt},
-                    {'role': 'user', 'content': json.dumps(payload, ensure_ascii=False)},
-                ], request.turn_id)
-            except ProviderError:
-                # Preserve service failures for API/eval classification; they are not bad wording.
-                raise
-            except OpenRouterError:
-                return _fallback(request)
-            try:
-                utterance = TeacherUtterance(
-                    spoken_text=text,
-                    delivery_intent=('reassuring' if request.emotional_support
-                                     else 'encouraging'),
-                    generation_mode='model',
-                )
-                feedback = teacher_output_issues(utterance.spoken_text, request)
-                if not feedback:
-                    return utterance
-            except (ValidationError, ValueError, TypeError, KeyError):
-                feedback = ['Return one non-empty plain spoken response.']
-        return _fallback(request)
+        activity_id = request.activity_context.activity_id if request.activity_context else 'none'
+        logger.info(
+            'teacher_generation_started turn_id=%s action=%s activity_id=%s',
+            request.turn_id, request.feedback_action, activity_id,
+        )
+        payload = request.model_dump(mode='json')
+        try:
+            text = await self._client.text_chat([
+                {'role': 'system', 'content': self._prompt},
+                {'role': 'user', 'content': json.dumps(payload, ensure_ascii=False)},
+            ], request.turn_id)
+        except ProviderError as error:
+            logger.error(
+                'teacher_provider_failed turn_id=%s status=%s reason=%s',
+                request.turn_id, error.status_code, error.reason,
+            )
+            raise
+        except OpenRouterError as error:
+            logger.error(
+                'teacher_model_output_failed turn_id=%s status=%s reason=%s',
+                request.turn_id, error.status_code, error.reason,
+            )
+            raise
+
+        utterance = TeacherUtterance(
+            spoken_text=text,
+            delivery_intent=('reassuring' if request.emotional_support else 'encouraging'),
+            generation_mode='model',
+        )
+        logger.info(
+            'teacher_response_forwarded turn_id=%s text=%r',
+            request.turn_id, _log_text(utterance.spoken_text),
+        )
+        return utterance
