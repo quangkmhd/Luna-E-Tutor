@@ -3,18 +3,24 @@ import './globals.css';
 
 export const metadata: Metadata = { title: 'Luna English Tutor', description: 'Unit 1 English conversation experiment for Quang' };
 
-const bitdefenderHydrationGuard = `
+const localhostHydrationGuard = `
 (() => {
   if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') return;
-  const attribute = 'bis_skin_checked';
-  const clean = (root) => {
-    if (root.nodeType === Node.ELEMENT_NODE && root.hasAttribute(attribute)) {
-      root.removeAttribute(attribute);
+
+  const injected = (name) =>
+    name === 'bis_skin_checked' || name.startsWith('bis_') || name.startsWith('__processed_');
+
+  const cleanElement = (element) => {
+    for (const attribute of [...element.attributes]) {
+      if (injected(attribute.name)) element.removeAttribute(attribute.name);
     }
-    root.querySelectorAll?.('[' + attribute + ']').forEach((element) => {
-      element.removeAttribute(attribute);
-    });
   };
+
+  const clean = (root) => {
+    if (root.nodeType === Node.ELEMENT_NODE) cleanElement(root);
+    root.querySelectorAll?.('*').forEach(cleanElement);
+  };
+
   clean(document);
   const observer = new MutationObserver((records) => {
     for (const record of records) {
@@ -24,7 +30,6 @@ const bitdefenderHydrationGuard = `
   });
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: [attribute],
     childList: true,
     subtree: true,
   });
@@ -32,5 +37,12 @@ const bitdefenderHydrationGuard = `
 })();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><head><script dangerouslySetInnerHTML={{__html: bitdefenderHydrationGuard}} /></head><body>{children}</body></html>;
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: localhostHydrationGuard }} />
+      </head>
+      <body suppressHydrationWarning>{children}</body>
+    </html>
+  );
 }
