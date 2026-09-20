@@ -11,7 +11,7 @@ services:
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
       - TUTOR_DATABASE_PATH=/app/backend/data/luna-tutor.sqlite3
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8090}:8000"
     volumes:
       - ./backend/data:/app/backend/data
     networks:
@@ -78,7 +78,7 @@ services:
     container_name: luna-web
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${WEB_PORT:-3001}:3000"
     networks:
       - luna-network
     profiles:
