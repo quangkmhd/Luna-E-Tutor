@@ -65,6 +65,7 @@ def build_voice_worker(
     session_id = _session_id(runner_args)
     components: RuntimeComponents = build_runtime_components(environment)
     stored = components.repository.get_session(session_id)
+    components.curriculum_registry.get(stored.state.unit_id)
 
     # Provider objects come after metadata/session validation so a malformed
     # offer cannot open provider connections or mutate lesson state.

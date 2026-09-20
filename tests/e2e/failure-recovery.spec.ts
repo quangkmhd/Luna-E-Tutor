@@ -1,11 +1,18 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 test.beforeEach(async ({ request }) => {
-  await request.post('http://localhost:8091/api/sessions');
+  await request.post('http://localhost:8091/api/sessions', {
+    data: { unit_id: 'grade05.unit01' },
+  });
 });
 
-test('provider failure is retryable and does not advance state', async ({ page }) => {
+async function openUnit1(page: Page) {
   await page.goto('/');
+  await page.getByRole('button', { name: /Unit 1.*All about me!/i }).click();
+}
+
+test('provider failure is retryable and does not advance state', async ({ page }) => {
+  await openUnit1(page);
   await page.getByLabel('Your answer').fill('fixture: provider failure');
   await page.getByRole('button', { name: 'Send' }).click();
   await expect(page.locator('.error-banner')).toContainText('Please try again');
@@ -17,7 +24,7 @@ test('provider failure is retryable and does not advance state', async ({ page }
 });
 
 test('Free Talk ends only through the explicit button and shows a summary', async ({ page }) => {
-  await page.goto('/');
+  await openUnit1(page);
   await page.getByLabel('Your answer').fill('fixture: go to free talk');
   await page.getByRole('button', { name: 'Send' }).click();
   await expect(page.getByRole('button', { name: 'End Free Talk' })).toBeVisible();

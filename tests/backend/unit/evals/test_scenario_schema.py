@@ -1,9 +1,25 @@
 from pathlib import Path
 
-from luna_tutor.evals.loader import load_scenarios
-
+from luna_tutor.evals.loader import (
+    load_coverage,
+    load_scenarios,
+    validate_coverage,
+)
 
 ROOT = Path(__file__).resolve().parents[4]
+
+
+def test_unit2_core_scenarios_cover_declared_activities_and_objectives():
+    scenario_root = ROOT / 'evals/unit-02'
+    scenarios = load_scenarios(scenario_root)
+    coverage = load_coverage(scenario_root / 'coverage.yaml')
+    result = validate_coverage(coverage, scenarios, set())
+
+    assert len(scenarios) == 10
+    assert result.numbered_scenarios == 10
+    assert not result.missing_source_refs
+    assert not result.missing_branch_ids
+    assert not result.missing_objective_ids
 
 
 def test_every_scenario_has_source_gold_behavior_and_teacher_criteria():

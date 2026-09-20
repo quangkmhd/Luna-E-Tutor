@@ -9,12 +9,16 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "voice/server"))
 
 from luna_tutor.api.runtime import RuntimeComponents
+from luna_tutor.curriculum.registry import CurriculumRegistry, UnknownUnitError
 from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
+from luna_tutor.teaching.unit_router import UnitTurnRouter
 from pipecat.processors.frame_processor import FrameProcessor
 from pipecat.transports.base_transport import BaseTransport
 from pipecat.utils.types import is_given
 from test_voice_teaching import RecordingService
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 class InputProcessor(FrameProcessor):
@@ -56,6 +60,17 @@ def live_environment(database):
         "OPENROUTER_API_KEY": "openrouter-test",
         "OPENROUTER_MODEL": "provider/model",
     }
+
+
+def runtime_components(repository, service):
+    return RuntimeComponents(
+        repository=repository,
+        turn_service=service,
+        client=None,
+        curriculum_registry=CurriculumRegistry(
+            ROOT / "curriculum", ("grade05.unit01", "grade05.unit02")
+        ),
+    )
 
 
 def test_bounded_teacher_initializes_complete_pipecat_llm_settings():
@@ -101,6 +116,81 @@ def test_build_voice_worker_rejects_unknown_session_before_services(tmp_path, mo
         )
 
 
+def test_build_voice_worker_rejects_unknown_stored_unit_before_services(
+    tmp_path, monkeypatch
+):
+    import bot
+
+    repository = SessionRepository(tmp_path / "voice.sqlite3")
+    state = LessonState(
+        session_id="unknown-unit",
+        unit_id="grade05.unit99",
+        stage_id="warm-up",
+        activity_id="warm-up.feelings",
+    )
+    repository.create_session(state)
+    monkeypatch.setattr(
+        bot,
+        "build_runtime_components",
+        lambda _environment: runtime_components(repository, RecordingService()),
+    )
+    monkeypatch.setattr(
+        bot,
+        "build_soniox_stt",
+        lambda _config: pytest.fail("provider service should not be constructed"),
+    )
+
+    with pytest.raises(UnknownUnitError, match="grade05.unit99"):
+        bot.build_voice_worker(
+            FakeTransport(),
+            SimpleNamespace(body={"session_id": state.session_id}),
+            live_environment(tmp_path / "voice.sqlite3"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_build_voice_worker_routes_persisted_unit2_state(
+    tmp_path, monkeypatch
+):
+    import bot
+
+    repository = SessionRepository(tmp_path / "voice.sqlite3")
+    state = LessonState(
+        session_id="unit2-session",
+        unit_id="grade05.unit02",
+        stage_id="warm-up",
+        activity_id="warm-up.feelings",
+        opening_message="Hello, Quang! How are you today?",
+    )
+    repository.create_session(state)
+    unit1 = RecordingService()
+    unit2 = RecordingService()
+    router = UnitTurnRouter({
+        "grade05.unit01": unit1,
+        "grade05.unit02": unit2,
+    }, response_service=unit2)
+    monkeypatch.setattr(
+        bot,
+        "build_runtime_components",
+        lambda _environment: runtime_components(repository, router),
+    )
+    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
+    monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
+
+    worker = bot.build_voice_worker(
+        FakeTransport(),
+        SimpleNamespace(body={"session_id": state.session_id}),
+        live_environment(tmp_path / "voice.sqlite3"),
+    )
+    await worker.luna_exchange.service.plan(
+        state, "I feel happy.", "unit2-voice"
+    )
+
+    assert worker.luna_exchange.state.unit_id == "grade05.unit02"
+    assert unit2.calls == ["I feel happy."]
+    assert unit1.calls == []
+
+
 def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypatch):
     import bot
     from text_flows import BoundedTeacherLLM
@@ -118,7 +208,7 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
     monkeypatch.setattr(
         bot,
         "build_runtime_components",
-        lambda _environment: RuntimeComponents(repository, RecordingService(), None),
+        lambda _environment: runtime_components(repository, RecordingService()),
     )
     monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
@@ -178,7 +268,7 @@ def test_voice_worker_does_not_finalize_on_a_brief_pause_inside_a_sentence(
     monkeypatch.setattr(
         bot,
         "build_runtime_components",
-        lambda _environment: RuntimeComponents(repository, RecordingService(), None),
+        lambda _environment: runtime_components(repository, RecordingService()),
     )
     monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
@@ -213,7 +303,7 @@ async def test_disconnect_discards_pending_completion_before_cancel(tmp_path, mo
     monkeypatch.setattr(
         bot,
         "build_runtime_components",
-        lambda _environment: RuntimeComponents(repository, service, None),
+        lambda _environment: runtime_components(repository, service),
     )
     monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
