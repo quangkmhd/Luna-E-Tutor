@@ -30,8 +30,6 @@ chmod +x scripts/run-local.sh
 
 Open `http://localhost:3000`. Sessions are saved to `backend/data/luna-tutor.sqlite3` unless `TUTOR_DATABASE_PATH` overrides it. “New session” keeps the old history and starts at Warm-up. Free Talk has no timer and ends only with its explicit button.
 
-Open `http://localhost:3000/speaking` for the independent Grade 5 topic-speaking room. The local script also starts its Pipecat voice adapter on port 7860. It reads Soniox STT/TTS and OpenRouter LLM configuration from the repository root `.env`; keep that file local and set `STT_PROVIDER=soniox`.
-
 You can also start each process separately:
 
 ```bash
