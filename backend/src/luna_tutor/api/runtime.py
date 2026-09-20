@@ -1,15 +1,19 @@
 """Runnable FastAPI composition root for local development and browser tests."""
 
-from contextlib import asynccontextmanager
 import os
+from collections.abc import Mapping
+from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping
 
 from luna_tutor.api.app import create_app
 from luna_tutor.config import Settings
 from luna_tutor.curriculum.loader import load_unit
 from luna_tutor.domain.decisions import (
-    CompletedTurn, PlannedTurn, TeacherTurnRequest, TeacherUtterance,
+    CompletedTurn,
+    PlannedTurn,
+    TeacherTurnRequest,
+    TeacherUtterance,
     TeachingDecision,
 )
 from luna_tutor.domain.evidence import EvaluatorResult, ObjectiveEvidence
@@ -80,26 +84,42 @@ class FixtureTurnService:
         )
 
 
-def build_runtime_app(environment: Mapping[str, str] | None = None, *,
-                      turn_service_adapter=None):
-    environment = os.environ if environment is None else environment
+@dataclass(frozen=True)
+class RuntimeComponents:
+    repository: SessionRepository
+    turn_service: object
+    client: OpenRouterClient | None
+
+
+def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponents:
     root = Path(__file__).resolve().parents[4]
     database_path = Path(environment.get(
         'TUTOR_DATABASE_PATH', str(root / 'backend/data/luna-tutor.sqlite3')))
     repository = SessionRepository(database_path)
     mode = environment.get('TUTOR_LLM_MODE', 'live')
-    client = None
     if mode == 'fixture':
         if environment.get('ENV') != 'test':
             raise RuntimeError('TUTOR_LLM_MODE=fixture requires ENV=test')
-        turn_service = FixtureTurnService()
-    else:
-        key = environment.get('OPENROUTER_API_KEY', '').strip()
-        settings = Settings(openrouter_api_key=key)
-        client = OpenRouterClient(settings)
-        curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
-        planner = TurnPlanner(GeminiEvaluator(client), TeachingEngine(), curriculum)
-        turn_service = TurnService(planner, GeminiTeacher(client))
+        return RuntimeComponents(repository, FixtureTurnService(), None)
+
+    key = environment.get('OPENROUTER_API_KEY', '').strip()
+    if not key:
+        raise ValueError('Missing required runtime configuration: OPENROUTER_API_KEY')
+    settings = Settings(openrouter_api_key=key)
+    client = OpenRouterClient(settings)
+    curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
+    planner = TurnPlanner(GeminiEvaluator(client), TeachingEngine(), curriculum)
+    turn_service = TurnService(planner, GeminiTeacher(client))
+    return RuntimeComponents(repository, turn_service, client)
+
+
+def build_runtime_app(environment: Mapping[str, str] | None = None, *,
+                      turn_service_adapter=None):
+    environment = os.environ if environment is None else environment
+    components = build_runtime_components(environment)
+    repository = components.repository
+    turn_service = components.turn_service
+    client = components.client
 
     if turn_service_adapter is not None:
         turn_service = turn_service_adapter(turn_service)
