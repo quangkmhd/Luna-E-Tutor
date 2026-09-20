@@ -6,5 +6,11 @@ export default defineConfig({
     environment: 'jsdom', setupFiles: ['../tests/web/setup.ts'],
     include: ['../tests/web/**/*.test.{ts,tsx}'],
   },
-  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      react: path.resolve(__dirname, '../node_modules/react'),
+      'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
+    },
+  },
 });

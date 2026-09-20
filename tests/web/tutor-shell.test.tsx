@@ -7,6 +7,13 @@ import { ChatPanel } from '@/components/ChatPanel';
 import { ApiError, TutorApi } from '@/lib/api';
 import type { SessionView } from '@/lib/types';
 
+vi.mock('@/components/voice/PipecatVoiceProvider', () => ({
+  PipecatVoiceProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+vi.mock('@/components/voice/VoiceControls', () => ({
+  VoiceControls: () => <button type="button">Start voice lesson</button>,
+}));
+
 function session(changes: Partial<SessionView> = {}): SessionView {
   return {
     session_id: 's1', unit_id: 'grade05.unit01', state_version: 0,
@@ -47,6 +54,12 @@ describe('TutorShell', () => {
     await user.dblClick(screen.getByRole('button', { name: 'Send' }));
     expect(api.submitTurn).toHaveBeenCalledOnce();
     expect(await screen.findByText('Nice to see you!')).toBeVisible();
+  });
+
+  it('does not submit a typed API turn when voice starts', async () => {
+    const api = mockApi(); const user = userEvent.setup(); render(<TutorShell api={api} />);
+    await user.click(await screen.findByRole('button', { name: 'Start voice lesson' }));
+    expect(api.submitTurn).not.toHaveBeenCalled();
   });
 
   it('shows Quang’s message while the teacher response is still pending', async () => {

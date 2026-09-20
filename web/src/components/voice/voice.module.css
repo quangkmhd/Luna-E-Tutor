@@ -1,0 +1,26 @@
+.voicePanel {
+  margin: 0 22px 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--mint), #f7fbf9);
+}
+
+.heading, .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.heading > div { display: grid; gap: 3px; }
+.eyebrow { color: var(--green); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.state { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: capitalize; }
+.actions { justify-content: flex-start; margin-top: 12px; flex-wrap: wrap; }
+.primary, .secondary { border-radius: 12px; padding: 10px 14px; font-weight: 800; }
+.primary { border: 0; color: #fff; background: var(--green); }
+.secondary { border: 1px solid var(--line); color: var(--ink); background: #fff; }
+.transcript, .botOutput, .error { margin: 12px 0 0; font-size: 13px; line-height: 1.45; }
+.transcript span { margin-right: 5px; color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.botOutput { color: var(--green-dark); }
+.error { padding: 10px; border-radius: 10px; color: #7a3525; background: #ffebe4; }
