@@ -1,0 +1,196 @@
+schema_version: 1
+stage:
+  id: lesson-02
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9:E9"
+  title: "Lesson 02"
+  level: 1
+  lesson: 2
+  exits: [lesson-03]
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: active
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  text: "active"
+  usage: taught
+- id: clever
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  text: "clever"
+  usage: taught
+- id: friendly
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  text: "friendly"
+  usage: taught
+- id: helpful
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  text: "helpful"
+  usage: taught
+patterns:
+- id: personality
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E9"
+  text: "What's he/she like? – He's/She's ___."
+  examples: ["What's he like? – He's friendly."]
+  acceptable_alternatives: ["She is helpful."]
+objectives:
+- id: unit03.lesson02.vocabulary.active
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  description: "Vocabulary: active"
+  vocabulary_ids: [active]
+  pattern_ids: []
+  evidence_criteria: "Understand or use active in context; imitation alone is not independent use."
+- id: unit03.lesson02.vocabulary.clever
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  description: "Vocabulary: clever"
+  vocabulary_ids: [clever]
+  pattern_ids: []
+  evidence_criteria: "Understand or use clever in context; imitation alone is not independent use."
+- id: unit03.lesson02.vocabulary.friendly
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  description: "Vocabulary: friendly"
+  vocabulary_ids: [friendly]
+  pattern_ids: []
+  evidence_criteria: "Understand or use friendly in context; imitation alone is not independent use."
+- id: unit03.lesson02.vocabulary.helpful
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  description: "Vocabulary: helpful"
+  vocabulary_ids: [helpful]
+  pattern_ids: []
+  evidence_criteria: "Understand or use helpful in context; imitation alone is not independent use."
+- id: unit03.lesson02.pattern.personality
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E9"
+  description: "Pattern: What's he/she like? – He's/She's ___."
+  vocabulary_ids: []
+  pattern_ids: [personality]
+  evidence_criteria: "Record communicative meaning separately from target form; accept short answers and valid alternatives."
+activities:
+- id: lesson-02.introduce-active
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids: [unit03.lesson02.vocabulary.active]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model active twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
+  examples: ["active"]
+- id: lesson-02.introduce-clever
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids: [unit03.lesson02.vocabulary.clever]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model clever twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
+  examples: ["clever"]
+- id: lesson-02.introduce-friendly
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids: [unit03.lesson02.vocabulary.friendly]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model friendly twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
+  examples: ["friendly"]
+- id: lesson-02.introduce-helpful
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D9"
+  stage_id: lesson-02
+  kind: vocabulary_introduction
+  objective_ids: [unit03.lesson02.vocabulary.helpful]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model helpful twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
+  examples: ["helpful"]
+- id: lesson-02.personality
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E9"
+  stage_id: lesson-02
+  kind: guided_response
+  objective_ids: [unit03.lesson02.pattern.personality]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Describe a fictional friend's personality without identifying a real child."
+  examples: ["What's he like? – He's friendly."]
+- id: lesson-02.ask-luna
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E9"
+  stage_id: lesson-02
+  kind: ask_teacher
+  objective_ids: [unit03.lesson02.pattern.personality]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Invite Quang to ask Luna the target question; support without fabricating that he asked."
+  examples: ["What's he like? – He's friendly."]
+

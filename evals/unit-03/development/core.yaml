@@ -1,0 +1,156 @@
+source_file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+defaults:
+  scenario: {objective_ids: [], rule_ids: [], branch_ids: [], state_snapshots: []}
+  initial_state: {stage_id: lesson-01, activity_id: lesson-01.nationality, objective_id: unit03.lesson01.pattern.nationality, attempt_count: 0, support: independent, prior_activities_handled: true, response_opportunity_given: true}
+  turn:
+    evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: correct_target_form, recast_needed: false, emotional_signals: [], needs_clarification: false}
+    allowed_feedback_actions: [acknowledge_and_continue, offer_support]
+    forbidden_behaviors: [forced_repetition, fabricated_mastery, real_child_identity_request]
+    expected_state_effects: {}
+    teacher_criteria: [responds_to_content, keeps_friend_fictional]
+scenarios:
+- id: unit03-nationality
+  source: {heading: "unit03-nationality", line: 8, numbered: true}
+  initial_state:
+    stage_id: lesson-01
+    activity_id: lesson-01.nationality
+    objective_id: unit03.lesson01.pattern.nationality
+    
+  objective_ids: [unit03.lesson01.pattern.nationality]
+  branch_ids: [lesson-01.nationality]
+  turns:
+  - teacher_turn: "What nationality is she?"
+    learner_text: "She's Japanese."
+    evaluator_gold: {target_form_status: correct_target_form}
+- id: unit03-personality
+  source: {heading: "unit03-personality", line: 8, numbered: true}
+  initial_state:
+    stage_id: lesson-02
+    activity_id: lesson-02.personality
+    objective_id: unit03.lesson02.pattern.personality
+    
+  objective_ids: [unit03.lesson02.pattern.personality]
+  branch_ids: [lesson-02.personality]
+  turns:
+  - teacher_turn: "What's he like?"
+    learner_text: "He's friendly."
+    evaluator_gold: {target_form_status: correct_target_form}
+- id: unit03-origin
+  source: {heading: "unit03-origin", line: 8, numbered: true}
+  initial_state:
+    stage_id: level-02
+    activity_id: level-02.origin
+    objective_id: unit03.level02.pattern.origin
+    
+  objective_ids: [unit03.level02.pattern.origin]
+  branch_ids: [level-02.origin]
+  turns:
+  - teacher_turn: "Where's she from?"
+    learner_text: "She's from Canada."
+    evaluator_gold: {target_form_status: correct_target_form}
+- id: unit03-speak-english
+  source: {heading: "unit03-speak-english", line: 8, numbered: true}
+  initial_state:
+    stage_id: level-02
+    activity_id: level-02.speak-english
+    objective_id: unit03.level02.pattern.speak_english
+    
+  objective_ids: [unit03.level02.pattern.speak_english]
+  branch_ids: [level-02.speak-english]
+  turns:
+  - teacher_turn: "Can you speak English?"
+    learner_text: "Yes, a little."
+    evaluator_gold: {target_form_status: correct_target_form}
+- id: unit03-festival
+  source: {heading: "unit03-festival", line: 8, numbered: true}
+  initial_state:
+    stage_id: level-03
+    activity_id: level-03.chuseok-food
+    objective_id: unit03.level03.pattern.chuseok_food
+    
+  objective_ids: [unit03.level03.pattern.chuseok_food]
+  branch_ids: [level-03.chuseok-food]
+  turns:
+  - teacher_turn: "What do people eat at Chuseok?"
+    learner_text: "They eat rice cakes."
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit03-stress
+  source: {heading: "unit03-stress", line: 8, numbered: true}
+  initial_state:
+    stage_id: lesson-03
+    activity_id: lesson-03.review-level-one
+    objective_id: unit03.lesson02.vocabulary.active
+    
+  objective_ids: [unit03.lesson02.vocabulary.active]
+  branch_ids: [lesson-03.review-level-one]
+  turns:
+  - teacher_turn: "Describe the fictional friend."
+    learner_text: "She's active and friendly."
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit03-vietnamese
+  source: {heading: "unit03-vietnamese", line: 8, numbered: true}
+  initial_state:
+    stage_id: lesson-02
+    activity_id: lesson-02.personality
+    objective_id: unit03.lesson02.pattern.personality
+    
+  objective_ids: [unit03.lesson02.pattern.personality]
+  branch_ids: [lesson-02.personality]
+  turns:
+  - teacher_turn: "What's she like?"
+    learner_text: "Bạn ấy thân thiện."
+    evaluator_gold: {target_form_status: not_used}
+- id: unit03-valid-alternative
+  source: {heading: "unit03-valid-alternative", line: 8, numbered: true}
+  initial_state:
+    stage_id: lesson-01
+    activity_id: lesson-01.nationality
+    objective_id: unit03.lesson01.pattern.nationality
+    
+  objective_ids: [unit03.lesson01.pattern.nationality]
+  branch_ids: [lesson-01.nationality]
+  turns:
+  - teacher_turn: "What nationality is she?"
+    learner_text: "She is from Japan."
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit03-two-failure-exit
+  source: {heading: "unit03-two-failure-exit", line: 8, numbered: true}
+  initial_state:
+    stage_id: lesson-01
+    activity_id: lesson-01.introduce-american
+    objective_id: unit03.lesson01.vocabulary.american
+    attempt_count: 1
+    model_repetitions_delivered: 2
+  objective_ids: [unit03.lesson01.vocabulary.american]
+  branch_ids: [lesson-01.introduce-american]
+  turns:
+  - teacher_turn: "Is the character American?"
+    learner_text: "I don't know."
+    evaluator_gold: {target_form_status: not_used, response_kind: does_not_know, meaning_status: not_demonstrated}
+- id: unit03-fictional-free-talk
+  source: {heading: "unit03-fictional-free-talk", line: 8, numbered: true}
+  initial_state:
+    stage_id: free-talk
+    activity_id: free-talk.conversation
+    objective_id: unit03.level03.pattern.japan_childrens_day
+    
+  objective_ids: [unit03.level03.pattern.japan_childrens_day]
+  branch_ids: [free-talk.conversation]
+  turns:
+  - teacher_turn: "Tell me about Mia."
+    learner_text: "She celebrates Children's Day."
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit03-summary
+  source: {heading: "unit03-summary", line: 8, numbered: true}
+  initial_state:
+    stage_id: summary
+    activity_id: summary.reflect
+    objective_id: null
+    
+  objective_ids: []
+  branch_ids: [summary.reflect]
+  turns:
+  - teacher_turn: "What did we practise?"
+    learner_text: "Nationalities and celebrations."
+    evaluator_gold: {target_form_status: not_used}
+

@@ -1,0 +1,59 @@
+schema_version: 1
+stage:
+  id: free-talk
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!J8"
+  title: "Meet a fictional foreign friend"
+  level: 3
+  lesson: null
+  exits: [summary]
+  prerequisite_stage_ids: [lesson-01, lesson-02, lesson-03, level-02, level-03]
+  completion_rule: user_end
+  role: {name: Mia, country: Canada, announce_start: true, announce_end: true}
+  review:
+    rank_by: [contextual_relevance, importance, required_support, recency]
+    max_items_per_turn: 1
+    cancel_if_independently_demonstrated: true
+    allow_unresolved_on_exit: true
+activities:
+- id: free-talk.conversation
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!J8"
+  stage_id: free-talk
+  kind: roleplay
+  objective_ids:
+  - unit03.lesson01.vocabulary.american
+  - unit03.lesson01.vocabulary.australian
+  - unit03.lesson01.vocabulary.japanese
+  - unit03.lesson01.vocabulary.malaysian
+  - unit03.lesson01.pattern.nationality
+  - unit03.lesson02.vocabulary.active
+  - unit03.lesson02.vocabulary.clever
+  - unit03.lesson02.vocabulary.friendly
+  - unit03.lesson02.vocabulary.helpful
+  - unit03.lesson02.pattern.personality
+  - unit03.level02.vocabulary.british
+  - unit03.level02.vocabulary.canadian
+  - unit03.level02.vocabulary.chinese
+  - unit03.level02.vocabulary.korean
+  - unit03.level02.vocabulary.singaporean
+  - unit03.level02.vocabulary.thai
+  - unit03.level02.pattern.origin
+  - unit03.level02.pattern.speak_english
+  - unit03.level03.vocabulary.traditional_clothes
+  - unit03.level03.vocabulary.samba_parade
+  - unit03.level03.vocabulary.chuseok
+  - unit03.level03.vocabulary.rice_cakes
+  - unit03.level03.vocabulary.lucky_money
+  - unit03.level03.vocabulary.celebration
+  - unit03.level03.pattern.japan_childrens_day
+  - unit03.level03.pattern.samba_origin
+  - unit03.level03.pattern.chuseok_food
+  required: true
+  max_attempts: 1
+  completion_rule: {mode: user_end, model_repetitions: 0, response_opportunity_required: true, feedback_required: true, allow_support_limit_exit: false, mastery_required: false}
+  instruction: "Announce a fictional foreign friend named Mia. Discuss her country, personality, language and celebrations. Never ask for identifying details about a real child. Use at most one relevant review item and end on request."
+  examples: ["I'm Mia, a fictional friend from Canada.", "What celebration would you like to hear about?"]
+

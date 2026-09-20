@@ -13,7 +13,8 @@ def create_app(*, repository, turn_service, curriculum_registry=None,
     if curriculum_registry is None:
         root = Path(__file__).resolve().parents[4]
         curriculum_registry = CurriculumRegistry(
-            root / 'curriculum', ('grade05.unit01', 'grade05.unit02'))
+            root / 'curriculum', (
+                'grade05.unit01', 'grade05.unit02', 'grade05.unit03'))
     app = FastAPI(title='Luna Grade 5 Tutor', version='0.1.0', lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
