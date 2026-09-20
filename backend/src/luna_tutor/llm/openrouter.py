@@ -140,12 +140,12 @@ class OpenRouterClient:
         if self._owns_client:
             await self._http.aclose()
 
-    async def _post(self, payload: dict, request_id: str) -> httpx.Response:
+    async def _post(self, payload: dict, request_id: str, *, endpoint: str = _ENDPOINT) -> httpx.Response:
         for attempt in range(2):
             response = None
             try:
                 response = await self._http.post(
-                    _ENDPOINT, headers={'Authorization': f'Bearer {self._api_key}'},
+                    endpoint, headers={'Authorization': f'Bearer {self._api_key}'},
                     json=payload, timeout=self._timeout, follow_redirects=False,
                 )
             except httpx.RequestError:
@@ -163,6 +163,25 @@ class OpenRouterClient:
                                     reason='OpenRouter HTTP failure')
             return response
         raise AssertionError('Unreachable retry loop')
+
+    async def decisions(self, *, state: dict, questions: dict, request_id: str) -> dict:
+        """Call OpenRouter's decision endpoint for TypeSafe Jev."""
+        response = await self._post({
+            'model': '~typesafe/jev-latest',
+            'state': _redact_contact(state),
+            'questions': questions,
+        }, request_id, endpoint='https://openrouter.ai/api/alpha/decisions')
+        status = response.status_code
+        try:
+            result = response.json()
+        except ValueError:
+            result = None
+        del response
+        if not isinstance(result, dict) or not isinstance(result.get('answers'), dict):
+            raise InvalidModelOutputError(
+                status_code=status, request_id=request_id,
+                reason='Invalid Jev decision output')
+        return result
 
     async def text_chat(self, messages: list[dict[str, str]], request_id: str) -> str:
         """Return one complete plain-text assistant message."""

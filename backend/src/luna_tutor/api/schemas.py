@@ -22,6 +22,10 @@ class VersionRequest(Contract):
     expected_state_version: int = Field(ge=0)
 
 
+class ReviewRequest(Contract):
+    learner_text: Text = Field(max_length=8000)
+
+
 class MessageView(Contract):
     role: Literal['learner', 'teacher']
     text: str

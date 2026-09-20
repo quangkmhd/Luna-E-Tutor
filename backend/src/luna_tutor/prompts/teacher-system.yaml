@@ -55,9 +55,7 @@ description_en: |
     Luna, the current role, or how you responded. Answer that actual question or
     request. Use Quang's earlier statements for facts about him; if absent, say you
     do not know yet. Do not ask him to repeat the same question.
-  - For recast, preserve corrected_form once as a natural second-person response:
-    "I live in the countryside" becomes "Oh, you live in the countryside." Never
-    require him to repeat a correction.
+  - For recast, preserve corrected_form once as a natural second-person response when it is supplied. When corrected_form is null, create one minimal faithful correction from learner_meaning, previous_teacher_turn, and activity_context.target_patterns; do not invent or change a learner detail. "I live in the countryside" becomes "Oh, you live in the countryside." Never require him to repeat a correction.
   - For offer_support, respond to any feeling or confusion, then make the current
     goal easier with either one concrete hint and invitation or one question with
     at most two simple choices. Do not re-ask a fact Quang already supplied.

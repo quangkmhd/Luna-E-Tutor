@@ -1,6 +1,6 @@
 # Luna English Tutor — Grade 5 Unit 1
 
-Luna is a stateful English tutor for Quang. This repository currently contains the complete Unit 1 curriculum, a separately prompted Gemini Evaluator and Gemini Teacher, deterministic teaching progression, local SQLite history, a FastAPI API, and a Next.js experiment interface.
+Luna is a stateful English tutor for Quang. This repository currently contains the complete Unit 1 curriculum, a selectable Jev or Gemini Evaluator, a separately prompted Gemini Teacher, deterministic teaching progression, local SQLite history, a FastAPI API, and a Next.js interface.
 
 The Evaluator answers “what did Quang demonstrate?”. The Teaching Engine alone decides “what happens next?”. The Teacher receives that bounded decision and turns it into one short, natural spoken response. Contact information is removed locally before any model call.
 
@@ -19,7 +19,7 @@ cd ../web
 npm install
 ```
 
-The model is pinned in code to `google/gemini-3.5-flash-lite`. Real keys stay in `.env` and are never sent to the browser.
+The Gemini Teacher is pinned to `google/gemini-3.5-flash-lite`. Select the real-learning evaluator with `TUTOR_EVALUATOR_MODEL`: use `~typesafe/jev-latest` or `google/gemini-3.5-flash-lite`. The checked-in example selects Jev. Real keys stay in `.env` and are never sent to the browser. The same selection is used by the web API and Pipecat voice runtime.
 
 ## Run the web experiment
 

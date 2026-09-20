@@ -18,12 +18,28 @@ from luna_tutor.domain.decisions import (
 )
 from luna_tutor.domain.evidence import EvaluatorResult, ObjectiveEvidence
 from luna_tutor.llm.evaluator import GeminiEvaluator
+from luna_tutor.llm.jev_evaluator import JevEvaluator
 from luna_tutor.llm.openrouter import OpenRouterClient, ProviderError
 from luna_tutor.llm.teacher import GeminiTeacher
+from luna_tutor.review.comparison import ComparisonService
 from luna_tutor.storage.session_repository import SessionRepository
 from luna_tutor.teaching.engine import TeachingEngine
 from luna_tutor.teaching.planner import TurnPlanner
 from luna_tutor.teaching.turn_service import TurnService
+
+
+GEMINI_EVALUATOR_MODEL = 'google/gemini-3.5-flash-lite'
+JEV_EVALUATOR_MODEL = '~typesafe/jev-latest'
+
+
+def build_evaluator(model: str, client: OpenRouterClient):
+    if model == GEMINI_EVALUATOR_MODEL:
+        return GeminiEvaluator(client)
+    if model == JEV_EVALUATOR_MODEL:
+        return JevEvaluator(client)
+    raise ValueError(
+        'TUTOR_EVALUATOR_MODEL must be '
+        f'{GEMINI_EVALUATOR_MODEL} or {JEV_EVALUATOR_MODEL}')
 
 
 class FixtureTurnService:
@@ -89,6 +105,7 @@ class RuntimeComponents:
     repository: SessionRepository
     turn_service: object
     client: OpenRouterClient | None
+    comparison_service: object | None = None
 
 
 def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponents:
@@ -100,17 +117,32 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
     if mode == 'fixture':
         if environment.get('ENV') != 'test':
             raise RuntimeError('TUTOR_LLM_MODE=fixture requires ENV=test')
-        return RuntimeComponents(repository, FixtureTurnService(), None)
+        return RuntimeComponents(repository, FixtureTurnService(), None, None)
 
     key = environment.get('OPENROUTER_API_KEY', '').strip()
     if not key:
         raise ValueError('Missing required runtime configuration: OPENROUTER_API_KEY')
+    evaluator_model = environment.get(
+        'TUTOR_EVALUATOR_MODEL', GEMINI_EVALUATOR_MODEL).strip()
+    if evaluator_model not in {GEMINI_EVALUATOR_MODEL, JEV_EVALUATOR_MODEL}:
+        raise ValueError(
+            'TUTOR_EVALUATOR_MODEL must be '
+            f'{GEMINI_EVALUATOR_MODEL} or {JEV_EVALUATOR_MODEL}')
     settings = Settings(openrouter_api_key=key)
     client = OpenRouterClient(settings)
+    evaluator = build_evaluator(evaluator_model, client)
     curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
-    planner = TurnPlanner(GeminiEvaluator(client), TeachingEngine(), curriculum)
-    turn_service = TurnService(planner, GeminiTeacher(client))
-    return RuntimeComponents(repository, turn_service, client)
+    teacher = GeminiTeacher(client)
+    planner = TurnPlanner(evaluator, TeachingEngine(), curriculum)
+    turn_service = TurnService(planner, teacher)
+    gemini_turn_service = (turn_service if evaluator_model == GEMINI_EVALUATOR_MODEL else
+                           TurnService(TurnPlanner(
+                               GeminiEvaluator(client), TeachingEngine(), curriculum), teacher))
+    jev_turn_service = (turn_service if evaluator_model == JEV_EVALUATOR_MODEL else
+                        TurnService(TurnPlanner(
+                            JevEvaluator(client), TeachingEngine(), curriculum), teacher))
+    comparison_service = ComparisonService(gemini_turn_service, jev_turn_service)
+    return RuntimeComponents(repository, turn_service, client, comparison_service)
 
 
 def build_runtime_app(environment: Mapping[str, str] | None = None, *,
@@ -120,6 +152,7 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
     repository = components.repository
     turn_service = components.turn_service
     client = components.client
+    comparison_service = components.comparison_service
 
     if turn_service_adapter is not None:
         turn_service = turn_service_adapter(turn_service)
@@ -134,4 +167,5 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
     if environment.get('ENV') == 'test':
         origins.append('http://localhost:3090')
     return create_app(repository=repository, turn_service=turn_service,
+                      comparison_service=comparison_service,
                       lifespan=lifespan, allowed_origins=origins)

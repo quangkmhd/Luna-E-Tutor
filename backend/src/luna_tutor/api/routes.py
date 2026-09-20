@@ -3,12 +3,13 @@ from uuid import uuid4
 from fastapi import APIRouter, Body, HTTPException
 
 from luna_tutor.api.schemas import (
-    CreateSessionRequest, MessageView, SessionView, SummaryView, TurnRequest,
-    TurnResponse, VersionRequest,
+    CreateSessionRequest, MessageView, ReviewRequest, SessionView, SummaryView,
+    TurnRequest, TurnResponse, VersionRequest,
 )
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
 from luna_tutor.llm.teacher import InvalidTeacherResultError
+from luna_tutor.review.comparison import ComparisonResult
 from luna_tutor.storage.session_repository import (
     SessionNotFoundError, StateConflictError, StoredSession,
 )
@@ -79,7 +80,7 @@ def _fresh_state() -> LessonState:
                              response_opportunity_given=True)))
 
 
-def build_router(repository, turn_service) -> APIRouter:
+def build_router(repository, turn_service, comparison_service=None) -> APIRouter:
     router = APIRouter(prefix='/api')
 
     @router.post('/sessions', response_model=SessionView)
@@ -146,5 +147,24 @@ def build_router(repository, turn_service) -> APIRouter:
         except StateConflictError as error:
             code = 'NOT_IN_FREE_TALK' if 'free talk' in str(error) else 'STATE_CONFLICT'
             _error(409, code, str(error))
+
+    if comparison_service is not None:
+        @router.post('/review/{session_id}', response_model=ComparisonResult)
+        async def compare_evaluators(session_id: str, request: ReviewRequest):
+            try:
+                stored = repository.get_session(session_id)
+                return await comparison_service.compare(
+                    stored.state, request.learner_text, str(uuid4()))
+            except SessionNotFoundError:
+                _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
+            except InvalidTeacherResultError:
+                _error(503, 'INVALID_TEACHER_OUTPUT',
+                       'The tutor could not prepare a comparison reply. Please retry.', True)
+            except InvalidModelOutputError:
+                _error(503, 'INVALID_EVALUATION',
+                       'One evaluator could not assess that turn.', True)
+            except ProviderError:
+                _error(503, 'PROVIDER_UNAVAILABLE',
+                       'The tutor service is temporarily unavailable.', True)
 
     return router

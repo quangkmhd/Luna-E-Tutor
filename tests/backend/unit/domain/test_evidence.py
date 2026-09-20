@@ -48,7 +48,6 @@ def test_successful_meaning_does_not_require_target_form_or_recast(form, quote):
 
 
 @pytest.mark.parametrize('changes', [
-    {'recast_needed': True},
     {'corrected_form': 'I live in the city.'},
     {'recast_needed': True, 'corrected_form': '   ', 'target_form_status': 'error_in_target_form'},
     {'recast_needed': True, 'corrected_form': 'I live in the city.', 'target_form_status': 'valid_alternative'},
@@ -56,7 +55,7 @@ def test_successful_meaning_does_not_require_target_form_or_recast(form, quote):
     {'meaning_status': 'wrong_semantic_category', 'target_form_status': 'error_in_target_form',
      'recast_needed': True, 'corrected_form': 'My favourite animal is a dolphin.'},
 ])
-def test_recast_requires_a_demonstrated_error_and_exactly_one_correction(changes):
+def test_recast_requires_a_demonstrated_error_and_correction_requires_recast(changes):
     with pytest.raises(ValidationError):
         ObjectiveEvidence.model_validate(evidence(**changes))
 
@@ -66,6 +65,15 @@ def test_clear_grammar_error_can_supply_a_recast():
         target_form_status='error_in_target_form', evidence_quote='I live city',
         recast_needed=True, corrected_form='I live in the city.'))
     assert parsed.corrected_form == 'I live in the city.'
+
+
+def test_decision_only_evaluator_can_request_recast_without_generating_wording():
+    parsed = ObjectiveEvidence.model_validate(evidence(
+        target_form_status='error_in_target_form', evidence_quote='I live city',
+        recast_needed=True, corrected_form=None))
+
+    assert parsed.recast_needed is True
+    assert parsed.corrected_form is None
 
 
 @pytest.mark.parametrize('quote', ['', '  ', None])

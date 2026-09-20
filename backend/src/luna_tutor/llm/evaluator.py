@@ -116,11 +116,23 @@ class GeminiEvaluator:
             feedback = []
             try:
                 result = EvaluatorResult.model_validate(raw)
+                # Gemini's production contract still asks it to return the
+                # correction wording. Decision-only evaluators may omit that
+                # field at the shared domain boundary, but Gemini may not.
+                if any(item.recast_needed != (item.corrected_form is not None)
+                       for item in result.objective_evidence):
+                    result = None
+                    feedback = [
+                        'Your previous result had inconsistent recast fields. Reassess the original '
+                        'learner evidence: recast_needed may be true only with error_in_target_form, '
+                        'known meaning, and a nonempty corrected_form. Otherwise use false and null. '
+                        'Do not invent an error or change learner facts merely to satisfy the schema.'
+                    ]
             except ValidationError as error:
                 messages = {issue['msg'] for issue in error.errors(
                     include_url=False, include_context=False, include_input=False)}
                 recast_constraints = {
-                    'Value error, Corrected form is required exactly when recast is needed',
+                    'Value error, A corrected form is only allowed when recast is needed',
                     'Value error, Recast requires a demonstrated form error with known meaning',
                 }
                 if messages and messages <= recast_constraints:

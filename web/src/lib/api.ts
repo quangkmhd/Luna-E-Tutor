@@ -1,4 +1,4 @@
-import type { SessionView, TurnInput, TurnResponse } from './types';
+import type { ComparisonResult, SessionView, TurnInput, TurnResponse } from './types';
 
 export class ApiError extends Error {
   constructor(public code: string, message: string, public retryable = false, public status = 0) {
@@ -52,6 +52,11 @@ export class TutorApi {
   finishSession(id: string, expected_state_version: number) {
     return this.request<SessionView>(`/api/sessions/${id}/finish`, {
       method: 'POST', body: JSON.stringify({ expected_state_version }),
+    });
+  }
+  compareEvaluators(id: string, learner_text: string, signal?: AbortSignal) {
+    return this.request<ComparisonResult>(`/api/review/${id}`, {
+      method: 'POST', body: JSON.stringify({ learner_text }), signal,
     });
   }
 }

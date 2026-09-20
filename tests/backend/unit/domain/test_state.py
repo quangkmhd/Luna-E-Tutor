@@ -73,8 +73,16 @@ def test_feedback_and_progression_can_coexist():
     assert parsed.emotional_support is True
 
 
+def test_recast_request_can_delegate_missing_wording_to_teacher():
+    parsed = TeacherTurnRequest.model_validate(teacher_request(
+        feedback_action='recast', corrected_form=None))
+
+    assert parsed.feedback_action == 'recast'
+    assert parsed.corrected_form is None
+
+
 @pytest.mark.parametrize('changes', [
-    {'feedback_action': 'recast'}, {'corrected_form': 'Unexpected correction'},
+    {'corrected_form': 'Unexpected correction'},
     {'progression_action': 'stay'}, {'state': state()},
     {'constraints': {'require_repetition': True}},
     {'constraints': {'max_questions': 2}},

@@ -77,8 +77,8 @@ class ObjectiveEvidence(Contract):
         )
         if quote_required and not (self.evidence_quote and self.evidence_quote.strip()):
             raise ValueError('Demonstrated evidence requires a non-empty quote')
-        if self.recast_needed != (self.corrected_form is not None):
-            raise ValueError('Corrected form is required exactly when recast is needed')
+        if self.corrected_form is not None and not self.recast_needed:
+            raise ValueError('A corrected form is only allowed when recast is needed')
         if self.recast_needed and (
             self.target_form_status != 'error_in_target_form'
             or self.meaning_status not in {'satisfied', 'partially_satisfied'}

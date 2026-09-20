@@ -122,6 +122,18 @@ def test_multiple_form_errors_generate_only_one_recast_and_preserve_both_evidenc
     assert len(decision.mastery_updates) == 2
 
 
+def test_decision_only_recast_reaches_teacher_without_hidden_correction_source(
+        engine, state, evidence, unit_01):
+    result = evidence(form='error_in_target_form', quote='I live countryside.',
+                      recast=True, correction='I live in the countryside.')
+    item = result.objective_evidence[0].model_copy(update={'corrected_form': None})
+
+    decision = engine.decide(state, result.model_copy(update={'objective_evidence': [item]}), unit_01)
+
+    assert decision.feedback_action == 'recast'
+    assert decision.corrected_form is None
+
+
 def test_question_still_preserves_independent_evidence_without_consuming_attempt(
         engine, state, evidence, unit_01):
     decision = engine.decide(state, evidence(kind='asks_meaning'), unit_01)

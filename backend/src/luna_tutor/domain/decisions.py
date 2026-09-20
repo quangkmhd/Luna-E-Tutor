@@ -35,8 +35,8 @@ class TeachingDecision(Contract):
 
     @model_validator(mode='after')
     def consistent_correction(self) -> Self:
-        if (self.feedback_action == 'recast') != (self.corrected_form is not None):
-            raise ValueError('A recast decision requires exactly one corrected form')
+        if self.corrected_form is not None and self.feedback_action != 'recast':
+            raise ValueError('A corrected form is only allowed for a recast decision')
         if set(self.review_queue_add) & set(self.review_queue_remove):
             raise ValueError('A review item cannot be both added and removed')
         return self
@@ -85,8 +85,8 @@ class TeacherTurnRequest(Contract):
 
     @model_validator(mode='after')
     def consistent_correction(self) -> Self:
-        if (self.feedback_action == 'recast') != (self.corrected_form is not None):
-            raise ValueError('A recast request requires exactly one corrected form')
+        if self.corrected_form is not None and self.feedback_action != 'recast':
+            raise ValueError('A corrected form is only allowed for a recast request')
         return self
 
 
