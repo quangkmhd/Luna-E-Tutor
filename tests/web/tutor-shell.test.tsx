@@ -45,6 +45,16 @@ function mockApi(overrides: Record<string, unknown> = {}) {
 }
 
 describe('TutorShell', () => {
+  it('links to Free Talk without invoking a lesson action', async () => {
+    const api = mockApi();
+    render(<TutorShell api={api} />);
+    const link = await screen.findByRole('link', { name: 'Free Talk Room' });
+
+    expect(link).toHaveAttribute('href', '/talk');
+    expect(api.submitTurn).not.toHaveBeenCalled();
+    expect(api.finishSession).not.toHaveBeenCalled();
+  });
+
   it('shows latency beside Luna on the latest teacher message', async () => {
     render(<TutorShell api={mockApi()} />);
 

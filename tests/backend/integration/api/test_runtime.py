@@ -12,6 +12,20 @@ def test_fixture_mode_is_rejected_outside_test_environment(tmp_path):
         })
 
 
+def test_fixture_runtime_accepts_an_overridden_e2e_web_origin(tmp_path):
+    app = build_runtime_app({
+        'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',
+        'TUTOR_DATABASE_PATH': str(tmp_path / 'db.sqlite3'),
+        'E2E_WEB_ORIGIN': 'http://localhost:3092',
+    })
+    with TestClient(app) as api:
+        response = api.options('/api/sessions', headers={
+            'Origin': 'http://localhost:3092',
+            'Access-Control-Request-Method': 'POST',
+        })
+    assert response.headers['access-control-allow-origin'] == 'http://localhost:3092'
+
+
 def test_fixture_runtime_supports_recast_and_free_talk_finish(tmp_path):
     app = build_runtime_app({
         'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',

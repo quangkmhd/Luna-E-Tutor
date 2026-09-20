@@ -58,4 +58,60 @@ describe('VoiceControls', () => {
       'Allow microphone access in your browser settings, then try again.',
     );
   });
+
+  it('uses custom labels for a non-lesson voice room', () => {
+    render(
+      <PipecatVoiceProvider sessionId="s1">
+        <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+      </PipecatVoiceProvider>,
+    );
+    expect(screen.getByRole('button', { name: 'Start conversation' })).toBeInTheDocument();
+
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    expect(screen.getByRole('button', { name: 'Stop conversation' })).toBeInTheDocument();
+  });
+
+  it('notifies the room after a conversation is stopped', async () => {
+    const user = userEvent.setup();
+    const onStopped = vi.fn();
+    render(
+      <PipecatVoiceProvider sessionId="s1">
+        <VoiceControls stopLabel="Stop conversation" onStopped={onStopped} />
+      </PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
+
+    expect(sdk.client.disconnect).toHaveBeenCalled();
+    expect(onStopped).toHaveBeenCalledOnce();
+  });
+
+  it('still resets the room when the transport rejects disconnect', async () => {
+    const user = userEvent.setup();
+    const onStopped = vi.fn();
+    sdk.client.disconnect.mockRejectedValueOnce(new Error('transport already closed'));
+    render(
+      <PipecatVoiceProvider sessionId="s1">
+        <VoiceControls stopLabel="Stop conversation" onStopped={onStopped} />
+      </PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
+
+    expect(onStopped).toHaveBeenCalledOnce();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'The voice session could not close cleanly. You can reconnect.',
+    );
+  });
 });

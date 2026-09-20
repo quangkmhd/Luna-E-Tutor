@@ -14,6 +14,7 @@ const sdk = vi.hoisted(() => {
     client,
     conversationMessages: [] as Array<Record<string, unknown>>,
     options: undefined as Record<string, unknown> | undefined,
+    stores: [] as unknown[],
   };
 });
 
@@ -27,7 +28,10 @@ vi.mock('@pipecat-ai/small-webrtc-transport', () => ({
   SmallWebRTCTransport: vi.fn(function () { return { kind: 'small-webrtc' }; }),
 }));
 vi.mock('@pipecat-ai/client-react', () => ({
-  PipecatClientProvider: ({ children }: { children: React.ReactNode }) => children,
+  PipecatClientProvider: ({ children, jotaiStore }: { children: React.ReactNode; jotaiStore?: unknown }) => {
+    sdk.stores.push(jotaiStore);
+    return children;
+  },
   PipecatClientAudio: () => <div data-testid="pipecat-audio" />,
   PipecatClientMicToggle: ({ children }: { children: (value: object) => React.ReactNode }) => children({
     isMicEnabled: true, disabled: false, onClick: sdk.enableMic,
@@ -47,6 +51,7 @@ describe('PipecatVoiceProvider', () => {
     sdk.enableMic.mockClear();
     sdk.conversationMessages = [];
     sdk.options = undefined;
+    sdk.stores = [];
   });
 
   afterEach(() => vi.useRealTimers());
@@ -73,6 +78,50 @@ describe('PipecatVoiceProvider', () => {
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
   });
 
+  it('connects Talk with topic metadata and Talk-specific labels', async () => {
+    const user = userEvent.setup();
+    render(
+      <PipecatVoiceProvider
+        endpoint="http://localhost:7863"
+        requestBody={{ topic: 'Animals' }}
+      >
+        <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+      </PipecatVoiceProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Start conversation' }));
+
+    expect(sdk.startBotAndConnect).toHaveBeenCalledWith({
+      endpoint: 'http://localhost:7863/start',
+      requestData: {
+        transport: 'webrtc',
+        body: { topic: 'Animals' },
+      },
+    });
+  });
+
+  it('can stop twice and unmount without starting a second client', async () => {
+    const user = userEvent.setup();
+    const view = render(
+      <PipecatVoiceProvider endpoint="http://localhost:7863" requestBody={{ topic: 'Animals' }}>
+        <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation" />
+      </PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+    };
+
+    await user.click(screen.getByRole('button', { name: 'Start conversation' }));
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
+    view.unmount();
+
+    expect(sdk.startBotAndConnect).toHaveBeenCalledOnce();
+    expect(sdk.disconnect).toHaveBeenCalledTimes(3);
+  });
+
   it('disconnects the old client when the active session changes', async () => {
     const view = render(
       <PipecatVoiceProvider key="old" sessionId="old"><span>lesson</span></PipecatVoiceProvider>,
@@ -81,6 +130,26 @@ describe('PipecatVoiceProvider', () => {
       <PipecatVoiceProvider key="new" sessionId="new"><span>lesson</span></PipecatVoiceProvider>,
     );
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+  });
+
+  it('isolates conversation state in a fresh store for each provider session', () => {
+    const view = render(
+      <PipecatVoiceProvider key="animals" requestBody={{ topic: 'Animals' }}>
+        <span>talk</span>
+      </PipecatVoiceProvider>,
+    );
+    const animalsStore = sdk.stores.at(-1);
+
+    view.rerender(
+      <PipecatVoiceProvider key="school" requestBody={{ topic: 'School life' }}>
+        <span>talk</span>
+      </PipecatVoiceProvider>,
+    );
+    const schoolStore = sdk.stores.at(-1);
+
+    expect(animalsStore).toBeDefined();
+    expect(schoolStore).toBeDefined();
+    expect(schoolStore).not.toBe(animalsStore);
   });
 
   it('disconnects when the lesson is no longer active', async () => {
@@ -114,14 +183,17 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.queryByText(/stop and reconnect/i)).not.toBeInTheDocument();
   });
 
-  it('asks for a reconnect only when Pipecat reports a fatal service error', () => {
+  it('disconnects and becomes startable again when Pipecat reports a fatal service error', async () => {
     render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
     );
     const callbacks = sdk.options?.callbacks as {
       onError(message: { data: { error: string; fatal: boolean } }): void;
+      onTransportStateChanged(state: string): void;
     };
 
+    act(() => callbacks.onTransportStateChanged('ready'));
+    expect(screen.getByRole('button', { name: 'Stop voice lesson' })).toBeInTheDocument();
     act(() => callbacks.onError({
       data: {
         error: 'The voice worker stopped',
@@ -130,8 +202,10 @@ describe('PipecatVoiceProvider', () => {
     }));
 
     expect(screen.getByRole('alert')).toHaveTextContent(
-      'The voice session ended. Stop and reconnect.',
+      'The voice session ended. Reconnect when you are ready.',
     );
+    await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+    expect(screen.getByRole('button', { name: 'Start voice lesson' })).toBeInTheDocument();
   });
 
   it('shows Pipecat listening, thinking, and speaking states in the voice controls', () => {

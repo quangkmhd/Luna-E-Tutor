@@ -28,12 +28,29 @@ function VoicePhaseIcon({ phase }: { phase: VoicePhase }) {
   return <span className={styles.statusDot} aria-hidden="true" />;
 }
 
-export function VoiceControls() {
+export function VoiceControls({
+  startLabel = 'Start voice lesson',
+  stopLabel = 'Stop voice lesson',
+  onStopped,
+}: {
+  startLabel?: string;
+  stopLabel?: string;
+  onStopped?: () => void;
+}) {
   const voice = useVoiceLesson();
   const active = voice.transportState === 'connected' || voice.transportState === 'ready';
   const pending = ['initializing', 'connecting', 'authenticating'].includes(
     voice.transportState,
   );
+
+  async function stop() {
+    try {
+      await voice.stop();
+    } finally {
+      onStopped?.();
+    }
+  }
+
   return (
     <div className={styles.voiceControls} aria-label="Voice lesson controls">
       <span className={`${styles.state} ${styles[voice.phase]}`} aria-live="polite">
@@ -43,7 +60,7 @@ export function VoiceControls() {
       <div className={styles.actions}>
         {!active ? (
           <button type="button" className={styles.primary} disabled={pending} onClick={() => void voice.start()}>
-            {pending ? 'Connecting…' : 'Start voice lesson'}
+            {pending ? 'Connecting…' : startLabel}
           </button>
         ) : (
           <>
@@ -54,8 +71,8 @@ export function VoiceControls() {
                 </button>
               )}
             </PipecatClientMicToggle>
-            <button type="button" className={styles.secondary} onClick={() => void voice.stop()}>
-              Stop voice lesson
+            <button type="button" className={styles.secondary} onClick={() => void stop()}>
+              {stopLabel}
             </button>
           </>
         )}
