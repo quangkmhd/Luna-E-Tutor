@@ -1,0 +1,1 @@
+"""Independent Free Talk behavior."""
