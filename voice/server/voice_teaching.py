@@ -1,21 +1,20 @@
 """Pipecat frame adapters for the persistent Luna teaching engine."""
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from luna_tutor.domain.decisions import CompletedTurn, PlannedTurn
 from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
+from loguru import logger
 from pipecat.frames.frames import (
     BotStoppedSpeakingFrame,
     CancelFrame,
     EndWorkerFrame,
     ErrorFrame,
     Frame,
-    InterimTranscriptionFrame,
     InterruptionFrame,
-    LLMMessagesAppendFrame,
-    TranscriptionFrame,
+    LLMContextFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 
@@ -41,14 +40,22 @@ class VoiceTeachingExchange:
         self.generation_epoch += 1
 
     async def fail(self, error: Exception) -> None:
+        logger.opt(exception=error).error("Voice teaching failed: {}", error)
         self.error = error
         self.discard_pending()
         if self.worker is not None:
-            await self.worker.queue_frames([ErrorFrame(str(error)), EndWorkerFrame()])
+            await self.worker.queue_frames(
+                [ErrorFrame(str(error), exception=error), EndWorkerFrame()]
+            )
 
 
 class VoiceTeachingProcessor(FrameProcessor):
-    """Turn each final provider transcript into one authorized Flow node."""
+    """Plan one lesson response from each Pipecat-completed user turn.
+
+    This processor belongs immediately after ``LLMUserAggregator``.  Raw STT
+    frames can be final provider chunks without being a complete conversational
+    turn, so they must remain owned by Pipecat's VAD/Smart Turn aggregation.
+    """
 
     def __init__(self, exchange: VoiceTeachingExchange):
         super().__init__()
@@ -63,27 +70,26 @@ class VoiceTeachingProcessor(FrameProcessor):
         if direction != FrameDirection.DOWNSTREAM:
             await self.push_frame(frame, direction)
             return
-        if isinstance(frame, LLMMessagesAppendFrame):
-            message = frame.messages[0] if len(frame.messages) == 1 else None
-            content = message.get("content") if isinstance(message, dict) else None
-            if (
-                frame.run_llm
-                and isinstance(message, dict)
-                and message.get("role") == "user"
-                and isinstance(content, str)
-            ):
-                await self._plan_turn(content, f"text:{frame.id}")
-                return
-            await self.push_frame(frame, direction)
-            return
-        if not isinstance(frame, TranscriptionFrame):
-            await self.push_frame(frame, direction)
-            return
-        if isinstance(frame, InterimTranscriptionFrame):
+        if not isinstance(frame, LLMContextFrame):
             await self.push_frame(frame, direction)
             return
 
-        await self._plan_turn(frame.text, f"voice:{frame.user_id}:{frame.timestamp}")
+        messages = cast(list[dict[str, Any]], frame.context.get_messages())
+        message = messages[-1] if messages else None
+        content = message.get("content") if isinstance(message, dict) else None
+        if not (
+            isinstance(message, dict)
+            and message.get("role") == "user"
+            and isinstance(content, str)
+            and content.strip()
+        ):
+            await self.push_frame(frame, direction)
+            return
+
+        # Consume Pipecat's generic inference frame. The authorized Flow node
+        # below emits the only LLMContextFrame allowed to reach the teacher.
+        logger.info("Pipecat completed learner turn: {!r}", content.strip())
+        await self._plan_turn(content.strip(), f"pipecat:{frame.id}")
 
     async def _plan_turn(self, text: str, turn_id: str) -> None:
         if turn_id in self.exchange.seen_turn_ids:

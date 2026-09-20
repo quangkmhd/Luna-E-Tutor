@@ -9,9 +9,13 @@ import type { SessionView } from '@/lib/types';
 
 vi.mock('@/components/voice/PipecatVoiceProvider', () => ({
   PipecatVoiceProvider: ({ children }: { children: React.ReactNode }) => children,
+  useOptionalVoiceLesson: () => null,
 }));
 vi.mock('@/components/voice/VoiceControls', () => ({
   VoiceControls: () => <button type="button">Start voice lesson</button>,
+}));
+vi.mock('@pipecat-ai/client-react', () => ({
+  usePipecatConversation: () => ({ messages: [] }),
 }));
 
 function session(changes: Partial<SessionView> = {}): SessionView {
@@ -28,6 +32,7 @@ function mockApi(overrides: Record<string, unknown> = {}) {
   return {
     listSessions: vi.fn().mockResolvedValue([]),
     createSession: vi.fn().mockResolvedValue(session()),
+    resetSession: vi.fn().mockResolvedValue(session()),
     getSession: vi.fn().mockResolvedValue(session()),
     submitTurn: vi.fn().mockResolvedValue({ turn_id: 't1', session: session({
       state_version: 1,
@@ -40,11 +45,21 @@ function mockApi(overrides: Record<string, unknown> = {}) {
 }
 
 describe('TutorShell', () => {
-  it('creates a first session and renders the server greeting', async () => {
+  it('starts with a fresh session and renders the server greeting without history', async () => {
     const api = mockApi(); render(<TutorShell api={api} />);
     expect(await screen.findByText('Hello, Quang!')).toBeVisible();
-    expect(api.createSession).toHaveBeenCalledOnce();
+    expect(api.resetSession).toHaveBeenCalledOnce();
+    expect(api.listSessions).not.toHaveBeenCalled();
+    expect(screen.queryByText('Session history')).not.toBeInTheDocument();
     expect(screen.getAllByText('warm up')).toHaveLength(2);
+  });
+
+  it('keeps technical teaching state collapsed behind lesson progress', async () => {
+    render(<TutorShell api={mockApi()} />);
+    const progress = await screen.findByText('Lesson progress');
+    const details = progress.closest('details');
+    expect(details).not.toHaveAttribute('open');
+    expect(details).toContainElement(screen.getByText('Teaching details'));
   });
 
   it('submits once while locked and renders the returned teacher turn', async () => {
@@ -58,7 +73,10 @@ describe('TutorShell', () => {
 
   it('does not submit a typed API turn when voice starts', async () => {
     const api = mockApi(); const user = userEvent.setup(); render(<TutorShell api={api} />);
-    await user.click(await screen.findByRole('button', { name: 'Start voice lesson' }));
+    const voiceButton = await screen.findByRole('button', { name: 'Start voice lesson' });
+    expect(voiceButton.closest('form')).toHaveClass('composer');
+    expect(screen.queryByText('Prefer typing?')).not.toBeInTheDocument();
+    await user.click(voiceButton);
     expect(api.submitTurn).not.toHaveBeenCalled();
   });
 
@@ -104,21 +122,27 @@ describe('TutorShell', () => {
     expect(screen.queryByText('Nice to see you!')).not.toBeInTheDocument();
   });
 
-  it('resumes history and confirms before abandoning an active session', async () => {
-    const old = session({ session_id: 'old', status: 'completed', stage_id: 'lesson-01' });
-    const api = mockApi({ listSessions: vi.fn().mockResolvedValue([session(), old]) });
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+  it('starts over immediately without preserving or abandoning the active session', async () => {
+    const replacement = session({ session_id: 's2' });
+    const api = mockApi({
+      resetSession: vi.fn()
+        .mockResolvedValueOnce(session())
+        .mockResolvedValueOnce(replacement),
+    });
+    const confirm = vi.spyOn(window, 'confirm');
     const user = userEvent.setup(); render(<TutorShell api={api} />);
-    await screen.findByText('Session history');
+    await screen.findByText('Hello, Quang!');
     await user.click(screen.getByRole('button', { name: /New session/i }));
-    await waitFor(() => expect(api.abandonSession).toHaveBeenCalledWith('s1'));
-    expect(api.createSession).toHaveBeenCalledOnce();
+    await waitFor(() => expect(api.resetSession).toHaveBeenCalledTimes(2));
+    expect(api.abandonSession).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+    expect(screen.queryByText('Session history')).not.toBeInTheDocument();
   });
 
   it('shows the manual end control only in Free Talk and displays summary', async () => {
     const free = session({ stage_id: 'free-talk', activity_id: 'free-talk.conversation' });
     const done = session({ stage_id: 'free-talk', status: 'completed', summary: { demonstrated: ['city'], supported: [], needs_review: ['hobby'], not_yet_observed: [] } });
-    const api = mockApi({ listSessions: vi.fn().mockResolvedValue([free]), finishSession: vi.fn().mockResolvedValue(done) });
+    const api = mockApi({ resetSession: vi.fn().mockResolvedValue(free), finishSession: vi.fn().mockResolvedValue(done) });
     const user = userEvent.setup(); render(<TutorShell api={api} />);
     await user.click(await screen.findByRole('button', { name: 'End Free Talk' }));
     expect(await screen.findByText('What Quang showed today')).toBeVisible();

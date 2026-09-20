@@ -125,22 +125,25 @@ class GeminiTeacher:
                     repair_feedback.append(_ENCOURAGEMENT_FEEDBACK)
                 payload['validation_feedback'] = repair_feedback
             try:
-                raw = await self._client.structured_chat([
+                text = await self._client.text_chat([
                     {'role': 'system', 'content': self._prompt},
                     {'role': 'user', 'content': json.dumps(payload, ensure_ascii=False)},
-                ], TeacherUtterance.model_json_schema(), request.turn_id)
+                ], request.turn_id)
             except ProviderError:
                 # Preserve service failures for API/eval classification; they are not bad wording.
                 raise
             except OpenRouterError:
                 return _fallback(request)
             try:
-                utterance = TeacherUtterance.model_validate(raw)
+                utterance = TeacherUtterance(
+                    spoken_text=text,
+                    delivery_intent=('reassuring' if request.emotional_support
+                                     else 'encouraging'),
+                    generation_mode='model',
+                )
                 feedback = teacher_output_issues(utterance.spoken_text, request)
-                if utterance.generation_mode != 'model':
-                    feedback.append('Set generation_mode to model.')
                 if not feedback:
                     return utterance
             except (ValidationError, ValueError, TypeError, KeyError):
-                feedback = ['Return exactly the supplied TeacherUtterance JSON schema.']
+                feedback = ['Return one non-empty plain spoken response.']
         return _fallback(request)

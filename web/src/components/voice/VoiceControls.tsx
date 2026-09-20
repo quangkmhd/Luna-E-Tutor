@@ -3,7 +3,30 @@
 import { PipecatClientMicToggle } from '@pipecat-ai/client-react';
 
 import { useVoiceLesson } from './PipecatVoiceProvider';
+import type { VoicePhase } from './PipecatVoiceProvider';
 import styles from './voice.module.css';
+
+const phaseLabels: Record<VoicePhase, string> = {
+  off: 'Voice off',
+  connecting: 'Connecting',
+  ready: 'Ready',
+  listening: 'Listening',
+  thinking: 'Thinking',
+  speaking: 'Speaking',
+};
+
+function VoicePhaseIcon({ phase }: { phase: VoicePhase }) {
+  if (phase === 'thinking') {
+    return <span className={styles.thinkingDots} aria-hidden="true"><i /><i /><i /></span>;
+  }
+  if (phase === 'listening') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="4" width="6" height="10" rx="3" /><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3M9 20h6" /></svg>;
+  }
+  if (phase === 'speaking') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 3V7l-4 3H5Z" /><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" /></svg>;
+  }
+  return <span className={styles.statusDot} aria-hidden="true" />;
+}
 
 export function VoiceControls() {
   const voice = useVoiceLesson();
@@ -11,17 +34,12 @@ export function VoiceControls() {
   const pending = ['initializing', 'connecting', 'authenticating'].includes(
     voice.transportState,
   );
-  const transcript = voice.interimTranscript || voice.finalTranscript;
-
   return (
-    <section className={styles.voicePanel} aria-label="Voice lesson controls">
-      <div className={styles.heading}>
-        <div>
-          <span className={styles.eyebrow}>Live speaking</span>
-          <strong>Talk with Luna</strong>
-        </div>
-        <span className={styles.state}>{voice.transportState}</span>
-      </div>
+    <div className={styles.voiceControls} aria-label="Voice lesson controls">
+      <span className={`${styles.state} ${styles[voice.phase]}`} aria-live="polite">
+        <span className={styles.phaseIcon}><VoicePhaseIcon phase={voice.phase} /></span>
+        {phaseLabels[voice.phase]}
+      </span>
       <div className={styles.actions}>
         {!active ? (
           <button type="button" className={styles.primary} disabled={pending} onClick={() => void voice.start()}>
@@ -42,13 +60,7 @@ export function VoiceControls() {
           </>
         )}
       </div>
-      {transcript && (
-        <p className={styles.transcript} aria-live="polite">
-          <span>You said</span> {transcript}{voice.interimTranscript ? '…' : ''}
-        </p>
-      )}
-      {voice.botOutput && <p className={styles.botOutput} aria-live="polite">Luna: {voice.botOutput}</p>}
       {voice.error && <p className={styles.error} role="alert">{voice.error}</p>}
-    </section>
+    </div>
   );
 }

@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from loguru import logger
 from luna_tutor.api.runtime import RuntimeComponents, build_runtime_components
 from pipecat.audio.vad.silero import SileroVADAnalyzer
+from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.evals.transport import EvalTransportParams
 from pipecat.flows import ContextStrategy, ContextStrategyConfig, FlowManager
 from pipecat.frames.frames import TTSSpeakFrame
@@ -82,15 +83,19 @@ def build_voice_worker(
     context = LLMContext()
     aggregators = LLMContextAggregatorPair(
         context,
-        user_params=LLMUserAggregatorParams(vad_analyzer=SileroVADAnalyzer()),
+        user_params=LLMUserAggregatorParams(
+            # Grade-school learners pause inside sentences. Pipecat's 200 ms
+            # default was finalizing Soniox several times inside one utterance.
+            vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=0.8)),
+        ),
     )
     teacher_llm = BoundedTeacherLLM(exchange, end_after_response=False)
     pipeline = Pipeline(
         [
             transport.input(),
             stt,
-            voice_teaching,
             aggregators.user(),
+            voice_teaching,
             teacher_llm,
             tts,
             transport.output(),

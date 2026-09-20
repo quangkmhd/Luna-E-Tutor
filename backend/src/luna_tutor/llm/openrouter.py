@@ -92,6 +92,25 @@ def _parse_completion(response: httpx.Response) -> tuple[dict | None, bool]:
         return None, False
 
 
+def _parse_text_completion(response: httpx.Response) -> tuple[str | None, bool]:
+    """Extract one complete plain-text assistant message."""
+    try:
+        envelope = response.json()
+        if 'error' in envelope:
+            return None, True
+        choice = envelope['choices'][0]
+        if 'error' in choice or choice.get('finish_reason') == 'error':
+            return None, True
+        if choice.get('finish_reason') != 'stop':
+            return None, False
+        content = choice['message']['content']
+        if not isinstance(content, str) or not content.strip():
+            return None, False
+        return content.strip(), False
+    except (ValueError, TypeError, KeyError, IndexError, AttributeError):
+        return None, False
+
+
 class OpenRouterClient:
     """Use as an async context manager, or explicitly call ``aclose``.
 
@@ -121,22 +140,7 @@ class OpenRouterClient:
         if self._owns_client:
             await self._http.aclose()
 
-    async def structured_chat(self, messages: list[dict[str, str]], schema: dict,
-                              request_id: str) -> dict:
-        """Return a JSON object; the caller validates its domain-specific schema.
-
-        Retry only HTTP 429/502/503/504 once. Transport errors, auth errors, and
-        invalid model output fail immediately with body-free typed exceptions.
-        """
-        payload = {
-            'model': _MODEL, 'temperature': 0, 'stream': False,
-            'messages': [{**message, 'content': _message_content(message['content'])}
-                         for message in messages],
-            'provider': {'require_parameters': True},
-            'response_format': {'type': 'json_schema', 'json_schema': {
-                'name': 'structured_result', 'strict': True, 'schema': schema,
-            }},
-        }
+    async def _post(self, payload: dict, request_id: str) -> httpx.Response:
         for attempt in range(2):
             response = None
             try:
@@ -146,8 +150,6 @@ class OpenRouterClient:
                 )
             except httpx.RequestError:
                 pass
-            # Raise outside the except block: retaining an HTTPX exception as
-            # __context__ would also retain its request and Authorization header.
             if response is None:
                 raise ProviderError(status_code=None, request_id=request_id,
                                     reason='OpenRouter transport failure')
@@ -159,13 +161,55 @@ class OpenRouterClient:
                 del response
                 raise ProviderError(status_code=status, request_id=request_id,
                                     reason='OpenRouter HTTP failure')
-            result, provider_failed = _parse_completion(response)
-            del response
-            if provider_failed:
-                raise ProviderError(status_code=status, request_id=request_id,
-                                    reason='OpenRouter generation failure')
-            if result is None:
-                raise InvalidModelOutputError(status_code=status, request_id=request_id,
-                                              reason='Invalid structured model output')
-            return result
+            return response
         raise AssertionError('Unreachable retry loop')
+
+    async def text_chat(self, messages: list[dict[str, str]], request_id: str) -> str:
+        """Return one complete plain-text assistant message."""
+        payload = {
+            'model': _MODEL, 'temperature': 0, 'stream': False,
+            'reasoning': {'effort': 'minimal'},
+            'messages': [{**message, 'content': _message_content(message['content'])}
+                         for message in messages],
+            'provider': {'require_parameters': True},
+        }
+        response = await self._post(payload, request_id)
+        status = response.status_code
+        result, provider_failed = _parse_text_completion(response)
+        del response
+        if provider_failed:
+            raise ProviderError(status_code=status, request_id=request_id,
+                                reason='OpenRouter generation failure')
+        if result is None:
+            raise InvalidModelOutputError(status_code=status, request_id=request_id,
+                                          reason='Invalid text model output')
+        return result
+
+    async def structured_chat(self, messages: list[dict[str, str]], schema: dict,
+                              request_id: str) -> dict:
+        """Return a JSON object; the caller validates its domain-specific schema.
+
+        Retry only HTTP 429/502/503/504 once. Transport errors, auth errors, and
+        invalid model output fail immediately with body-free typed exceptions.
+        """
+        payload = {
+            'model': _MODEL, 'temperature': 0, 'stream': False,
+            'reasoning': {'effort': 'minimal'},
+            'messages': [{**message, 'content': _message_content(message['content'])}
+                         for message in messages],
+            'provider': {'require_parameters': True},
+            'response_format': {'type': 'json_schema', 'json_schema': {
+                'name': 'structured_result', 'strict': True, 'schema': schema,
+            }},
+        }
+        response = await self._post(payload, request_id)
+        status = response.status_code
+        result, provider_failed = _parse_completion(response)
+        del response
+        if provider_failed:
+            raise ProviderError(status_code=status, request_id=request_id,
+                                reason='OpenRouter generation failure')
+        if result is None:
+            raise InvalidModelOutputError(status_code=status, request_id=request_id,
+                                          reason='Invalid structured model output')
+        return result

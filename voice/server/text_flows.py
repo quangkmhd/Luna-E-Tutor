@@ -130,6 +130,14 @@ class BoundedTeacherLLM(LLMService):
             ):
                 raise ValueError("Flow node and teaching authorization disagree")
             utterance = await exchange.service.respond(request)
+            if utterance.generation_mode == "fallback" and not self.end_after_response:
+                # A safe Teacher fallback is speakable but cannot authorize or
+                # persist the Engine's proposed transition. Keep voice alive so
+                # the learner can try again on the unchanged stored state.
+                await self.push_frame(LLMFullResponseStartFrame())
+                await self.push_frame(LLMTextFrame(utterance.spoken_text))
+                await self.push_frame(LLMFullResponseEndFrame())
+                return
             completed = exchange.service.complete(exchange.state, exchange.plan, utterance)
             if (
                 generation_epoch is not None

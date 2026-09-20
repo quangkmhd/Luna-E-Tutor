@@ -55,6 +55,19 @@ class SessionRepository:
                 raise
         return StoredSession(state=state, created_at=timestamp, updated_at=timestamp)
 
+    def replace_with_session(self, state: LessonState) -> StoredSession:
+        """Delete all previous lesson data and keep only a fresh session."""
+        timestamp = _now()
+        with connect(self.path) as database:
+            database.execute('BEGIN IMMEDIATE')
+            database.execute('DELETE FROM sessions')
+            database.execute(
+                'INSERT INTO sessions VALUES (?, ?, ?, ?, ?, ?)',
+                (state.session_id, state.state_version, state.status,
+                 state.model_dump_json(), timestamp, timestamp))
+            database.commit()
+        return StoredSession(state=state, created_at=timestamp, updated_at=timestamp)
+
     def get_session(self, session_id: str) -> StoredSession:
         with connect(self.path) as database:
             row = database.execute(

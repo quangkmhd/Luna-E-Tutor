@@ -155,8 +155,46 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
         OutputProcessor,
         VoiceCommitProcessor,
     ]
+    assert processors.index(next(p for p in processors if isinstance(p, VoiceTeachingProcessor))) > processors.index(
+        next(p for p in processors if p.__class__.__name__ == "LLMUserAggregator")
+    )
     assert worker.luna_exchange.session_id == "selected-session"
     assert worker.luna_exchange.state == state
+
+
+def test_voice_worker_does_not_finalize_on_a_brief_pause_inside_a_sentence(
+    tmp_path, monkeypatch
+):
+    import bot
+
+    repository = SessionRepository(tmp_path / "voice.sqlite3")
+    state = LessonState(
+        session_id="pause-session",
+        unit_id="grade05.unit01",
+        stage_id="warm-up",
+        activity_id="warm-up.feelings",
+    )
+    repository.create_session(state)
+    monkeypatch.setattr(
+        bot,
+        "build_runtime_components",
+        lambda _environment: RuntimeComponents(repository, RecordingService(), None),
+    )
+    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
+    monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
+
+    worker = bot.build_voice_worker(
+        FakeTransport(),
+        SimpleNamespace(body={"session_id": state.session_id}),
+        live_environment(tmp_path / "voice.sqlite3"),
+    )
+    user_aggregator = next(
+        processor
+        for processor in worker.luna_pipeline.processors
+        if processor.__class__.__name__ == "LLMUserAggregator"
+    )
+
+    assert user_aggregator._params.vad_analyzer.params.stop_secs == 0.8
 
 
 @pytest.mark.asyncio

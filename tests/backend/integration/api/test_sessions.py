@@ -34,6 +34,21 @@ def test_get_missing_session_returns_stable_404(tmp_path):
     assert response.json()['detail']['code'] == 'SESSION_NOT_FOUND'
 
 
+def test_reset_session_deletes_every_previous_session(tmp_path):
+    api = client(tmp_path)
+    first = api.post('/api/sessions').json()
+    second = api.post('/api/sessions').json()
+
+    fresh = api.post('/api/sessions/reset').json()
+
+    assert fresh['session_id'] not in {first['session_id'], second['session_id']}
+    assert fresh['state_version'] == 0
+    assert api.get(f"/api/sessions/{first['session_id']}").status_code == 404
+    assert api.get(f"/api/sessions/{second['session_id']}").status_code == 404
+    listing = api.get('/api/sessions').json()
+    assert [item['session_id'] for item in listing] == [fresh['session_id']]
+
+
 def test_request_models_forbid_unknown_fields(tmp_path):
     response = client(tmp_path).post('/api/sessions', json={'api_key': 'forbidden'})
     assert response.status_code == 422

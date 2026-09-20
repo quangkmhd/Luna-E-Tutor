@@ -2,9 +2,9 @@
 
 import { PipecatClient } from '@pipecat-ai/client-js';
 import type {
-  BotOutputData,
   DeviceError,
-  TranscriptData,
+  ErrorData,
+  RTVIMessage,
   TransportState,
 } from '@pipecat-ai/client-js';
 import { PipecatClientAudio, PipecatClientProvider } from '@pipecat-ai/client-react';
@@ -17,14 +17,14 @@ import {
 } from 'react';
 
 type VoiceContextValue = {
-  botOutput: string;
   error: string | null;
-  finalTranscript: string;
-  interimTranscript: string;
+  phase: VoicePhase;
   start: () => Promise<void>;
   stop: () => Promise<void>;
   transportState: TransportState;
 };
+
+export type VoicePhase = 'off' | 'connecting' | 'ready' | 'listening' | 'thinking' | 'speaking';
 
 const VoiceContext = createContext<VoiceContextValue | null>(null);
 
@@ -41,10 +41,24 @@ function deviceErrorMessage(error: DeviceError): string {
   return 'The microphone could not start. Check the device and try again.';
 }
 
+function voiceServiceErrorMessage(message: RTVIMessage): string {
+  const data = message.data as ErrorData;
+  if (data.fatal) {
+    console.error('Pipecat reported a fatal voice error:', data.error);
+    return 'The voice session ended. Stop and reconnect.';
+  }
+  console.warn('Pipecat reported a recoverable voice error:', data.error);
+  return 'Voice audio was interrupted. Please try speaking again.';
+}
+
 export function useVoiceLesson(): VoiceContextValue {
-  const value = useContext(VoiceContext);
+  const value = useOptionalVoiceLesson();
   if (!value) throw new Error('useVoiceLesson must be used inside PipecatVoiceProvider');
   return value;
+}
+
+export function useOptionalVoiceLesson(): VoiceContextValue | null {
+  return useContext(VoiceContext);
 }
 
 export function PipecatVoiceProvider({
@@ -59,10 +73,8 @@ export function PipecatVoiceProvider({
   enabled?: boolean;
 }) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
+  const [phase, setPhase] = useState<VoicePhase>('off');
   const [error, setError] = useState<string | null>(null);
-  const [interimTranscript, setInterimTranscript] = useState('');
-  const [finalTranscript, setFinalTranscript] = useState('');
-  const [botOutput, setBotOutput] = useState('');
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [client] = useState(() => new PipecatClient({
     transport: new SmallWebRTCTransport(),
@@ -70,18 +82,24 @@ export function PipecatVoiceProvider({
     enableCam: false,
     disconnectOnBotDisconnect: true,
     callbacks: {
-      onTransportStateChanged: setTransportState,
-      onBotReady: () => setError(null),
-      onUserTranscript: (data: TranscriptData) => {
-        if (data.final) {
-          setFinalTranscript(data.text);
-          setInterimTranscript('');
-        } else {
-          setInterimTranscript(data.text);
+      onTransportStateChanged: (state: TransportState) => {
+        setTransportState(state);
+        if (['initializing', 'connecting', 'authenticating'].includes(state)) {
+          setPhase('connecting');
+        } else if (state === 'disconnected') {
+          setPhase('off');
         }
       },
-      onBotOutput: (data: BotOutputData) => setBotOutput(data.text),
+      onBotReady: () => {
+        setError(null);
+        setPhase('ready');
+      },
+      onUserStartedSpeaking: () => setPhase('listening'),
+      onUserStoppedSpeaking: () => setPhase('thinking'),
+      onBotLlmStarted: () => setPhase('thinking'),
+      onBotStartedSpeaking: () => setPhase('speaking'),
       onBotStoppedSpeaking: () => {
+        setPhase('ready');
         if (!onSessionChanged) return;
         setRefreshTimer((previous) => {
           if (previous) clearTimeout(previous);
@@ -92,13 +110,14 @@ export function PipecatVoiceProvider({
         });
       },
       onDeviceError: (reason: DeviceError) => setError(deviceErrorMessage(reason)),
-      onError: () => setError('The voice service reported an error. Stop and reconnect.'),
+      onError: (message: RTVIMessage) => setError(voiceServiceErrorMessage(message)),
       onMessageError: () => setError('The voice service could not process that message. Try again.'),
     },
   }));
 
   async function start() {
     setError(null);
+    setPhase('connecting');
     try {
       await client.startBotAndConnect({
         endpoint: `${process.env.NEXT_PUBLIC_PIPECAT_URL ?? 'http://localhost:7860'}/start`,
@@ -108,12 +127,14 @@ export function PipecatVoiceProvider({
         },
       });
     } catch (reason) {
+      setPhase('off');
       setError(reason instanceof Error ? reason.message : 'Could not start the voice lesson.');
     }
   }
 
   async function stop() {
     await client.disconnect();
+    setPhase('off');
   }
 
   useEffect(() => {
@@ -129,10 +150,8 @@ export function PipecatVoiceProvider({
   }, [client]);
 
   const value: VoiceContextValue = {
-    botOutput,
     error,
-    finalTranscript,
-    interimTranscript,
+    phase,
     start,
     stop,
     transportState,

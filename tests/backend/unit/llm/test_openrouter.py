@@ -16,6 +16,20 @@ MESSAGES = [{'role': 'user', 'content': 'Hello'}]
 pytestmark = pytest.mark.asyncio
 
 
+async def test_text_chat_returns_plain_assistant_text_without_json_schema(
+        respx_mock, completion_response):
+    route = respx_mock.post(ENDPOINT).mock(
+        return_value=completion_response('Good answer, Quang! Can you say city?'))
+
+    async with OpenRouterClient(Settings('test-key')) as client:
+        result = await client.text_chat(MESSAGES, 'turn-plain-text')
+
+    body = json.loads(route.calls.last.request.content)
+    assert result == 'Good answer, Quang! Can you say city?'
+    assert body['reasoning'] == {'effort': 'minimal'}
+    assert 'response_format' not in body
+
+
 async def test_request_uses_strict_schema_pinned_model_timeout_and_redacted_contact(
         respx_mock, completion_response):
     route = respx_mock.post(ENDPOINT).mock(return_value=completion_response({'ok': True}))
@@ -29,6 +43,7 @@ async def test_request_uses_strict_schema_pinned_model_timeout_and_redacted_cont
     assert body['model'] == 'google/gemini-3.5-flash-lite'
     assert body['temperature'] == 0
     assert body['stream'] is False
+    assert body['reasoning'] == {'effort': 'minimal'}
     assert body['provider']['require_parameters'] is True
     assert body['response_format']['type'] == 'json_schema'
     assert body['response_format']['json_schema']['strict'] is True

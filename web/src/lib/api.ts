@@ -32,6 +32,9 @@ export class TutorApi {
   createSession(signal?: AbortSignal) {
     return this.request<SessionView>('/api/sessions', { method: 'POST', signal });
   }
+  resetSession(signal?: AbortSignal) {
+    return this.request<SessionView>('/api/sessions/reset', { method: 'POST', signal });
+  }
   listSessions(signal?: AbortSignal) {
     return this.request<SessionView[]>('/api/sessions', { signal });
   }

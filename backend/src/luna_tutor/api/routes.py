@@ -69,20 +69,26 @@ def _error(status: int, code: str, message: str, retryable: bool = False):
         'code': code, 'message': message, 'retryable': retryable})
 
 
+def _fresh_state() -> LessonState:
+    return LessonState(
+        session_id=str(uuid4()), unit_id='grade05.unit01', stage_id='warm-up',
+        activity_id='warm-up.feelings', last_teacher_turn=GREETING, opening_message=GREETING,
+        activity_progress=(ActivityProgress(
+            activity_id='warm-up.hello', status='completed'),
+            ActivityProgress(activity_id='warm-up.feelings', status='in_progress',
+                             response_opportunity_given=True)))
+
+
 def build_router(repository, turn_service) -> APIRouter:
     router = APIRouter(prefix='/api')
 
     @router.post('/sessions', response_model=SessionView)
     async def create_session(_: CreateSessionRequest | None = Body(default=None)):
-        session_id = str(uuid4())
-        state = LessonState(
-            session_id=session_id, unit_id='grade05.unit01', stage_id='warm-up',
-            activity_id='warm-up.feelings', last_teacher_turn=GREETING, opening_message=GREETING,
-            activity_progress=(ActivityProgress(
-                activity_id='warm-up.hello', status='completed'),
-                ActivityProgress(activity_id='warm-up.feelings', status='in_progress',
-                                 response_opportunity_given=True)))
-        return session_view(repository.create_session(state))
+        return session_view(repository.create_session(_fresh_state()))
+
+    @router.post('/sessions/reset', response_model=SessionView)
+    async def reset_session():
+        return session_view(repository.replace_with_session(_fresh_state()))
 
     @router.get('/sessions', response_model=list[SessionView])
     async def list_sessions():

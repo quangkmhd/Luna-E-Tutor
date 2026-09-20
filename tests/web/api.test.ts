@@ -27,6 +27,14 @@ describe('TutorApi', () => {
     expect(init.body).not.toContain('API_KEY');
   });
 
+  it('resets to one fresh ephemeral session', async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response('{}', {
+      status: 200, headers: { 'Content-Type': 'application/json' },
+    }));
+    await new TutorApi('http://test', fetcher).resetSession();
+    expect(fetcher).toHaveBeenCalledWith('http://test/api/sessions/reset', expect.objectContaining({ method: 'POST' }));
+  });
+
   it('returns stable typed server errors', async () => {
     const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       detail: { code: 'STATE_CONFLICT', message: 'changed', retryable: false },

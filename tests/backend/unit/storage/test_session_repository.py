@@ -88,6 +88,16 @@ def test_abandon_preserves_history_and_list_order(repository):
     assert len(sessions[1].turns) == 1
 
 
+def test_replace_with_session_deletes_all_existing_session_data(repository):
+    repository.create_session(state('old'))
+    repository.commit_turn('old', 0, completed(session_id='old'))
+
+    fresh = repository.replace_with_session(state('fresh'))
+
+    assert fresh.state.session_id == 'fresh'
+    assert [item.state.session_id for item in repository.list_sessions()] == ['fresh']
+
+
 def test_finish_only_accepts_free_talk_and_is_idempotent(repository):
     repository.create_session(state())
     with pytest.raises(StateConflictError):

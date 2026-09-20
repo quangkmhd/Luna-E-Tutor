@@ -7,7 +7,14 @@ const sdk = vi.hoisted(() => {
   const disconnect = vi.fn().mockResolvedValue(undefined);
   const enableMic = vi.fn();
   const client = { startBotAndConnect, disconnect, enableMic, state: 'disconnected' };
-  return { startBotAndConnect, disconnect, enableMic, client, options: undefined as Record<string, unknown> | undefined };
+  return {
+    startBotAndConnect,
+    disconnect,
+    enableMic,
+    client,
+    conversationMessages: [] as Array<Record<string, unknown>>,
+    options: undefined as Record<string, unknown> | undefined,
+  };
 });
 
 vi.mock('@pipecat-ai/client-js', () => ({
@@ -25,16 +32,19 @@ vi.mock('@pipecat-ai/client-react', () => ({
   PipecatClientMicToggle: ({ children }: { children: (value: object) => React.ReactNode }) => children({
     isMicEnabled: true, disabled: false, onClick: sdk.enableMic,
   }),
+  usePipecatConversation: () => ({ messages: sdk.conversationMessages }),
 }));
 
 import { PipecatVoiceProvider } from '@/components/voice/PipecatVoiceProvider';
 import { VoiceControls } from '@/components/voice/VoiceControls';
+import { ChatPanel } from '@/components/ChatPanel';
 
 describe('PipecatVoiceProvider', () => {
   beforeEach(() => {
     sdk.startBotAndConnect.mockClear();
     sdk.disconnect.mockClear();
     sdk.enableMic.mockClear();
+    sdk.conversationMessages = [];
     sdk.options = undefined;
   });
 
@@ -82,6 +92,79 @@ describe('PipecatVoiceProvider', () => {
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
   });
 
+  it('does not ask for a reconnect when Pipecat reports a non-fatal service error', () => {
+    render(
+      <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onError(message: { data: { error: string; fatal: boolean } }): void;
+    };
+
+    act(() => callbacks.onError({
+      data: {
+        error: 'TTS context completed with no audio',
+        fatal: false,
+      },
+    }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Voice audio was interrupted. Please try speaking again.',
+    );
+    expect(screen.queryByText(/stop and reconnect/i)).not.toBeInTheDocument();
+  });
+
+  it('asks for a reconnect only when Pipecat reports a fatal service error', () => {
+    render(
+      <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onError(message: { data: { error: string; fatal: boolean } }): void;
+    };
+
+    act(() => callbacks.onError({
+      data: {
+        error: 'The voice worker stopped',
+        fatal: true,
+      },
+    }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'The voice session ended. Stop and reconnect.',
+    );
+  });
+
+  it('shows Pipecat listening, thinking, and speaking states in the voice controls', () => {
+    render(
+      <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onBotReady(): void;
+      onUserStartedSpeaking(): void;
+      onUserStoppedSpeaking(): void;
+      onBotLlmStarted(): void;
+      onBotStartedSpeaking(): void;
+      onBotStoppedSpeaking(): void;
+    };
+
+    act(() => callbacks.onBotReady());
+    expect(screen.getByText('Ready')).toBeInTheDocument();
+
+    act(() => callbacks.onUserStartedSpeaking());
+    expect(screen.getByText('Listening')).toBeInTheDocument();
+
+    act(() => callbacks.onUserStoppedSpeaking());
+    expect(screen.getByText('Thinking')).toBeInTheDocument();
+
+    act(() => callbacks.onBotLlmStarted());
+    expect(screen.getByText('Thinking')).toBeInTheDocument();
+
+    act(() => callbacks.onBotStartedSpeaking());
+    expect(screen.getByText('Speaking')).toBeInTheDocument();
+
+    act(() => callbacks.onBotStoppedSpeaking());
+    expect(screen.getByText('Ready')).toBeInTheDocument();
+  });
+
   it('cancels a pending session refresh on cleanup', () => {
     vi.useFakeTimers();
     const onSessionChanged = vi.fn();
@@ -97,21 +180,108 @@ describe('PipecatVoiceProvider', () => {
     expect(onSessionChanged).not.toHaveBeenCalled();
   });
 
-  it('shows interim speech without submitting it as a typed turn', async () => {
+  it('shows live learner and Luna speech as bubbles in the main conversation', async () => {
     const onSessionChanged = vi.fn();
+    sdk.conversationMessages = [
+      { role: 'user', final: false, createdAt: '1', parts: [{ text: 'I live in', final: false, createdAt: '1' }] },
+      { role: 'assistant', final: false, createdAt: '2', parts: [{ text: { spoken: '', unspoken: 'Great. What city do you live in?' }, final: false, createdAt: '2' }] },
+    ];
     render(
       <PipecatVoiceProvider sessionId="session-7" onSessionChanged={onSessionChanged}>
+        <ChatPanel messages={[]} />
         <VoiceControls />
       </PipecatVoiceProvider>,
     );
-    const callbacks = sdk.options?.callbacks as {
-      onUserTranscript(data: { text: string; final: boolean }): void;
-      onBotStoppedSpeaking(): void;
-    };
-    act(() => callbacks.onUserTranscript({ text: 'I live in', final: false }));
-    expect(screen.getByText('You said').closest('p')).toHaveTextContent('I live in');
+    expect(screen.getByText('I live in').closest('.bubble-row')).toHaveClass('learner');
     expect(onSessionChanged).not.toHaveBeenCalled();
-    act(() => callbacks.onUserTranscript({ text: 'I live in the city.', final: true }));
-    expect(screen.getByText('You said').closest('p')).toHaveTextContent('I live in the city.');
+    expect(screen.getByText('Great. What city do you live in?').closest('.bubble-row')).toHaveClass('teacher');
+    expect(screen.queryByText('You said')).not.toBeInTheDocument();
+  });
+
+  it('keeps earlier sentence segments visible while Luna speaks the next sentence', () => {
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '1', parts: [
+        { text: { spoken: 'I can hear you loud and clear too, Quang. ', unspoken: '' }, final: true, createdAt: '1' },
+        { text: { spoken: '', unspoken: 'Since we are talking about your class, how many students are in your class?' }, final: false, createdAt: '2' },
+      ],
+    }];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[]} />
+      </PipecatVoiceProvider>,
+    );
+    expect(screen.getByText(
+      'I can hear you loud and clear too, Quang. Since we are talking about your class, how many students are in your class?',
+    )).toBeInTheDocument();
+  });
+
+  it('keeps all final learner transcript chunks in the current Pipecat turn', () => {
+    sdk.conversationMessages = [{
+      role: 'user', final: false, createdAt: '1', parts: [
+        { text: 'I live in', final: true, createdAt: '1' },
+        { text: 'Hanoi.', final: true, createdAt: '2' },
+      ],
+    }];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[]} />
+      </PipecatVoiceProvider>,
+    );
+    expect(screen.getByText('I live in Hanoi.')).toBeInTheDocument();
+  });
+
+  it('keeps Luna live speech until the saved turn replaces it', () => {
+    sdk.conversationMessages = [{ role: 'assistant', final: false, createdAt: '1', parts: [{ text: { spoken: 'Can you use class in a sentence?', unspoken: '' }, final: true, createdAt: '1' }] }];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[]} />
+      </PipecatVoiceProvider>,
+    );
+    expect(screen.getByText('Can you use class in a sentence?')).toBeInTheDocument();
+  });
+
+  it('renders Pipecat conversation as the single source instead of mixing backend messages into it', () => {
+    sdk.conversationMessages = [
+      { role: 'assistant', final: true, createdAt: '1', parts: [{ text: { spoken: 'Old interrupted answer.', unspoken: '' }, final: true, createdAt: '1' }] },
+      { role: 'user', final: true, createdAt: '2', parts: [{ text: 'City.', final: true, createdAt: '2' }] },
+      { role: 'assistant', final: false, createdAt: '3', parts: [{ text: { spoken: '', unspoken: 'Current answer.' }, final: false, createdAt: '3' }] },
+    ];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[{ role: 'teacher', text: 'Backend copy of the current answer.' }]} />
+      </PipecatVoiceProvider>,
+    );
+
+    expect(screen.getByText('Old interrupted answer.')).toBeInTheDocument();
+    expect(screen.getByText('City.')).toBeInTheDocument();
+    expect(screen.getByText('Current answer.')).toBeInTheDocument();
+    expect(screen.queryByText('Backend copy of the current answer.')).not.toBeInTheDocument();
+  });
+
+  it('does not switch back to backend messages while Pipecat owns the conversation', () => {
+    sdk.conversationMessages = [
+      { role: 'user', final: true, createdAt: '1', parts: [{ text: 'I live in Hanoi.', final: true, createdAt: '1' }] },
+      { role: 'assistant', final: false, createdAt: '2', parts: [{ text: { spoken: '', unspoken: 'What do you like about it?' }, final: false, createdAt: '2' }] },
+    ];
+    const view = render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[]} />
+      </PipecatVoiceProvider>,
+    );
+    expect(screen.getByText('I live in Hanoi.').closest('.bubble-row')).toHaveClass('learner');
+    expect(screen.getByText('What do you like about it?').closest('.bubble-row')).toHaveClass('teacher');
+
+    view.rerender(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[
+          { role: 'learner', text: 'I live in Hanoi.' },
+          { role: 'teacher', text: 'Hanoi is a busy city. What do you like about it?' },
+        ]} />
+      </PipecatVoiceProvider>,
+    );
+
+    expect(screen.getAllByText('I live in Hanoi.')).toHaveLength(1);
+    expect(screen.getAllByText('What do you like about it?')).toHaveLength(1);
+    expect(screen.queryByText('Hanoi is a busy city. What do you like about it?')).not.toBeInTheDocument();
   });
 });

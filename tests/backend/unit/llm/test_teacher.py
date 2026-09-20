@@ -18,6 +18,12 @@ class FakeClient:
             raise self.error
         return self.result
 
+    async def text_chat(self, messages, request_id):
+        result = await self.structured_chat(messages, None, request_id)
+        if isinstance(result, dict) and 'spoken_text' in result:
+            return result['spoken_text']
+        return result
+
 
 def request(**changes):
     values = dict(
@@ -29,6 +35,30 @@ def request(**changes):
     )
     values.update(changes)
     return TeacherTurnRequest(**values)
+
+
+@pytest.mark.asyncio
+async def test_teacher_requests_plain_text_and_assigns_internal_metadata():
+    class PlainTextClient:
+        def __init__(self):
+            self.calls = []
+
+        async def text_chat(self, messages, request_id):
+            self.calls.append((messages, request_id))
+            return 'Good answer, Quang! What do you like about the countryside?'
+
+        async def structured_chat(self, *_args):
+            pytest.fail('Teacher must not request structured JSON output')
+
+    client = PlainTextClient()
+    result = await GeminiTeacher(client).respond(request(
+        feedback_action='acknowledge_and_continue', corrected_form=None,
+        constraints=TeacherConstraints(encouragement_required=True)))
+
+    assert result.spoken_text.startswith('Good answer, Quang!')
+    assert result.generation_mode == 'model'
+    assert result.delivery_intent == 'encouraging'
+    assert client.calls[0][1] == 'turn-1'
 
 
 @pytest.mark.asyncio
