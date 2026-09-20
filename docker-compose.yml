@@ -13,7 +13,7 @@ services:
     ports:
       - "${BACKEND_PORT:-8090}:8000"
     volumes:
-      - ./backend/data:/app/backend/data
+      - backend_data:/app/backend/data
     networks:
       - luna-network
 
@@ -88,3 +88,7 @@ services:
 networks:
   luna-network:
     driver: bridge
+
+volumes:
+  backend_data:
+
