@@ -183,8 +183,14 @@ export function PipecatVoiceProvider({
   }
 
   async function stop() {
-    await client.disconnect();
-    setPhase('off');
+    try {
+      await client.disconnect();
+    } catch {
+      setError('The voice session could not close cleanly. You can reconnect.');
+    } finally {
+      setTransportState('disconnected');
+      setPhase('off');
+    }
   }
 
   useEffect(() => {

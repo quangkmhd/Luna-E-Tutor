@@ -44,8 +44,11 @@ export function VoiceControls({
   );
 
   async function stop() {
-    await voice.stop();
-    onStopped?.();
+    try {
+      await voice.stop();
+    } finally {
+      onStopped?.();
+    }
   }
 
   return (
