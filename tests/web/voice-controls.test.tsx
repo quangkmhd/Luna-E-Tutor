@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const sdk = vi.hoisted(() => {
   const enableMic = vi.fn();
   const client = {
-    connect: vi.fn().mockResolvedValue(undefined),
+    startBotAndConnect: vi.fn().mockResolvedValue(undefined),
     disconnect: vi.fn().mockResolvedValue(undefined),
   };
   return { enableMic, client, options: undefined as Record<string, unknown> | undefined };

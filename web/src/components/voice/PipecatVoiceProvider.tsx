@@ -91,10 +91,11 @@ export function PipecatVoiceProvider({
   async function start() {
     setError(null);
     try {
-      await client.connect({
-        webrtcRequestParams: {
-          endpoint: `${process.env.NEXT_PUBLIC_PIPECAT_URL ?? 'http://localhost:7860'}/api/offer`,
-          requestData: { session_id: sessionId },
+      await client.startBotAndConnect({
+        endpoint: `${process.env.NEXT_PUBLIC_PIPECAT_URL ?? 'http://localhost:7860'}/start`,
+        requestData: {
+          transport: 'webrtc',
+          body: { session_id: sessionId },
         },
       });
     } catch (reason) {

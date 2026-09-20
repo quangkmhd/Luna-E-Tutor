@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const sdk = vi.hoisted(() => {
-  const connect = vi.fn().mockResolvedValue(undefined);
+  const startBotAndConnect = vi.fn().mockResolvedValue(undefined);
   const disconnect = vi.fn().mockResolvedValue(undefined);
   const enableMic = vi.fn();
-  const client = { connect, disconnect, enableMic, state: 'disconnected' };
-  return { connect, disconnect, enableMic, client, options: undefined as Record<string, unknown> | undefined };
+  const client = { startBotAndConnect, disconnect, enableMic, state: 'disconnected' };
+  return { startBotAndConnect, disconnect, enableMic, client, options: undefined as Record<string, unknown> | undefined };
 });
 
 vi.mock('@pipecat-ai/client-js', () => ({
@@ -32,7 +32,7 @@ import { VoiceControls } from '@/components/voice/VoiceControls';
 
 describe('PipecatVoiceProvider', () => {
   beforeEach(() => {
-    sdk.connect.mockClear();
+    sdk.startBotAndConnect.mockClear();
     sdk.disconnect.mockClear();
     sdk.enableMic.mockClear();
     sdk.options = undefined;
@@ -49,10 +49,11 @@ describe('PipecatVoiceProvider', () => {
       enableCam: false,
       disconnectOnBotDisconnect: true,
     });
-    expect(sdk.connect).toHaveBeenCalledWith({
-      webrtcRequestParams: {
-        endpoint: 'http://localhost:7860/api/offer',
-        requestData: { session_id: 'session-7' },
+    expect(sdk.startBotAndConnect).toHaveBeenCalledWith({
+      endpoint: 'http://localhost:7860/start',
+      requestData: {
+        transport: 'webrtc',
+        body: { session_id: 'session-7' },
       },
     });
     view.unmount();

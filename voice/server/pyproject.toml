@@ -4,12 +4,13 @@ version = "0.1.0"
 description = "Voice AI bot built with Pipecat"
 requires-python = ">=3.12"
 dependencies = [
-    "pipecat-ai[openrouter,soniox]==1.11.0",
+    "pipecat-ai[openrouter,runner,soniox,webrtc]==1.11.0",
     "luna-tutor",
 ]
 
 [dependency-groups]
 dev = [
+    "pipecat-ai[evals]==1.11.0",
     "pytest",
     "pytest-asyncio",
     "pyright>=1.1.404,<2",

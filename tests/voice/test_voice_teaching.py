@@ -12,6 +12,7 @@ from pipecat.frames.frames import (
     BotStoppedSpeakingFrame,
     InterimTranscriptionFrame,
     InterruptionFrame,
+    LLMMessagesAppendFrame,
     TranscriptionFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection
@@ -86,6 +87,23 @@ async def test_only_final_transcript_plans_one_turn(tmp_path):
     assert exchange.plan is not None
     assert exchange.plan.learner_text == "I live in the city."
     assert exchange.flow.nodes[-1]["respond_immediately"] is True
+
+
+@pytest.mark.asyncio
+async def test_eval_send_text_plans_one_typed_turn(tmp_path):
+    exchange, processor, service = make_exchange(tmp_path)
+
+    await processor.process_frame(
+        LLMMessagesAppendFrame(
+            messages=[{"role": "user", "content": "I am happy today."}],
+            run_llm=True,
+        ),
+        FrameDirection.DOWNSTREAM,
+    )
+
+    assert service.calls == ["I am happy today."]
+    assert exchange.plan is not None
+    assert exchange.plan.turn_id.startswith("text:")
 
 
 @pytest.mark.asyncio

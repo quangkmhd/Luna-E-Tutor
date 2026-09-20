@@ -25,6 +25,7 @@ from pipecat.processors.aggregators.llm_response_universal import (
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.services.llm_service import LLMService
+from pipecat.services.settings import LLMSettings
 from pipecat.turns.user_turn_strategies import ExternalUserTurnStrategies
 from pipecat.workers.runner import WorkerRunner
 
@@ -83,7 +84,21 @@ class BoundedTeacherLLM(LLMService):
     """Use the existing Gemini prompt/schema/validation through native LLM frames."""
 
     def __init__(self, exchange, *, end_after_response=True):
-        super().__init__()
+        super().__init__(
+            settings=LLMSettings(
+                model="bounded-teacher",
+                system_instruction=None,
+                temperature=None,
+                max_tokens=None,
+                top_p=None,
+                top_k=None,
+                frequency_penalty=None,
+                presence_penalty=None,
+                seed=None,
+                filter_incomplete_user_turns=None,
+                user_turn_completion_config=None,
+            )
+        )
         self.exchange = exchange
         self.end_after_response = end_after_response
         self.responded_turn_ids = set()

@@ -1,5 +1,6 @@
 import asyncio
 import sys
+from dataclasses import fields
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -12,6 +13,7 @@ from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
 from pipecat.processors.frame_processor import FrameProcessor
 from pipecat.transports.base_transport import BaseTransport
+from pipecat.utils.types import is_given
 from test_voice_teaching import RecordingService
 
 
@@ -54,6 +56,19 @@ def live_environment(database):
         "OPENROUTER_API_KEY": "openrouter-test",
         "OPENROUTER_MODEL": "provider/model",
     }
+
+
+def test_bounded_teacher_initializes_complete_pipecat_llm_settings():
+    from text_flows import BoundedTeacherLLM
+
+    teacher = BoundedTeacherLLM(SimpleNamespace())
+
+    missing = [
+        item.name
+        for item in fields(teacher._settings)
+        if item.name != "extra" and not is_given(getattr(teacher._settings, item.name))
+    ]
+    assert missing == []
 
 
 def test_build_voice_worker_requires_session_metadata_before_services(tmp_path, monkeypatch):

@@ -9,10 +9,12 @@ from luna_tutor.storage.session_repository import SessionRepository
 from pipecat.frames.frames import (
     BotStoppedSpeakingFrame,
     CancelFrame,
+    EndWorkerFrame,
     ErrorFrame,
     Frame,
     InterimTranscriptionFrame,
     InterruptionFrame,
+    LLMMessagesAppendFrame,
     TranscriptionFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
@@ -42,7 +44,7 @@ class VoiceTeachingExchange:
         self.error = error
         self.discard_pending()
         if self.worker is not None:
-            await self.worker.queue_frame(ErrorFrame(str(error), fatal=True))
+            await self.worker.queue_frames([ErrorFrame(str(error)), EndWorkerFrame()])
 
 
 class VoiceTeachingProcessor(FrameProcessor):
@@ -58,14 +60,32 @@ class VoiceTeachingProcessor(FrameProcessor):
             self.exchange.discard_pending()
             await self.push_frame(frame, direction)
             return
-        if direction != FrameDirection.DOWNSTREAM or not isinstance(frame, TranscriptionFrame):
+        if direction != FrameDirection.DOWNSTREAM:
+            await self.push_frame(frame, direction)
+            return
+        if isinstance(frame, LLMMessagesAppendFrame):
+            message = frame.messages[0] if len(frame.messages) == 1 else None
+            content = message.get("content") if isinstance(message, dict) else None
+            if (
+                frame.run_llm
+                and isinstance(message, dict)
+                and message.get("role") == "user"
+                and isinstance(content, str)
+            ):
+                await self._plan_turn(content, f"text:{frame.id}")
+                return
+            await self.push_frame(frame, direction)
+            return
+        if not isinstance(frame, TranscriptionFrame):
             await self.push_frame(frame, direction)
             return
         if isinstance(frame, InterimTranscriptionFrame):
             await self.push_frame(frame, direction)
             return
 
-        turn_id = f"voice:{frame.user_id}:{frame.timestamp}"
+        await self._plan_turn(frame.text, f"voice:{frame.user_id}:{frame.timestamp}")
+
+    async def _plan_turn(self, text: str, turn_id: str) -> None:
         if turn_id in self.exchange.seen_turn_ids:
             return
         self.exchange.seen_turn_ids.add(turn_id)
@@ -81,7 +101,7 @@ class VoiceTeachingProcessor(FrameProcessor):
             self.exchange.state = stored.state
             plan = await self.exchange.service.plan(
                 stored.state,
-                frame.text,
+                text,
                 turn_id,
                 transcript_status="final",
                 input_event="transcript",
