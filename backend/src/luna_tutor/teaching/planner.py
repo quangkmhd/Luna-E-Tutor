@@ -73,7 +73,13 @@ class TurnPlanner:
             activity_context=self._teacher_context(target_activity, state, enforce_delivery=(
                 target_activity.id != activity.id or decision.feedback_action not in {
                     'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'})),
-            constraints=TeacherConstraints(additional=self._descriptions.constraints),
+            constraints=TeacherConstraints(
+                encouragement_required=(
+                    decision.feedback_action == 'acknowledge_and_continue'
+                    and target_activity.id != activity.id
+                ),
+                additional=self._descriptions.constraints,
+            ),
         )
         proposed = self._apply(state, redacted.text, turn_id, decision, evidence)
         return PlannedTurn(

@@ -94,6 +94,33 @@ async def test_teacher_vocabulary_context_has_concrete_word_not_only_generic_ins
 
 
 @pytest.mark.asyncio
+async def test_successful_answer_before_new_vocabulary_requires_encouragement(unit_01):
+    from luna_tutor.domain.state import ActivityProgress, LessonState
+    state = LessonState(
+        session_id='natural-transition', unit_id=unit_01.id, stage_id='lesson-02',
+        activity_id='lesson-02.introduce-dolphin',
+        objective_id='unit01.lesson02.vocabulary.dolphin',
+        last_teacher_turn='Would you see a dolphin in the ocean or on a mountain?',
+        activity_progress=(ActivityProgress(
+            activity_id='lesson-02.introduce-dolphin', status='in_progress',
+            model_repetitions_delivered=2, response_opportunity_given=True),),
+    )
+    evidence = EvaluatorResult(
+        turn_id='placeholder', state_version=0, response_kind='answer',
+        emotional_signals=[], objective_evidence=[ObjectiveEvidence(
+            objective_id='unit01.lesson02.vocabulary.dolphin',
+            meaning_status='satisfied', target_form_status='not_used',
+            evidence_quote='dưới biển', recast_needed=False, corrected_form=None,
+        )], needs_clarification=False, ambiguity_reason=None,
+    )
+    plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
+        state, 'dưới biển', 'natural-transition')
+
+    assert plan.teacher_request.activity_context.activity_id == 'lesson-02.introduce-pink'
+    assert plan.teacher_request.constraints.model_dump().get('encouragement_required') is True
+
+
+@pytest.mark.asyncio
 async def test_uncertain_input_is_preserved_through_service(state, unit_01):
     from luna_tutor.teaching.turn_service import TurnService
     from luna_tutor.domain.decisions import TeacherUtterance

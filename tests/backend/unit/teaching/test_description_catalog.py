@@ -22,8 +22,10 @@ async def test_yaml_edits_reach_planner_and_teacher(tmp_path, monkeypatch, unit_
     move = planner._next_move_text(current, TeachingDecision(
         feedback_action='clarify', progression_action='stay'))
     assert move == 'Ask gently what Quang meant.'
-    assert planner._next_move_text(current, TeachingDecision(
-        feedback_action='acknowledge_and_continue', progression_action='stay')) == 'Say a warm hello.'
+    current_move = planner._next_move_text(current, TeachingDecision(
+        feedback_action='acknowledge_and_continue', progression_action='stay'))
+    assert current_move.endswith('Say a warm hello.')
+    assert 'Respond to what Quang just said' in current_move
 
     class CaptureClient:
         async def structured_chat(self, messages, schema, request_id):

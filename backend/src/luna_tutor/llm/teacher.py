@@ -17,6 +17,18 @@ class InvalidTeacherResultError(InvalidModelOutputError):
 
 _MARKDOWN = re.compile(r'(^|\s)(#{1,6}\s|[-*]\s|\*\*|__|```)', re.MULTILINE)
 _FORCED_REPEAT = re.compile(r'\b(repeat after me|say it again|repeat it)\b', re.IGNORECASE)
+_ENCOURAGEMENT = re.compile(
+    r'\b(good answer|good job|great answer|great job|great thought|great thinking|'
+    r'nice answer|nice thinking|nice work|smart answer|smart thought|smart thinking|smart connection|'
+    r'well done|excellent|brilliant|wonderful)\b|'
+    r'(giỏi|tốt lắm|hay lắm|đúng lắm|xuất sắc|thông minh)',
+    re.IGNORECASE,
+)
+_ENCOURAGEMENT_FEEDBACK = (
+    "Add one explicit, brief encouragement for the learner's answer, such as Good answer, "
+    'Nice thinking, or Con giỏi lắm, while varying the wording naturally. A bare yes, right, '
+    'or you got it acknowledges correctness but is not encouragement.'
+)
 
 
 def _contains_recast(text: str, correction: str) -> bool:
@@ -55,6 +67,8 @@ def teacher_output_issues(text: str, request: TeacherTurnRequest) -> list[str]:
         issues.append('Do not demand repetition of the correction; use a natural response invitation.')
     if text.count('?') > request.constraints.max_questions:
         issues.append(f'Ask at most {request.constraints.max_questions} question(s). Combine or choose; do not ask an open question then a separate choice question.')
+    if request.constraints.encouragement_required and not _ENCOURAGEMENT.search(text):
+        issues.append(_ENCOURAGEMENT_FEEDBACK)
     if request.corrected_form and not _contains_recast(text, request.corrected_form):
         issues.append("Recast the child's meaning once using you/your, retaining the corrected grammar. Do not claim their first-person fact as your own biography.")
     if request.activity_context:
@@ -101,10 +115,15 @@ class GeminiTeacher:
 
     async def respond(self, request: TeacherTurnRequest) -> TeacherUtterance:
         feedback = []
-        for attempt in range(2):
+        max_attempts = 3 if request.constraints.encouragement_required else 2
+        for attempt in range(max_attempts):
             payload = request.model_dump(mode='json')
             if feedback:
-                payload['validation_feedback'] = feedback
+                repair_feedback = list(feedback)
+                if (request.constraints.encouragement_required
+                        and _ENCOURAGEMENT_FEEDBACK not in repair_feedback):
+                    repair_feedback.append(_ENCOURAGEMENT_FEEDBACK)
+                payload['validation_feedback'] = repair_feedback
             try:
                 raw = await self._client.structured_chat([
                     {'role': 'system', 'content': self._prompt},

@@ -10,13 +10,11 @@ planner_branches:
     description_en: Explain the meaning Quang asked about with one concrete example. Check understanding with one
       easy meaning question or choice; do not ask him to repeat the word or restart the introduction.
   answer_teacher_question_then_move:
-    description_en: 'First answer the specific question Quang just asked, before changing roles or introducing new
-      material. Acknowledging that he asked is not an answer. Then carry out this next activity in the same short
-      turn: {target.instruction}'
+    description_en: 'Respond directly to Quang''s question, request, or feedback before changing activities. Then
+      connect that response naturally to this next activity: {target.instruction}'
   answer_teacher_question:
-    description_en: Answer the specific question Quang just asked using the correct person and recent context. An
-      additional follow-up is optional, not required. Avoid rhetorical tags such as remember? He has already asked
-      you; do not instruct him to ask the same question again.
+    description_en: Respond directly to Quang's question, request, or feedback using the recent exchange. If he
+      comments on how you responded, acknowledge it and adapt. Then continue the current activity naturally.
   no_response_stay:
     description_en: Give Quang time without blaming him. Offer one easy choice question on the current topic. Do
       not claim he does not know or answered wrongly.
@@ -54,9 +52,13 @@ planner_branches:
     description_en: 'After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question.
       Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: {target.instruction}'
   move_to_next_activity:
-    description_en: '{target.instruction}'
+    description_en: 'When Quang''s answer was correct or helpful, open with two concise parts: acknowledge its
+      specific meaning, then praise the answer with a phrase equivalent to good answer or nice thinking. Saying only
+      yes or right does not replace the praise. Bridge through the relationship between the old and new topics;
+      never claim Quang likes something unless he said so. Keep the bridge declarative and reserve the turn''s only
+      question for Quang''s response invitation. Vary the wording. Then continue with: {target.instruction}'
   current_activity:
-    description_en: '{current.instruction}'
+    description_en: 'Respond to what Quang just said and continue this activity naturally: {current.instruction}'
 override_after_branch_selection:
   description_en: 'Acknowledge the information Quang already provided. Ask only for the remaining information, without
     repeating completed questions: {remaining_objective_descriptions}'
@@ -72,17 +74,11 @@ activity_instructions:
 - activity_id: warm-up.start
   description_en: Bridge directly to Lesson 1, adjusting pace to the learner’s mood.
 - activity_id: lesson-01.introduce-city
-  description_en: Model city twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce city in one simple, concrete context.
 - activity_id: lesson-01.introduce-class
-  description_en: Model class twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce class in one simple, concrete context.
 - activity_id: lesson-01.introduce-countryside
-  description_en: Model countryside twice, invite Quang to say the target word (not answer a topic question yet),
-    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
-    learning for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce countryside in one simple, concrete context.
 - activity_id: lesson-01.place-meaning
   description_en: Ask which place usually has tall buildings, then trees. Give a choice if needed; move on within
     the attempt limit.
@@ -95,21 +91,13 @@ activity_instructions:
   description_en: Create an opportunity to ask Luna where she lives. If still difficult after support, record the
     opportunity as handled without claiming the learner asked.
 - activity_id: lesson-02.introduce-dolphin
-  description_en: Model dolphin twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce dolphin in one simple, concrete context.
 - activity_id: lesson-02.introduce-pink
-  description_en: Model pink twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce pink in one simple, concrete context.
 - activity_id: lesson-02.introduce-sandwich
-  description_en: Model sandwich twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce sandwich in one simple, concrete context.
 - activity_id: lesson-02.introduce-table-tennis
-  description_en: Model table tennis twice, invite Quang to say the target word (not answer a topic question yet),
-    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
-    learning for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce table tennis in one simple, concrete context.
 - activity_id: lesson-02.favourite-animal
   description_en: Ask about the favourite animal; accept any appropriate animal, not only the textbook example.
 - activity_id: lesson-02.favourite-colour
@@ -132,22 +120,13 @@ activity_instructions:
   description_en: Offer a turn to ask Luna a favourite-things question. Record the real outcome or support-limit
     exit.
 - activity_id: level-02.introduce-birthday
-  description_en: Model birthday twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce birthday in one simple, concrete context.
 - activity_id: level-02.introduce-hobby
-  description_en: Model hobby twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce hobby in one simple, concrete context.
 - activity_id: level-02.introduce-phone-number
-  description_en: Model phone number twice, invite Quang to say the target word (not answer a topic question yet),
-    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
-    learning for review. Do not claim phoneme accuracy from text. Practise only the words or fictional examples;
-    never ask for a real phone number.
+  description_en: Introduce the phrase phone number using only fictional context; never request a real number.
 - activity_id: level-02.introduce-subject
-  description_en: Model subject twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce subject in one simple, concrete context.
 - activity_id: level-02.birthday
   description_en: Ask which month Quang's birthday is in, then wait for his answer.
 - activity_id: level-02.hobby
@@ -157,37 +136,21 @@ activity_instructions:
 - activity_id: level-02.ask-luna
   description_en: Invite Quang to ask Luna about her hobby or birthday month. Do not ask for contact information.
 - activity_id: level-03.introduce-cottage
-  description_en: Model cottage twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce cottage in one simple, concrete context.
 - activity_id: level-03.introduce-calm
-  description_en: Model calm twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce calm in one simple, concrete context.
 - activity_id: level-03.introduce-crowded
-  description_en: Model crowded twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce crowded in one simple, concrete context.
 - activity_id: level-03.introduce-vehicles
-  description_en: Model vehicles twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce vehicles in one simple, concrete context.
 - activity_id: level-03.introduce-traffic-jam
-  description_en: Model traffic jam twice, invite Quang to say the target word (not answer a topic question yet),
-    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
-    learning for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce traffic jam in one simple, concrete context.
 - activity_id: level-03.introduce-pavement
-  description_en: Model pavement twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce pavement in one simple, concrete context.
 - activity_id: level-03.introduce-drawback
-  description_en: Model drawback twice, invite Quang to say the target word (not answer a topic question yet), wait,
-    then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved learning
-    for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce drawback in one simple, concrete context.
 - activity_id: level-03.introduce-amusement-park
-  description_en: Model amusement park twice, invite Quang to say the target word (not answer a topic question yet),
-    wait, then give evidence-based feedback and bridge. After at most two attempts move on and queue unresolved
-    learning for review. Do not claim phoneme accuracy from text.
+  description_en: Introduce amusement park in one simple, concrete context.
 - activity_id: level-03.home-description
   description_en: Invite a description of the learner’s own home environment; city and countryside answers are both
     valid.

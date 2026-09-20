@@ -110,6 +110,69 @@ async def test_teacher_repairs_two_questions_once_without_changing_teaching_requ
 
 
 @pytest.mark.asyncio
+async def test_required_encouragement_repairs_bare_confirmation():
+    class SequenceClient(FakeClient):
+        async def structured_chat(self, messages, schema, request_id):
+            self.calls.append((messages, schema, request_id))
+            text = ('Yes, dolphins live in the ocean. Pink, pink. Can you say pink?'
+                    if len(self.calls) == 1 else
+                    'Dolphins live in the ocean. Good answer! Pink, pink. Can you say pink?')
+            return {'spoken_text': text, 'delivery_intent': 'encouraging',
+                    'generation_mode': 'model'}
+
+    client = SequenceClient()
+    result = await GeminiTeacher(client).respond(request(
+        feedback_action='acknowledge_and_continue', corrected_form=None,
+        constraints=TeacherConstraints(encouragement_required=True)))
+
+    assert result.spoken_text.startswith('Dolphins live in the ocean. Good answer!')
+    assert len(client.calls) == 2
+    repaired = json.loads(client.calls[1][0][1]['content'])
+    assert any('encouragement' in item.lower() for item in repaired['validation_feedback'])
+
+
+@pytest.mark.asyncio
+async def test_repair_keeps_encouragement_requirement_when_another_check_failed():
+    class SequenceClient(FakeClient):
+        async def structured_chat(self, messages, schema, request_id):
+            self.calls.append((messages, schema, request_id))
+            text = ('Good answer! First question? Second question?'
+                    if len(self.calls) == 1 else
+                    'Good answer! One question?')
+            return {'spoken_text': text, 'delivery_intent': 'encouraging',
+                    'generation_mode': 'model'}
+
+    client = SequenceClient()
+    await GeminiTeacher(client).respond(request(
+        feedback_action='acknowledge_and_continue', corrected_form=None,
+        constraints=TeacherConstraints(encouragement_required=True)))
+
+    repaired = json.loads(client.calls[1][0][1]['content'])
+    assert any('encouragement' in item.lower() for item in repaired['validation_feedback'])
+
+
+@pytest.mark.asyncio
+async def test_required_encouragement_allows_one_extra_bounded_repair():
+    class SequenceClient(FakeClient):
+        async def structured_chat(self, messages, schema, request_id):
+            self.calls.append((messages, schema, request_id))
+            text = ('Yes, that is right. One question? Second question?'
+                    if len(self.calls) < 3 else
+                    'Good answer! One question?')
+            return {'spoken_text': text, 'delivery_intent': 'encouraging',
+                    'generation_mode': 'model'}
+
+    client = SequenceClient()
+    result = await GeminiTeacher(client).respond(request(
+        feedback_action='acknowledge_and_continue', corrected_form=None,
+        constraints=TeacherConstraints(encouragement_required=True)))
+
+    assert result.generation_mode == 'model'
+    assert result.spoken_text == 'Good answer! One question?'
+    assert len(client.calls) == 3
+
+
+@pytest.mark.asyncio
 async def test_teacher_repair_is_bounded():
     client = FakeClient({'spoken_text': 'First question? Second question?',
                          'delivery_intent': 'warm', 'generation_mode': 'model'})

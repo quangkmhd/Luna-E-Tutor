@@ -89,8 +89,12 @@ description_en: |
   of a supplied word is always `asks_meaning`, never `asks_teacher`. Use
   `asks_teacher` when the learner directly asks
   the teacher a personal/content question, even when the teacher invited the child
-  to ask it or the question itself satisfies a curriculum pattern. Responding to
-  an invitation to ask is still `asks_teacher`, not `answer`. For example, after
+  to ask it or the question itself satisfies a curriculum pattern. Also use
+  `asks_teacher` for a direct request, correction, or comment about how the Teacher
+  should respond, such as asking for acknowledgment, praise, an explanation, or a
+  slower pace. This feedback addresses the Teacher and must be answered; it is not
+  `off_topic` merely because it does not attempt the active English objective.
+  Responding to an invitation to ask is still `asks_teacher`, not `answer`. For example, after
   "Now ask me about my hobby", "What's your hobby?" is `asks_teacher`; also record
   any demonstrated question pattern in objective_evidence. Classify the speech act
   independently from whether the activity objective was fulfilled. Use this even
@@ -255,6 +259,15 @@ description_en: |
   Output:
   ```json
   {"turn_id":"ex-asks-teacher","state_version":4,"response_kind":"asks_teacher","emotional_signals":[],"objective_evidence":[{"objective_id":"pattern.favourite-animal","meaning_status":"satisfied","target_form_status":"correct_target_form","evidence_quote":"My favourite animal is a dolphin.","recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
+  ```
+
+  ### Learner feedback about the Teacher's response
+  Teacher moved on without praising a correct answer. The active objective is the
+  new word pink.
+  Input: {"turn_id":"ex-teacher-feedback","learner_transcript":"Con trả lời đúng thì cô phải khen con chứ."}
+  Output:
+  ```json
+  {"turn_id":"ex-teacher-feedback","state_version":4,"response_kind":"asks_teacher","emotional_signals":[],"objective_evidence":[{"objective_id":"vocabulary.pink","meaning_status":"not_demonstrated","target_form_status":"not_used","evidence_quote":null,"recast_needed":false,"corrected_form":null}],"needs_clarification":false,"ambiguity_reason":null}
   ```
   
   ### False vocabulary definition

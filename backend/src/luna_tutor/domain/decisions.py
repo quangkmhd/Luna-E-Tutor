@@ -47,6 +47,7 @@ class TeacherConstraints(Contract):
     require_repetition: Literal[False] = False
     allow_pronunciation_claims: Literal[False] = False
     plain_spoken_text: Literal[True] = True
+    encouragement_required: bool = False
     additional: SnapshotItems[Text] = ()
 
 

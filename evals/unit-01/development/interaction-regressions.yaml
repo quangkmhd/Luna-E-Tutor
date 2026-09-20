@@ -233,3 +233,48 @@ scenarios:
       progression_action: reduce_difficulty
       activity_id: level-03.contrast
     teacher_criteria: [acknowledges_tiredness, offers_simple_choice, does_not_demand_full_sentence]
+- id: regression-answer-before-new-word-and-tutor-feedback
+  source:
+    heading: 'Derived regression: acknowledge the learner before introducing the next word'
+    line: 166
+    numbered: false
+  initial_state:
+    stage_id: lesson-02
+    activity_id: lesson-02.introduce-dolphin
+    objective_id: unit01.lesson02.vocabulary.dolphin
+    model_repetitions_delivered: 2
+    response_opportunity_given: true
+    support: model
+  objective_ids:
+  - unit01.lesson02.vocabulary.dolphin
+  turns:
+  - teacher_turn: Dolphin means cá heo. Would you see a dolphin in the ocean or on a mountain?
+    learner_text: dưới biển
+    evaluator_gold:
+      response_kind: answer
+      meaning_status: satisfied
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - acknowledge_and_continue
+    expected_state_effects:
+      count_attempt: true
+      activity_id: lesson-02.introduce-pink
+    teacher_criteria:
+    - acknowledges_that_dolphins_live_in_the_sea
+    - gives_specific_natural_encouragement
+    - bridges_to_pink_before_modelling_it
+    - invites_word_practice
+  - learner_text: con nói là dưới biển thì cô phải khen con đi chứ
+    evaluator_gold:
+      response_kind: asks_teacher
+      meaning_status: not_demonstrated
+      target_form_status: not_used
+    allowed_feedback_actions:
+    - answer_teacher_question
+    expected_state_effects:
+      count_attempt: false
+      activity_id: lesson-02.introduce-pink
+    teacher_criteria:
+    - acknowledges_the_feedback_instead_of_calling_it_off_topic
+    - praises_the_correct_sea_answer
+    - resumes_the_current_activity_naturally
