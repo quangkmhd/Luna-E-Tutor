@@ -4,14 +4,19 @@ This is a content importer, not an activity generator. Imported objectives can b
 reviewed before being used to author teaching activities and completion rules.
 """
 
-from pathlib import Path
 import re
 import unicodedata
+from pathlib import Path
 
 from openpyxl import load_workbook
 
 from luna_tutor.curriculum.models import (
-    ImportedLesson, ImportedUnit, Objective, Pattern, Source, VocabularyItem,
+    ImportedLesson,
+    ImportedUnit,
+    Objective,
+    Pattern,
+    Source,
+    VocabularyItem,
 )
 
 
@@ -40,6 +45,25 @@ def _is_review(value: str) -> bool:
     return normalized.startswith(('on-tap', 'on-lai', 'review'))
 
 
+def _split_vocabulary(text: str, *, grade: int, unit: int,
+                      row: int, column: int) -> list[str]:
+    """Split reviewed vocabulary cells without turning labels into targets."""
+    items = [item.strip() for item in re.split(r'[,;\n]', text) if item.strip()]
+    if (grade, unit, row, column) == (5, 2, 6, 4) and items:
+        items[0] = items[0].removeprefix('numbers ').strip()
+    if (grade, unit, row, column) == (5, 4, 11, 8):
+        expanded = []
+        for item in items:
+            if item == 'percussion/wind/string instruments':
+                expanded.extend([
+                    'percussion instruments', 'wind instruments', 'string instruments',
+                ])
+            else:
+                expanded.append(item)
+        items = expanded
+    return items
+
+
 def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
     """Read one bounded Unit from its grade sheet, resolving review references.
 
@@ -57,7 +81,7 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
         title = ''
         for row in range(2, sheet.max_row + 1):
             value = str(sheet.cell(row, 1).value or '')
-            heading = re.match(r'^Unit\s+(\d+)\s*:', value, re.I)
+            heading = re.match(r'^Unit\s+(\d+)\s*:', value, re.IGNORECASE)
             if not heading:
                 continue
             if start is not None:
@@ -78,11 +102,12 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
             if value is not None:
                 return str(value), row
             for merged in sheet.merged_cells.ranges:
-                if merged.min_row <= row <= merged.max_row and merged.min_col <= column <= merged.max_col:
+                if (merged.min_row <= row <= merged.max_row
+                        and merged.min_col <= column <= merged.max_col
+                        and start <= merged.min_row < end):
                     # An anchor outside this Unit cannot provide content to it.
-                    if start <= merged.min_row < end:
-                        anchor = sheet.cell(merged.min_row, merged.min_col).value
-                        return str(anchor or ''), merged.min_row
+                    anchor = sheet.cell(merged.min_row, merged.min_col).value
+                    return str(anchor or ''), merged.min_row
             return '', row
 
         vocabulary: dict[str, VocabularyItem] = {}
@@ -94,12 +119,13 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
         def add_content(text: str, scope: str, row: int, column: int, kind: str) -> list[str]:
             if not text or _is_review(text) or text.startswith('—'):
                 return []
-            separator = r'[,;\n]' if kind == 'vocabulary' else (r'[;\n]' if column == 5 else r'\n')
+            items = (_split_vocabulary(
+                text, grade=grade, unit=unit, row=row, column=column)
+                if kind == 'vocabulary'
+                else [item.strip() for item in re.split(
+                    r'[;\n]' if column == 5 else r'\n', text) if item.strip()])
             ids = []
-            for item_text in re.split(separator, text):
-                item_text = item_text.strip()
-                if not item_text:
-                    continue
+            for item_text in items:
                 identifier = _slug(item_text) if kind == 'vocabulary' else _pattern_id(item_text)
                 item_source = source(row, column)
                 objective_id = f'unit{unit:02d}.{scope}.{kind}.{identifier.replace("-", "_")}'
@@ -123,7 +149,7 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
             return ids
 
         for row in range(start, end):
-            lesson_match = re.match(r'Lesson\s+(\d+)', str(sheet.cell(row, 2).value or ''), re.I)
+            lesson_match = re.match(r'Lesson\s+(\d+)', str(sheet.cell(row, 2).value or ''), re.IGNORECASE)
             if not lesson_match:
                 continue
             number = int(lesson_match.group(1))
@@ -132,7 +158,7 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
             vocabulary_text, vocabulary_row = cell(row, 4)
             pattern_text, pattern_row = cell(row, 5)
             if _is_review(vocabulary_text) or _is_review(pattern_text):
-                explicit = re.search(r'Lesson\s+(\d+(?:\s*\+\s*\d+)*)', vocabulary_text, re.I)
+                explicit = re.search(r'Lesson\s+(\d+(?:\s*\+\s*\d+)*)', vocabulary_text, re.IGNORECASE)
                 targets = [int(n) for n in re.findall(r'\d+', explicit.group(1))] if explicit else [l.lesson for l in lessons]
                 reviews.append((lesson, targets))
             else:
