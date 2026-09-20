@@ -63,24 +63,37 @@ services:
     profiles:
       - standalone-nginx
 
-  # Optional web service for running frontend on VPS instead of Vercel
+  # Web frontend service running on VPS
   web:
     build:
       context: .
       dockerfile: web/Dockerfile
       args:
-        - NEXT_PUBLIC_TUTOR_API_URL=${NEXT_PUBLIC_TUTOR_API_URL:-http://localhost:8000}
-        - NEXT_PUBLIC_PIPECAT_URL=${NEXT_PUBLIC_PIPECAT_URL:-http://localhost:7860}
-        - NEXT_PUBLIC_TALK_PIPECAT_URL=${NEXT_PUBLIC_TALK_PIPECAT_URL:-http://localhost:7863}
+        - NEXT_PUBLIC_TUTOR_API_URL=${NEXT_PUBLIC_TUTOR_API_URL:-/api}
+        - NEXT_PUBLIC_PIPECAT_URL=${NEXT_PUBLIC_PIPECAT_URL:-/voice-bot}
+        - NEXT_PUBLIC_TALK_PIPECAT_URL=${NEXT_PUBLIC_TALK_PIPECAT_URL:-/talk-bot}
     container_name: luna-web
     restart: unless-stopped
+    environment:
+      - VPS_HOST=http://14.225.204.45
+      - BACKEND_PORT=8090
+      - VOICE_PORT=7860
+      - TALK_PORT=7863
     ports:
       - "${WEB_PORT:-3001}:3000"
     networks:
       - luna-network
-    profiles:
+
+  # Cloudflare Tunnel for instant public HTTPS without custom domain
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: luna-tunnel
+    restart: unless-stopped
+    command: tunnel --protocol http2 --no-autoupdate --url http://web:3000
+    depends_on:
       - web
-      - all
+    networks:
+      - luna-network
 
 networks:
   luna-network:
@@ -88,4 +101,5 @@ networks:
 
 volumes:
   backend_data:
+
 
