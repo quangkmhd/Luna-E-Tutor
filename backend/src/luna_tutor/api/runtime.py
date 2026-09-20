@@ -166,6 +166,8 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
     origins = ['http://localhost:3000']
     if environment.get('ENV') == 'test':
         origins.append('http://localhost:3090')
+        if e2e_web_origin := environment.get('E2E_WEB_ORIGIN', '').strip():
+            origins.append(e2e_web_origin)
     return create_app(repository=repository, turn_service=turn_service,
                       comparison_service=comparison_service,
                       lifespan=lifespan, allowed_origins=origins)

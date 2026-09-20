@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ request }) => {
-  await request.post('http://localhost:8091/api/sessions');
+  const apiUrl = process.env.E2E_API_URL ?? `http://localhost:${process.env.E2E_API_PORT ?? '8091'}`;
+  await request.post(`${apiUrl}/api/sessions`);
 });
 
 test('provider failure is retryable and does not advance state', async ({ page }) => {

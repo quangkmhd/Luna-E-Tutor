@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ request }) => {
-  await request.post('http://localhost:8091/api/sessions');
+  const apiUrl = process.env.E2E_API_URL ?? `http://localhost:${process.env.E2E_API_PORT ?? '8091'}`;
+  await request.post(`${apiUrl}/api/sessions`);
 });
 
 test('starts at warm-up, recasts naturally, and resets after reload', async ({ page }) => {
@@ -25,8 +26,9 @@ test('new session starts clean without session history', async ({ page }) => {
 });
 
 test('keeps the lesson header, composer, and sidebar panels visible on desktop', async ({ page, request }) => {
+  const apiUrl = process.env.E2E_API_URL ?? `http://localhost:${process.env.E2E_API_PORT ?? '8091'}`;
   for (let index = 0; index < 5; index += 1) {
-    await request.post('http://localhost:8091/api/sessions');
+    await request.post(`${apiUrl}/api/sessions`);
   }
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/');

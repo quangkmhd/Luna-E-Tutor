@@ -9,6 +9,7 @@ import type {
 } from '@pipecat-ai/client-js';
 import { PipecatClientAudio, PipecatClientProvider } from '@pipecat-ai/client-react';
 import { SmallWebRTCTransport } from '@pipecat-ai/small-webrtc-transport';
+import { createStore } from 'jotai';
 import {
   createContext,
   useContext,
@@ -93,6 +94,7 @@ export function PipecatVoiceProvider({
   const [ttfaSeconds, setTtfaSeconds] = useState<number | null>(null);
   const [, setUserStoppedAt] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [conversationStore] = useState(createStore);
   const [client] = useState(() => new PipecatClient({
     transport: new SmallWebRTCTransport(),
     enableMic: true,
@@ -194,7 +196,7 @@ export function PipecatVoiceProvider({
   };
 
   return (
-    <PipecatClientProvider client={client}>
+    <PipecatClientProvider client={client} jotaiStore={conversationStore}>
       <VoiceContext.Provider value={value}>
         {children}
         <PipecatClientAudio />

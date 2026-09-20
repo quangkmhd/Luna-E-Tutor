@@ -14,6 +14,7 @@ const sdk = vi.hoisted(() => {
     client,
     conversationMessages: [] as Array<Record<string, unknown>>,
     options: undefined as Record<string, unknown> | undefined,
+    stores: [] as unknown[],
   };
 });
 
@@ -27,7 +28,10 @@ vi.mock('@pipecat-ai/small-webrtc-transport', () => ({
   SmallWebRTCTransport: vi.fn(function () { return { kind: 'small-webrtc' }; }),
 }));
 vi.mock('@pipecat-ai/client-react', () => ({
-  PipecatClientProvider: ({ children }: { children: React.ReactNode }) => children,
+  PipecatClientProvider: ({ children, jotaiStore }: { children: React.ReactNode; jotaiStore?: unknown }) => {
+    sdk.stores.push(jotaiStore);
+    return children;
+  },
   PipecatClientAudio: () => <div data-testid="pipecat-audio" />,
   PipecatClientMicToggle: ({ children }: { children: (value: object) => React.ReactNode }) => children({
     isMicEnabled: true, disabled: false, onClick: sdk.enableMic,
@@ -47,6 +51,7 @@ describe('PipecatVoiceProvider', () => {
     sdk.enableMic.mockClear();
     sdk.conversationMessages = [];
     sdk.options = undefined;
+    sdk.stores = [];
   });
 
   afterEach(() => vi.useRealTimers());
@@ -125,6 +130,26 @@ describe('PipecatVoiceProvider', () => {
       <PipecatVoiceProvider key="new" sessionId="new"><span>lesson</span></PipecatVoiceProvider>,
     );
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+  });
+
+  it('isolates conversation state in a fresh store for each provider session', () => {
+    const view = render(
+      <PipecatVoiceProvider key="animals" requestBody={{ topic: 'Animals' }}>
+        <span>talk</span>
+      </PipecatVoiceProvider>,
+    );
+    const animalsStore = sdk.stores.at(-1);
+
+    view.rerender(
+      <PipecatVoiceProvider key="school" requestBody={{ topic: 'School life' }}>
+        <span>talk</span>
+      </PipecatVoiceProvider>,
+    );
+    const schoolStore = sdk.stores.at(-1);
+
+    expect(animalsStore).toBeDefined();
+    expect(schoolStore).toBeDefined();
+    expect(schoolStore).not.toBe(animalsStore);
   });
 
   it('disconnects when the lesson is no longer active', async () => {
