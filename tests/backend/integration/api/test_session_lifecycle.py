@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-
 from luna_tutor.api.app import create_app
 from luna_tutor.domain.state import LessonState, ObjectiveProgress, ReviewItem
 from luna_tutor.storage.session_repository import SessionRepository
@@ -10,11 +9,13 @@ from .helpers import FakeTurnService
 def test_abandon_preserves_history_and_new_session_starts_fresh(tmp_path):
     repository = SessionRepository(tmp_path / 'sessions.sqlite3')
     api = TestClient(create_app(repository=repository, turn_service=FakeTurnService()))
-    first = api.post('/api/sessions').json()
+    first = api.post(
+        '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     turn = {'turn_id': 'one', 'expected_state_version': 0, 'learner_text': 'Hello'}
     api.post(f"/api/sessions/{first['session_id']}/turns", json=turn)
     abandoned = api.post(f"/api/sessions/{first['session_id']}/abandon").json()
-    second = api.post('/api/sessions').json()
+    second = api.post(
+        '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     assert abandoned['status'] == 'abandoned'
     assert len(abandoned['messages']) == 3
     assert second['stage_id'] == 'warm-up' and second['state_version'] == 0
@@ -24,7 +25,8 @@ def test_abandon_preserves_history_and_new_session_starts_fresh(tmp_path):
 def test_finish_rejected_before_free_talk(tmp_path):
     repository = SessionRepository(tmp_path / 'sessions.sqlite3')
     api = TestClient(create_app(repository=repository, turn_service=FakeTurnService()))
-    session = api.post('/api/sessions').json()
+    session = api.post(
+        '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     response = api.post(f"/api/sessions/{session['session_id']}/finish",
                         json={'expected_state_version': 0})
     assert response.status_code == 409

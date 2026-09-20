@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-
 from luna_tutor.api.app import create_app
 from luna_tutor.domain.decisions import TeachingDecision
 from luna_tutor.domain.evidence import EvaluatorResult
@@ -24,8 +23,13 @@ class FakeComparisonService:
             needs_clarification=False, ambiguity_reason=None)
         decision = TeachingDecision(
             feedback_action='acknowledge_and_continue', progression_action='stay')
-        common = dict(evidence=evidence, decision=decision, planning_latency_ms=10,
-                      teacher_latency_ms=20, total_latency_ms=30)
+        common = {
+            'evidence': evidence,
+            'decision': decision,
+            'planning_latency_ms': 10,
+            'teacher_latency_ms': 20,
+            'total_latency_ms': 30,
+        }
         return ComparisonResult(
             state_version=state.state_version, stage_id=state.stage_id,
             activity_id=state.activity_id, learner_text=learner_text,
@@ -46,7 +50,8 @@ def test_review_returns_both_teacher_outputs_without_mutating_session(tmp_path):
     api = TestClient(create_app(
         repository=repository, turn_service=UnusedTurnService(),
         comparison_service=comparison))
-    session = api.post('/api/sessions').json()
+    session = api.post(
+        '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
 
     response = api.post(f"/api/review/{session['session_id']}", json={
         'learner_text': 'I live city.',

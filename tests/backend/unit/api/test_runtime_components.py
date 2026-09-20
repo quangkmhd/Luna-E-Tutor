@@ -3,9 +3,9 @@ import json
 import httpx
 import pytest
 from luna_tutor.api import runtime
-from luna_tutor.api.runtime import FixtureTurnService
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.storage.session_repository import SessionRepository
+from luna_tutor.teaching.unit_router import UnitTurnRouter
 
 
 def test_fixture_components_are_deterministic_and_have_repository(tmp_path):
@@ -18,7 +18,10 @@ def test_fixture_components_are_deterministic_and_have_repository(tmp_path):
     )
 
     assert isinstance(components.repository, SessionRepository)
-    assert isinstance(components.turn_service, FixtureTurnService)
+    assert isinstance(components.turn_service, UnitTurnRouter)
+    assert [
+        item.id for item in components.curriculum_registry.list_units()
+    ] == ['grade05.unit01', 'grade05.unit02']
     assert components.client is None
 
 

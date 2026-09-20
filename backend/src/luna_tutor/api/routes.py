@@ -1,19 +1,28 @@
 from uuid import uuid4
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from luna_tutor.api.schemas import (
-    CreateSessionRequest, MessageView, ReviewRequest, SessionView, SummaryView,
-    TurnRequest, TurnResponse, VersionRequest,
+    CreateSessionRequest,
+    MessageView,
+    ReviewRequest,
+    SessionView,
+    SummaryView,
+    TurnRequest,
+    TurnResponse,
+    UnitView,
+    VersionRequest,
 )
+from luna_tutor.curriculum.registry import UnknownUnitError
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
 from luna_tutor.llm.teacher import InvalidTeacherResultError
 from luna_tutor.review.comparison import ComparisonResult
 from luna_tutor.storage.session_repository import (
-    SessionNotFoundError, StateConflictError, StoredSession,
+    SessionNotFoundError,
+    StateConflictError,
+    StoredSession,
 )
-
 
 LEGACY_GREETING = "Hello, Quang! I'm Luna. It's lovely to see you today!"
 GREETING = "Hello, Quang! I'm Luna. How are you today?"
@@ -37,7 +46,7 @@ def _summary(stored: StoredSession) -> SummaryView:
                        not_yet_observed=[] if observed else ['No learning evidence recorded yet'])
 
 
-def session_view(stored: StoredSession) -> SessionView:
+def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
     messages = [MessageView(role='teacher', text=stored.state.opening_message or LEGACY_GREETING)]
     for completed in stored.turns:
         messages.extend([
@@ -49,11 +58,16 @@ def session_view(stored: StoredSession) -> SessionView:
         ])
     last = stored.turns[-1] if stored.turns else None
     state = stored.state
+    curriculum = curriculum_registry.get(state.unit_id)
     if state.closing_message:
         messages.append(MessageView(role='teacher', text=state.closing_message,
                                     delivery_intent='warm'))
     return SessionView(
         session_id=state.session_id, unit_id=state.unit_id,
+        unit=UnitView(
+            id=curriculum.id, grade=curriculum.grade,
+            unit=curriculum.unit, title=curriculum.title,
+        ),
         state_version=state.state_version, stage_id=state.stage_id,
         activity_id=state.activity_id, objective_id=state.objective_id,
         status=state.status, messages=messages,
@@ -70,35 +84,69 @@ def _error(status: int, code: str, message: str, retryable: bool = False):
         'code': code, 'message': message, 'retryable': retryable})
 
 
-def _fresh_state() -> LessonState:
+def _fresh_state(curriculum) -> LessonState:
+    feelings = next(
+        activity for activity in curriculum.activities
+        if activity.stage_id == 'warm-up' and activity.kind == 'emotion_check'
+    )
+    greeting = next(
+        activity for activity in curriculum.activities
+        if activity.stage_id == 'warm-up' and activity.kind == 'greeting'
+    )
     return LessonState(
-        session_id=str(uuid4()), unit_id='grade05.unit01', stage_id='warm-up',
-        activity_id='warm-up.feelings', last_teacher_turn=GREETING, opening_message=GREETING,
+        session_id=str(uuid4()), unit_id=curriculum.id, stage_id='warm-up',
+        activity_id=feelings.id, last_teacher_turn=GREETING, opening_message=GREETING,
         activity_progress=(ActivityProgress(
-            activity_id='warm-up.hello', status='completed'),
-            ActivityProgress(activity_id='warm-up.feelings', status='in_progress',
+            activity_id=greeting.id, status='completed'),
+            ActivityProgress(activity_id=feelings.id, status='in_progress',
                              response_opportunity_given=True)))
 
 
-def build_router(repository, turn_service, comparison_service=None) -> APIRouter:
+def build_router(
+        repository, turn_service, curriculum_registry,
+        comparison_service=None) -> APIRouter:
     router = APIRouter(prefix='/api')
 
+    def view(stored):
+        try:
+            return session_view(stored, curriculum_registry)
+        except UnknownUnitError:
+            _error(
+                500, 'UNKNOWN_STORED_UNIT',
+                f'Session references unavailable curriculum {stored.state.unit_id}.',
+            )
+
+    @router.get('/units', response_model=list[UnitView])
+    async def list_units():
+        return [
+            UnitView(id=item.id, grade=item.grade, unit=item.unit, title=item.title)
+            for item in curriculum_registry.list_units()
+        ]
+
     @router.post('/sessions', response_model=SessionView)
-    async def create_session(_: CreateSessionRequest | None = Body(default=None)):
-        return session_view(repository.create_session(_fresh_state()))
+    async def create_session(request: CreateSessionRequest):
+        try:
+            curriculum = curriculum_registry.get(request.unit_id)
+        except UnknownUnitError:
+            _error(400, 'UNKNOWN_UNIT', f'Unknown curriculum unit {request.unit_id}.')
+        return view(repository.create_session(_fresh_state(curriculum)))
 
     @router.post('/sessions/reset', response_model=SessionView)
-    async def reset_session():
-        return session_view(repository.replace_with_session(_fresh_state()))
+    async def reset_session(request: CreateSessionRequest):
+        try:
+            curriculum = curriculum_registry.get(request.unit_id)
+        except UnknownUnitError:
+            _error(400, 'UNKNOWN_UNIT', f'Unknown curriculum unit {request.unit_id}.')
+        return view(repository.replace_with_session(_fresh_state(curriculum)))
 
     @router.get('/sessions', response_model=list[SessionView])
     async def list_sessions():
-        return [session_view(item) for item in repository.list_sessions()]
+        return [view(item) for item in repository.list_sessions()]
 
     @router.get('/sessions/{session_id}', response_model=SessionView)
     async def get_session(session_id: str):
         try:
-            return session_view(repository.get_session(session_id))
+            return view(repository.get_session(session_id))
         except SessionNotFoundError:
             _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
 
@@ -107,7 +155,7 @@ def build_router(repository, turn_service, comparison_service=None) -> APIRouter
         existing = repository.get_turn(session_id, request.turn_id)
         if existing is not None:
             return TurnResponse(turn_id=request.turn_id,
-                                session=session_view(repository.get_session(session_id)))
+                                session=view(repository.get_session(session_id)))
         try:
             stored = repository.get_session(session_id)
             if stored.state.status != 'active':
@@ -118,7 +166,7 @@ def build_router(repository, turn_service, comparison_service=None) -> APIRouter
                 stored.state, request.learner_text, request.turn_id)
             repository.commit_turn(session_id, request.expected_state_version, completed)
             return TurnResponse(turn_id=request.turn_id,
-                                session=session_view(repository.get_session(session_id)))
+                                session=view(repository.get_session(session_id)))
         except SessionNotFoundError:
             _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
         except StateConflictError:
@@ -129,18 +177,23 @@ def build_router(repository, turn_service, comparison_service=None) -> APIRouter
             _error(503, 'INVALID_EVALUATION', 'The tutor could not assess that turn.', True)
         except ProviderError:
             _error(503, 'PROVIDER_UNAVAILABLE', 'The tutor service is temporarily unavailable.', True)
+        except UnknownUnitError:
+            _error(
+                500, 'UNKNOWN_STORED_UNIT',
+                f'Session references unavailable curriculum {stored.state.unit_id}.',
+            )
 
     @router.post('/sessions/{session_id}/abandon', response_model=SessionView)
     async def abandon(session_id: str):
         try:
-            return session_view(repository.abandon_session(session_id))
+            return view(repository.abandon_session(session_id))
         except SessionNotFoundError:
             _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
 
     @router.post('/sessions/{session_id}/finish', response_model=SessionView)
     async def finish(session_id: str, request: VersionRequest):
         try:
-            return session_view(repository.finish_free_talk(
+            return view(repository.finish_free_talk(
                 session_id, request.expected_state_version))
         except SessionNotFoundError:
             _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
@@ -166,5 +219,10 @@ def build_router(repository, turn_service, comparison_service=None) -> APIRouter
             except ProviderError:
                 _error(503, 'PROVIDER_UNAVAILABLE',
                        'The tutor service is temporarily unavailable.', True)
+            except UnknownUnitError:
+                _error(
+                    500, 'UNKNOWN_STORED_UNIT',
+                    f'Session references unavailable curriculum {stored.state.unit_id}.',
+                )
 
     return router
