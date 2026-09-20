@@ -23,7 +23,7 @@ def test_fixture_components_are_deterministic_and_have_repository(tmp_path):
         item.id for item in components.curriculum_registry.list_units()
     ] == [
         'grade05.unit01', 'grade05.unit02',
-        'grade05.unit03', 'grade05.unit04',
+        'grade05.unit03', 'grade05.unit04', 'grade05.unit05',
     ]
     assert components.client is None
 

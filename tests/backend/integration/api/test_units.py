@@ -16,7 +16,7 @@ def test_lists_enabled_units_and_creates_selected_unit(tmp_path):
     root = Path(__file__).resolve().parents[4]
     registry = CurriculumRegistry(
         root / "curriculum",
-        ("grade05.unit01", "grade05.unit02", "grade05.unit03", "grade05.unit04"),
+        ("grade05.unit01", "grade05.unit02", "grade05.unit03", "grade05.unit04", "grade05.unit05"),
     )
     api = TestClient(
         create_app(
@@ -35,6 +35,7 @@ def test_lists_enabled_units_and_creates_selected_unit(tmp_path):
         ("grade05.unit02", "Our homes"),
         ("grade05.unit03", "My foreign friends"),
         ("grade05.unit04", "Our free-time activities"),
+        ("grade05.unit05", "My future job"),
     ]
 
     created = api.post(
@@ -57,7 +58,7 @@ def test_create_requires_known_unit(tmp_path):
     root = Path(__file__).resolve().parents[4]
     registry = CurriculumRegistry(
         root / "curriculum",
-        ("grade05.unit01", "grade05.unit02", "grade05.unit03", "grade05.unit04"),
+        ("grade05.unit01", "grade05.unit02", "grade05.unit03", "grade05.unit04", "grade05.unit05"),
     )
     api = TestClient(
         create_app(
@@ -79,7 +80,7 @@ def test_stored_unknown_unit_returns_stable_configuration_error(tmp_path):
     root = Path(__file__).resolve().parents[4]
     registry = CurriculumRegistry(
         root / "curriculum",
-        ("grade05.unit01", "grade05.unit02", "grade05.unit03", "grade05.unit04"),
+        ("grade05.unit01", "grade05.unit02", "grade05.unit03", "grade05.unit04", "grade05.unit05"),
     )
     repository = SessionRepository(tmp_path / "unknown.sqlite3")
     repository.create_session(

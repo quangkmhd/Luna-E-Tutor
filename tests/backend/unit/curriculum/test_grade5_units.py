@@ -7,7 +7,7 @@ from luna_tutor.curriculum.loader import load_unit
 
 ROOT = Path(__file__).resolve().parents[4]
 WORKBOOK = ROOT / "docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx"
-IMPLEMENTED_UNIT_IDS = (1, 2, 3, 4)
+IMPLEMENTED_UNIT_IDS = tuple(range(1, 6))
 STAGE_ORDER = [
     "warm-up",
     "lesson-01",
@@ -39,6 +39,13 @@ UNIT4_VOCABULARY = {
     "percussion-instruments", "wind-instruments", "string-instruments",
     "hit", "interact", "amazed",
 }
+UNIT5_VOCABULARY = {
+    "firefighter", "gardener", "reporter", "writer",
+    "grow-flowers", "report-the-news", "teach-children", "write-stories",
+    "architect", "designer", "scientist", "vet",
+    "fire-engine", "equipment", "rescue", "accident", "trap", "hose",
+    "invent", "inventor", "create", "creative", "imagination",
+}
 
 
 @pytest.fixture(params=IMPLEMENTED_UNIT_IDS, ids=lambda number: f"unit-{number:02d}")
@@ -61,6 +68,33 @@ def unit_03():
 @pytest.fixture
 def unit_04():
     return load_unit(ROOT / "curriculum/grade-05/unit-04")
+
+
+@pytest.fixture
+def unit_05():
+    return load_unit(ROOT / "curriculum/grade-05/unit-05")
+
+
+def test_unit5_targets_match_reviewed_source(unit_05):
+    assert unit_05.vocabulary_ids() == UNIT5_VOCABULARY
+    assert {pattern.id for pattern in unit_05.patterns} == {
+        "future-job", "job-reason", "job-duties", "family-job",
+        "hypothetical-firefighter", "firefighter-rescue",
+        "inventors-imagination",
+    }
+    imported = import_workbook(WORKBOOK, grade=5, unit=5)
+    assert {
+        item.id: (item.text, item.source.section)
+        for item in unit_05.vocabulary
+    } == {
+        item.id: (item.text, item.source.section)
+        for item in imported.vocabulary
+    }
+    assert {
+        (item.text, item.source.section) for item in unit_05.patterns
+    } == {
+        (item.text, item.source.section) for item in imported.patterns
+    }
 
 
 def test_unit4_targets_and_internet_safety_match_reviewed_source(unit_04):

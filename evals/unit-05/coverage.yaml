@@ -1,0 +1,45 @@
+source_file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+numbered_scenario_ids:
+- unit05-desired-job
+- unit05-job-reason
+- unit05-job-duty
+- unit05-hypothetical-firefighter
+- unit05-creativity
+- unit05-valid-alternative
+- unit05-wrong-category
+- unit05-vietnamese-answer
+- unit05-silence
+- unit05-two-failure-exit
+- unit05-fictional-family
+- unit05-free-talk
+- unit05-summary
+required_rule_ids: []
+required_branch_ids:
+- lesson-01.future-job
+- lesson-02.job-reason
+- level-02.job-duties
+- level-02.family-job
+- level-03.hypothetical-firefighter
+- level-03.creativity
+- lesson-01.introduce-firefighter
+- free-talk.conversation
+- summary.reflect
+required_objective_ids:
+- unit05.lesson01.pattern.future_job
+- unit05.lesson02.pattern.job_reason
+- unit05.level02.pattern.job_duties
+- unit05.level02.pattern.family_job
+- unit05.level03.pattern.hypothetical_firefighter
+- unit05.level03.pattern.inventors_imagination
+- unit05.lesson01.vocabulary.firefighter
+rule_scenarios: {}
+branch_scenarios:
+  lesson-01.future-job: [unit05-desired-job, unit05-valid-alternative, unit05-wrong-category, unit05-vietnamese-answer]
+  lesson-02.job-reason: [unit05-job-reason, unit05-silence]
+  level-02.job-duties: [unit05-job-duty]
+  level-02.family-job: [unit05-fictional-family]
+  level-03.hypothetical-firefighter: [unit05-hypothetical-firefighter]
+  level-03.creativity: [unit05-creativity]
+  lesson-01.introduce-firefighter: [unit05-two-failure-exit]
+  free-talk.conversation: [unit05-free-talk]
+  summary.reflect: [unit05-summary]

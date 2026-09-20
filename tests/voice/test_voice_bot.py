@@ -71,7 +71,7 @@ def runtime_components(repository, service):
             ROOT / "curriculum",
             (
                 "grade05.unit01", "grade05.unit02",
-                "grade05.unit03", "grade05.unit04",
+                "grade05.unit03", "grade05.unit04", "grade05.unit05",
             ),
         ),
     )
