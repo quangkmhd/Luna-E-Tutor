@@ -29,12 +29,20 @@ export type VoicePhase = 'off' | 'connecting' | 'ready' | 'listening' | 'thinkin
 
 const VoiceContext = createContext<VoiceContextValue | null>(null);
 
+type VoiceRequestValue =
+  | boolean
+  | null
+  | number
+  | string
+  | VoiceRequestValue[]
+  | { [key: string]: VoiceRequestValue };
+
 type PipecatVoiceProviderProps = {
   children: React.ReactNode;
   enabled?: boolean;
   endpoint?: string;
   onSessionChanged?: () => void | Promise<void>;
-  requestBody?: Record<string, unknown>;
+  requestBody?: Record<string, VoiceRequestValue>;
   sessionId?: string;
 };
 
