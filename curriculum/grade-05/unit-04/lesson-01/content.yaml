@@ -1,0 +1,228 @@
+schema_version: 1
+stage:
+  id: lesson-01
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11:E11
+  title: Lesson 01
+  level: 1
+  lesson: 1
+  exits:
+  - lesson-02
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: go-for-a-walk
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  text: go for a walk
+  usage: taught
+- id: play-the-violin
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  text: play the violin
+  usage: taught
+- id: surf-the-internet
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  text: surf the Internet
+  usage: taught
+- id: water-the-flowers
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  text: water the flowers
+  usage: taught
+patterns:
+- id: free-time-like
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E11
+  text: What do you like doing in your free time? – I like ___.
+  examples:
+  - What do you like doing in your free time? – I like go for a walk.
+  acceptable_alternatives: []
+objectives:
+- id: unit04.lesson01.vocabulary.go_for_a_walk
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  description: 'Vocabulary: go for a walk'
+  vocabulary_ids:
+  - go-for-a-walk
+  pattern_ids: []
+  evidence_criteria: Understand or use go for a walk in context; imitation alone is
+    not independent use.
+- id: unit04.lesson01.vocabulary.play_the_violin
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  description: 'Vocabulary: play the violin'
+  vocabulary_ids:
+  - play-the-violin
+  pattern_ids: []
+  evidence_criteria: Understand or use play the violin in context; imitation alone
+    is not independent use.
+- id: unit04.lesson01.vocabulary.surf_the_internet
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  description: 'Vocabulary: surf the Internet'
+  vocabulary_ids:
+  - surf-the-internet
+  pattern_ids: []
+  evidence_criteria: Understand or use surf the Internet in context; imitation alone
+    is not independent use.
+- id: unit04.lesson01.vocabulary.water_the_flowers
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  description: 'Vocabulary: water the flowers'
+  vocabulary_ids:
+  - water-the-flowers
+  pattern_ids: []
+  evidence_criteria: Understand or use water the flowers in context; imitation alone
+    is not independent use.
+- id: unit04.lesson01.pattern.free_time_like
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E11
+  description: 'Pattern: What do you like doing in your free time? – I like ___.'
+  vocabulary_ids: []
+  pattern_ids:
+  - free-time-like
+  evidence_criteria: Record meaning and target form separately; accept short answers
+    and valid alternatives.
+activities:
+- id: lesson-01.introduce-go-for-a-walk
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.lesson01.vocabulary.go_for_a_walk
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model go for a walk twice, invite Quang to say it, wait, and give evidence-based
+    feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
+  examples:
+  - go for a walk
+- id: lesson-01.introduce-play-the-violin
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.lesson01.vocabulary.play_the_violin
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model play the violin twice, invite Quang to say it, wait, and give
+    evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
+    accuracy.
+  examples:
+  - play the violin
+- id: lesson-01.introduce-surf-the-internet
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.lesson01.vocabulary.surf_the_internet
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model surf the Internet twice, invite Quang to say it, wait, and give
+    evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
+    accuracy. Never ask for an Internet username, account, handle, or platform identity.
+  examples:
+  - surf the Internet
+- id: lesson-01.introduce-water-the-flowers
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!D11
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit04.lesson01.vocabulary.water_the_flowers
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Model water the flowers twice, invite Quang to say it, wait, and give
+    evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
+    accuracy.
+  examples:
+  - water the flowers
+- id: lesson-01.free-time-like
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E11
+  stage_id: lesson-01
+  kind: guided_response
+  objective_ids:
+  - unit04.lesson01.pattern.free_time_like
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Practise this free-time or music pattern with fictional or general
+    examples. Never ask for an Internet username, account, handle, or platform identity.
+  examples:
+  - What do you like doing in your free time? – I like go for a walk.
+- id: lesson-01.ask-luna
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: Lớp 5 (3 Level)!E11
+  stage_id: lesson-01
+  kind: ask_teacher
+  objective_ids:
+  - unit04.lesson01.pattern.free_time_like
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: Invite Quang to ask Luna the target question; support without fabricating
+    the question.
+  examples:
+  - What do you like doing in your free time? – I like ___.

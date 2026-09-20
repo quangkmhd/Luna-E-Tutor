@@ -1,0 +1,367 @@
+schema_version: 1
+stage:
+  id: level-03
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5:I5"
+  title: "Level 03"
+  level: 3
+  lesson: null
+  exits: [free-talk]
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: underground
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "underground"
+  usage: taught
+- id: beam
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "beam"
+  usage: taught
+- id: mud
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "mud"
+  usage: taught
+- id: skylight
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "skylight"
+  usage: taught
+- id: spring
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "spring"
+  usage: taught
+- id: fossil-fuel
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "fossil fuel"
+  usage: taught
+- id: coal
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  text: "coal"
+  usage: taught
+patterns:
+- id: eco-house
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  text: "We live in a house which is friendly to the environment."
+  examples:
+  - "They live in a house which is friendly to the environment."
+  acceptable_alternatives:
+  - "Their house is eco-friendly."
+- id: skylight-purpose
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  text: "It has a skylight in the roof, so we don't need electricity in the day."
+  examples:
+  - "It has a skylight, so it uses daylight."
+  acceptable_alternatives:
+  - "The skylight gives light in the day."
+- id: house-materials
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  text: "The walls were made of stones and mud."
+  examples:
+  - "The walls were made of stones and mud."
+  acceptable_alternatives:
+  - "They used stones and mud for the walls."
+objectives:
+- id: unit02.level03.vocabulary.underground
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: underground"
+  vocabulary_ids: [underground]
+  pattern_ids: []
+  evidence_criteria: "Understand or use underground in context; imitation alone is not independent use."
+- id: unit02.level03.vocabulary.beam
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: beam"
+  vocabulary_ids: [beam]
+  pattern_ids: []
+  evidence_criteria: "Understand or use beam in context; imitation alone is not independent use."
+- id: unit02.level03.vocabulary.mud
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: mud"
+  vocabulary_ids: [mud]
+  pattern_ids: []
+  evidence_criteria: "Understand or use mud in context; imitation alone is not independent use."
+- id: unit02.level03.vocabulary.skylight
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: skylight"
+  vocabulary_ids: [skylight]
+  pattern_ids: []
+  evidence_criteria: "Understand or use skylight in context; imitation alone is not independent use."
+- id: unit02.level03.vocabulary.spring
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: spring"
+  vocabulary_ids: [spring]
+  pattern_ids: []
+  evidence_criteria: "Understand or use spring in context; imitation alone is not independent use."
+- id: unit02.level03.vocabulary.fossil_fuel
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: fossil fuel"
+  vocabulary_ids: [fossil-fuel]
+  pattern_ids: []
+  evidence_criteria: "Understand or use fossil fuel in context; imitation alone is not independent use."
+- id: unit02.level03.vocabulary.coal
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  description: "Vocabulary: coal"
+  vocabulary_ids: [coal]
+  pattern_ids: []
+  evidence_criteria: "Understand or use coal in context; imitation alone is not independent use."
+- id: unit02.level03.pattern.eco_house
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  description: "Pattern: We live in a house which is friendly to the environment."
+  vocabulary_ids: []
+  pattern_ids: [eco-house]
+  evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
+- id: unit02.level03.pattern.skylight_purpose
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  description: "Pattern: It has a skylight in the roof, so we don't need electricity in the day."
+  vocabulary_ids: []
+  pattern_ids: [skylight-purpose]
+  evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
+- id: unit02.level03.pattern.house_materials
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  description: "Pattern: The walls were made of stones and mud."
+  vocabulary_ids: []
+  pattern_ids: [house-materials]
+  evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
+activities:
+- id: level-03.introduce-underground
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.underground]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model underground twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["underground"]
+- id: level-03.introduce-beam
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.beam]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model beam twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["beam"]
+- id: level-03.introduce-mud
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.mud]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model mud twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["mud"]
+- id: level-03.introduce-skylight
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.skylight]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model skylight twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["skylight"]
+- id: level-03.introduce-spring
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.spring]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model spring twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["spring"]
+- id: level-03.introduce-fossil-fuel
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.fossil_fuel]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model fossil fuel twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["fossil fuel"]
+- id: level-03.introduce-coal
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!H5"
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level03.vocabulary.coal]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model coal twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["coal"]
+- id: level-03.eco-house
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  stage_id: level-03
+  kind: guided_response
+  objective_ids: [unit02.level03.pattern.eco_house]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Describe why a fictional eco house is friendly to the environment."
+  examples:
+  - "They live in a house which is friendly to the environment."
+- id: level-03.skylight-purpose
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  stage_id: level-03
+  kind: guided_response
+  objective_ids: [unit02.level03.pattern.skylight_purpose]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Connect the skylight to daylight without overstating environmental facts."
+  examples:
+  - "It has a skylight, so it uses daylight."
+- id: level-03.house-materials
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  stage_id: level-03
+  kind: guided_response
+  objective_ids: [unit02.level03.pattern.house_materials]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Describe the fictional house materials using source vocabulary."
+  examples:
+  - "The walls were made of stones and mud."
+- id: level-03.ask-luna
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!I5"
+  stage_id: level-03
+  kind: ask_teacher
+  objective_ids: [unit02.level03.pattern.eco_house]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Invite Quang to ask Luna the target question. If it remains difficult after support, record only that the opportunity was handled."
+  examples:
+  - "They live in a house which is friendly to the environment."

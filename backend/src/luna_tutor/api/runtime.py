@@ -8,7 +8,7 @@ from pathlib import Path
 
 from luna_tutor.api.app import create_app
 from luna_tutor.config import Settings
-from luna_tutor.curriculum.loader import load_unit
+from luna_tutor.curriculum.registry import CurriculumRegistry
 from luna_tutor.domain.decisions import (
     CompletedTurn,
     PlannedTurn,
@@ -26,7 +26,10 @@ from luna_tutor.storage.session_repository import SessionRepository
 from luna_tutor.teaching.engine import TeachingEngine
 from luna_tutor.teaching.planner import TurnPlanner
 from luna_tutor.teaching.turn_service import TurnService
-
+from luna_tutor.teaching.unit_router import (
+    UnitComparisonRouter,
+    UnitTurnRouter,
+)
 
 GEMINI_EVALUATOR_MODEL = 'google/gemini-3.5-flash-lite'
 JEV_EVALUATOR_MODEL = '~typesafe/jev-latest'
@@ -105,6 +108,7 @@ class RuntimeComponents:
     repository: SessionRepository
     turn_service: object
     client: OpenRouterClient | None
+    curriculum_registry: CurriculumRegistry
     comparison_service: object | None = None
 
 
@@ -113,11 +117,23 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
     database_path = Path(environment.get(
         'TUTOR_DATABASE_PATH', str(root / 'backend/data/luna-tutor.sqlite3')))
     repository = SessionRepository(database_path)
+    registry = CurriculumRegistry(
+        root / 'curriculum', (
+            'grade05.unit01', 'grade05.unit02', 'grade05.unit03',
+                'grade05.unit04', 'grade05.unit05'))
     mode = environment.get('TUTOR_LLM_MODE', 'live')
     if mode == 'fixture':
         if environment.get('ENV') != 'test':
             raise RuntimeError('TUTOR_LLM_MODE=fixture requires ENV=test')
-        return RuntimeComponents(repository, FixtureTurnService(), None, None)
+        fixture = FixtureTurnService()
+        return RuntimeComponents(
+            repository=repository,
+            turn_service=UnitTurnRouter({
+                item.id: fixture for item in registry.list_units()
+            }),
+            client=None,
+            curriculum_registry=registry,
+        )
 
     key = environment.get('OPENROUTER_API_KEY', '').strip()
     if not key:
@@ -131,18 +147,33 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
     settings = Settings(openrouter_api_key=key)
     client = OpenRouterClient(settings)
     evaluator = build_evaluator(evaluator_model, client)
-    curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
     teacher = GeminiTeacher(client)
-    planner = TurnPlanner(evaluator, TeachingEngine(), curriculum)
-    turn_service = TurnService(planner, teacher)
-    gemini_turn_service = (turn_service if evaluator_model == GEMINI_EVALUATOR_MODEL else
-                           TurnService(TurnPlanner(
-                               GeminiEvaluator(client), TeachingEngine(), curriculum), teacher))
-    jev_turn_service = (turn_service if evaluator_model == JEV_EVALUATOR_MODEL else
-                        TurnService(TurnPlanner(
-                            JevEvaluator(client), TeachingEngine(), curriculum), teacher))
-    comparison_service = ComparisonService(gemini_turn_service, jev_turn_service)
-    return RuntimeComponents(repository, turn_service, client, comparison_service)
+    engine = TeachingEngine()
+    turn_services = {}
+    comparison_services = {}
+    for summary in registry.list_units():
+        curriculum = registry.get(summary.id)
+        selected = TurnService(
+            TurnPlanner(evaluator, engine, curriculum), teacher)
+        turn_services[summary.id] = selected
+        gemini = (
+            selected if evaluator_model == GEMINI_EVALUATOR_MODEL
+            else TurnService(TurnPlanner(
+                GeminiEvaluator(client), engine, curriculum), teacher)
+        )
+        jev = (
+            selected if evaluator_model == JEV_EVALUATOR_MODEL
+            else TurnService(TurnPlanner(
+                JevEvaluator(client), engine, curriculum), teacher)
+        )
+        comparison_services[summary.id] = ComparisonService(gemini, jev)
+    return RuntimeComponents(
+        repository=repository,
+        turn_service=UnitTurnRouter(turn_services),
+        client=client,
+        curriculum_registry=registry,
+        comparison_service=UnitComparisonRouter(comparison_services),
+    )
 
 
 def build_runtime_app(environment: Mapping[str, str] | None = None, *,
@@ -153,6 +184,7 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
     turn_service = components.turn_service
     client = components.client
     comparison_service = components.comparison_service
+    curriculum_registry = components.curriculum_registry
 
     if turn_service_adapter is not None:
         turn_service = turn_service_adapter(turn_service)
@@ -169,5 +201,6 @@ def build_runtime_app(environment: Mapping[str, str] | None = None, *,
         if e2e_web_origin := environment.get('E2E_WEB_ORIGIN', '').strip():
             origins.append(e2e_web_origin)
     return create_app(repository=repository, turn_service=turn_service,
+                      curriculum_registry=curriculum_registry,
                       comparison_service=comparison_service,
                       lifespan=lifespan, allowed_origins=origins)

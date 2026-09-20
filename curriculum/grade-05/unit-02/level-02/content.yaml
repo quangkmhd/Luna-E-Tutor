@@ -1,0 +1,235 @@
+schema_version: 1
+stage:
+  id: level-02
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5:G5"
+  title: "Level 02"
+  level: 2
+  lesson: null
+  exits: [level-03]
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: apartment
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  text: "apartment"
+  usage: taught
+- id: garden
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  text: "garden"
+  usage: taught
+- id: neighbourhood
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  text: "neighbourhood"
+  usage: taught
+- id: floor
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  text: "floor"
+  usage: taught
+patterns:
+- id: house-floors
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  text: "How many floors does your house have? – It has ___ floors."
+  examples:
+  - "The fictional house has two floors."
+  acceptable_alternatives:
+  - "It has two floors."
+- id: home-choice
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  text: "Do you live in an apartment or a house?"
+  examples:
+  - "The character lives in an apartment."
+  acceptable_alternatives:
+  - "An apartment."
+objectives:
+- id: unit02.level02.vocabulary.apartment
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  description: "Vocabulary: apartment"
+  vocabulary_ids: [apartment]
+  pattern_ids: []
+  evidence_criteria: "Understand or use apartment in context; imitation alone is not independent use."
+- id: unit02.level02.vocabulary.garden
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  description: "Vocabulary: garden"
+  vocabulary_ids: [garden]
+  pattern_ids: []
+  evidence_criteria: "Understand or use garden in context; imitation alone is not independent use."
+- id: unit02.level02.vocabulary.neighbourhood
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  description: "Vocabulary: neighbourhood"
+  vocabulary_ids: [neighbourhood]
+  pattern_ids: []
+  evidence_criteria: "Understand or use neighbourhood in context; imitation alone is not independent use."
+- id: unit02.level02.vocabulary.floor
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  description: "Vocabulary: floor"
+  vocabulary_ids: [floor]
+  pattern_ids: []
+  evidence_criteria: "Understand or use floor in context; imitation alone is not independent use."
+- id: unit02.level02.pattern.house_floors
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  description: "Pattern: How many floors does your house have? – It has ___ floors."
+  vocabulary_ids: []
+  pattern_ids: [house-floors]
+  evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
+- id: unit02.level02.pattern.home_choice
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  description: "Pattern: Do you live in an apartment or a house?"
+  vocabulary_ids: []
+  pattern_ids: [home-choice]
+  evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
+activities:
+- id: level-02.introduce-apartment
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level02.vocabulary.apartment]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model apartment twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["apartment"]
+- id: level-02.introduce-garden
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level02.vocabulary.garden]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model garden twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["garden"]
+- id: level-02.introduce-neighbourhood
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level02.vocabulary.neighbourhood]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model neighbourhood twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["neighbourhood"]
+- id: level-02.introduce-floor
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!F5"
+  stage_id: level-02
+  kind: vocabulary_introduction
+  objective_ids: [unit02.level02.vocabulary.floor]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model floor twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["floor"]
+- id: level-02.house-floors
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  stage_id: level-02
+  kind: guided_response
+  objective_ids: [unit02.level02.pattern.house_floors]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Ask about the number of floors in a pictured or fictional house; accept a number as meaning evidence."
+  examples:
+  - "The fictional house has two floors."
+- id: level-02.home-choice
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  stage_id: level-02
+  kind: guided_response
+  objective_ids: [unit02.level02.pattern.home_choice]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Ask about a fictional character's apartment or house and accept a short choice."
+  examples:
+  - "The character lives in an apartment."
+- id: level-02.ask-luna
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!G5"
+  stage_id: level-02
+  kind: ask_teacher
+  objective_ids: [unit02.level02.pattern.house_floors]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Invite Quang to ask Luna the target question. If it remains difficult after support, record only that the opportunity was handled."
+  examples:
+  - "The fictional house has two floors."

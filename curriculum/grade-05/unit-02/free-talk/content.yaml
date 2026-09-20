@@ -1,0 +1,67 @@
+schema_version: 1
+stage:
+  id: free-talk
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!J5"
+  title: "Explore an eco house"
+  level: 3
+  lesson: null
+  exits: [summary]
+  prerequisite_stage_ids: [lesson-01, lesson-02, lesson-03, level-02, level-03]
+  completion_rule: user_end
+  role:
+    name: Emma
+    country: England
+    announce_start: true
+    announce_end: true
+  review:
+    rank_by: [contextual_relevance, importance, required_support, recency]
+    max_items_per_turn: 1
+    cancel_if_independently_demonstrated: true
+    allow_unresolved_on_exit: true
+activities:
+- id: free-talk.conversation
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!J5"
+  stage_id: free-talk
+  kind: roleplay
+  objective_ids:
+  - unit02.lesson01.vocabulary.building
+  - unit02.lesson01.vocabulary.flat
+  - unit02.lesson01.vocabulary.house
+  - unit02.lesson01.vocabulary.tower
+  - unit02.lesson01.pattern.home_type
+  - unit02.lesson02.vocabulary.23
+  - unit02.lesson02.vocabulary.38
+  - unit02.lesson02.vocabulary.93
+  - unit02.lesson02.vocabulary.116
+  - unit02.lesson02.pattern.address
+  - unit02.level02.vocabulary.apartment
+  - unit02.level02.vocabulary.garden
+  - unit02.level02.vocabulary.neighbourhood
+  - unit02.level02.vocabulary.floor
+  - unit02.level02.pattern.house_floors
+  - unit02.level02.pattern.home_choice
+  - unit02.level03.vocabulary.underground
+  - unit02.level03.vocabulary.beam
+  - unit02.level03.vocabulary.mud
+  - unit02.level03.vocabulary.skylight
+  - unit02.level03.vocabulary.spring
+  - unit02.level03.vocabulary.fossil_fuel
+  - unit02.level03.vocabulary.coal
+  - unit02.level03.pattern.eco_house
+  - unit02.level03.pattern.skylight_purpose
+  - unit02.level03.pattern.house_materials
+  required: true
+  max_attempts: 1
+  completion_rule:
+    mode: user_end
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: false
+    mastery_required: false
+  instruction: "Announce Luna is playing Emma from England and explore a fictional eco house. Follow Quang's ideas with short questions, use at most one relevant pending review target, and never request or repeat a real address. End the role on request and preserve open review."
+  examples: ["I'm Emma. Let's explore this fictional eco house!", "What helps this house use daylight?"]

@@ -1,6 +1,5 @@
 import pytest
 from fastapi.testclient import TestClient
-
 from luna_tutor.api.runtime import build_runtime_app
 
 
@@ -32,7 +31,8 @@ def test_fixture_runtime_supports_recast_and_free_talk_finish(tmp_path):
         'TUTOR_DATABASE_PATH': str(tmp_path / 'db.sqlite3'),
     })
     with TestClient(app) as api:
-        session = api.post('/api/sessions').json()
+        session = api.post(
+            '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
         recast = api.post(f"/api/sessions/{session['session_id']}/turns", json={
             'turn_id': 'recast', 'expected_state_version': 0,
             'learner_text': 'I live countryside.',
@@ -57,7 +57,8 @@ def test_initial_greeting_records_authored_text_delivery(tmp_path):
     app = build_runtime_app({'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',
                              'TUTOR_DATABASE_PATH': str(database)})
     with TestClient(app) as api:
-        session = api.post('/api/sessions').json()
+        session = api.post(
+            '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     stored = SessionRepository(database).get_session(session['session_id'])
     greeting = next(p for p in stored.state.activity_progress
                     if p.activity_id == 'warm-up.hello')
@@ -71,7 +72,8 @@ def test_new_session_greeting_already_opens_feelings_response(tmp_path):
     app = build_runtime_app({'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',
                              'TUTOR_DATABASE_PATH': str(database)})
     with TestClient(app) as api:
-        session = api.post('/api/sessions').json()
+        session = api.post(
+            '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     stored = SessionRepository(database).get_session(session['session_id'])
     assert stored.state.activity_id == 'warm-up.feelings'
     assert 'How are you' in session['messages'][0]['text']

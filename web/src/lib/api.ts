@@ -1,4 +1,4 @@
-import type { ComparisonResult, SessionView, TurnInput, TurnResponse } from './types';
+import type { ComparisonResult, SessionView, TurnInput, TurnResponse, UnitSummary } from './types';
 
 export class ApiError extends Error {
   constructor(public code: string, message: string, public retryable = false, public status = 0) {
@@ -29,11 +29,18 @@ export class TutorApi {
     return payload as T;
   }
 
-  createSession(signal?: AbortSignal) {
-    return this.request<SessionView>('/api/sessions', { method: 'POST', signal });
+  listUnits(signal?: AbortSignal) {
+    return this.request<UnitSummary[]>('/api/units', { signal });
   }
-  resetSession(signal?: AbortSignal) {
-    return this.request<SessionView>('/api/sessions/reset', { method: 'POST', signal });
+  createSession(unitId: string, signal?: AbortSignal) {
+    return this.request<SessionView>('/api/sessions', {
+      method: 'POST', body: JSON.stringify({ unit_id: unitId }), signal,
+    });
+  }
+  resetSession(unitId: string, signal?: AbortSignal) {
+    return this.request<SessionView>('/api/sessions/reset', {
+      method: 'POST', body: JSON.stringify({ unit_id: unitId }), signal,
+    });
   }
   listSessions(signal?: AbortSignal) {
     return this.request<SessionView[]>('/api/sessions', { signal });

@@ -2,13 +2,23 @@
 
 from luna_tutor.curriculum.models import Activity, Objective, UnitCurriculum
 from luna_tutor.domain.decisions import (
-    PlannedTurn, TeacherActivityContext, TeacherConstraints, TeacherTurnRequest,
+    PlannedTurn,
+    TeacherActivityContext,
+    TeacherConstraints,
+    TeacherTurnRequest,
 )
-from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult, TranscriptStatus, InputEvent
-from luna_tutor.domain.privacy import redact_sensitive_contact
+from luna_tutor.domain.evidence import (
+    ActiveObjective,
+    EvaluatorRequest,
+    EvaluatorResult,
+    InputEvent,
+    TranscriptStatus,
+)
+from luna_tutor.domain.privacy import (
+    redact_address_practice,
+    redact_sensitive_contact,
+)
 from luna_tutor.domain.state import ActivityProgress, LessonState, ReviewItem
-
-
 from luna_tutor.teaching.descriptions import TeacherDescriptions
 
 
@@ -24,9 +34,19 @@ class TurnPlanner:
                    input_event: InputEvent = 'transcript') -> PlannedTurn:
         if turn_id in state.applied_turn_ids:
             raise ValueError('duplicate turn_id for this session state')
-        redacted = redact_sensitive_contact(learner_text)
+        activity = self._activity(state)
+        contact_redacted = redact_sensitive_contact(learner_text)
+        address_redacted = redact_address_practice(
+            contact_redacted.text,
+            activity_id=activity.id,
+            safe_examples=tuple(activity.examples),
+        )
+        redacted = address_redacted.model_copy(update={
+            'safety_event': (
+                contact_redacted.safety_event or address_redacted.safety_event
+            ),
+        })
         planning_state = state.model_copy(update={'privacy_event': redacted.safety_event})
-        activity = self._activity(planning_state)
         request = EvaluatorRequest(
             turn_id=turn_id,
             state_version=state.state_version,
@@ -223,9 +243,9 @@ class TurnPlanner:
         })
 
         completed_stages = list(state.completed_stage_ids)
-        if decision.progression_action in {'move_to_next_stage', 'finish'}:
-            if state.stage_id not in completed_stages:
-                completed_stages.append(state.stage_id)
+        if (decision.progression_action in {'move_to_next_stage', 'finish'}
+                and state.stage_id not in completed_stages):
+            completed_stages.append(state.stage_id)
 
         next_stage = decision.next_stage_id or state.stage_id
         next_activity = decision.next_activity_id or state.activity_id

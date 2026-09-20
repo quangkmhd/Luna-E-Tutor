@@ -5,20 +5,22 @@ import { ChatPanel } from './ChatPanel';
 import { Composer } from './Composer';
 import { NewSessionButton } from './NewSessionButton';
 import { StateInspector } from './StateInspector';
+import { UnitSelector } from './UnitSelector';
 import { PipecatVoiceProvider } from './voice/PipecatVoiceProvider';
 import { VoiceControls } from './voice/VoiceControls';
 import { ApiError, TutorApi, tutorApi } from '@/lib/api';
-import type { SessionView } from '@/lib/types';
+import type { SessionView, UnitSummary } from '@/lib/types';
 
 function newTurnId() { return globalThis.crypto?.randomUUID?.() ?? `turn-${Date.now()}-${Math.random()}`; }
 
 export function TutorShell({ api = tutorApi }: { api?: TutorApi }) {
   const [current, setCurrent] = useState<SessionView | null>(null);
+  const [units, setUnits] = useState<UnitSummary[]>([]);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
   const currentSessionId = current?.session_id;
   useEffect(() => { const controller = new AbortController(); void (async () => {
-    try { setCurrent(await api.resetSession(controller.signal)); }
+    try { setUnits(await api.listUnits(controller.signal)); }
     catch (reason) { if ((reason as Error).name !== 'AbortError') setError(reason as ApiError); } finally { setBusy(false); }
   })(); return () => controller.abort(); }, [api]);
   const replaceSession = useCallback((session: SessionView) => { setCurrent(session); }, []);
@@ -43,11 +45,13 @@ export function TutorShell({ api = tutorApi }: { api?: TutorApi }) {
       setError(reason as ApiError);
     } finally { setBusy(false); }
   }
-  async function startNew() { setBusy(true); setError(null); try { replaceSession(await api.resetSession()); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
+  async function selectUnit(unitId: string) { setBusy(true); setError(null); try { replaceSession(await api.createSession(unitId)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
+  async function startNew() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.resetSession(current.unit.id)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   async function finish() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.finishSession(current.session_id, current.state_version)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
-  if (!current) return <main className="loading"><div className="logo-mark">L</div><p>{error ? error.message : 'Opening your lesson…'}</p></main>;
-  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession}><main className="app-shell"><header className="topbar"><div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Unit 1</small></div></div><div className="top-actions"><Link className="secondary-button" href="/talk">Free Talk Room</Link><span className={`status-pill ${current.status}`}>{current.status}</span><NewSessionButton busy={busy} onClick={startNew} /></div></header>
-    <div className="workspace"><section className="lesson-card"><div className="lesson-heading"><div><span className="eyebrow">All about me!</span><h1 className="lesson-title">Practice with Luna</h1></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><ChatPanel messages={current.messages} />
+  if (!current && busy) return <main className="loading"><div className="logo-mark">L</div><p>{error ? error.message : 'Loading units…'}</p></main>;
+  if (!current) return <><UnitSelector units={units} busy={busy} onSelect={(unitId) => { void selectUnit(unitId); }} />{error && <div className="error-banner" role="alert">{error.message}</div>}</>;
+  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession}><main className="app-shell"><header className="topbar"><div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Unit {current.unit.unit}</small></div></div><div className="top-actions"><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={() => setCurrent(null)}>Choose another unit</button><span className={`status-pill ${current.status}`}>{current.status}</span><NewSessionButton busy={busy} onClick={startNew} /></div></header>
+    <div className="workspace"><section className="lesson-card"><div className="lesson-heading"><div><span className="eyebrow">{current.unit.title}</span><h1 className="lesson-title">Practice with Luna</h1></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><ChatPanel messages={current.messages} />
       {error && <div className="error-banner" role="alert"><strong>{error.retryable ? 'Please try again.' : 'Something changed.'}</strong> {error.message}</div>}
       {current.status === 'active' && <Composer disabled={busy} onSend={send} voiceControls={<VoiceControls />} />}
       {current.stage_id === 'free-talk' && current.status === 'active' && <button className="finish-button" disabled={busy} onClick={finish}>End Free Talk</button>}

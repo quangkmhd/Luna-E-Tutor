@@ -1,15 +1,22 @@
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import Field
 
-from luna_tutor.domain.contracts import Contract, Text
+from luna_tutor.domain.contracts import Contract, Identifier, Text
 from luna_tutor.domain.decisions import TeachingDecision
 from luna_tutor.domain.evidence import EvaluatorResult
 from luna_tutor.domain.state import ObjectiveProgress, ReviewItem
 
 
 class CreateSessionRequest(Contract):
-    pass
+    unit_id: Identifier
+
+
+class UnitView(Contract):
+    id: str
+    grade: int
+    unit: int
+    title: str
 
 
 class TurnRequest(Contract):
@@ -43,6 +50,7 @@ class SummaryView(Contract):
 class SessionView(Contract):
     session_id: str
     unit_id: str
+    unit: UnitView
     state_version: int
     stage_id: str
     activity_id: str | None

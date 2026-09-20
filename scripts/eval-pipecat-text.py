@@ -12,10 +12,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'voice/server'))
 
-from dotenv import dotenv_values
 import pipecat
+from dotenv import dotenv_values
 from luna_tutor.config import Settings
-from luna_tutor.curriculum.loader import load_unit
+from luna_tutor.curriculum.registry import CurriculumRegistry
 from luna_tutor.evals.behavior import BehaviorRunner
 from luna_tutor.evals.loader import load_scenarios
 from luna_tutor.llm.evaluator import GeminiEvaluator
@@ -51,22 +51,30 @@ class DiagnosticClient(OpenRouterClient):
 
 
 async def run(args):
-    scenarios = [s for s in load_scenarios(ROOT / 'evals/unit-01')
+    registry = CurriculumRegistry(
+        ROOT / 'curriculum',
+        tuple(f'grade05.unit{number:02d}' for number in range(1, 6)),
+    )
+    unit = registry.get(args.unit)
+    unit_slug = f'unit-{unit.unit:02d}'
+    scenario_dir = ROOT / 'evals' / unit_slug
+    curriculum_dir = ROOT / 'curriculum' / f'grade-{unit.grade:02d}' / unit_slug
+    scenarios = [s for s in load_scenarios(scenario_dir)
                  if s.id in args.scenario] if args.scenario else [
-        s for s in load_scenarios(ROOT / 'evals/unit-01') if s.source.numbered]
+        s for s in load_scenarios(scenario_dir) if s.source.numbered]
     if args.scenario and set(args.scenario) != {s.id for s in scenarios}:
         raise ValueError('Unknown scenario ID')
     values = dotenv_values(args.env_file)
     settings = Settings(openrouter_api_key=values['OPENROUTER_API_KEY'])
-    unit = load_unit(ROOT / 'curriculum/grade-05/unit-01')
     sources = sorted(set(
         [Path(__file__).resolve()] + list((ROOT / 'backend/src/luna_tutor').rglob('*.py'))
         + list((ROOT / 'backend/src/luna_tutor/prompts').glob('*.yaml'))
-        + list((ROOT / 'curriculum/grade-05/unit-01').rglob('*.yaml'))
-        + list((ROOT / 'evals/unit-01/development').glob('*.yaml'))
+        + list(curriculum_dir.rglob('*.yaml'))
+        + list((scenario_dir / 'development').glob('*.yaml'))
         + list((ROOT / 'voice/server').glob('*.py'))))
     payload = {
         'scope': 'real_pipecat_evaluator_engine_teacher_text',
+        'unit_id': unit.id,
         'pipecat_version': pipecat.__version__,
         'hashes': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                    for p in sources},
@@ -83,7 +91,7 @@ async def run(args):
         async with DiagnosticClient(settings) as client:
             service = PipecatTurnService(TurnService(
                 TurnPlanner(GeminiEvaluator(client), TeachingEngine(), unit), GeminiTeacher(client)))
-            runner = BehaviorRunner(ROOT, service)
+            runner = BehaviorRunner(ROOT, service, unit.id)
             for scenario in scenarios:
                 client.calls.clear()
                 records = await runner.run([scenario])
@@ -108,4 +116,5 @@ if __name__ == '__main__':
     parser.add_argument('--env-file', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--scenario', action='append', default=[])
+    parser.add_argument('--unit', default='grade05.unit01')
     asyncio.run(run(parser.parse_args()))

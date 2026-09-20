@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from fastapi.testclient import TestClient
-
 from luna_tutor.api.app import create_app
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
 from luna_tutor.storage.session_repository import SessionRepository
@@ -13,7 +12,8 @@ def setup(tmp_path, service=None):
     service = service or FakeTurnService()
     repository = SessionRepository(tmp_path / 'sessions.sqlite3')
     api = TestClient(create_app(repository=repository, turn_service=service))
-    session = api.post('/api/sessions').json()
+    session = api.post(
+        '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     return api, repository, service, session
 
 

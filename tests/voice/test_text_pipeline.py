@@ -64,7 +64,9 @@ def test_api_uses_pipeline_and_keeps_idempotency_and_history(tmp_path):
         'TUTOR_DATABASE_PATH': str(tmp_path / 'pipeline.sqlite3'),
     }, turn_service_adapter=PipecatTurnService)
     with TestClient(app) as api:
-        session = api.post('/api/sessions').json()
+        session = api.post(
+            '/api/sessions', json={'unit_id': 'grade05.unit01'}
+        ).json()
         path = f"/api/sessions/{session['session_id']}/turns"
         body = {'turn_id': 'web-text', 'expected_state_version': 0,
                 'learner_text': 'I live countryside.'}

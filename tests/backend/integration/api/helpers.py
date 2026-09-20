@@ -1,7 +1,10 @@
 import asyncio
 
 from luna_tutor.domain.decisions import (
-    CompletedTurn, PlannedTurn, TeacherTurnRequest, TeacherUtterance,
+    CompletedTurn,
+    PlannedTurn,
+    TeacherTurnRequest,
+    TeacherUtterance,
     TeachingDecision,
 )
 from luna_tutor.domain.evidence import EvaluatorResult

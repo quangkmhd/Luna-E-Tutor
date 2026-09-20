@@ -3,7 +3,7 @@ const human = (value?: string | null) => value?.replaceAll('-', ' ').replaceAll(
 
 export function StateInspector({ session }: { session: SessionView }) {
   return <details className="panel inspector">
-    <summary className="inspector-summary"><span><span className="eyebrow">Unit 1</span><strong>Lesson progress</strong></span><small>View details</small></summary>
+    <summary className="inspector-summary"><span><span className="eyebrow">Unit {session.unit.unit}</span><strong>Lesson progress</strong></span><small>View details</small></summary>
     <div className="inspector-content"><div className="panel-heading"><h2>Teaching details</h2></div>
     <dl className="state-grid"><div><dt>Stage</dt><dd>{human(session.stage_id)}</dd></div><div><dt>Activity</dt><dd>{human(session.activity_id)}</dd></div><div><dt>Objective</dt><dd>{human(session.objective_id)}</dd></div><div><dt>Version</dt><dd>{session.state_version}</dd></div></dl>
     <div className="decision-card"><span>Last decision</span><strong>{human(session.last_decision?.feedback_action)}</strong><small>{human(session.last_decision?.progression_action)}</small></div>

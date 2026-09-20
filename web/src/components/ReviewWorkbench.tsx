@@ -57,7 +57,7 @@ export function ReviewWorkbench({ api = tutorApi }: { api?: TutorApi }) {
         const sessions = await api.listSessions(controller.signal);
         const current = sessions.find((item) => item.status === 'active')
           ?? sessions[0]
-          ?? await api.createSession(controller.signal);
+          ?? await api.createSession('grade05.unit01', controller.signal);
         setSession(current);
       } catch (cause) {
         if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : 'Could not load Unit state.');

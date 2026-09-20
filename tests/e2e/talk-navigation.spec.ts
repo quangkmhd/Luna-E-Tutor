@@ -16,6 +16,8 @@ test('opens standalone Free Talk, chooses a topic, and returns without finishing
   await expect(page.getByText('Talking about Animals')).toBeVisible();
 
   await page.getByRole('link', { name: 'Back to Unit 1' }).click();
+  await expect(page.getByRole('heading', { name: 'Choose a unit' })).toBeVisible();
+  await page.getByRole('button', { name: /Unit 1.*All about me!/i }).click();
   await expect(page.getByRole('heading', { name: 'Practice with Luna' })).toBeVisible();
   expect(finishRequests).toEqual([]);
 });

@@ -3,15 +3,17 @@ import re
 import time
 from pathlib import Path
 
-from luna_tutor.curriculum.loader import load_unit
+from luna_tutor.curriculum.registry import CurriculumRegistry
 from luna_tutor.domain.evidence import SupportGiven
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import OpenRouterError
 
 
 class BehaviorRunner:
-    def __init__(self, root: Path, service):
-        self.curriculum = load_unit(root / 'curriculum/grade-05/unit-01')
+    def __init__(self, root: Path, service, unit_id: str = 'grade05.unit01'):
+        allowed_ids = tuple(f'grade05.unit{number:02d}' for number in range(1, 6))
+        self.registry = CurriculumRegistry(root / 'curriculum', allowed_ids)
+        self.curriculum = self.registry.get(unit_id)
         self.service = service
 
     def initial_state(self, scenario):
@@ -75,7 +77,7 @@ class BehaviorRunner:
                         metadata['input_event'] = turn.input_event
                     completed = await self.service.process(state, turn.learner_text,
                                                            f'{scenario.id}-{index}', **metadata)
-                except Exception as error:
+                except Exception as error:  # noqa: BLE001 - preserve diagnostics per scenario
                     record['error'] = {'type': type(error).__name__}
                     if isinstance(error, OpenRouterError):
                         record['error'].update(reason=error.reason, status=error.status_code)

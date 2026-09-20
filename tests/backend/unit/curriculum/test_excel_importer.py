@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from openpyxl import Workbook
 import pytest
+from openpyxl import Workbook
 
 ROOT = Path(__file__).resolve().parents[4]
 WORKBOOK = ROOT / 'docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx'

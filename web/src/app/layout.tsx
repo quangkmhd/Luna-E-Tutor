@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
-export const metadata: Metadata = { title: 'Luna English Tutor', description: 'Unit 1 English conversation experiment for Quang' };
+export const metadata: Metadata = { title: 'Luna English Tutor', description: 'Grade 5 English conversation practice for Quang' };
 
 const localhostHydrationGuard = `
 (() => {

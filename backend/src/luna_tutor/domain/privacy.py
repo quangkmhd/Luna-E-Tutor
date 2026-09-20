@@ -1,6 +1,7 @@
 """Local digit-based contact redaction; never returns captured phone digits."""
 
 import re
+import unicodedata
 from datetime import date
 from typing import Annotated
 
@@ -63,6 +64,30 @@ def redact_sensitive_contact(text: str) -> RedactedText:
 
     sanitized = _PHONE.sub(replace, text)
     return RedactedText(text=sanitized, safety_event=safety_event)
+
+
+def _normalize_spoken_text(text: str) -> str:
+    normalized = unicodedata.normalize('NFKC', text).casefold().strip()
+    return re.sub(r'\s+', ' ', normalized)
+
+
+def redact_address_practice(
+        text: str, *, activity_id: str,
+        safe_examples: tuple[str, ...]) -> RedactedText:
+    """Allow reviewed fictional examples, but discard other address practice.
+
+    Address-shaped free text is only sensitive in the single curriculum
+    activity that explicitly asks for a fictional address. Keeping this
+    contextual avoids treating ordinary descriptions of a home as private.
+    """
+    if not isinstance(text, str):
+        raise TypeError('Address redaction requires text')
+    if activity_id != 'lesson-02.fictional-address':
+        return RedactedText(text=text, safety_event=False)
+    normalized = _normalize_spoken_text(text)
+    if normalized in {_normalize_spoken_text(item) for item in safe_examples}:
+        return RedactedText(text=text, safety_event=False)
+    return RedactedText(text='[REDACTED_ADDRESS]', safety_event=True)
 
 
 def _require_sanitized(text: str) -> str:

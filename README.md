@@ -1,6 +1,6 @@
-# Luna English Tutor — Grade 5 Unit 1
+# Luna English Tutor — Grade 5 Units 1–5
 
-Luna is a stateful English tutor for Quang. This repository contains the complete Unit 1 curriculum and an independent, topic-based Free Talk room in the same Next.js interface.
+Luna is a stateful English tutor for Quang. This repository contains source-audited Grade 5 Units 1–5 and an independent, topic-based Free Talk room in the same Next.js interface. It also includes a selectable Jev or Gemini Evaluator, a separately prompted Gemini Teacher, deterministic teaching progression, local SQLite history, and a FastAPI API. The web interface lists the available units and stores the selected `unit_id` with each lesson session.
 
 The Evaluator answers “what did Quang demonstrate?”. The Teaching Engine alone decides “what happens next?”. The Teacher receives that bounded decision and turns it into one short, natural spoken response. Contact information is removed locally before any model call.
 
@@ -41,6 +41,14 @@ Open `http://localhost:3000` for Unit 1 or `http://localhost:3000/talk` for the 
 
 The local runner starts the Unit 1 API on port 8000, Unit 1 voice on 7860, standalone Talk voice on 7863, and the web app on 3000. Logs are written separately to `.run/logs/backend.log`, `.run/logs/voice.log`, `.run/logs/talk.log`, and `.run/logs/web.log`.
 
+Select a unit in the web interface before starting a session. API clients create a session with an explicit curriculum ID, for example:
+
+```json
+{"unit_id": "grade05.unit02"}
+```
+
+The supported IDs are `grade05.unit01` through `grade05.unit05`.
+
 You can also start each process separately:
 
 ```bash
@@ -63,6 +71,10 @@ uv run --project talk/server pytest -q talk/server/tests
 uv run --project talk/server ruff check talk/server
 uv run --project talk/server pyright talk/server
 uv run --project backend python -m luna_tutor.evals.cli verify-baseline evals/unit-01/baseline.json
+uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit02 --set development --repetitions 1 --out evals/unit-02/reports
+uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit03 --set development --repetitions 1 --out evals/unit-03/reports
+uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit04 --set development --repetitions 1 --out evals/unit-04/reports
+uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit05 --set development --repetitions 1 --out evals/unit-05/reports
 
 npm install
 npm test

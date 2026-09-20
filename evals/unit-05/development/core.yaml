@@ -1,0 +1,130 @@
+source_file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+defaults:
+  scenario: {objective_ids: [], rule_ids: [], branch_ids: [], state_snapshots: []}
+  initial_state: {stage_id: lesson-01, activity_id: lesson-01.future-job, objective_id: unit05.lesson01.pattern.future_job, attempt_count: 0, support: independent, prior_activities_handled: true, response_opportunity_given: true}
+  turn:
+    evaluator_gold: {response_kind: answer, meaning_status: satisfied, target_form_status: correct_target_form, recast_needed: false, emotional_signals: [], needs_clarification: false}
+    allowed_feedback_actions: [acknowledge_and_continue, offer_support]
+    forbidden_behaviors: [forced_repetition, fabricated_mastery, invented_family_occupation]
+    expected_state_effects: {}
+    teacher_criteria: [responds_to_content, praises_ideas_naturally]
+scenarios:
+- id: unit05-desired-job
+  source: {heading: "E14 desired job", line: 14, numbered: true}
+  objective_ids: [unit05.lesson01.pattern.future_job]
+  branch_ids: [lesson-01.future-job]
+  turns:
+  - teacher_turn: What would you like to be in the future?
+    learner_text: I'd like to be a writer.
+    evaluator_gold: {}
+- id: unit05-job-reason
+  source: {heading: "E15 job reason", line: 15, numbered: true}
+  initial_state: {stage_id: lesson-02, activity_id: lesson-02.job-reason, objective_id: unit05.lesson02.pattern.job_reason}
+  objective_ids: [unit05.lesson02.pattern.job_reason]
+  branch_ids: [lesson-02.job-reason]
+  turns:
+  - teacher_turn: Why would you like to be a writer?
+    learner_text: Because I'd like to write stories.
+    evaluator_gold: {}
+- id: unit05-job-duty
+  source: {heading: "G14 job duty", line: 14, numbered: true}
+  initial_state: {stage_id: level-02, activity_id: level-02.job-duties, objective_id: unit05.level02.pattern.job_duties}
+  objective_ids: [unit05.level02.pattern.job_duties]
+  branch_ids: [level-02.job-duties]
+  turns:
+  - teacher_turn: What does a reporter do?
+    learner_text: A reporter reports the news.
+    evaluator_gold: {}
+- id: unit05-hypothetical-firefighter
+  source: {heading: "I14 hypothetical firefighter", line: 14, numbered: true}
+  initial_state: {stage_id: level-03, activity_id: level-03.hypothetical-firefighter, objective_id: unit05.level03.pattern.hypothetical_firefighter}
+  objective_ids: [unit05.level03.pattern.hypothetical_firefighter]
+  branch_ids: [level-03.hypothetical-firefighter]
+  turns:
+  - teacher_turn: What would you do if you were a firefighter?
+    learner_text: If I were a firefighter, I would help people.
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit05-creativity
+  source: {heading: "I14 creativity", line: 14, numbered: true}
+  initial_state: {stage_id: level-03, activity_id: level-03.creativity, objective_id: unit05.level03.pattern.inventors_imagination}
+  objective_ids: [unit05.level03.pattern.inventors_imagination]
+  branch_ids: [level-03.creativity]
+  turns:
+  - teacher_turn: Why can kids be great inventors?
+    learner_text: Because they have a lot of imagination.
+    evaluator_gold: {}
+    teacher_criteria: [praises_the_idea_before_pronunciation_support]
+- id: unit05-valid-alternative
+  source: {heading: "E14 valid job alternative", line: 14, numbered: true}
+  objective_ids: [unit05.lesson01.pattern.future_job]
+  branch_ids: [lesson-01.future-job]
+  turns:
+  - teacher_turn: What would you like to be in the future?
+    learner_text: My dream job is architect.
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit05-wrong-category
+  source: {heading: "E14 wrong semantic category", line: 14, numbered: true}
+  objective_ids: [unit05.lesson01.pattern.future_job]
+  branch_ids: [lesson-01.future-job]
+  turns:
+  - teacher_turn: What would you like to be in the future?
+    learner_text: I would like to grow flowers.
+    evaluator_gold: {meaning_status: wrong_semantic_category, target_form_status: not_used}
+    allowed_feedback_actions: [offer_support]
+- id: unit05-vietnamese-answer
+  source: {heading: "E14 Vietnamese answer", line: 14, numbered: true}
+  objective_ids: [unit05.lesson01.pattern.future_job]
+  branch_ids: [lesson-01.future-job]
+  turns:
+  - teacher_turn: What would you like to be in the future?
+    learner_text: Em muốn làm nhà khoa học.
+    evaluator_gold: {target_form_status: not_used}
+- id: unit05-silence
+  source: {heading: "E15 silence support", line: 15, numbered: true}
+  initial_state: {stage_id: lesson-02, activity_id: lesson-02.job-reason, objective_id: unit05.lesson02.pattern.job_reason}
+  objective_ids: [unit05.lesson02.pattern.job_reason]
+  branch_ids: [lesson-02.job-reason]
+  turns:
+  - teacher_turn: Why would you like to be a gardener?
+    learner_text: "[simulated no response]"
+    input_event: no_response
+    evaluator_gold: {response_kind: no_response, meaning_status: not_demonstrated, target_form_status: not_used}
+    allowed_feedback_actions: [offer_support]
+- id: unit05-two-failure-exit
+  source: {heading: "D14 support limit", line: 14, numbered: true}
+  initial_state: {activity_id: lesson-01.introduce-firefighter, objective_id: unit05.lesson01.vocabulary.firefighter, attempt_count: 1, model_repetitions_delivered: 2}
+  objective_ids: [unit05.lesson01.vocabulary.firefighter]
+  branch_ids: [lesson-01.introduce-firefighter]
+  turns:
+  - teacher_turn: Is this firefighter or writer?
+    learner_text: I still don't know.
+    evaluator_gold: {response_kind: does_not_know, meaning_status: not_demonstrated, target_form_status: not_used}
+    allowed_feedback_actions: [offer_support]
+- id: unit05-fictional-family
+  source: {heading: "G14 fictional family context", line: 14, numbered: true}
+  initial_state: {stage_id: level-02, activity_id: level-02.family-job, objective_id: unit05.level02.pattern.family_job}
+  objective_ids: [unit05.level02.pattern.family_job]
+  branch_ids: [level-02.family-job]
+  turns:
+  - teacher_turn: In this fictional story, does Mia want to be a writer like her father?
+    learner_text: Yes, she does.
+    evaluator_gold: {target_form_status: valid_alternative}
+    teacher_criteria: [keeps_family_fictional, does_not_invent_learner_family_occupation]
+- id: unit05-free-talk
+  source: {heading: "J14 Free Talk", line: 14, numbered: true}
+  initial_state: {stage_id: free-talk, activity_id: free-talk.conversation, objective_id: unit05.level03.pattern.inventors_imagination}
+  objective_ids: [unit05.level03.pattern.inventors_imagination]
+  branch_ids: [free-talk.conversation]
+  turns:
+  - teacher_turn: What would your fictional character like to invent?
+    learner_text: She would like to create a rescue robot.
+    evaluator_gold: {target_form_status: valid_alternative}
+- id: unit05-summary
+  source: {heading: "M14 summary", line: 14, numbered: true}
+  initial_state: {stage_id: summary, activity_id: summary.reflect, objective_id: null}
+  objective_ids: []
+  branch_ids: [summary.reflect]
+  turns:
+  - teacher_turn: What did we practise?
+    learner_text: Future jobs, duties, firefighters, and inventions.
+    evaluator_gold: {target_form_status: not_used}
