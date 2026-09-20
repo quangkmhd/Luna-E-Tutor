@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/api/api/:path*",
+        destination: `${VPS_HOST}:${BACKEND_PORT}/api/:path*`,
+      },
+      {
         source: "/api/:path*",
         destination: `${VPS_HOST}:${BACKEND_PORT}/api/:path*`,
       },
