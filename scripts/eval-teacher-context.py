@@ -11,32 +11,43 @@ import os
 from pathlib import Path
 
 from dotenv import dotenv_values
-
 from luna_tutor.config import Settings
-from luna_tutor.curriculum.loader import load_unit
+from luna_tutor.curriculum.registry import CurriculumRegistry
 from luna_tutor.domain.decisions import TeacherTurnRequest, TeachingDecision
 from luna_tutor.llm.openrouter import OpenRouterClient, OpenRouterError
 from luna_tutor.llm.teacher import GeminiTeacher
 from luna_tutor.teaching.planner import TurnPlanner
 
 
-async def run(label: str, env_file: Path | None):
+async def run(label: str, env_file: Path | None, unit_id: str):
     root = Path(__file__).resolve().parents[1]
-    output = root / 'evals/unit-01/text-experiments' / f'teacher-context-{label}.json'
+    registry = CurriculumRegistry(
+        root / 'curriculum',
+        tuple(f'grade05.unit{number:02d}' for number in range(1, 6)),
+    )
+    unit = registry.get(unit_id)
+    unit_slug = f'unit-{unit.unit:02d}'
+    output = root / 'evals' / unit_slug / 'text-experiments' / f'teacher-context-{label}.json'
     if output.exists():
         raise ValueError('Use a new label to preserve prior experiment evidence')
-    unit = load_unit(root / 'curriculum/grade-05/unit-01')
     builder = TurnPlanner(None, None, unit)
     values = {**(dotenv_values(env_file) if env_file else {}), **os.environ}
+    introduction = next(a for a in unit.activities
+                        if a.stage_id == 'lesson-01'
+                        and a.kind == 'vocabulary_introduction')
+    practice = next(a for a in unit.activities
+                    if a.stage_id == 'lesson-01'
+                    and a.kind in {'guided_response', 'comprehension'})
+    ask_teacher = next(a for a in unit.activities
+                       if a.stage_id == 'lesson-01' and a.kind == 'ask_teacher')
     cases = [
-        ('meaning', 'lesson-01.introduce-city', 'City nghĩa là gì hả cô?',
-         'City. City. Where can you see tall buildings?', 'explain_meaning'),
-        ('short', 'lesson-01.home', 'Countryside.', 'Where do you live?',
+        ('meaning', introduction.id, f'{introduction.examples[0]} nghĩa là gì hả cô?',
+         introduction.examples[0], 'explain_meaning'),
+        ('short', practice.id, practice.examples[0], practice.examples[0],
          'acknowledge_and_continue'),
-        ('teacher', 'lesson-01.ask-luna', 'Where do you live?',
-         'Can you ask me where I live?', 'answer_teacher_question'),
-        ('rough-input', 'lesson-01.class', 'CD',
-         'Which place usually has tall buildings, a city or the countryside?',
+        ('teacher', ask_teacher.id, ask_teacher.examples[0], ask_teacher.examples[0],
+         'answer_teacher_question'),
+        ('rough-input', practice.id, 'CD', practice.examples[0],
          'acknowledge_and_continue'),
     ]
     records = []
@@ -71,6 +82,7 @@ async def run(label: str, env_file: Path | None):
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({
         'scope': 'isolated_teacher_diagnostic',
+        'unit_id': unit.id,
         'model': 'google/gemini-3.5-flash-lite',
         'prompt_sha256': hashlib.sha256(prompt.read_bytes()).hexdigest(),
         'records': records,
@@ -84,7 +96,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('label')
     parser.add_argument('--env-file', type=Path)
+    parser.add_argument('--unit', default='grade05.unit01')
     args = parser.parse_args()
     if not args.label or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in args.label):
         parser.error('label must contain only lowercase letters, digits, hyphen or underscore')
-    asyncio.run(run(args.label, args.env_file))
+    asyncio.run(run(args.label, args.env_file, args.unit))

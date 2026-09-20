@@ -1,12 +1,16 @@
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import hashlib
 import json
-from pathlib import Path
 import time
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
 
-from luna_tutor.curriculum.loader import load_unit
-from luna_tutor.domain.evidence import ActiveObjective, EvaluatorRequest, EvaluatorResult
+from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.domain.evidence import (
+    ActiveObjective,
+    EvaluatorRequest,
+    EvaluatorResult,
+)
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.evals.metrics import EvalRecord, calculate_metrics
 from luna_tutor.evals.models import Scenario
@@ -38,10 +42,19 @@ def _differences(expected: dict, actual: dict | None) -> dict:
 
 
 class EvalRunner:
-    def __init__(self, repository_root: Path, evaluator):
+    def __init__(self, repository_root: Path, evaluator,
+                 unit_id: str = 'grade05.unit01'):
         self.root = repository_root
         self.evaluator = evaluator
-        self.curriculum = load_unit(repository_root / 'curriculum/grade-05/unit-01')
+        allowed_ids = tuple(f'grade05.unit{number:02d}' for number in range(1, 6))
+        self.registry = CurriculumRegistry(repository_root / 'curriculum', allowed_ids)
+        self.curriculum = self.registry.get(unit_id)
+        self.unit_slug = f'unit-{self.curriculum.unit:02d}'
+        self.curriculum_dir = (
+            repository_root / 'curriculum' / f'grade-{self.curriculum.grade:02d}'
+            / self.unit_slug
+        )
+        self.scenario_dir = repository_root / 'evals' / self.unit_slug
 
     def _objective(self, objective_id: str) -> ActiveObjective:
         objective = next(item for item in self.curriculum.objectives if item.id == objective_id)
@@ -122,18 +135,19 @@ class EvalRunner:
         output_dir.mkdir(parents=True, exist_ok=True)
         prompt = self.root / 'backend/src/luna_tutor/prompts/evaluator.yaml'
         prompt_hash = hashlib.sha256(prompt.read_bytes()).hexdigest()
-        curriculum_paths = list((self.root / 'curriculum/grade-05/unit-01').rglob('*.yaml'))
+        curriculum_paths = list(self.curriculum_dir.rglob('*.yaml'))
         curriculum_hash = _sha(curriculum_paths)
         metrics = calculate_metrics(records)
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
-        base = output_dir / f'unit-01-{stamp}'
+        base = output_dir / f'{self.unit_slug}-{stamp}'
         counter = 1
         while Path(f'{base}.json').exists() or Path(f'{base}.md').exists():
-            base = output_dir / f'unit-01-{stamp}-{counter}'
+            base = output_dir / f'{self.unit_slug}-{stamp}-{counter}'
             counter += 1
         json_path = Path(f'{base}.json')
         markdown_path = Path(f'{base}.md')
         payload = {
+            'unit_id': self.curriculum.id,
             'evaluation_scope': 'evaluator_classification_only',
             'teaching_behavior_evaluated': False,
             'prompt_sha256': prompt_hash, 'curriculum_sha256': curriculum_hash,
@@ -142,7 +156,7 @@ class EvalRunner:
         }
         json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
         markdown_path.write_text(
-            '# Unit 1 evaluation\n\n'
+            f'# Unit {self.curriculum.unit} evaluation\n\n'
             'Scope: Evaluator classification only. Teaching Engine, Teacher, '
             'Pipecat transitions and teaching hard rules were not evaluated.\n\n'
             f'- Prompt SHA-256: `{prompt_hash}`\n'

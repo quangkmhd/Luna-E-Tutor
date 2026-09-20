@@ -19,6 +19,7 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument('--out', type=Path, required=True)
     run.add_argument('--recorded', type=Path)
     run.add_argument('--baseline', type=Path)
+    run.add_argument('--unit', default='grade05.unit01')
     verify = sub.add_parser('verify-baseline')
     verify.add_argument('baseline', type=Path)
     return parser
@@ -26,22 +27,23 @@ def _parser() -> argparse.ArgumentParser:
 
 async def _run(args) -> int:
     root = Path(__file__).resolve().parents[4]
-    all_scenarios = load_scenarios(root / 'evals/unit-01')
-    manifest = load_coverage(root / 'evals/unit-01/coverage.yaml')
-    coverage = validate_coverage(manifest, all_scenarios,
-                                 {f'R{i:02d}' for i in range(1, 21)})
+    runner = EvalRunner(root, evaluator=None, unit_id=args.unit)
+    all_scenarios = load_scenarios(runner.scenario_dir)
+    manifest = load_coverage(runner.scenario_dir / 'coverage.yaml')
+    required_rules = set(manifest.required_rule_ids)
+    coverage = validate_coverage(manifest, all_scenarios, required_rules)
     if (coverage.missing_source_refs or coverage.missing_branch_ids
             or coverage.missing_objective_ids
-            or coverage.covered_rule_ids != {f'R{i:02d}' for i in range(1, 21)}):
+            or coverage.covered_rule_ids != required_rules):
         print('FAIL: incomplete coverage')
         return 2
     scenarios = [item for item in all_scenarios
                  if item.set == args.set]
     if args.recorded:
-        report = EvalRunner(root, evaluator=None).rescore(args.recorded, args.out)
+        report = runner.rescore(args.recorded, args.out)
     else:
         async with OpenRouterClient(Settings.from_env()) as client:
-            report = await EvalRunner(root, GeminiEvaluator(client)).run(
+            report = await EvalRunner(root, GeminiEvaluator(client), args.unit).run(
                 scenarios, args.repetitions, args.out)
     accepted = report.accepted
     if args.set == 'holdout' and args.baseline and args.baseline.exists():
