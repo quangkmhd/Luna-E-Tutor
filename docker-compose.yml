@@ -28,10 +28,7 @@ services:
     environment:
       - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
       - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-stun:stun.l.google.com:19302}
-    ports:
-      - "7860:7860"
-    networks:
-      - luna-network
+    network_mode: host
 
   talk:
     build:
@@ -44,10 +41,7 @@ services:
     environment:
       - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
       - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-stun:stun.l.google.com:19302}
-    ports:
-      - "7863:7863"
-    networks:
-      - luna-network
+    network_mode: host
 
   nginx:
     image: nginx:alpine
