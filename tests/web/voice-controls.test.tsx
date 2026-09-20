@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { VoiceControls } from '@/components/speaking/VoiceControls';
 
@@ -34,6 +34,8 @@ beforeEach(() => {
   transportState = 'disconnected';
   isMicEnabled = true;
 });
+
+afterEach(() => vi.unstubAllEnvs());
 
 it('initializes devices and connects the Pipecat client', async () => {
   render(<VoiceControls sessionId="s1" onConnectionError={vi.fn()} />);
@@ -69,4 +71,26 @@ it('reports microphone permission errors to the room', async () => {
 
   expect(onConnectionError).toHaveBeenCalledWith('Microphone permission denied');
   expect(startBotAndConnect).not.toHaveBeenCalled();
+});
+
+it('uses the public voice URL for remote browser access', async () => {
+  vi.stubEnv('NEXT_PUBLIC_SPEAKING_VOICE_URL', 'https://voice.example.com/');
+  render(<VoiceControls sessionId="s1" onConnectionError={vi.fn()} />);
+
+  await userEvent.click(screen.getByRole('button', {name: 'Bật micro'}));
+
+  expect(startBotAndConnect).toHaveBeenCalledWith(expect.objectContaining({
+    endpoint: 'https://voice.example.com/start',
+  }));
+});
+
+it('accepts a public voice URL that already includes the start endpoint', async () => {
+  vi.stubEnv('NEXT_PUBLIC_SPEAKING_VOICE_URL', 'https://voice.example.com/start');
+  render(<VoiceControls sessionId="s1" onConnectionError={vi.fn()} />);
+
+  await userEvent.click(screen.getByRole('button', {name: 'Bật micro'}));
+
+  expect(startBotAndConnect).toHaveBeenCalledWith(expect.objectContaining({
+    endpoint: 'https://voice.example.com/start',
+  }));
 });

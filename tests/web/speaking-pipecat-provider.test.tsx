@@ -1,5 +1,5 @@
 import {render, screen} from '@testing-library/react';
-import {expect, it, vi} from 'vitest';
+import {afterEach, expect, it, vi} from 'vitest';
 
 const disconnect = vi.fn().mockResolvedValue(undefined);
 const clients: unknown[] = [];
@@ -23,6 +23,8 @@ vi.mock('@pipecat-ai/small-webrtc-transport', () => ({
 
 import {SpeakingPipecatProvider} from '@/components/speaking/SpeakingPipecatProvider';
 
+afterEach(() => vi.unstubAllGlobals());
+
 it('provides one client and delegates audio to PipecatClientAudio', () => {
   const {rerender, unmount} = render(
     <SpeakingPipecatProvider><span>room</span></SpeakingPipecatProvider>,
@@ -33,4 +35,16 @@ it('provides one client and delegates audio to PipecatClientAudio', () => {
   expect(screen.getByTestId('provider')).toContainElement(screen.getByTestId('pipecat-audio'));
   unmount();
   expect(disconnect).toHaveBeenCalledOnce();
+});
+
+it('does not create an application-owned Audio element', () => {
+  const audioConstructor = vi.fn();
+  vi.stubGlobal('Audio', audioConstructor);
+
+  const {unmount} = render(
+    <SpeakingPipecatProvider><span>room</span></SpeakingPipecatProvider>,
+  );
+  unmount();
+
+  expect(audioConstructor).not.toHaveBeenCalled();
 });

@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Luna web client
 
-## Getting Started
+## Getting started
 
-First, run the development server:
+From the repository root, start the complete local stack:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+./scripts/run-local.sh
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3090/speaking](http://localhost:3090/speaking).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Speaking voice architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The speaking room uses the official `@pipecat-ai/client-react` integration. Its provider owns the Pipecat client context, media state, conversation aggregation, and bot audio playback. Application components use Pipecat hooks; they do not construct browser audio elements, media streams, or a second WebRTC client.
 
-## Learn More
+The REST API stores curriculum state and durable lesson history. It is synchronized after a completed assistant message, but it is not polled or used to replace the live transcript/TTS conversation.
 
-To learn more about Next.js, take a look at the following resources:
+SmallWebRTC connects to `${NEXT_PUBLIC_SPEAKING_VOICE_URL}/start`. If `NEXT_PUBLIC_SPEAKING_VOICE_URL` is unset, the client uses the page hostname on port `7860`; for example, a page opened at `http://server:3090` connects to `http://server:7860/start`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+For remote browser access, the voice endpoint must also be reachable. Forward both ports (`3090` for web and `7860` for Pipecat voice), or expose one public origin and reverse-proxy the voice endpoint. If a proxy gives voice a separate URL, set `NEXT_PUBLIC_SPEAKING_VOICE_URL` before building or running Next.js.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The curriculum REST API defaults to `http://localhost:8000`; override it with `NEXT_PUBLIC_TUTOR_API_URL` when the API is served elsewhere.
 
-## Deploy on Vercel
+## Web-only development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev --workspace web
+```

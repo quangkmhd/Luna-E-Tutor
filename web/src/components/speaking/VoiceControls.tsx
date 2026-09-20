@@ -27,9 +27,13 @@ export function VoiceControls({sessionId, onConnectionError}: {
         return;
       }
       if (!client) throw new Error('Pipecat client is not ready');
+      const configuredVoiceUrl = process.env.NEXT_PUBLIC_SPEAKING_VOICE_URL?.replace(/\/$/, '');
+      const voiceUrl = configuredVoiceUrl
+        ?? `${window.location.protocol}//${window.location.hostname}:7860`;
+      const startEndpoint = voiceUrl.endsWith('/start') ? voiceUrl : `${voiceUrl}/start`;
       await client.initDevices();
       await client.startBotAndConnect({
-        endpoint: 'http://localhost:7860/start',
+        endpoint: startEndpoint,
         requestData: {body: {speaking_session_id: sessionId}},
         timeout: 10_000,
       });

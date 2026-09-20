@@ -111,7 +111,7 @@ export function ActiveSpeakingRoom({initialSession, api}: {
       <section className="lesson-card">
         <div className="lesson-heading"><div><span className="eyebrow">{session.config.topic}</span><h1>Talk with Luna</h1></div><span className="stage-chip">Level {session.level}</span></div>
         <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
-          {messages.filter((message) => message.role === 'user' || message.role === 'assistant').map((message) => <article className={`bubble-row ${message.role === 'assistant' ? 'teacher' : 'learner'}`} key={message.createdAt}>
+          {messages.filter((message) => message.role === 'user' || message.role === 'assistant').map((message, messageIndex) => <article className={`bubble-row ${message.role === 'assistant' ? 'teacher' : 'learner'}`} key={`${message.createdAt}-${message.role}-${messageIndex}`}>
             {message.role === 'assistant' && <div className="avatar" aria-hidden="true">L</div>}
             <div className="bubble"><span className="speaker">{message.role === 'assistant' ? 'Luna' : 'Em'}</span><p>{message.parts.map((part, index) => <span key={`${part.createdAt}-${index}`}>{partText(part.text)}</span>)}</p></div>
           </article>)}
