@@ -31,8 +31,23 @@ describe('TutorApi', () => {
     const fetcher = vi.fn().mockResolvedValue(new Response('{}', {
       status: 200, headers: { 'Content-Type': 'application/json' },
     }));
-    await new TutorApi('http://test', fetcher).resetSession();
-    expect(fetcher).toHaveBeenCalledWith('http://test/api/sessions/reset', expect.objectContaining({ method: 'POST' }));
+    await new TutorApi('http://test', fetcher).resetSession('grade05.unit02');
+    expect(fetcher).toHaveBeenCalledWith(
+      'http://test/api/sessions/reset',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ unit_id: 'grade05.unit02' }),
+      }),
+    );
+  });
+
+  it('creates exactly the selected unit', async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response('{}', {
+      status: 200, headers: { 'Content-Type': 'application/json' },
+    }));
+    await new TutorApi('http://test', fetcher).createSession('grade05.unit02');
+    const [, init] = fetcher.mock.calls[0];
+    expect(JSON.parse(init.body)).toEqual({ unit_id: 'grade05.unit02' });
   });
 
   it('returns stable typed server errors', async () => {

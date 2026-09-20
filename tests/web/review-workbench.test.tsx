@@ -9,6 +9,7 @@ import type { ComparisonResult, SessionView } from '@/lib/types';
 
 const session: SessionView = {
   session_id: 's1', unit_id: 'grade05.unit01', state_version: 4,
+  unit: { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
   stage_id: 'lesson-01', activity_id: 'lesson-01.live-in', objective_id: 'live-in',
   status: 'active', messages: [{ role: 'teacher', text: 'Where do you live?' }],
   review_queue: [], objective_progress: [], last_evidence: null,
