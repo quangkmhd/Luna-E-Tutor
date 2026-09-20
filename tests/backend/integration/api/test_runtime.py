@@ -79,3 +79,19 @@ def test_new_session_greeting_already_opens_feelings_response(tmp_path):
     assert 'How are you' in session['messages'][0]['text']
     assert next(p for p in stored.state.activity_progress
                 if p.activity_id == 'warm-up.feelings').response_opportunity_given
+
+
+def test_runtime_accepts_allowed_origins_env_variable(tmp_path):
+    app = build_runtime_app({
+        'ENV': 'test',
+        'TUTOR_LLM_MODE': 'fixture',
+        'TUTOR_DATABASE_PATH': str(tmp_path / 'db.sqlite3'),
+        'ALLOWED_ORIGINS': 'https://my-app.vercel.app, https://custom-domain.com',
+    })
+    with TestClient(app) as api:
+        response = api.options('/api/sessions', headers={
+            'Origin': 'https://my-app.vercel.app',
+            'Access-Control-Request-Method': 'POST',
+        })
+    assert response.headers['access-control-allow-origin'] == 'https://my-app.vercel.app'
+

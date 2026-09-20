@@ -1,0 +1,88 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: luna-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
+      - TUTOR_DATABASE_PATH=/app/backend/data/luna-tutor.sqlite3
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/data:/app/backend/data
+    networks:
+      - luna-network
+
+  voice:
+    build:
+      context: .
+      dockerfile: voice/Dockerfile
+    container_name: luna-voice
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
+      - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-stun:stun.l.google.com:19302}
+    ports:
+      - "7860:7860"
+    networks:
+      - luna-network
+
+  talk:
+    build:
+      context: .
+      dockerfile: talk/Dockerfile
+    container_name: luna-talk
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
+      - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-stun:stun.l.google.com:19302}
+    ports:
+      - "7863:7863"
+    networks:
+      - luna-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: luna-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - voice
+      - talk
+    networks:
+      - luna-network
+
+  # Optional web service for running frontend on VPS instead of Vercel
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        - NEXT_PUBLIC_TUTOR_API_URL=${NEXT_PUBLIC_TUTOR_API_URL:-http://localhost:8000}
+        - NEXT_PUBLIC_PIPECAT_URL=${NEXT_PUBLIC_PIPECAT_URL:-http://localhost:7860}
+        - NEXT_PUBLIC_TALK_PIPECAT_URL=${NEXT_PUBLIC_TALK_PIPECAT_URL:-http://localhost:7863}
+    container_name: luna-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - luna-network
+    profiles:
+      - web
+      - all
+
+networks:
+  luna-network:
+    driver: bridge

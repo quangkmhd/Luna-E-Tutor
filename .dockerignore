@@ -1,0 +1,41 @@
+.git
+.github
+.worktrees
+**/.venv
+**/.venv/**
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.pytest_cache
+**/.pytest_cache/**
+.ruff_cache
+**/.ruff_cache/**
+.coverage
+htmlcov
+.run
+**/.run/**
+tmp
+temp
+backend/data/*.sqlite3
+
+# Node / Frontend
+node_modules
+web/node_modules
+web/.next
+web/out
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Secrets & Local Config
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Tests & Evals (not needed in production image)
+tests
+evals
+docs
