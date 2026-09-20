@@ -2,10 +2,12 @@ import re
 from pathlib import Path
 
 import pytest
+from luna_tutor.curriculum.excel_importer import import_workbook
 from luna_tutor.curriculum.loader import load_unit
 
 ROOT = Path(__file__).resolve().parents[4]
-IMPLEMENTED_UNIT_IDS = (1,)
+WORKBOOK = ROOT / "docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx"
+IMPLEMENTED_UNIT_IDS = (1, 2)
 STAGE_ORDER = [
     "warm-up",
     "lesson-01",
@@ -17,6 +19,11 @@ STAGE_ORDER = [
     "summary",
 ]
 TEACHING_STAGES = ("lesson-01", "lesson-02", "level-02", "level-03")
+UNIT2_VOCABULARY = {
+    "building", "flat", "house", "tower", "23", "38", "93", "116",
+    "apartment", "garden", "neighbourhood", "floor",
+    "underground", "beam", "mud", "skylight", "spring", "fossil-fuel", "coal",
+}
 
 
 @pytest.fixture(params=IMPLEMENTED_UNIT_IDS, ids=lambda number: f"unit-{number:02d}")
@@ -24,6 +31,55 @@ def grade5_unit(request):
     return load_unit(
         ROOT / f"curriculum/grade-05/unit-{request.param:02d}"
     )
+
+
+@pytest.fixture
+def unit_02():
+    return load_unit(ROOT / "curriculum/grade-05/unit-02")
+
+
+def test_unit2_targets_match_reviewed_workbook_source(unit_02):
+    assert unit_02.vocabulary_ids() == UNIT2_VOCABULARY
+    assert {pattern.id for pattern in unit_02.patterns} == {
+        "home-type",
+        "address",
+        "house-floors",
+        "home-choice",
+        "eco-house",
+        "skylight-purpose",
+        "house-materials",
+    }
+
+
+def test_unit2_authored_targets_match_imported_workbook_text_and_source(unit_02):
+    imported = import_workbook(WORKBOOK, grade=5, unit=2)
+
+    authored_vocabulary = {
+        item.id: (item.text, item.source.section)
+        for item in unit_02.vocabulary
+    }
+    imported_vocabulary = {
+        item.id: (item.text, item.source.section)
+        for item in imported.vocabulary
+    }
+    assert authored_vocabulary == imported_vocabulary
+
+    assert {
+        (item.text, item.source.section) for item in unit_02.patterns
+    } == {
+        (item.text, item.source.section) for item in imported.patterns
+    }
+
+
+def test_unit2_address_activity_is_fictional_and_privacy_bounded(unit_02):
+    activity = next(
+        activity
+        for activity in unit_02.activities
+        if activity.id == "lesson-02.fictional-address"
+    )
+    text = " ".join([activity.instruction, *activity.examples]).lower()
+    assert "fictional" in text
+    assert "real address" in text
 
 
 def test_grade5_unit_stage_and_activity_contract(grade5_unit):

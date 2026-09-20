@@ -1,0 +1,200 @@
+schema_version: 1
+stage:
+  id: lesson-01
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5:E5"
+  title: "Lesson 01"
+  level: 1
+  lesson: 1
+  exits: [lesson-02]
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: building
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  text: "building"
+  usage: taught
+- id: flat
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  text: "flat"
+  usage: taught
+- id: house
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  text: "house"
+  usage: taught
+- id: tower
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  text: "tower"
+  usage: taught
+patterns:
+- id: home-type
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E5"
+  text: "Do you live in this/that ___? – Yes, I do./No, I don't."
+  examples:
+  - "Do you live in that tower? – Yes, I do."
+  acceptable_alternatives:
+  - "I live in a house."
+objectives:
+- id: unit02.lesson01.vocabulary.building
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  description: "Vocabulary: building"
+  vocabulary_ids: [building]
+  pattern_ids: []
+  evidence_criteria: "Understand or use building in context; imitation alone is not independent use."
+- id: unit02.lesson01.vocabulary.flat
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  description: "Vocabulary: flat"
+  vocabulary_ids: [flat]
+  pattern_ids: []
+  evidence_criteria: "Understand or use flat in context; imitation alone is not independent use."
+- id: unit02.lesson01.vocabulary.house
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  description: "Vocabulary: house"
+  vocabulary_ids: [house]
+  pattern_ids: []
+  evidence_criteria: "Understand or use house in context; imitation alone is not independent use."
+- id: unit02.lesson01.vocabulary.tower
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  description: "Vocabulary: tower"
+  vocabulary_ids: [tower]
+  pattern_ids: []
+  evidence_criteria: "Understand or use tower in context; imitation alone is not independent use."
+- id: unit02.lesson01.pattern.home_type
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E5"
+  description: "Pattern: Do you live in this/that ___? – Yes, I do./No, I don't."
+  vocabulary_ids: []
+  pattern_ids: [home-type]
+  evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
+activities:
+- id: lesson-01.introduce-building
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids: [unit02.lesson01.vocabulary.building]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model building twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["building"]
+- id: lesson-01.introduce-flat
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids: [unit02.lesson01.vocabulary.flat]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model flat twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["flat"]
+- id: lesson-01.introduce-house
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids: [unit02.lesson01.vocabulary.house]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model house twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["house"]
+- id: lesson-01.introduce-tower
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!D5"
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids: [unit02.lesson01.vocabulary.tower]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Model tower twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
+  examples: ["tower"]
+- id: lesson-01.home-type
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E5"
+  stage_id: lesson-01
+  kind: guided_response
+  objective_ids: [unit02.lesson01.pattern.home_type]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Use a fictional picture or character and ask which kind of home they live in. Do not infer Quang's home."
+  examples:
+  - "Do you live in that tower? – Yes, I do."
+- id: lesson-01.ask-luna
+  source:
+    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+    section: "Lớp 5 (3 Level)!E5"
+  stage_id: lesson-01
+  kind: ask_teacher
+  objective_ids: [unit02.lesson01.pattern.home_type]
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+    model_repetitions: 0
+    response_opportunity_required: true
+    feedback_required: true
+    allow_support_limit_exit: true
+    mastery_required: false
+  instruction: "Invite Quang to ask Luna the target question. If it remains difficult after support, record only that the opportunity was handled."
+  examples:
+  - "Do you live in that tower? – Yes, I do."
+
