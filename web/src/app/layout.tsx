@@ -1,7 +1,15 @@
 import type { Metadata } from 'next';
+import { Roboto } from 'next/font/google';
 import './globals.css';
 
 export const metadata: Metadata = { title: 'Luna English Tutor', description: 'Grade 5 English conversation practice for Quang' };
+
+const roboto = Roboto({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '700', '900'],
+  display: 'swap',
+  variable: '--font-roboto',
+});
 
 const localhostHydrationGuard = `
 (() => {
@@ -38,7 +46,7 @@ const localhostHydrationGuard = `
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${roboto.className} ${roboto.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: localhostHydrationGuard }} />
       </head>

@@ -26,6 +26,14 @@ def test_teacher_prompt_and_descriptions_quote_repeated_target_words_for_tts():
     assert '“class”' in constraints
 
 
+def test_teacher_prompt_uses_soniox_pause_tags_between_teaching_beats():
+    prompt = load_system_prompt('teacher-system.yaml')
+
+    assert '[pause]' in prompt
+    assert '[long pause]' in prompt
+    assert 'Do not put a tag at the beginning or end' in prompt
+
+
 @pytest.mark.asyncio
 async def test_yaml_edits_reach_planner_and_teacher(tmp_path, monkeypatch, unit_01):
     data = yaml.safe_load(descriptions.CATALOG_PATH.read_text())
