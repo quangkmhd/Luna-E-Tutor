@@ -1,16 +1,3 @@
 schema_version: 1
-source:
-  file: docs/superpowers/specs/2026-09-19-luna-unit1-design.md
-  section: 4. Luồng và trạng thái học tập; 4.2. Quyết định B
 max_attempts: 2
-recast_requires_repetition: false
-warm_up_vocabulary_teaching: false
-silence_hint_seconds: 8
-success_window_seconds: 120
 reduce_difficulty_after_seconds: 180
-learner_speaking_share: 0.6
-free_talk_learner_speaking_share: 0.7
-phone_numbers: words_or_fictional_only
-allow_stop_and_save: true
-free_talk_may_end_with_open_review: true
-operational_or_meaning_questions_count_as_attempts: false

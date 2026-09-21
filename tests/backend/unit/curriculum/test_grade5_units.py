@@ -293,8 +293,6 @@ def test_grade5_unit_free_talk_and_policy_contract(grade5_unit):
         "level-02",
         "level-03",
     ]
-    assert "Quang" in grade5_unit.teacher_prompt
-    assert not grade5_unit.teaching_policy.recast_requires_repetition
     assert grade5_unit.teaching_policy.max_attempts == 2
 
 

@@ -1,12 +1,11 @@
-"""Load a unit manifest, its ordered content, and shared teaching policy."""
+"""Load a unit manifest, its ordered content, and runtime teaching policy."""
 
 from pathlib import Path
 
 import yaml
 
 from luna_tutor.curriculum.models import (
-    ContentFragment, GradeProfiles, SpeechStyle, TeachingPolicy,
-    UnitCurriculum, UnitManifest,
+    ContentFragment, TeachingPolicy, UnitCurriculum, UnitManifest,
 )
 
 
@@ -35,8 +34,5 @@ def load_unit(path: Path) -> UnitCurriculum:
         patterns=[item for fragment in fragments for item in fragment.patterns],
         objectives=[item for fragment in fragments for item in fragment.objectives],
         activities=[item for fragment in fragments for item in fragment.activities],
-        teacher_prompt=(shared / 'teacher.md').read_text(encoding='utf-8'),
         teaching_policy=TeachingPolicy.model_validate(_read_yaml(shared / 'teaching-policy.yaml')),
-        speech_style=SpeechStyle.model_validate(_read_yaml(shared / 'speech-style.yaml')),
-        grade_profiles=GradeProfiles.model_validate(_read_yaml(shared / 'grade-profiles.yaml')),
     )

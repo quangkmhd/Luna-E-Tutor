@@ -1,5 +1,6 @@
 from copy import deepcopy
 from pathlib import Path
+import shutil
 
 import pytest
 import yaml
@@ -26,6 +27,25 @@ def unit_01():
 def test_unit_01_has_expected_vocabulary(unit_01):
     assert unit_01.vocabulary_ids() == EXPECTED_VOCABULARY
     assert {p.id for p in unit_01.patterns} == EXPECTED_PATTERNS
+
+
+def test_load_unit_requires_only_runtime_teaching_policy(tmp_path):
+    """Curriculum loading does not depend on unused shared prompt metadata."""
+    unit_root = tmp_path / "grade-05" / "unit-01"
+    shutil.copytree(UNIT, unit_root)
+    shared_root = tmp_path / "shared"
+    shared_root.mkdir()
+    (shared_root / "teaching-policy.yaml").write_text(
+        "schema_version: 1\nmax_attempts: 2\nreduce_difficulty_after_seconds: 180\n",
+        encoding="utf-8",
+    )
+
+    from luna_tutor.curriculum.loader import load_unit
+
+    unit = load_unit(unit_root)
+
+    assert unit.teaching_policy.max_attempts == 2
+    assert unit.teaching_policy.reduce_difficulty_after_seconds == 180
 
 
 @pytest.mark.parametrize(('collection', 'field', 'value', 'message'), [

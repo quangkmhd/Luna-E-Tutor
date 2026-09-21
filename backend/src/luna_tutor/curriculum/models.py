@@ -125,44 +125,8 @@ class Stage(SourcedItem):
 
 class TeachingPolicy(StrictModel):
     schema_version: Literal[1]
-    source: Source
     max_attempts: Literal[2]
-    recast_requires_repetition: Literal[False]
-    warm_up_vocabulary_teaching: Literal[False]
-    silence_hint_seconds: int = Field(gt=0)
-    success_window_seconds: int = Field(gt=0)
     reduce_difficulty_after_seconds: int = Field(gt=0)
-    learner_speaking_share: float = Field(ge=0, le=1)
-    free_talk_learner_speaking_share: float = Field(ge=0, le=1)
-    phone_numbers: Literal['words_or_fictional_only']
-    allow_stop_and_save: Literal[True]
-    free_talk_may_end_with_open_review: Literal[True]
-    operational_or_meaning_questions_count_as_attempts: Literal[False]
-
-
-class SpeechStyle(StrictModel):
-    schema_version: Literal[1]
-    source: Source
-    tone: Text
-    address_teacher: Text
-    address_student: Text
-    plain_spoken_text: Literal[True]
-    feedback_order: list[Text]
-    follow_praise_with_bridge: Literal[True]
-    pronunciation_claims_require_audio_evidence: Literal[True]
-
-
-class GradeProfile(SourcedItem):
-    grades: list[Annotated[int, Field(ge=1, le=5)]] = Field(min_length=1)
-    english_share_min: float = Field(ge=0, le=1)
-    english_share_max: float = Field(ge=0, le=1)
-    max_english_sentence_words: int | None = Field(default=None, ge=1)
-    guidance: Text
-
-
-class GradeProfiles(StrictModel):
-    schema_version: Literal[1]
-    profiles: list[GradeProfile] = Field(min_length=1)
 
 
 class UnitCurriculum(SourcedItem):
@@ -175,10 +139,7 @@ class UnitCurriculum(SourcedItem):
     objectives: list[Objective] = Field(min_length=1)
     activities: list[Activity] = Field(min_length=1)
     stages: list[Stage] = Field(min_length=1)
-    teacher_prompt: Text
     teaching_policy: TeachingPolicy
-    speech_style: SpeechStyle
-    grade_profiles: GradeProfiles
 
     def vocabulary_ids(self) -> set[str]:
         return {item.id for item in self.vocabulary if item.usage == 'taught'}
