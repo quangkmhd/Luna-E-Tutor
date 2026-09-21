@@ -14,7 +14,7 @@ async function openUnit1(page: Page) {
 
 test('starts at warm-up, recasts naturally, and resets after reload', async ({ page }) => {
   await openUnit1(page);
-  await expect(page.getByText("Hello, Quang! I'm Luna.")).toBeVisible();
+  await expect(page.getByText("Hi! My name is Luna — I'm your English tutor!")).toBeVisible();
   await page.getByLabel('Your answer').fill('I live countryside.');
   await page.getByRole('button', { name: 'Send' }).click();
   await expect(page.getByText('I live in the countryside. What do you like about it?')).toBeVisible();
@@ -28,7 +28,7 @@ test('new session starts clean without session history', async ({ page }) => {
   await page.getByRole('button', { name: 'New session' }).click();
   await expect(page.getByText('Session history')).toHaveCount(0);
   await expect(page.getByText(/abandoned/)).toHaveCount(0);
-  await expect(page.getByText("Hello, Quang! I'm Luna.")).toBeVisible();
+  await expect(page.getByText("Hi! My name is Luna — I'm your English tutor!")).toBeVisible();
 });
 
 test('keeps the lesson header, composer, and sidebar panels visible on desktop', async ({ page, request }) => {

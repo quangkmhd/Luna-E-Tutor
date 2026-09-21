@@ -26,7 +26,6 @@ from luna_tutor.storage.session_repository import (
 )
 
 LEGACY_GREETING = "Hello, Quang! I'm Luna. It's lovely to see you today!"
-GREETING = "Hello, Quang! I'm Luna. How are you today?"
 
 
 def _summary(stored: StoredSession) -> SummaryView:
@@ -147,7 +146,8 @@ def _fresh_state(curriculum) -> LessonState:
     )
     return LessonState(
         session_id=str(uuid4()), unit_id=curriculum.id, stage_id='warm-up',
-        activity_id=feelings.id, last_teacher_turn=GREETING, opening_message=GREETING,
+        activity_id=feelings.id, last_teacher_turn=curriculum.greeting,
+        opening_message=curriculum.greeting,
         activity_progress=(ActivityProgress(
             activity_id=greeting.id, status='completed'),
             ActivityProgress(activity_id=feelings.id, status='in_progress',

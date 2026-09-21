@@ -1,6 +1,7 @@
 id: grade05.unit02
 grade: 5
 unit: 2
+greeting: "Hi! My name is Luna — I'm your English tutor!"
 title: "Our homes"
 content_files:
 - lesson-01/content.yaml

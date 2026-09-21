@@ -1,6 +1,7 @@
 id: grade05.unit04
 grade: 5
 unit: 4
+greeting: "Hi! My name is Luna — I'm your English tutor!"
 title: Our free-time activities
 content_files:
 - lesson-01/content.yaml

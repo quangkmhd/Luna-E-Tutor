@@ -113,6 +113,7 @@ class UnitCurriculum(StrictModel):
     grade: int = Field(ge=1, le=5)
     unit: int = Field(ge=1)
     title: Text
+    greeting: Text
     vocabulary: list[VocabularyItem]
     patterns: list[Pattern]
     objectives: list[Objective] = Field(min_length=1)
@@ -235,6 +236,7 @@ class UnitManifest(StrictModel):
     grade: int = Field(ge=1, le=5)
     unit: int = Field(ge=1)
     title: Text
+    greeting: Text
     content_files: list[Text] = Field(min_length=1)
     opening: ContentFragment
     closing: ContentFragment

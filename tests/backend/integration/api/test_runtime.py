@@ -66,6 +66,21 @@ def test_initial_greeting_records_authored_text_delivery(tmp_path):
     assert stored.state.last_teacher_turn == session['messages'][0]['text']
 
 
+def test_each_unit_uses_its_yaml_greeting(tmp_path):
+    from pathlib import Path
+    from luna_tutor.curriculum.loader import load_unit
+
+    root = Path(__file__).resolve().parents[4] / 'curriculum'
+    app = build_runtime_app({'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',
+                             'TUTOR_DATABASE_PATH': str(tmp_path / 'greetings.sqlite3')})
+    with TestClient(app) as api:
+        for manifest in sorted(root.glob('grade-*/unit-*/unit.yaml')):
+            unit = load_unit(manifest)
+            response = api.post('/api/sessions', json={'unit_id': unit.id})
+            assert response.status_code == 200
+            assert response.json()['messages'][0]['text'] == unit.greeting
+
+
 def test_new_session_greeting_already_opens_feelings_response(tmp_path):
     from luna_tutor.storage.session_repository import SessionRepository
     database = tmp_path / 'ready-greeting.sqlite3'
@@ -76,7 +91,7 @@ def test_new_session_greeting_already_opens_feelings_response(tmp_path):
             '/api/sessions', json={'unit_id': 'grade05.unit01'}).json()
     stored = SessionRepository(database).get_session(session['session_id'])
     assert stored.state.activity_id == 'warm-up.feelings'
-    assert 'How are you' in session['messages'][0]['text']
+    assert session['messages'][0]['text'] == "Hi! My name is Luna — I'm your English tutor!"
     assert next(p for p in stored.state.activity_progress
                 if p.activity_id == 'warm-up.feelings').response_opportunity_given
 
@@ -94,4 +109,3 @@ def test_runtime_accepts_allowed_origins_env_variable(tmp_path):
             'Access-Control-Request-Method': 'POST',
         })
     assert response.headers['access-control-allow-origin'] == 'https://my-app.vercel.app'
-

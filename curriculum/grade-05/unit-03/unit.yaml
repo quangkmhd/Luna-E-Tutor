@@ -1,6 +1,7 @@
 id: grade05.unit03
 grade: 5
 unit: 3
+greeting: "Hi! My name is Luna — I'm your English tutor!"
 title: "My foreign friends"
 content_files: [lesson-01/content.yaml, lesson-02/content.yaml, lesson-03/content.yaml, level-02/content.yaml, level-03/content.yaml, free-talk/content.yaml]
 opening:
