@@ -6,17 +6,17 @@ from luna_tutor.teaching import descriptions
 from luna_tutor.teaching.planner import TurnPlanner
 from luna_tutor.domain.decisions import TeachingDecision, TeacherTurnRequest
 from luna_tutor.llm.teacher import GeminiTeacher
-from luna_tutor.prompts.loader import load_system_prompt
+from luna_tutor.prompts.loader import load_grade_system_prompt
 
 
 def test_teacher_prompt_requires_standard_vietnamese_diacritics():
-    prompt = load_system_prompt('teacher-system.yaml')
+    prompt = load_grade_system_prompt(5, 'teacher')
     assert 'use standard Vietnamese spelling with full diacritics' in prompt
     assert 'Never omit tone marks or other Vietnamese diacritics' in prompt
 
 
 def test_teacher_prompt_and_descriptions_quote_repeated_target_words_for_tts():
-    prompt = load_system_prompt('teacher-system.yaml')
+    prompt = load_grade_system_prompt(5, 'teacher')
     catalog = yaml.safe_load(descriptions.CATALOG_PATH.read_text())
     constraints = ' '.join(item['description_en'] for item in catalog['additional_constraints'])
 
@@ -27,7 +27,7 @@ def test_teacher_prompt_and_descriptions_quote_repeated_target_words_for_tts():
 
 
 def test_teacher_prompt_uses_soniox_pause_tags_between_teaching_beats():
-    prompt = load_system_prompt('teacher-system.yaml')
+    prompt = load_grade_system_prompt(5, 'teacher')
 
     assert '[pause]' in prompt
     assert '[long pause]' in prompt
@@ -62,7 +62,7 @@ async def test_catalog_branches_and_curriculum_instructions_reach_planner_and_te
 
     client = CaptureClient()
     await GeminiTeacher(client).respond(TeacherTurnRequest(
-        turn_id='yaml-test', feedback_action='clarify', learner_meaning='CD',
+        turn_id='yaml-test', unit_id='grade05.unit01', feedback_action='clarify', learner_meaning='CD',
         next_teaching_move=move))
-    assert client.messages[0]['content'] == load_system_prompt('teacher-system.yaml')
+    assert client.messages[0]['content'] == load_grade_system_prompt(5, 'teacher')
     assert json.loads(client.messages[1]['content'])['next_teaching_move'] == move

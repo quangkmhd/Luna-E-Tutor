@@ -1,0 +1,216 @@
+stage:
+  id: level-03
+  title: 'Level 03: Longer conversation'
+  exits:
+  - free-talk
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: great
+  text: great
+- id: happy
+  text: happy
+- id: excited
+  text: excited
+- id: numbers-20100
+  text: numbers 20–100
+patterns:
+- id: pattern-how-are-you-i-m-great
+  text: How are you? – I'm great!
+- id: pattern-where-are-you-from-i-m-from-vietnam
+  text: Where are you from? – I'm from Vietnam.
+- id: pattern-how-old-are-you-i-m-nine-years-old
+  text: How old are you? – I'm nine years old.
+- id: pattern-how-old-is-your-mother-she-is-thirty-five-years-old
+  text: How old is your mother? – She is thirty-five years old.
+objectives:
+- id: unit01.level03.vocabulary.fine
+  description: 'Vocabulary: fine'
+  vocabulary_ids:
+  - fine
+  evidence_criteria: Understand or use fine in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.great
+  description: 'Vocabulary: great'
+  vocabulary_ids:
+  - great
+  evidence_criteria: Understand or use great in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.happy
+  description: 'Vocabulary: happy'
+  vocabulary_ids:
+  - happy
+  evidence_criteria: Understand or use happy in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.excited
+  description: 'Vocabulary: excited'
+  vocabulary_ids:
+  - excited
+  evidence_criteria: Understand or use excited in context; imitation alone is not independent use.
+- id: unit01.level03.vocabulary.numbers_20100
+  description: 'Vocabulary: numbers 20–100'
+  vocabulary_ids:
+  - numbers-20100
+  evidence_criteria: Understand or use numbers 20–100 in context; imitation alone is not independent use.
+- id: unit01.level03.pattern.pattern_how_are_you_i_m_great
+  description: 'Pattern: How are you? – I''m great!'
+  pattern_ids:
+  - pattern-how-are-you-i-m-great
+  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
+- id: unit01.level03.pattern.pattern_where_are_you_from_i_m_from_vietnam
+  description: 'Pattern: Where are you from? – I''m from Vietnam.'
+  pattern_ids:
+  - pattern-where-are-you-from-i-m-from-vietnam
+  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
+- id: unit01.level03.pattern.pattern_how_old_are_you_i_m_nine_years_old
+  description: 'Pattern: How old are you? – I''m nine years old.'
+  pattern_ids:
+  - pattern-how-old-are-you-i-m-nine-years-old
+  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
+- id: unit01.level03.pattern.pattern_how_old_is_your_mother_she_is_thirty_five_years_old
+  description: 'Pattern: How old is your mother? – She is thirty-five years old.'
+  pattern_ids:
+  - pattern-how-old-is-your-mother-she-is-thirty-five-years-old
+  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
+activities:
+- id: level-03.review-fine
+  stage_id: level-03
+  kind: review
+  objective_ids:
+  - unit01.level03.vocabulary.fine
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: Revisit fine in a short greeting exchange without treating it as a new word. Invite one learner
+    reply and accept a valid alternative feeling.
+  examples:
+  - I am fine, thank you.
+- id: level-03.introduce-great
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.great
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: Model “great” twice, invite Quang to say it, wait for one response, then give evidence-based
+    feedback. Move on after at most two attempts. Use fictional people for origin, age and family-age questions.
+    Do not ask for or infer Quang's real age, location, or family details.
+  examples:
+  - great
+- id: level-03.introduce-happy
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.happy
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: Model “happy” twice, invite Quang to say it, wait for one response, then give evidence-based
+    feedback. Move on after at most two attempts. Use fictional people for origin, age and family-age questions.
+    Do not ask for or infer Quang's real age, location, or family details.
+  examples:
+  - happy
+- id: level-03.introduce-excited
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.excited
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: Model “excited” twice, invite Quang to say it, wait for one response, then give evidence-based
+    feedback. Move on after at most two attempts. Use fictional people for origin, age and family-age questions.
+    Do not ask for or infer Quang's real age, location, or family details.
+  examples:
+  - excited
+- id: level-03.introduce-numbers-20100
+  stage_id: level-03
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level03.vocabulary.numbers_20100
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: Model two example numbers between 20 and 100, invite Quang to say one number from the range,
+    then respond to that evidence. Do not ask for a real age or treat the label “numbers 20–100” as a spoken
+    target.
+  examples:
+  - twenty
+  - thirty-five
+- id: level-03.practice-01
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.pattern_how_are_you_i_m_great
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: 'Practise this short exchange with one learner response opportunity: How are you? – I''m great!
+    Use fictional people for origin, age and family-age questions. Do not ask for or infer Quang''s real age,
+    location, or family details.'
+  examples:
+  - How are you? – I'm great!
+- id: level-03.practice-02
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.pattern_where_are_you_from_i_m_from_vietnam
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: 'Practise this short exchange with one learner response opportunity: Where are you from? – I''m
+    from Vietnam. Use fictional people for origin, age and family-age questions. Do not ask for or infer Quang''s
+    real age, location, or family details.'
+  examples:
+  - Where are you from? – I'm from Vietnam.
+- id: level-03.practice-03
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.pattern_how_old_are_you_i_m_nine_years_old
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: 'Practise this short exchange with one learner response opportunity: How old are you? – I''m
+    nine years old. Use fictional people for origin, age and family-age questions. Do not ask for or infer
+    Quang''s real age, location, or family details.'
+  examples:
+  - How old are you? – I'm nine years old.
+- id: level-03.practice-04
+  stage_id: level-03
+  kind: guided_response
+  objective_ids:
+  - unit01.level03.pattern.pattern_how_old_is_your_mother_she_is_thirty_five_years_old
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: 'Practise this short exchange with one learner response opportunity: How old is your mother?
+    – She is thirty-five years old. Use fictional people for origin, age and family-age questions. Do not ask
+    for or infer Quang''s real age, location, or family details.'
+  examples:
+  - How old is your mother? – She is thirty-five years old.
+- id: level-03.ask-luna
+  stage_id: level-03
+  kind: ask_teacher
+  objective_ids:
+  - unit01.level03.pattern.pattern_how_are_you_i_m_great
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+  instruction: Invite Quang to ask Luna one short question about the current greeting scene. Use fictional
+    people for origin, age and family-age questions. Do not ask for or infer Quang's real age, location, or
+    family details.
+  examples:
+  - 'Pattern: How are you? – I''m great!'

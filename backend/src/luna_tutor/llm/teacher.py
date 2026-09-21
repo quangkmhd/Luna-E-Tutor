@@ -6,7 +6,7 @@ import logging
 from luna_tutor.domain.decisions import TeacherTurnRequest, TeacherUtterance
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.llm.openrouter import InvalidModelOutputError, OpenRouterError, ProviderError
-from luna_tutor.prompts.loader import load_system_prompt
+from luna_tutor.prompts.loader import load_grade_system_prompt
 
 
 class InvalidTeacherResultError(InvalidModelOutputError):
@@ -23,9 +23,9 @@ def _log_text(text: str, limit: int = 500) -> str:
 
 
 class GeminiTeacher:
-    def __init__(self, client):
+    def __init__(self, client, *, grade: int = 5):
         self._client = client
-        self._prompt = load_system_prompt('teacher-system.yaml')
+        self._prompt = load_grade_system_prompt(grade, 'teacher')
 
     async def respond(self, request: TeacherTurnRequest) -> TeacherUtterance:
         activity_id = request.activity_context.activity_id if request.activity_context else 'none'

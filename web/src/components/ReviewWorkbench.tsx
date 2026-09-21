@@ -55,9 +55,11 @@ export function ReviewWorkbench({ api = tutorApi }: { api?: TutorApi }) {
     (async () => {
       try {
         const sessions = await api.listSessions(controller.signal);
+        const fallbackUnit = sessions.length ? null : (await api.listUnits(controller.signal))[0];
         const current = sessions.find((item) => item.status === 'active')
           ?? sessions[0]
-          ?? await api.createSession('grade05.unit01', controller.signal);
+          ?? (fallbackUnit && await api.createSession(fallbackUnit.id, controller.signal));
+        if (!current) throw new Error('No Unit is available to review.');
         setSession(current);
       } catch (cause) {
         if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : 'Could not load Unit state.');

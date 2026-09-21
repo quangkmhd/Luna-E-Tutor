@@ -121,15 +121,18 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
             ids = []
             for item_text in items:
                 identifier = _slug(item_text) if kind == 'vocabulary' else _pattern_id(item_text)
+                if kind == 'pattern':
+                    base_identifier = identifier
+                    suffix = 2
+                    while identifier in patterns and patterns[identifier].text != item_text:
+                        identifier = f'{base_identifier}-{suffix}'
+                        suffix += 1
                 objective_id = f'unit{unit:02d}.{scope}.{kind}.{identifier.replace("-", "_")}'
                 if kind == 'vocabulary':
                     vocabulary.setdefault(identifier, VocabularyItem(id=identifier, text=item_text))
                     kwargs = {'vocabulary_ids': [identifier]}
                     criteria = f'Understand or use {item_text} in context; imitation alone is not independent use.'
                 else:
-                    existing = patterns.get(identifier)
-                    if existing is not None and existing.text != item_text:
-                        raise ValueError(f'Conflicting pattern ID {identifier}: source content needs review')
                     patterns.setdefault(identifier, Pattern(id=identifier, text=item_text))
                     kwargs = {'pattern_ids': [identifier]}
                     criteria = 'Record communicative meaning and target form separately; accept valid alternatives.'

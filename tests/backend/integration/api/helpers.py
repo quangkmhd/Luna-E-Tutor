@@ -18,7 +18,7 @@ def make_completed(state, learner_text: str, turn_id: str) -> CompletedTurn:
     decision = TeachingDecision(
         feedback_action='acknowledge_and_continue', progression_action='stay')
     request = TeacherTurnRequest(
-        turn_id=turn_id, feedback_action='acknowledge_and_continue',
+        turn_id=turn_id, unit_id=state.unit_id, feedback_action='acknowledge_and_continue',
         learner_meaning=learner_text, next_teaching_move='Ask one short follow-up.')
     proposed = state.model_copy(update={
         'state_version': state.state_version + 1,

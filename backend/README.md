@@ -1,6 +1,6 @@
 # Backend — Luna Tutor API và Teaching Engine
 
-FastAPI service cho curriculum Grade 5, Evaluator, Teaching Engine, Teacher,
+FastAPI service cho curriculum lớp 3 và lớp 5, Evaluator, Teaching Engine, Teacher,
 session persistence SQLite và API mà web/voice sử dụng. Đây là service riêng
 chạy bằng `backend/.venv`; xem [README root](../README.md) để biết bốn service.
 

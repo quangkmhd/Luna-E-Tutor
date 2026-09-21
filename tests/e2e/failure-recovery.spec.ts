@@ -9,19 +9,22 @@ test.beforeEach(async ({ request }) => {
 
 async function openUnit1(page: Page) {
   await page.goto('/');
+  const created = page.waitForResponse((response) =>
+    response.url().endsWith('/api/sessions') && response.request().method() === 'POST');
   await page.getByRole('button', { name: /Unit 1.*All about me!/i }).click();
+  return (await (await created).json()).session_id as string;
 }
 
-test('provider failure is retryable and does not advance state', async ({ page }) => {
-  await openUnit1(page);
+test('provider failure is retryable and does not advance state', async ({ page, request }) => {
+  const sessionId = await openUnit1(page);
   await page.getByLabel('Your answer').fill('fixture: provider failure');
   await page.getByRole('button', { name: 'Send' }).click();
   await expect(page.locator('.error-banner')).toContainText('Please try again');
-  await expect(page.getByText('Version').locator('..')).toContainText('0');
+  expect((await (await request.get(`http://localhost:8091/api/sessions/${sessionId}`)).json()).state_version).toBe(0);
   await page.getByLabel('Your answer').fill('Hello again');
   await page.getByRole('button', { name: 'Send' }).click();
   await expect(page.getByText('Thank you, Quang. Tell me a little more?')).toBeVisible();
-  await expect(page.getByText('Version').locator('..')).toContainText('1');
+  expect((await (await request.get(`http://localhost:8091/api/sessions/${sessionId}`)).json()).state_version).toBe(1);
 });
 
 test('Free Talk ends only through the explicit button and shows a summary', async ({ page }) => {

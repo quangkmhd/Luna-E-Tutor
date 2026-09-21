@@ -71,6 +71,7 @@ class TeacherActivityContext(Contract):
 
 class TeacherTurnRequest(Contract):
     turn_id: Text
+    unit_id: Identifier
     feedback_action: FeedbackAction
     corrected_form: SpokenText | None = None
     learner_meaning: Annotated[SanitizedText, Field(max_length=2000)]

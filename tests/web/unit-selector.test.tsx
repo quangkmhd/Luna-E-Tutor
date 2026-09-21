@@ -22,6 +22,19 @@ it('reports the exact selected curriculum id', async () => {
   expect(onSelect).toHaveBeenCalledWith('grade05.unit02');
 });
 
+it('shows both Unit 1 choices under their own grades', async () => {
+  const onSelect = vi.fn();
+  render(<UnitSelector units={[
+    { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' },
+    { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
+  ]} busy={false} onSelect={onSelect} />);
+
+  expect(screen.getByRole('heading', { name: 'Grade 3' })).toBeVisible();
+  expect(screen.getByRole('heading', { name: 'Grade 5' })).toBeVisible();
+  await userEvent.click(screen.getByRole('button', { name: /Unit 1.*Hello/i }));
+  expect(onSelect).toHaveBeenCalledWith('grade03.unit01');
+});
+
 it('offers Free Talk as a separate destination outside the unit choices', () => {
   render(<UnitSelector
     units={[

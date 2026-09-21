@@ -10,7 +10,7 @@ test('selects, persists, and renders Unit 2 without Unit 1 content', async ({
   ).click();
 
   await expect(page.getByText('Our homes')).toBeVisible();
-  await expect(page.getByText('English Tutor · Unit 2')).toBeVisible();
+  await expect(page.getByText('English Tutor · Grade 5 · Unit 2')).toBeVisible();
   await expect(page.getByText('All about me!')).toHaveCount(0);
 
   await page.getByLabel('Your answer').fill('I feel happy.');
@@ -45,11 +45,26 @@ test('opens Unit 2 directly at its canonical URL and returns to the selector', a
   await page.goto('/unit2');
 
   await expect(page).toHaveURL(/\/unit2$/);
-  await expect(page.getByText('English Tutor · Unit 2')).toBeVisible();
+  await expect(page.getByText('English Tutor · Grade 5 · Unit 2')).toBeVisible();
   await expect(page.getByText('Our homes')).toBeVisible();
   await expect(page.getByText('All about me!')).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Choose another unit' }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('heading', { name: 'Choose a unit' })).toBeVisible();
+});
+
+
+test('selects Grade 3 Hello and keeps its identity on direct route', async ({ page, request }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Grade 3' })).toBeVisible();
+  await page.getByRole('button', { name: /Unit 1.*Hello/i }).click();
+  await expect(page).toHaveURL(/\/grade3\/unit1$/);
+  await expect(page.getByText('English Tutor · Grade 3 · Unit 1')).toBeVisible();
+  await expect(page.getByText('Hello', { exact: true })).toBeVisible();
+  await expect(page.getByText('All about me!')).toHaveCount(0);
+  const sessions = await (await request.get('http://localhost:8091/api/sessions')).json();
+  expect(sessions.some((session: { unit_id: string }) => session.unit_id === 'grade03.unit01')).toBeTruthy();
+  await page.reload();
+  await expect(page.getByText('English Tutor · Grade 3 · Unit 1')).toBeVisible();
 });

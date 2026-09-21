@@ -62,10 +62,8 @@ function mockApi(overrides: Record<string, unknown> = {}) {
 }
 
 async function openLesson(api: TutorApi) {
-  render(<TutorShell api={api} />);
-  await userEvent.click(await screen.findByRole(
-    'button', { name: /Unit 1.*All about me!/i },
-  ));
+  render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
+  await screen.findByText('English Tutor · Grade 5 · Unit 1');
 }
 
 describe('TutorShell', () => {
@@ -84,30 +82,29 @@ describe('TutorShell', () => {
     await waitFor(() => expect(api.createSession).toHaveBeenCalledWith(
       'grade05.unit02', expect.any(AbortSignal),
     ));
-    expect(await screen.findByText('English Tutor · Unit 2')).toBeVisible();
+    expect(await screen.findByText('English Tutor · Grade 5 · Unit 2')).toBeVisible();
     expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
   });
 
   it('uses canonical unit URLs when entering and leaving a lesson', async () => {
     const api = mockApi();
     const user = userEvent.setup();
-    render(<TutorShell api={api} />);
+    const view = render(<TutorShell api={api} />);
 
     await user.click(await screen.findByRole(
       'button', { name: /Unit 1.*All about me!/i },
     ));
     expect(push).toHaveBeenCalledWith('/unit1');
-
+    view.unmount();
+    render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
     await user.click(await screen.findByRole('button', { name: 'Choose another unit' }));
     expect(push).toHaveBeenCalledWith('/');
   });
 
   it('links to Free Talk without invoking a lesson action', async () => {
     const api = mockApi();
-    render(<TutorShell api={api} />);
-    await userEvent.click(await screen.findByRole(
-      'button', { name: /Unit 1.*All about me!/i },
-    ));
+    render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
+    await screen.findByText('English Tutor · Grade 5 · Unit 1');
     const link = screen.getByRole('link', { name: 'Free Talk Room' });
 
     expect(link).toHaveAttribute('href', '/talk');
@@ -131,10 +128,8 @@ describe('TutorShell', () => {
       'button', { name: /Unit 2.*Our homes/i },
     ));
 
-    expect(api.createSession).toHaveBeenCalledWith('grade05.unit02');
-    expect(await screen.findByText('Our homes')).toBeVisible();
-    expect(screen.getByText('English Tutor · Unit 2')).toBeVisible();
-    expect(screen.queryByText('All about me!')).not.toBeInTheDocument();
+    expect(push).toHaveBeenCalledWith('/unit2');
+    expect(api.createSession).not.toHaveBeenCalled();
   });
 
   it('shows latency beside Luna on the latest teacher message', async () => {
@@ -148,14 +143,17 @@ describe('TutorShell', () => {
 
   it('starts with a fresh session and renders the server greeting without history', async () => {
     const api = mockApi();
-    render(<TutorShell api={api} />);
+    const view = render(<TutorShell api={api} />);
     expect(await screen.findByRole('heading', { name: 'Choose a unit' })).toBeVisible();
     expect(api.createSession).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole(
       'button', { name: /Unit 1.*All about me!/i },
     ));
+    expect(api.createSession).not.toHaveBeenCalled();
+    view.unmount();
+    render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
     expect(await screen.findByText('Hello, Quang!')).toBeVisible();
-    expect(api.createSession).toHaveBeenCalledWith('grade05.unit01');
+    expect(api.createSession).toHaveBeenCalledWith('grade05.unit01', expect.any(AbortSignal));
     expect(api.resetSession).not.toHaveBeenCalled();
     expect(api.listSessions).not.toHaveBeenCalled();
     expect(screen.queryByText('Session history')).not.toBeInTheDocument();

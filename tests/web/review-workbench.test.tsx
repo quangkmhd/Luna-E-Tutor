@@ -40,6 +40,7 @@ const result: ComparisonResult = {
 function api() {
   return {
     listSessions: vi.fn().mockResolvedValue([session]),
+    listUnits: vi.fn().mockResolvedValue([{ id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' }]),
     createSession: vi.fn().mockResolvedValue(session),
     compareEvaluators: vi.fn().mockResolvedValue(result),
   } as unknown as TutorApi;
@@ -72,5 +73,6 @@ describe('ReviewWorkbench', () => {
 
     expect(await screen.findByText(/lesson-01.live-in/)).toBeVisible();
     expect(client.createSession).toHaveBeenCalledOnce();
+    expect(client.createSession).toHaveBeenCalledWith('grade03.unit01', expect.anything());
   });
 });

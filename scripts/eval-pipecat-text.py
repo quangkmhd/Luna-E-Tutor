@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT / 'voice/server'))
 import pipecat
 from dotenv import dotenv_values
 from luna_tutor.config import Settings
-from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.curriculum.registry import CurriculumRegistry, SUPPORTED_UNIT_IDS
 from luna_tutor.evals.behavior import BehaviorRunner
 from luna_tutor.evals.loader import load_scenarios
 from luna_tutor.llm.evaluator import GeminiEvaluator
@@ -53,12 +53,15 @@ class DiagnosticClient(OpenRouterClient):
 async def run(args):
     registry = CurriculumRegistry(
         ROOT / 'curriculum',
-        tuple(f'grade05.unit{number:02d}' for number in range(1, 6)),
+        SUPPORTED_UNIT_IDS,
     )
     unit = registry.get(args.unit)
-    unit_slug = f'unit-{unit.unit:02d}'
+    unit_slug = (
+        f'grade-{unit.grade:02d}-unit-{unit.unit:02d}'
+        if unit.grade != 5 else f'unit-{unit.unit:02d}'
+    )
     scenario_dir = ROOT / 'evals' / unit_slug
-    curriculum_dir = ROOT / 'curriculum' / f'grade-{unit.grade:02d}' / unit_slug
+    curriculum_dir = ROOT / 'curriculum' / f'grade-{unit.grade:02d}' / f'unit-{unit.unit:02d}'
     scenarios = [s for s in load_scenarios(scenario_dir)
                  if s.id in args.scenario] if args.scenario else [
         s for s in load_scenarios(scenario_dir) if s.source.numbered]
@@ -90,7 +93,8 @@ async def run(args):
         checkpoint()
         async with DiagnosticClient(settings) as client:
             service = PipecatTurnService(TurnService(
-                TurnPlanner(GeminiEvaluator(client), TeachingEngine(), unit), GeminiTeacher(client)))
+                TurnPlanner(GeminiEvaluator(client, grade=unit.grade), TeachingEngine(), unit),
+                GeminiTeacher(client, grade=unit.grade)))
             runner = BehaviorRunner(ROOT, service, unit.id)
             for scenario in scenarios:
                 client.calls.clear()

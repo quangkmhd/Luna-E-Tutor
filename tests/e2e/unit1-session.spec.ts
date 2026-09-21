@@ -28,7 +28,7 @@ test('new session starts clean without session history', async ({ page }) => {
   await page.getByRole('button', { name: 'New session' }).click();
   await expect(page.getByText('Session history')).toHaveCount(0);
   await expect(page.getByText(/abandoned/)).toHaveCount(0);
-  await expect(page.getByText('Version').locator('..')).toContainText('0');
+  await expect(page.getByText("Hello, Quang! I'm Luna.")).toBeVisible();
 });
 
 test('keeps the lesson header, composer, and sidebar panels visible on desktop', async ({ page, request }) => {
@@ -45,7 +45,7 @@ test('keeps the lesson header, composer, and sidebar panels visible on desktop',
   const layout = await page.evaluate(() => {
     const composer = document.querySelector<HTMLElement>('.composer');
     const chat = document.querySelector<HTMLElement>('.chat-scroll');
-    const inspector = document.querySelector<HTMLElement>('.inspector');
+    const inspector = document.querySelector<HTMLElement>('.learning-focus');
     if (!composer || !chat || !inspector) throw new Error('Lesson layout was not rendered');
     return {
       documentHeight: document.documentElement.scrollHeight,

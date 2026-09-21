@@ -96,7 +96,7 @@ def test_build_voice_worker_requires_session_metadata_before_services(tmp_path, 
     monkeypatch.setattr(
         bot,
         "build_soniox_stt",
-        lambda _config: pytest.fail("provider service should not be constructed"),
+        lambda _config, _curriculum: pytest.fail("provider service should not be constructed"),
     )
     with pytest.raises(ValueError, match="session_id"):
         bot.build_voice_worker(
@@ -110,7 +110,7 @@ def test_build_voice_worker_rejects_unknown_session_before_services(tmp_path, mo
     monkeypatch.setattr(
         bot,
         "build_soniox_stt",
-        lambda _config: pytest.fail("provider service should not be constructed"),
+        lambda _config, _curriculum: pytest.fail("provider service should not be constructed"),
     )
     with pytest.raises(LookupError, match="missing-session"):
         bot.build_voice_worker(
@@ -141,7 +141,7 @@ def test_build_voice_worker_rejects_unknown_stored_unit_before_services(
     monkeypatch.setattr(
         bot,
         "build_soniox_stt",
-        lambda _config: pytest.fail("provider service should not be constructed"),
+        lambda _config, _curriculum: pytest.fail("provider service should not be constructed"),
     )
 
     with pytest.raises(UnknownUnitError, match="grade05.unit99"):
@@ -172,13 +172,13 @@ async def test_build_voice_worker_routes_persisted_unit2_state(
     router = UnitTurnRouter({
         "grade05.unit01": unit1,
         "grade05.unit02": unit2,
-    }, response_service=unit2)
+    })
     monkeypatch.setattr(
         bot,
         "build_runtime_components",
         lambda _environment: runtime_components(repository, router),
     )
-    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
+    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config, _curriculum: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
 
     worker = bot.build_voice_worker(
@@ -214,7 +214,7 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
         "build_runtime_components",
         lambda _environment: runtime_components(repository, RecordingService()),
     )
-    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
+    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config, _curriculum: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
 
     transport = FakeTransport()
@@ -274,7 +274,7 @@ def test_voice_worker_does_not_finalize_on_a_brief_pause_inside_a_sentence(
         "build_runtime_components",
         lambda _environment: runtime_components(repository, RecordingService()),
     )
-    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
+    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config, _curriculum: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
 
     worker = bot.build_voice_worker(
@@ -309,7 +309,7 @@ async def test_disconnect_discards_pending_completion_before_cancel(tmp_path, mo
         "build_runtime_components",
         lambda _environment: runtime_components(repository, service),
     )
-    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config: STTProcessor())
+    monkeypatch.setattr(bot, "build_soniox_stt", lambda _config, _curriculum: STTProcessor())
     monkeypatch.setattr(bot, "build_soniox_tts", lambda _config: TTSProcessor())
     transport = FakeTransport()
     worker = bot.build_voice_worker(

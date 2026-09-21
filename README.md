@@ -1,6 +1,6 @@
 # Luna English Tutor
 
-Ứng dụng học tiếng Anh lớp 5 gồm bốn dịch vụ chạy cục bộ độc lập: giao diện
+Ứng dụng học tiếng Anh lớp 3 và lớp 5 gồm bốn dịch vụ chạy cục bộ độc lập: giao diện
 web, API/teaching engine, phòng học có lộ trình, và phòng Free Talk.
 
 ## Kiến trúc cục bộ
@@ -73,6 +73,13 @@ Script khởi động đồng thời:
 Mở `http://localhost:3000` để học theo Unit, hoặc
 `http://localhost:3000/talk` để dùng Free Talk. Nhấn `Ctrl+C` ở terminal chạy
 script để dừng toàn bộ bốn process.
+
+Màn chọn bài hiện có lớp 3 Unit 1 **Hello** và lớp 5 Unit 1–5. Unit 1 lớp 3
+có URL `/grade3/unit1`; các URL `/unit1`–`/unit5` của lớp 5 vẫn dùng được.
+System prompt Teacher và Gemini Evaluator được ghép từ quy tắc chung trong
+`backend/src/luna_tutor/prompts/shared/` và phần riêng của từng lớp trong
+`backend/src/luna_tutor/prompts/grades/grade-03/` hoặc `grade-05/`.
+Runtime chọn prompt theo lớp của phiên học; thiếu prompt thì báo lỗi cấu hình.
 
 Log tách riêng tại:
 

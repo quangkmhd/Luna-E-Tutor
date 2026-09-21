@@ -1,0 +1,64 @@
+id: grade03.unit01
+grade: 3
+unit: 1
+title: Hello
+content_files:
+- lesson-01/content.yaml
+- lesson-02/content.yaml
+- lesson-03/content.yaml
+- level-02/content.yaml
+- level-03/content.yaml
+- free-talk/content.yaml
+opening:
+  stage:
+    id: warm-up
+    title: Welcome to Hello
+    exits:
+    - lesson-01
+    prerequisite_stage_ids: []
+    completion_rule: all_required_activities_handled
+  activities:
+  - id: warm-up.hello
+    stage_id: warm-up
+    kind: greeting
+    objective_ids: []
+    required: true
+    max_attempts: 1
+    completion_rule:
+      mode: delivered
+    instruction: Greet Quang warmly as Luna. Keep this welcome short and do not introduce Unit vocabulary.
+    examples:
+    - Hi, Quang!
+  - id: warm-up.feelings
+    stage_id: warm-up
+    kind: emotion_check
+    objective_ids: []
+    required: true
+    max_attempts: 2
+    completion_rule:
+      mode: interaction
+    instruction: Ask how Quang feels. Accept a short or Vietnamese answer and give one gentle choice after
+      silence. Do not teach target words yet.
+    examples:
+    - How are you today?
+closing:
+  stage:
+    id: summary
+    title: Celebrate the Hello conversation
+    exits:
+    - finish
+    prerequisite_stage_ids: []
+    completion_rule: all_required_activities_handled
+  activities:
+  - id: summary.reflect
+    stage_id: summary
+    kind: summary
+    objective_ids: []
+    required: true
+    max_attempts: 1
+    completion_rule:
+      mode: delivered
+    instruction: End the fictional role, praise naturally, report only evidenced progress, and keep unresolved
+      goals for review.
+    examples:
+    - You greeted a friend in English today!

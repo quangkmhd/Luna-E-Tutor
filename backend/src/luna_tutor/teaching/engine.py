@@ -17,6 +17,16 @@ _KNOWN_MEANING = {'satisfied', 'partially_satisfied'}
 _SUPPORT_ORDER = {'independent': 0, 'context_hint': 1, 'choices': 2, 'sentence_starter': 3, 'model': 4}
 # Function words must not make unrelated review topics look relevant.
 _CONTEXT_STOP_WORDS = frozenset('a an the i my me you your we our it is are am in on at to of and or do does very'.split())
+_TENS_20_TO_90 = frozenset('twenty thirty forty fifty sixty seventy eighty ninety'.split())
+
+
+def _uses_number_20_to_100(quote: str) -> bool:
+    if any(20 <= int(number) <= 100 for number in re.findall(r'(?<!\w)\d+(?!\w)', quote)):
+        return True
+    words = re.findall(r'[a-z]+', quote.casefold())
+    if 'hundred' in words and 'one' in words:
+        return True
+    return any(word in _TENS_20_TO_90 for word in words)
 
 
 def _independent(state: LessonState) -> bool:
@@ -35,6 +45,8 @@ def _english_success(item: ObjectiveEvidence, curriculum: UnitCurriculum) -> boo
     # Vocabulary has no sentence-form target. Require the actual English word,
     # so a Vietnamese explanation alone is not counted as English word use.
     words = [w.text for w in curriculum.vocabulary if w.id in objective.vocabulary_ids]
+    if words == ['numbers 20–100']:
+        return _uses_number_20_to_100(item.evidence_quote or '')
     return bool(words) and all(re.search(r'(?<!\w)' + re.escape(word) + r'(?!\w)',
                                         item.evidence_quote or '', re.IGNORECASE) for word in words)
 

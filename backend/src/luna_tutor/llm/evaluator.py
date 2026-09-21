@@ -1,7 +1,7 @@
 """Evidence-only Gemini evaluation; no teaching decisions or Teacher prose."""
 
 import json
-from luna_tutor.prompts.loader import load_system_prompt
+from luna_tutor.prompts.loader import load_grade_system_prompt
 
 from pydantic import ValidationError
 
@@ -62,9 +62,9 @@ def _correlates(request: EvaluatorRequest, result: EvaluatorResult) -> bool:
 
 
 class GeminiEvaluator:
-    def __init__(self, client: OpenRouterClient):
+    def __init__(self, client: OpenRouterClient, *, grade: int = 5):
         self._client = client
-        self._prompt = load_system_prompt('evaluator.yaml')
+        self._prompt = load_grade_system_prompt(grade, 'evaluator')
 
     async def evaluate(self, request: EvaluatorRequest) -> EvaluatorResult:
         """Sanitize, request evidence, then strictly validate and correlate it.

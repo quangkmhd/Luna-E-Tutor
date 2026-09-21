@@ -9,7 +9,7 @@ from luna_tutor.domain.evidence import EvaluatorRequest
 @pytest.fixture
 def evaluator_request():
     return EvaluatorRequest.model_validate({
-        'turn_id': 'turn-1', 'state_version': 4,
+        'turn_id': 'turn-1', 'unit_id': 'grade05.unit01', 'state_version': 4,
         'teacher_turn': 'Where do you live?', 'activity_type': 'guided_response',
         'active_objectives': [{
             'objective_id': 'pattern.live-in', 'communicative_goal': 'Say where you live',

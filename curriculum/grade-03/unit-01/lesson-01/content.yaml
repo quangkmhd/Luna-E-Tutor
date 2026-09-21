@@ -1,0 +1,108 @@
+stage:
+  id: lesson-01
+  title: 'Lesson 01: Greetings'
+  exits:
+  - lesson-02
+  prerequisite_stage_ids: []
+  completion_rule: all_required_activities_handled
+vocabulary:
+- id: hello
+  text: hello
+- id: hi
+  text: hi
+patterns:
+- id: pattern-hello-hi-i-m
+  text: Hello./Hi. I'm ___.
+- id: pattern-hello-hi-i-m-2
+  text: Hello,/Hi, ___. I'm ___.
+objectives:
+- id: unit01.lesson01.vocabulary.hello
+  description: 'Vocabulary: hello'
+  vocabulary_ids:
+  - hello
+  evidence_criteria: Understand or use hello in context; imitation alone is not independent use.
+- id: unit01.lesson01.vocabulary.hi
+  description: 'Vocabulary: hi'
+  vocabulary_ids:
+  - hi
+  evidence_criteria: Understand or use hi in context; imitation alone is not independent use.
+- id: unit01.lesson01.pattern.pattern_hello_hi_i_m
+  description: 'Pattern: Hello./Hi. I''m ___.'
+  pattern_ids:
+  - pattern-hello-hi-i-m
+  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
+- id: unit01.lesson01.pattern.pattern_hello_hi_i_m_2
+  description: 'Pattern: Hello,/Hi, ___. I''m ___.'
+  pattern_ids:
+  - pattern-hello-hi-i-m-2
+  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
+activities:
+- id: lesson-01.introduce-hello
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson01.vocabulary.hello
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: Model “hello” twice, invite Quang to say it, wait for one response, then give evidence-based
+    feedback. Move on after at most two attempts. Let Quang choose a pretend name for practice; do not request
+    a real full name.
+  examples:
+  - hello
+- id: lesson-01.introduce-hi
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.lesson01.vocabulary.hi
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: Model “hi” twice, invite Quang to say it, wait for one response, then give evidence-based feedback.
+    Move on after at most two attempts. Let Quang choose a pretend name for practice; do not request a real
+    full name.
+  examples:
+  - hi
+- id: lesson-01.practice-01
+  stage_id: lesson-01
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson01.pattern.pattern_hello_hi_i_m
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: 'Practise this short exchange with one learner response opportunity: Hello./Hi. I''m ___. Let
+    Quang choose a pretend name for practice; do not request a real full name.'
+  examples:
+  - Hello./Hi. I'm ___.
+- id: lesson-01.practice-02
+  stage_id: lesson-01
+  kind: guided_response
+  objective_ids:
+  - unit01.lesson01.pattern.pattern_hello_hi_i_m_2
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: communicative_turn
+  instruction: 'Practise this short exchange with one learner response opportunity: Hello,/Hi, ___. I''m ___.
+    Let Quang choose a pretend name for practice; do not request a real full name.'
+  examples:
+  - Hello,/Hi, ___. I'm ___.
+- id: lesson-01.ask-luna
+  stage_id: lesson-01
+  kind: ask_teacher
+  objective_ids:
+  - unit01.lesson01.pattern.pattern_hello_hi_i_m
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: ask_teacher
+  instruction: Invite Quang to ask Luna one short question about the current greeting scene. Let Quang choose
+    a pretend name for practice; do not request a real full name.
+  examples:
+  - 'Pattern: Hello./Hi. I''m ___.'

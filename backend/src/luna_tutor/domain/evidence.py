@@ -39,6 +39,7 @@ class ContextTurn(Contract):
 
 class EvaluatorRequest(Contract):
     turn_id: Text
+    unit_id: Identifier
     state_version: Version
     teacher_turn: Annotated[SanitizedText, Field(max_length=4000)]
     activity_type: Text

@@ -3,14 +3,18 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
 
+from luna_tutor.curriculum.models import UnitCurriculum
 from pipecat.services.soniox.stt import SonioxSTTService
 from pipecat.services.soniox.tts import SonioxTTSService
 from pipecat.transcriptions.language import Language
 
-UNIT_1_TRANSCRIPTION_CONTEXT = (
-    "Grade 5 Unit 1 All about me: class, city, countryside, address, "
-    "birthday, hobby, favourite animal, drawback, traffic jam"
-)
+def transcription_context(curriculum: UnitCurriculum) -> str:
+    targets = [item.text for item in curriculum.vocabulary]
+    targets.extend(item.text for item in curriculum.patterns)
+    return (
+        f'Grade {curriculum.grade} Unit {curriculum.unit} {curriculum.title}: '
+        + ', '.join(targets)
+    )[:1200]
 
 
 @dataclass(frozen=True)
@@ -34,7 +38,7 @@ class VoiceConfig:
         return cls(*(environment[name].strip() for name in names))
 
 
-def build_soniox_stt(config: VoiceConfig) -> SonioxSTTService:
+def build_soniox_stt(config: VoiceConfig, curriculum: UnitCurriculum) -> SonioxSTTService:
     return SonioxSTTService(
         api_key=config.soniox_api_key,
         vad_force_turn_endpoint=True,
@@ -42,7 +46,7 @@ def build_soniox_stt(config: VoiceConfig) -> SonioxSTTService:
             model="stt-rt-v5",
             language_hints=[Language.EN, Language.VI],
             language_hints_strict=False,
-            context=UNIT_1_TRANSCRIPTION_CONTEXT,
+            context=transcription_context(curriculum),
         ),
     )
 

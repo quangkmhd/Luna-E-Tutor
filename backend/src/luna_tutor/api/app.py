@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from luna_tutor.api.routes import build_router
-from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.curriculum.registry import CurriculumRegistry, SUPPORTED_UNIT_IDS
 
 
 def create_app(*, repository, turn_service, curriculum_registry=None,
@@ -12,11 +12,8 @@ def create_app(*, repository, turn_service, curriculum_registry=None,
                allowed_origins: list[str] | None = None) -> FastAPI:
     if curriculum_registry is None:
         root = Path(__file__).resolve().parents[4]
-        curriculum_registry = CurriculumRegistry(
-            root / 'curriculum', (
-                'grade05.unit01', 'grade05.unit02', 'grade05.unit03',
-                'grade05.unit04', 'grade05.unit05'))
-    app = FastAPI(title='Luna Grade 5 Tutor', version='0.1.0', lifespan=lifespan)
+        curriculum_registry = CurriculumRegistry(root / 'curriculum', SUPPORTED_UNIT_IDS)
+    app = FastAPI(title='Luna English Tutor', version='0.1.0', lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allowed_origins or ['http://localhost:3000'],

@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { unitIdFromSlug } from '@/lib/unit-route';
+import { unitIdFromSlug, unitPath } from '@/lib/unit-route';
 
 describe('unitIdFromSlug', () => {
+  it('keeps Grade 3 and Grade 5 Unit 1 on distinct URLs', () => {
+    expect(unitPath(3, 1)).toBe('/grade3/unit1');
+    expect(unitPath(5, 1)).toBe('/unit1');
+  });
   it.each([
     ['unit1', 'grade05.unit01'],
     ['unit2', 'grade05.unit02'],

@@ -1,7 +1,7 @@
 [project]
 name = "luna-tutor"
 version = "0.1.0"
-description = "Provider-independent Grade 5 teaching core"
+description = "Provider-independent English teaching core for multiple grades"
 requires-python = ">=3.12"
 dependencies = [
     "pydantic",

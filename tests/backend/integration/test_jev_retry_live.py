@@ -53,7 +53,7 @@ async def test_live_jev_distinguishes_four_failed_attempts(
     curriculum = load_unit(Path(__file__).resolve().parents[3]
                            / 'curriculum/grade-05/unit-01')
     request = EvaluatorRequest(
-        turn_id='live-' + objective_id, state_version=0,
+        turn_id='live-' + objective_id, unit_id=curriculum.id, state_version=0,
         teacher_turn=teacher_turn, activity_type=activity_type,
         active_objectives=[_active_objective(curriculum, objective_id)],
         support_given={}, transcript_status='final', learner_transcript=learner_text,

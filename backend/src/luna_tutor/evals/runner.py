@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.curriculum.registry import CurriculumRegistry, SUPPORTED_UNIT_IDS
 from luna_tutor.domain.evidence import (
     ActiveObjective,
     EvaluatorRequest,
@@ -46,13 +46,16 @@ class EvalRunner:
                  unit_id: str = 'grade05.unit01'):
         self.root = repository_root
         self.evaluator = evaluator
-        allowed_ids = tuple(f'grade05.unit{number:02d}' for number in range(1, 6))
+        allowed_ids = SUPPORTED_UNIT_IDS
         self.registry = CurriculumRegistry(repository_root / 'curriculum', allowed_ids)
         self.curriculum = self.registry.get(unit_id)
-        self.unit_slug = f'unit-{self.curriculum.unit:02d}'
+        self.unit_slug = (
+            f'grade-{self.curriculum.grade:02d}-unit-{self.curriculum.unit:02d}'
+            if self.curriculum.grade != 5 else f'unit-{self.curriculum.unit:02d}'
+        )
         self.curriculum_dir = (
             repository_root / 'curriculum' / f'grade-{self.curriculum.grade:02d}'
-            / self.unit_slug
+            / f'unit-{self.curriculum.unit:02d}'
         )
         self.scenario_dir = repository_root / 'evals' / self.unit_slug
 
@@ -77,6 +80,7 @@ class EvalRunner:
                     learner_text = redacted.text
                     request = EvaluatorRequest(
                         turn_id=f'{scenario.id}-{index}-{repetition}', state_version=0,
+                        unit_id=self.curriculum.id,
                         teacher_turn=turn.teacher_turn,
                         activity_type=scenario.initial_state.stage_id,
                         active_objectives=[self._objective(item) for item in scenario.objective_ids],
@@ -133,8 +137,11 @@ class EvalRunner:
 
     def write_report(self, records: list[EvalRecord], output_dir: Path) -> ReportArtifacts:
         output_dir.mkdir(parents=True, exist_ok=True)
-        prompt = self.root / 'backend/src/luna_tutor/prompts/evaluator.yaml'
-        prompt_hash = hashlib.sha256(prompt.read_bytes()).hexdigest()
+        prompt_root = self.root / 'backend/src/luna_tutor/prompts'
+        prompt_hash = _sha([
+            prompt_root / 'shared/evaluator.yaml',
+            prompt_root / f'grades/grade-{self.curriculum.grade:02d}/evaluator.yaml',
+        ])
         curriculum_paths = list(self.curriculum_dir.rglob('*.yaml'))
         curriculum_hash = _sha(curriculum_paths)
         metrics = calculate_metrics(records)

@@ -49,6 +49,7 @@ class TurnPlanner:
         planning_state = state.model_copy(update={'privacy_event': redacted.safety_event})
         request = EvaluatorRequest(
             turn_id=turn_id,
+            unit_id=state.unit_id,
             state_version=state.state_version,
             teacher_turn=state.last_teacher_turn,
             activity_type=activity.kind,
@@ -81,6 +82,7 @@ class TurnPlanner:
                 next_move = self._descriptions.remaining(descriptions)
         teacher_request = TeacherTurnRequest(
             turn_id=turn_id,
+            unit_id=state.unit_id,
             feedback_action=decision.feedback_action,
             corrected_form=decision.corrected_form,
             learner_meaning=redacted.text,

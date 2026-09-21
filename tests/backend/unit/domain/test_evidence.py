@@ -17,7 +17,7 @@ def result(**changes):
 
 
 def request(**changes):
-    return dict(turn_id='t1', state_version=4, teacher_turn='Where do you live?',
+    return dict(turn_id='t1', unit_id='grade05.unit01', state_version=4, teacher_turn='Where do you live?',
                 activity_type='guided_response', active_objectives=[{
                     'objective_id': 'pattern.live-in',
                     'communicative_goal': 'Say where you live',

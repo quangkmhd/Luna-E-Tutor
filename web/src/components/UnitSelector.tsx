@@ -13,11 +13,13 @@ export function UnitSelector({
 }) {
   return <main className="unit-selector">
     <div className="logo-mark">L</div>
-    <span className="eyebrow">Grade 5 English</span>
+    <span className="eyebrow">Luna English</span>
     <h1>Choose a unit</h1>
     <p>Select what you would like to practise with Luna.</p>
+    {[...new Set(units.map((unit) => unit.grade))].map((grade) => <section key={grade} aria-label={`Grade ${grade}`}>
+    <h2>Grade {grade}</h2>
     <div className="unit-grid">
-      {units.map((unit) => <button
+      {units.filter((unit) => unit.grade === grade).map((unit) => <button
         key={unit.id}
         type="button"
         disabled={busy}
@@ -26,7 +28,7 @@ export function UnitSelector({
         <strong>Unit {unit.unit}</strong>
         <span>{unit.title}</span>
       </button>)}
-    </div>
+    </div></section>)}
     <section className="free-talk-card" aria-labelledby="free-talk-title">
       <div className="free-talk-icon" aria-hidden="true">
         <span>···</span>

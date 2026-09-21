@@ -8,6 +8,9 @@ from luna_tutor.curriculum.loader import load_unit
 from luna_tutor.curriculum.models import UnitCurriculum
 
 _UNIT_ID = re.compile(r"^grade(?P<grade>\d{2})\.unit(?P<unit>\d{2})$")
+SUPPORTED_UNIT_IDS = ('grade03.unit01',) + tuple(
+    f'grade05.unit{number:02d}' for number in range(1, 6)
+)
 
 
 @dataclass(frozen=True)

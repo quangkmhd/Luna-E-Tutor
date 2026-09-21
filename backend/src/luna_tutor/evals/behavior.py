@@ -3,7 +3,7 @@ import re
 import time
 from pathlib import Path
 
-from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.curriculum.registry import CurriculumRegistry, SUPPORTED_UNIT_IDS
 from luna_tutor.domain.evidence import SupportGiven
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import OpenRouterError
@@ -11,7 +11,7 @@ from luna_tutor.llm.openrouter import OpenRouterError
 
 class BehaviorRunner:
     def __init__(self, root: Path, service, unit_id: str = 'grade05.unit01'):
-        allowed_ids = tuple(f'grade05.unit{number:02d}' for number in range(1, 6))
+        allowed_ids = SUPPORTED_UNIT_IDS
         self.registry = CurriculumRegistry(root / 'curriculum', allowed_ids)
         self.curriculum = self.registry.get(unit_id)
         self.service = service

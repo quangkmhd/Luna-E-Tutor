@@ -22,6 +22,7 @@ def test_fixture_components_are_deterministic_and_have_repository(tmp_path):
     assert [
         item.id for item in components.curriculum_registry.list_units()
     ] == [
+        'grade03.unit01',
         'grade05.unit01', 'grade05.unit02',
         'grade05.unit03', 'grade05.unit04', 'grade05.unit05',
     ]
@@ -33,6 +34,24 @@ def test_live_components_require_openrouter_configuration(tmp_path):
         runtime.build_runtime_components(
             {"TUTOR_DATABASE_PATH": str(tmp_path / "voice.sqlite3")}
         )
+
+
+@pytest.mark.asyncio
+async def test_live_runtime_binds_teacher_and_evaluator_prompts_to_grade(tmp_path):
+    components = runtime.build_runtime_components({
+        'OPENROUTER_API_KEY': 'test-key',
+        'TUTOR_DATABASE_PATH': str(tmp_path / 'prompts.sqlite3'),
+    })
+    try:
+        grade3 = components.turn_service._service('grade03.unit01')
+        grade5 = components.turn_service._service('grade05.unit01')
+        assert 'Grade 3' in grade3._teacher._prompt
+        assert 'Grade 3' in grade3._planner._evaluator._prompt
+        assert 'Grade 5' in grade5._teacher._prompt
+        assert 'Grade 5' in grade5._planner._evaluator._prompt
+        assert grade3._teacher is not grade5._teacher
+    finally:
+        await components.client.aclose()
 
 
 def warmup_state():

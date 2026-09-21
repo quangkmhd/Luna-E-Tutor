@@ -43,7 +43,7 @@ async def _run(args) -> int:
         report = runner.rescore(args.recorded, args.out)
     else:
         async with OpenRouterClient(Settings.from_env()) as client:
-            report = await EvalRunner(root, GeminiEvaluator(client), args.unit).run(
+            report = await EvalRunner(root, GeminiEvaluator(client, grade=runner.curriculum.grade), args.unit).run(
                 scenarios, args.repetitions, args.out)
     accepted = report.accepted
     if args.set == 'holdout' and args.baseline and args.baseline.exists():

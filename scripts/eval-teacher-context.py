@@ -12,7 +12,7 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 from luna_tutor.config import Settings
-from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.curriculum.registry import CurriculumRegistry, SUPPORTED_UNIT_IDS
 from luna_tutor.domain.decisions import TeacherTurnRequest, TeachingDecision
 from luna_tutor.llm.openrouter import OpenRouterClient, OpenRouterError
 from luna_tutor.llm.teacher import GeminiTeacher
@@ -23,10 +23,13 @@ async def run(label: str, env_file: Path | None, unit_id: str):
     root = Path(__file__).resolve().parents[1]
     registry = CurriculumRegistry(
         root / 'curriculum',
-        tuple(f'grade05.unit{number:02d}' for number in range(1, 6)),
+        SUPPORTED_UNIT_IDS,
     )
     unit = registry.get(unit_id)
-    unit_slug = f'unit-{unit.unit:02d}'
+    unit_slug = (
+        f'grade-{unit.grade:02d}-unit-{unit.unit:02d}'
+        if unit.grade != 5 else f'unit-{unit.unit:02d}'
+    )
     output = root / 'evals' / unit_slug / 'text-experiments' / f'teacher-context-{label}.json'
     if output.exists():
         raise ValueError('Use a new label to preserve prior experiment evidence')
@@ -65,12 +68,12 @@ async def run(label: str, env_file: Path | None, unit_id: str):
             return raw
 
         client.structured_chat = record_chat
-        teacher = GeminiTeacher(client)
+        teacher = GeminiTeacher(client, grade=unit.grade)
         for name, activity_id, text, previous, action in cases:
             captured.clear()
             activity = next(a for a in unit.activities if a.id == activity_id)
             request = TeacherTurnRequest(
-                turn_id='context-' + name, feedback_action=action,
+                turn_id='context-' + name, unit_id=unit.id, feedback_action=action,
                 learner_meaning=text, previous_teacher_turn=previous,
                 next_teaching_move=builder._next_move_text(activity, TeachingDecision(
                     feedback_action=action, progression_action='stay')),
@@ -78,13 +81,14 @@ async def run(label: str, env_file: Path | None, unit_id: str):
             reply = await teacher.respond(request)
             records.append({'case': name, 'request': request.model_dump(mode='json'),
                             'output': reply.model_dump(mode='json'), **captured})
-    prompt = root / 'backend/src/luna_tutor/prompts/teacher-system.yaml'
+    from luna_tutor.prompts.loader import load_grade_system_prompt
+    prompt = load_grade_system_prompt(unit.grade, 'teacher')
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({
         'scope': 'isolated_teacher_diagnostic',
         'unit_id': unit.id,
         'model': 'google/gemini-3.5-flash-lite',
-        'prompt_sha256': hashlib.sha256(prompt.read_bytes()).hexdigest(),
+        'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
         'records': records,
     }, indent=2, ensure_ascii=False), encoding='utf-8')
     for record in records:

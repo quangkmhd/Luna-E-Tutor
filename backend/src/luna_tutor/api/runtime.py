@@ -8,7 +8,7 @@ from pathlib import Path
 
 from luna_tutor.api.app import create_app
 from luna_tutor.config import Settings
-from luna_tutor.curriculum.registry import CurriculumRegistry
+from luna_tutor.curriculum.registry import CurriculumRegistry, SUPPORTED_UNIT_IDS
 from luna_tutor.domain.decisions import (
     CompletedTurn,
     PlannedTurn,
@@ -35,9 +35,9 @@ GEMINI_EVALUATOR_MODEL = 'google/gemini-3.5-flash-lite'
 JEV_EVALUATOR_MODEL = '~typesafe/jev-latest'
 
 
-def build_evaluator(model: str, client: OpenRouterClient):
+def build_evaluator(model: str, client: OpenRouterClient, *, grade: int):
     if model == GEMINI_EVALUATOR_MODEL:
-        return GeminiEvaluator(client)
+        return GeminiEvaluator(client, grade=grade)
     if model == JEV_EVALUATOR_MODEL:
         return JevEvaluator(client)
     raise ValueError(
@@ -77,7 +77,7 @@ class FixtureTurnService:
             next_activity_id='free-talk.conversation' if go_free else None,
         )
         request = TeacherTurnRequest(
-            turn_id=turn_id, feedback_action=decision.feedback_action,
+            turn_id=turn_id, unit_id=state.unit_id, feedback_action=decision.feedback_action,
             corrected_form=decision.corrected_form, learner_meaning=learner_text,
             next_teaching_move=('Start Free Talk.' if go_free else 'Ask one short follow-up.'))
         proposed = state.model_copy(update={
@@ -117,10 +117,7 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
     database_path = Path(environment.get(
         'TUTOR_DATABASE_PATH', str(root / 'backend/data/luna-tutor.sqlite3')))
     repository = SessionRepository(database_path)
-    registry = CurriculumRegistry(
-        root / 'curriculum', (
-            'grade05.unit01', 'grade05.unit02', 'grade05.unit03',
-                'grade05.unit04', 'grade05.unit05'))
+    registry = CurriculumRegistry(root / 'curriculum', SUPPORTED_UNIT_IDS)
     mode = environment.get('TUTOR_LLM_MODE', 'live')
     if mode == 'fixture':
         if environment.get('ENV') != 'test':
@@ -146,25 +143,32 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
             f'{GEMINI_EVALUATOR_MODEL} or {JEV_EVALUATOR_MODEL}')
     settings = Settings(openrouter_api_key=key)
     client = OpenRouterClient(settings)
-    evaluator = build_evaluator(evaluator_model, client)
-    teacher = GeminiTeacher(client)
     engine = TeachingEngine()
     turn_services = {}
     comparison_services = {}
+    grade_services = {}
     for summary in registry.list_units():
         curriculum = registry.get(summary.id)
+        if curriculum.grade not in grade_services:
+            grade_services[curriculum.grade] = (
+                build_evaluator(evaluator_model, client, grade=curriculum.grade),
+                GeminiEvaluator(client, grade=curriculum.grade),
+                JevEvaluator(client),
+                GeminiTeacher(client, grade=curriculum.grade),
+            )
+        evaluator, gemini_evaluator, jev_evaluator, teacher = grade_services[curriculum.grade]
         selected = TurnService(
             TurnPlanner(evaluator, engine, curriculum), teacher)
         turn_services[summary.id] = selected
         gemini = (
             selected if evaluator_model == GEMINI_EVALUATOR_MODEL
             else TurnService(TurnPlanner(
-                GeminiEvaluator(client), engine, curriculum), teacher)
+                gemini_evaluator, engine, curriculum), teacher)
         )
         jev = (
             selected if evaluator_model == JEV_EVALUATOR_MODEL
             else TurnService(TurnPlanner(
-                JevEvaluator(client), engine, curriculum), teacher)
+                jev_evaluator, engine, curriculum), teacher)
         )
         comparison_services[summary.id] = ComparisonService(gemini, jev)
     return RuntimeComponents(

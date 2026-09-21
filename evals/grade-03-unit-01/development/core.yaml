@@ -1,0 +1,81 @@
+source_file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
+defaults:
+  scenario:
+    objective_ids: []
+    rule_ids: []
+    branch_ids: []
+    state_snapshots: []
+  initial_state:
+    stage_id: lesson-01
+    activity_id: lesson-01.practice-01
+    objective_id: unit01.lesson01.pattern.pattern_hello_hi_i_m
+    attempt_count: 0
+    support: independent
+    prior_activities_handled: true
+    response_opportunity_given: true
+  turn:
+    evaluator_gold:
+      response_kind: answer
+      meaning_status: satisfied
+      target_form_status: correct_target_form
+      recast_needed: false
+      emotional_signals: []
+      needs_clarification: false
+    allowed_feedback_actions: [acknowledge_and_continue]
+    forbidden_behaviors: [forced_repetition, fabricated_mastery, real_address_request]
+    expected_state_effects: {}
+    teacher_criteria: [responds_to_content, asks_at_most_one_question]
+scenarios:
+- id: grade03-hello
+  source: {heading: 'E2 greeting and name', line: 2, numbered: true}
+  objective_ids: [unit01.lesson01.pattern.pattern_hello_hi_i_m]
+  branch_ids: [lesson-01.practice-01]
+  turns:
+  - teacher_turn: Hello! I am Luna. What is your pretend name?
+    learner_text: Hi! I am Mia.
+    evaluator_gold: {}
+- id: grade03-goodbye
+  source: {heading: 'E3 goodbye', line: 3, numbered: true}
+  initial_state: {stage_id: lesson-02, activity_id: lesson-02.practice-03, objective_id: unit01.lesson02.pattern.pattern_goodbye_bye}
+  objective_ids: [unit01.lesson02.pattern.pattern_goodbye_bye]
+  branch_ids: [lesson-02.practice-03]
+  turns:
+  - teacher_turn: Goodbye, Mia!
+    learner_text: Bye, Luna!
+    evaluator_gold: {}
+- id: grade03-review
+  source: {heading: 'C4 sounds and Lesson 1-2 review', line: 4, numbered: true}
+  initial_state: {stage_id: lesson-03, activity_id: lesson-03.review-greetings, objective_id: unit01.lesson01.pattern.pattern_hello_hi_i_m}
+  objective_ids: [unit01.lesson01.pattern.pattern_hello_hi_i_m]
+  branch_ids: [lesson-03.review-greetings]
+  turns:
+  - teacher_turn: Say hello to our pretend friend.
+    learner_text: Hello, Mia!
+    evaluator_gold: {}
+- id: grade03-polite-greeting
+  source: {heading: 'G2 polite greeting', line: 2, numbered: true}
+  initial_state: {stage_id: level-02, activity_id: level-02.practice-01, objective_id: unit01.level02.pattern.pattern_good_morning_good_morning}
+  objective_ids: [unit01.level02.pattern.pattern_good_morning_good_morning]
+  branch_ids: [level-02.practice-01]
+  turns:
+  - teacher_turn: Good morning!
+    learner_text: Good morning!
+    evaluator_gold: {}
+- id: grade03-feeling
+  source: {heading: 'I2 feelings', line: 2, numbered: true}
+  initial_state: {stage_id: level-03, activity_id: level-03.practice-01, objective_id: unit01.level03.pattern.pattern_how_are_you_i_m_great}
+  objective_ids: [unit01.level03.pattern.pattern_how_are_you_i_m_great]
+  branch_ids: [level-03.practice-01]
+  turns:
+  - teacher_turn: How are you?
+    learner_text: I am great!
+    evaluator_gold: {}
+- id: grade03-free-talk
+  source: {heading: 'J2 greeting conversation', line: 2, numbered: true}
+  initial_state: {stage_id: free-talk, activity_id: free-talk.conversation, objective_id: unit01.lesson01.pattern.pattern_hello_hi_i_m}
+  objective_ids: [unit01.lesson01.pattern.pattern_hello_hi_i_m]
+  branch_ids: [free-talk.conversation]
+  turns:
+  - teacher_turn: Hi! How are you today?
+    learner_text: I am great, thanks! And you?
+    evaluator_gold: {}

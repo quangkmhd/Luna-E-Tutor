@@ -28,7 +28,7 @@ def completed(turn_id='turn-1', session_id='session-1'):
     decision = TeachingDecision(
         feedback_action='acknowledge_and_continue', progression_action='stay')
     request = TeacherTurnRequest(
-        turn_id=turn_id, feedback_action='acknowledge_and_continue',
+        turn_id=turn_id, unit_id=before.unit_id, feedback_action='acknowledge_and_continue',
         learner_meaning='Hello', next_teaching_move='Ask how Quang feels.',
         constraints=TeacherConstraints())
     after = before.model_copy(update={
