@@ -1,97 +1,50 @@
-schema_version: 1
 stage:
   id: lesson-02
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6:E6"
   title: "Lesson 02"
-  level: 1
-  lesson: 2
   exits: [lesson-03]
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: "23"
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   text: "23"
   usage: taught
 - id: "38"
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   text: "38"
   usage: taught
 - id: "93"
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   text: "93"
   usage: taught
 - id: "116"
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   text: "116"
   usage: taught
 patterns:
 - id: address
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!E6"
   text: "What's your address? – It's ___."
-  examples:
-  - "It's 23 Green Street."
-  - "It's 38 Park Road."
   acceptable_alternatives:
   - "The character lives at 93 Lake Road."
 objectives:
 - id: unit02.lesson02.vocabulary.23
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   description: "Vocabulary: 23"
   vocabulary_ids: ["23"]
-  pattern_ids: []
   evidence_criteria: "Understand or use 23 in context; imitation alone is not independent use."
 - id: unit02.lesson02.vocabulary.38
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   description: "Vocabulary: 38"
   vocabulary_ids: ["38"]
-  pattern_ids: []
   evidence_criteria: "Understand or use 38 in context; imitation alone is not independent use."
 - id: unit02.lesson02.vocabulary.93
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   description: "Vocabulary: 93"
   vocabulary_ids: ["93"]
-  pattern_ids: []
   evidence_criteria: "Understand or use 93 in context; imitation alone is not independent use."
 - id: unit02.lesson02.vocabulary.116
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   description: "Vocabulary: 116"
   vocabulary_ids: ["116"]
-  pattern_ids: []
   evidence_criteria: "Understand or use 116 in context; imitation alone is not independent use."
 - id: unit02.lesson02.pattern.address
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!E6"
   description: "Pattern: What's your address? – It's ___."
-  vocabulary_ids: []
   pattern_ids: [address]
   evidence_criteria: "Record communicative meaning and target form separately; accept short answers and valid alternatives without claiming the full form."
 activities:
 - id: lesson-02.introduce-23
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids: [unit02.lesson02.vocabulary.23]
@@ -100,16 +53,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model 23 twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
   examples: ["23"]
 - id: lesson-02.introduce-38
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids: [unit02.lesson02.vocabulary.38]
@@ -118,16 +64,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model 38 twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
   examples: ["38"]
 - id: lesson-02.introduce-93
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids: [unit02.lesson02.vocabulary.93]
@@ -136,16 +75,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model 93 twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
   examples: ["93"]
 - id: lesson-02.introduce-116
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!D6"
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids: [unit02.lesson02.vocabulary.116]
@@ -154,16 +86,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model 116 twice, invite Quang to say the target (not answer a topic question yet), wait, then give evidence-based feedback. Move on after at most two attempts and queue unresolved learning for review. Do not claim pronunciation accuracy from text."
   examples: ["116"]
 - id: lesson-02.fictional-address
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!E6"
   stage_id: lesson-02
   kind: guided_response
   objective_ids: [unit02.lesson02.pattern.address]
@@ -172,18 +97,11 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Offer a fictional character address; never ask for, repeat, or preserve the learner's real address. Quang may choose one reviewed fictional example."
   examples:
   - "It's 23 Green Street."
   - "It's 38 Park Road."
 - id: lesson-02.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!E6"
   stage_id: lesson-02
   kind: ask_teacher
   objective_ids: [unit02.lesson02.pattern.address]
@@ -192,10 +110,6 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Invite Quang to ask Luna the target question. If it remains difficult after support, record only that the opportunity was handled."
   examples:
   - "It's 23 Green Street."

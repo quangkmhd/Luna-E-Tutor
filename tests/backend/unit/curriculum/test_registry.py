@@ -31,7 +31,6 @@ def test_registry_never_falls_back_for_unknown_unit():
 def test_registry_rejects_manifest_id_mismatch(tmp_path):
     unit_root = tmp_path / "grade-05" / "unit-01"
     shutil.copytree(CURRICULUM_ROOT / "grade-05" / "unit-01", unit_root)
-    shutil.copytree(CURRICULUM_ROOT / "shared", tmp_path / "shared")
     manifest_path = unit_root / "unit.yaml"
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
     manifest["id"] = "grade05.unit99"

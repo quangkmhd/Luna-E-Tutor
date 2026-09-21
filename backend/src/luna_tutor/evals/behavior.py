@@ -122,10 +122,9 @@ class BehaviorRunner:
                                   if a.id == completed.next_state.activity_id)
                     receipt = next((p for p in completed.next_state.activity_progress
                                     if p.activity_id == target.id), None)
-                    if target.completion_rule.response_opportunity_required:
-                        delivery_checks.append('new_activity_response_opportunity')
-                        if receipt is None or not receipt.response_opportunity_given:
-                            failures.append('missing_response_opportunity')
+                    delivery_checks.append('new_activity_response_opportunity')
+                    if receipt is None or not receipt.response_opportunity_given:
+                        failures.append('missing_response_opportunity')
                     if target.completion_rule.model_repetitions:
                         delivery_checks.append('new_activity_models')
                         if receipt is None or receipt.model_repetitions_delivered < target.completion_rule.model_repetitions:

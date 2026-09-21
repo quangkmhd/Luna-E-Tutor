@@ -1,12 +1,7 @@
-schema_version: 1
 id: grade05.unit01
 grade: 5
 unit: 1
 title: All about me!
-source:
-  file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-  section: Lớp 5 (3 Level)!A2:M4
-shared_dir: ../../shared
 content_files:
 - lesson-01/content.yaml
 - lesson-02/content.yaml
@@ -15,24 +10,15 @@ content_files:
 - level-03/content.yaml
 - free-talk/content.yaml
 opening:
-  schema_version: 1
   stage:
     id: warm-up
-    source:
-      file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-      section: Màn 1 — Warm up (khoảng 30 giây)
     title: Welcome Quang
-    level: 0
-    lesson: null
     exits:
     - lesson-01
     prerequisite_stage_ids: []
     completion_rule: all_required_activities_handled
   activities:
   - id: warm-up.hello
-    source:
-      file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-      section: Màn 1 — Warm up (khoảng 30 giây)
     stage_id: warm-up
     kind: greeting
     objective_ids: []
@@ -41,17 +27,10 @@ opening:
     completion_rule:
       mode: delivered
       model_repetitions: 0
-      response_opportunity_required: false
-      feedback_required: false
-      allow_support_limit_exit: false
-      mastery_required: false
     instruction: Greet Quang warmly. On the first meeting introduce Luna as his English tutor.
     examples:
     - Hi! Great to see you again!
   - id: warm-up.feelings
-    source:
-      file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-      section: Màn 1 — Warm up (khoảng 30 giây)
     stage_id: warm-up
     kind: emotion_check
     objective_ids: []
@@ -60,18 +39,11 @@ opening:
     completion_rule:
       mode: interaction
       model_repetitions: 0
-      response_opportunity_required: true
-      feedback_required: true
-      allow_support_limit_exit: true
-      mastery_required: false
     instruction: Ask how Quang feels. Acknowledge emotion, allow a short or Vietnamese answer, and offer
       a gentle choice after silence. Do not teach vocabulary.
     examples:
     - How are you today?
   - id: warm-up.start
-    source:
-      file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-      section: Màn 1 — Warm up (khoảng 30 giây)
     stage_id: warm-up
     kind: bridge
     objective_ids: []
@@ -81,32 +53,19 @@ opening:
     completion_rule:
       mode: delivered
       model_repetitions: 0
-      response_opportunity_required: false
-      feedback_required: false
-      allow_support_limit_exit: false
-      mastery_required: false
     instruction: Bridge directly to Lesson 1, adjusting pace to the learner’s mood.
     examples:
     - Great! Let’s start.
 closing:
-  schema_version: 1
   stage:
     id: summary
-    source:
-      file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-      section: Kết thúc vai
     title: Celebrate and save progress
-    level: 0
-    lesson: null
     exits:
     - finish
     prerequisite_stage_ids: []
     completion_rule: all_required_activities_handled
   activities:
   - id: summary.reflect
-    source:
-      file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-      section: Kết thúc vai
     stage_id: summary
     kind: summary
     objective_ids: []
@@ -115,10 +74,6 @@ closing:
     completion_rule:
       mode: delivered
       model_repetitions: 0
-      response_opportunity_required: false
-      feedback_required: false
-      allow_support_limit_exit: false
-      mastery_required: false
     instruction: End the Emma role, acknowledge evidenced successes, summarize what Quang actually did,
       and preserve unresolved review for next time. Do not claim mastery from imitation.
     examples:

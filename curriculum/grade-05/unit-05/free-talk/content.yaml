@@ -1,12 +1,6 @@
-schema_version: 1
 stage:
   id: free-talk
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!J14
   title: Jobs and imagination
-  level: 3
-  lesson: null
   exits:
   - summary
   prerequisite_stage_ids:
@@ -32,9 +26,6 @@ stage:
     allow_unresolved_on_exit: true
 activities:
 - id: free-talk.conversation
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!J14
   stage_id: free-talk
   kind: roleplay
   objective_ids:
@@ -73,10 +64,6 @@ activities:
   completion_rule:
     mode: user_end
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: false
-    mastery_required: false
   instruction: Discuss fictional future jobs, duties, rescue, and inventions. Do not invent the learner's family occupations. End on request.
   examples:
   - What would you like to create in the future?

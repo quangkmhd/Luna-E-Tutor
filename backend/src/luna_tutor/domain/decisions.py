@@ -64,7 +64,6 @@ class TeacherActivityContext(Contract):
     model_repetitions: int = Field(default=0, ge=0, le=2)
     remaining_model_repetitions: int = Field(default=0, ge=0, le=2)
     needs_response_invitation: bool = False
-    response_opportunity_required: bool = False
     delivery_only: bool = False
     role_name: Text | None = None
     role_country: Text | None = None

@@ -1,12 +1,10 @@
-"""Load a unit manifest, its ordered content, and runtime teaching policy."""
+"""Load a unit manifest and its ordered content."""
 
 from pathlib import Path
 
 import yaml
 
-from luna_tutor.curriculum.models import (
-    ContentFragment, TeachingPolicy, UnitCurriculum, UnitManifest,
-)
+from luna_tutor.curriculum.models import ContentFragment, UnitCurriculum, UnitManifest
 
 
 def _read_yaml(path: Path):
@@ -19,7 +17,6 @@ def load_unit(path: Path) -> UnitCurriculum:
     manifest_path = path / 'unit.yaml' if path.is_dir() else path
     manifest = UnitManifest.model_validate(_read_yaml(manifest_path))
     root = manifest_path.parent
-    shared = root / manifest.shared_dir
     fragments = [manifest.opening]
     for name in manifest.content_files:
         content_path = (root / name).resolve()
@@ -28,11 +25,10 @@ def load_unit(path: Path) -> UnitCurriculum:
         fragments.append(ContentFragment.model_validate(_read_yaml(content_path)))
     fragments.append(manifest.closing)
     return UnitCurriculum(
-        **manifest.model_dump(exclude={'content_files', 'shared_dir', 'opening', 'closing'}),
+        **manifest.model_dump(exclude={'content_files', 'opening', 'closing'}),
         stages=[fragment.stage for fragment in fragments],
         vocabulary=[item for fragment in fragments for item in fragment.vocabulary],
         patterns=[item for fragment in fragments for item in fragment.patterns],
         objectives=[item for fragment in fragments for item in fragment.objectives],
         activities=[item for fragment in fragments for item in fragment.activities],
-        teaching_policy=TeachingPolicy.model_validate(_read_yaml(shared / 'teaching-policy.yaml')),
     )

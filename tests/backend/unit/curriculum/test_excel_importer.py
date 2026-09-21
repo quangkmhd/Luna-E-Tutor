@@ -17,7 +17,6 @@ def test_imported_unit_matches_committed_vocabulary_and_patterns():
     assert len(imported.vocabulary) == 19
     assert imported.lessons[2].objective_ids == imported.lessons[0].objective_ids + imported.lessons[1].objective_ids
     assert not any('.lesson03.' in o.id for o in imported.objectives)
-    assert all('!D' in v.source.section or '!F' in v.source.section or '!H' in v.source.section for v in imported.vocabulary)
 
 
 @pytest.fixture

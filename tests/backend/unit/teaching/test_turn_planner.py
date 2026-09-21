@@ -88,7 +88,6 @@ async def test_teacher_vocabulary_context_has_concrete_word_not_only_generic_ins
         state, 'What does city mean?', 'meaning-context')
     assert plan.teacher_request.activity_context.target_words == ('city',)
     assert plan.teacher_request.activity_context.model_repetitions == 2
-    assert plan.teacher_request.activity_context.response_opportunity_required is True
     assert 'Model city twice' not in plan.teacher_request.next_teaching_move
     assert 'meaning' in plan.teacher_request.next_teaching_move.lower()
 

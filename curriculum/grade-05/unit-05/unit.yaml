@@ -1,12 +1,7 @@
-schema_version: 1
 id: grade05.unit05
 grade: 5
 unit: 5
 title: My future job
-source:
-  file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-  section: Lớp 5 (3 Level)!A14:M16
-shared_dir: ../../shared
 content_files:
 - lesson-01/content.yaml
 - lesson-02/content.yaml
@@ -15,24 +10,15 @@ content_files:
 - level-03/content.yaml
 - free-talk/content.yaml
 opening:
-  schema_version: 1
   stage:
     id: warm-up
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: Lớp 5 (3 Level)!A14
     title: Welcome
-    level: 0
-    lesson: null
     exits:
     - lesson-01
     prerequisite_stage_ids: []
     completion_rule: all_required_activities_handled
   activities:
   - id: warm-up.hello
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: Lớp 5 (3 Level)!A14
     stage_id: warm-up
     kind: greeting
     objective_ids: []
@@ -41,17 +27,10 @@ opening:
     completion_rule:
       mode: delivered
       model_repetitions: 0
-      response_opportunity_required: false
-      feedback_required: false
-      allow_support_limit_exit: false
-      mastery_required: false
     instruction: Greet Quang without teaching vocabulary.
     examples:
     - Hi Quang!
   - id: warm-up.feelings
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: Lớp 5 (3 Level)!A14
     stage_id: warm-up
     kind: emotion_check
     objective_ids: []
@@ -60,17 +39,10 @@ opening:
     completion_rule:
       mode: interaction
       model_repetitions: 0
-      response_opportunity_required: true
-      feedback_required: true
-      allow_support_limit_exit: true
-      mastery_required: false
     instruction: Ask how Quang feels; accept Vietnamese.
     examples:
     - How are you today?
   - id: warm-up.start
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: Lớp 5 (3 Level)!A14
     stage_id: warm-up
     kind: bridge
     objective_ids: []
@@ -79,32 +51,19 @@ opening:
     completion_rule:
       mode: delivered
       model_repetitions: 0
-      response_opportunity_required: false
-      feedback_required: false
-      allow_support_limit_exit: false
-      mastery_required: false
     instruction: Bridge to future jobs without teaching target words.
     examples:
     - Let us imagine the future.
 closing:
-  schema_version: 1
   stage:
     id: summary
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: Lớp 5 (3 Level)!M14
     title: Celebrate and save progress
-    level: 0
-    lesson: null
     exits:
     - finish
     prerequisite_stage_ids: []
     completion_rule: all_required_activities_handled
   activities:
   - id: summary.reflect
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: Lớp 5 (3 Level)!M14
     stage_id: summary
     kind: summary
     objective_ids: []
@@ -113,10 +72,6 @@ closing:
     completion_rule:
       mode: delivered
       model_repetitions: 0
-      response_opportunity_required: false
-      feedback_required: false
-      allow_support_limit_exit: false
-      mastery_required: false
     instruction: Report only evidenced progress and praise the learner's ideas naturally.
     examples:
     - Scene done!

@@ -1,152 +1,77 @@
-schema_version: 1
 stage:
   id: level-03
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8:I8"
   title: "Level 03"
-  level: 3
-  lesson: null
   exits: [free-talk]
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: traditional-clothes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   text: "traditional clothes"
   usage: taught
 - id: samba-parade
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   text: "samba parade"
   usage: taught
 - id: chuseok
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   text: "Chuseok"
   usage: taught
 - id: rice-cakes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   text: "rice cakes"
   usage: taught
 - id: lucky-money
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   text: "lucky money"
   usage: taught
 - id: celebration
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   text: "celebration"
   usage: taught
 patterns:
 - id: japan-childrens-day
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   text: "My friend who lives in Japan celebrates Children's Day."
-  examples: ["My friend who lives in Japan celebrates Children's Day."]
   acceptable_alternatives: []
 - id: samba-origin
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   text: "The children who join the samba parade are from Brazil."
-  examples: ["The children who join the samba parade are from Brazil."]
   acceptable_alternatives: []
 - id: chuseok-food
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   text: "People in South Korea eat rice cakes at Chuseok."
-  examples: ["People in South Korea eat rice cakes at Chuseok."]
   acceptable_alternatives: []
 objectives:
 - id: unit03.level03.vocabulary.traditional_clothes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   description: "Vocabulary: traditional clothes"
   vocabulary_ids: [traditional-clothes]
-  pattern_ids: []
   evidence_criteria: "Understand or use traditional clothes in context; imitation alone is not independent use."
 - id: unit03.level03.vocabulary.samba_parade
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   description: "Vocabulary: samba parade"
   vocabulary_ids: [samba-parade]
-  pattern_ids: []
   evidence_criteria: "Understand or use samba parade in context; imitation alone is not independent use."
 - id: unit03.level03.vocabulary.chuseok
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   description: "Vocabulary: Chuseok"
   vocabulary_ids: [chuseok]
-  pattern_ids: []
   evidence_criteria: "Understand or use Chuseok in context; imitation alone is not independent use."
 - id: unit03.level03.vocabulary.rice_cakes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   description: "Vocabulary: rice cakes"
   vocabulary_ids: [rice-cakes]
-  pattern_ids: []
   evidence_criteria: "Understand or use rice cakes in context; imitation alone is not independent use."
 - id: unit03.level03.vocabulary.lucky_money
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   description: "Vocabulary: lucky money"
   vocabulary_ids: [lucky-money]
-  pattern_ids: []
   evidence_criteria: "Understand or use lucky money in context; imitation alone is not independent use."
 - id: unit03.level03.vocabulary.celebration
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   description: "Vocabulary: celebration"
   vocabulary_ids: [celebration]
-  pattern_ids: []
   evidence_criteria: "Understand or use celebration in context; imitation alone is not independent use."
 - id: unit03.level03.pattern.japan_childrens_day
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   description: "Pattern: My friend who lives in Japan celebrates Children's Day."
-  vocabulary_ids: []
   pattern_ids: [japan-childrens-day]
   evidence_criteria: "Record communicative meaning separately from target form; accept short answers and valid alternatives."
 - id: unit03.level03.pattern.samba_origin
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   description: "Pattern: The children who join the samba parade are from Brazil."
-  vocabulary_ids: []
   pattern_ids: [samba-origin]
   evidence_criteria: "Record communicative meaning separately from target form; accept short answers and valid alternatives."
 - id: unit03.level03.pattern.chuseok_food
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   description: "Pattern: People in South Korea eat rice cakes at Chuseok."
-  vocabulary_ids: []
   pattern_ids: [chuseok-food]
   evidence_criteria: "Record communicative meaning separately from target form; accept short answers and valid alternatives."
 activities:
 - id: level-03.introduce-traditional-clothes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids: [unit03.level03.vocabulary.traditional_clothes]
@@ -155,16 +80,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model traditional clothes twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["traditional clothes"]
 - id: level-03.introduce-samba-parade
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids: [unit03.level03.vocabulary.samba_parade]
@@ -173,16 +91,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model samba parade twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["samba parade"]
 - id: level-03.introduce-chuseok
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids: [unit03.level03.vocabulary.chuseok]
@@ -191,16 +102,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model Chuseok twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["Chuseok"]
 - id: level-03.introduce-rice-cakes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids: [unit03.level03.vocabulary.rice_cakes]
@@ -209,16 +113,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model rice cakes twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["rice cakes"]
 - id: level-03.introduce-lucky-money
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids: [unit03.level03.vocabulary.lucky_money]
@@ -227,16 +124,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model lucky money twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["lucky money"]
 - id: level-03.introduce-celebration
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!H8"
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids: [unit03.level03.vocabulary.celebration]
@@ -245,16 +135,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model celebration twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["celebration"]
 - id: level-03.japan-childrens-day
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   stage_id: level-03
   kind: guided_response
   objective_ids: [unit03.level03.pattern.japan_childrens_day]
@@ -263,16 +146,9 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Connect a fictional friend in Japan with Children's Day."
   examples: ["My friend who lives in Japan celebrates Children's Day."]
 - id: level-03.samba-origin
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   stage_id: level-03
   kind: guided_response
   objective_ids: [unit03.level03.pattern.samba_origin]
@@ -281,16 +157,9 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Describe the source festival fact without inventing learner facts."
   examples: ["The children who join the samba parade are from Brazil."]
 - id: level-03.chuseok-food
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   stage_id: level-03
   kind: guided_response
   objective_ids: [unit03.level03.pattern.chuseok_food]
@@ -299,16 +168,9 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Connect Chuseok and rice cakes using the source pattern."
   examples: ["People in South Korea eat rice cakes at Chuseok."]
 - id: level-03.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!I8"
   stage_id: level-03
   kind: ask_teacher
   objective_ids: [unit03.level03.pattern.japan_childrens_day]
@@ -317,9 +179,5 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Invite Quang to ask Luna the target question; support without fabricating that he asked."
   examples: ["My friend who lives in Japan celebrates Children's Day."]

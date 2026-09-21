@@ -15,7 +15,6 @@ from luna_tutor.curriculum.models import (
     ImportedUnit,
     Objective,
     Pattern,
-    Source,
     VocabularyItem,
 )
 
@@ -92,11 +91,6 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
         if start is None:
             raise ValueError(f'Unit {unit} not found in Grade {grade}')
         end = end or sheet.max_row + 1
-        file = f'docs/{path.name}' if path.parent.name == 'docs' else path.as_posix()
-
-        def source(row: int, column: int) -> Source:
-            return Source(file=file, section=f'{sheet.title}!{sheet.cell(row, column).coordinate}')
-
         def cell(row: int, column: int):
             value = sheet.cell(row, column).value
             if value is not None:
@@ -127,22 +121,21 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
             ids = []
             for item_text in items:
                 identifier = _slug(item_text) if kind == 'vocabulary' else _pattern_id(item_text)
-                item_source = source(row, column)
                 objective_id = f'unit{unit:02d}.{scope}.{kind}.{identifier.replace("-", "_")}'
                 if kind == 'vocabulary':
-                    vocabulary.setdefault(identifier, VocabularyItem(id=identifier, text=item_text, source=item_source))
+                    vocabulary.setdefault(identifier, VocabularyItem(id=identifier, text=item_text))
                     kwargs = {'vocabulary_ids': [identifier]}
                     criteria = f'Understand or use {item_text} in context; imitation alone is not independent use.'
                 else:
                     existing = patterns.get(identifier)
                     if existing is not None and existing.text != item_text:
                         raise ValueError(f'Conflicting pattern ID {identifier}: source content needs review')
-                    patterns.setdefault(identifier, Pattern(id=identifier, text=item_text, source=item_source))
+                    patterns.setdefault(identifier, Pattern(id=identifier, text=item_text))
                     kwargs = {'pattern_ids': [identifier]}
                     criteria = 'Record communicative meaning and target form separately; accept valid alternatives.'
                 objectives.setdefault(objective_id, Objective(
                     id=objective_id, description=f'{kind.title()}: {item_text}',
-                    evidence_criteria=criteria, source=item_source, **kwargs,
+                    evidence_criteria=criteria, **kwargs,
                 ))
                 if objective_id not in ids:
                     ids.append(objective_id)
@@ -154,7 +147,7 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
                 continue
             number = int(lesson_match.group(1))
             scope = f'lesson{number:02d}'
-            lesson = ImportedLesson(lesson=number, objective_ids=[], source=source(row, 2))
+            lesson = ImportedLesson(lesson=number, objective_ids=[])
             vocabulary_text, vocabulary_row = cell(row, 4)
             pattern_text, pattern_row = cell(row, 5)
             if _is_review(vocabulary_text) or _is_review(pattern_text):
@@ -182,7 +175,7 @@ def import_workbook(path: Path, grade: int, unit: int) -> ImportedUnit:
                         seen.add(text)
                         add_content(text, f'level{level:02d}', anchor, column, kind)
         return ImportedUnit(
-            grade=grade, unit=unit, title=title, source=source(start, 1),
+            grade=grade, unit=unit, title=title,
             vocabulary=list(vocabulary.values()), patterns=list(patterns.values()),
             objectives=list(objectives.values()), lessons=lessons,
         )

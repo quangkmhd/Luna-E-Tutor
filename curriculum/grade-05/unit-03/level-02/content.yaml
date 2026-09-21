@@ -1,137 +1,70 @@
-schema_version: 1
 stage:
   id: level-02
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8:G8"
   title: "Level 02"
-  level: 2
-  lesson: null
   exits: [level-03]
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: british
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   text: "British"
   usage: taught
 - id: canadian
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   text: "Canadian"
   usage: taught
 - id: chinese
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   text: "Chinese"
   usage: taught
 - id: korean
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   text: "Korean"
   usage: taught
 - id: singaporean
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   text: "Singaporean"
   usage: taught
 - id: thai
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   text: "Thai"
   usage: taught
 patterns:
 - id: origin
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   text: "Where's he/she from? – He's/She's from ___."
-  examples: ["Where's she from? – She's from Canada."]
   acceptable_alternatives: ["She is Canadian."]
 - id: speak-english
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   text: "Can you speak English? – Yes, a little."
-  examples: ["Can you speak English? – Yes, a little."]
   acceptable_alternatives: ["Yes, I can speak a little English."]
 objectives:
 - id: unit03.level02.vocabulary.british
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   description: "Vocabulary: British"
   vocabulary_ids: [british]
-  pattern_ids: []
   evidence_criteria: "Understand or use British in context; imitation alone is not independent use."
 - id: unit03.level02.vocabulary.canadian
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   description: "Vocabulary: Canadian"
   vocabulary_ids: [canadian]
-  pattern_ids: []
   evidence_criteria: "Understand or use Canadian in context; imitation alone is not independent use."
 - id: unit03.level02.vocabulary.chinese
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   description: "Vocabulary: Chinese"
   vocabulary_ids: [chinese]
-  pattern_ids: []
   evidence_criteria: "Understand or use Chinese in context; imitation alone is not independent use."
 - id: unit03.level02.vocabulary.korean
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   description: "Vocabulary: Korean"
   vocabulary_ids: [korean]
-  pattern_ids: []
   evidence_criteria: "Understand or use Korean in context; imitation alone is not independent use."
 - id: unit03.level02.vocabulary.singaporean
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   description: "Vocabulary: Singaporean"
   vocabulary_ids: [singaporean]
-  pattern_ids: []
   evidence_criteria: "Understand or use Singaporean in context; imitation alone is not independent use."
 - id: unit03.level02.vocabulary.thai
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   description: "Vocabulary: Thai"
   vocabulary_ids: [thai]
-  pattern_ids: []
   evidence_criteria: "Understand or use Thai in context; imitation alone is not independent use."
 - id: unit03.level02.pattern.origin
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   description: "Pattern: Where's he/she from? – He's/She's from ___."
-  vocabulary_ids: []
   pattern_ids: [origin]
   evidence_criteria: "Record communicative meaning separately from target form; accept short answers and valid alternatives."
 - id: unit03.level02.pattern.speak_english
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   description: "Pattern: Can you speak English? – Yes, a little."
-  vocabulary_ids: []
   pattern_ids: [speak-english]
   evidence_criteria: "Record communicative meaning separately from target form; accept short answers and valid alternatives."
 activities:
 - id: level-02.introduce-british
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   stage_id: level-02
   kind: vocabulary_introduction
   objective_ids: [unit03.level02.vocabulary.british]
@@ -140,16 +73,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model British twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["British"]
 - id: level-02.introduce-canadian
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   stage_id: level-02
   kind: vocabulary_introduction
   objective_ids: [unit03.level02.vocabulary.canadian]
@@ -158,16 +84,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model Canadian twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["Canadian"]
 - id: level-02.introduce-chinese
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   stage_id: level-02
   kind: vocabulary_introduction
   objective_ids: [unit03.level02.vocabulary.chinese]
@@ -176,16 +95,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model Chinese twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["Chinese"]
 - id: level-02.introduce-korean
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   stage_id: level-02
   kind: vocabulary_introduction
   objective_ids: [unit03.level02.vocabulary.korean]
@@ -194,16 +106,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model Korean twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["Korean"]
 - id: level-02.introduce-singaporean
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   stage_id: level-02
   kind: vocabulary_introduction
   objective_ids: [unit03.level02.vocabulary.singaporean]
@@ -212,16 +117,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model Singaporean twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["Singaporean"]
 - id: level-02.introduce-thai
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!F8"
   stage_id: level-02
   kind: vocabulary_introduction
   objective_ids: [unit03.level02.vocabulary.thai]
@@ -230,16 +128,9 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Model Thai twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy."
   examples: ["Thai"]
 - id: level-02.origin
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   stage_id: level-02
   kind: guided_response
   objective_ids: [unit03.level02.pattern.origin]
@@ -248,16 +139,9 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Ask where a fictional character is from."
   examples: ["Where's she from? – She's from Canada."]
 - id: level-02.speak-english
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   stage_id: level-02
   kind: guided_response
   objective_ids: [unit03.level02.pattern.speak_english]
@@ -266,16 +150,9 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Practise the ability question with the fictional character."
   examples: ["Can you speak English? – Yes, a little."]
 - id: level-02.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!G8"
   stage_id: level-02
   kind: ask_teacher
   objective_ids: [unit03.level02.pattern.origin]
@@ -284,9 +161,5 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: "Invite Quang to ask Luna the target question; support without fabricating that he asked."
   examples: ["Where's she from? – She's from Canada."]

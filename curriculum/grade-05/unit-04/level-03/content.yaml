@@ -1,238 +1,132 @@
-schema_version: 1
 stage:
   id: level-03
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11:I11
   title: Level 03
-  level: 3
-  lesson: null
   exits:
   - free-talk
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: electric-guitar
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: electric guitar
   usage: taught
 - id: drum-kit
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: drum kit
   usage: taught
 - id: flute
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: flute
   usage: taught
 - id: orchestra
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: orchestra
   usage: taught
 - id: percussion-instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: percussion instruments
   usage: taught
 - id: wind-instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: wind instruments
   usage: taught
 - id: string-instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: string instruments
   usage: taught
 - id: hit
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: hit
   usage: taught
 - id: interact
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: interact
   usage: taught
 - id: amazed
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   text: amazed
   usage: taught
 patterns:
 - id: comparative-cost
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   text: This song is better, but it's much more expensive.
-  examples:
-  - This song is better, but it's much more expensive.
   acceptable_alternatives: []
 - id: superlative-singer
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   text: He is the most famous singer in my city.
-  examples:
-  - He is the most famous singer in my city.
   acceptable_alternatives: []
 - id: correlative-preference
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   text: The more I listen to this song, the more I like it.
-  examples:
-  - The more I listen to this song, the more I like it.
   acceptable_alternatives: []
 objectives:
 - id: unit04.level03.vocabulary.electric_guitar
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: electric guitar'
   vocabulary_ids:
   - electric-guitar
-  pattern_ids: []
   evidence_criteria: Understand or use electric guitar in context; imitation alone
     is not independent use.
 - id: unit04.level03.vocabulary.drum_kit
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: drum kit'
   vocabulary_ids:
   - drum-kit
-  pattern_ids: []
   evidence_criteria: Understand or use drum kit in context; imitation alone is not
     independent use.
 - id: unit04.level03.vocabulary.flute
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: flute'
   vocabulary_ids:
   - flute
-  pattern_ids: []
   evidence_criteria: Understand or use flute in context; imitation alone is not independent
     use.
 - id: unit04.level03.vocabulary.orchestra
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: orchestra'
   vocabulary_ids:
   - orchestra
-  pattern_ids: []
   evidence_criteria: Understand or use orchestra in context; imitation alone is not
     independent use.
 - id: unit04.level03.vocabulary.percussion_instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: percussion instruments'
   vocabulary_ids:
   - percussion-instruments
-  pattern_ids: []
   evidence_criteria: Understand or use percussion instruments in context; imitation
     alone is not independent use.
 - id: unit04.level03.vocabulary.wind_instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: wind instruments'
   vocabulary_ids:
   - wind-instruments
-  pattern_ids: []
   evidence_criteria: Understand or use wind instruments in context; imitation alone
     is not independent use.
 - id: unit04.level03.vocabulary.string_instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: string instruments'
   vocabulary_ids:
   - string-instruments
-  pattern_ids: []
   evidence_criteria: Understand or use string instruments in context; imitation alone
     is not independent use.
 - id: unit04.level03.vocabulary.hit
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: hit'
   vocabulary_ids:
   - hit
-  pattern_ids: []
   evidence_criteria: Understand or use hit in context; imitation alone is not independent
     use.
 - id: unit04.level03.vocabulary.interact
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: interact'
   vocabulary_ids:
   - interact
-  pattern_ids: []
   evidence_criteria: Understand or use interact in context; imitation alone is not
     independent use.
 - id: unit04.level03.vocabulary.amazed
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   description: 'Vocabulary: amazed'
   vocabulary_ids:
   - amazed
-  pattern_ids: []
   evidence_criteria: Understand or use amazed in context; imitation alone is not independent
     use.
 - id: unit04.level03.pattern.comparative_cost
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   description: 'Pattern: This song is better, but it''s much more expensive.'
-  vocabulary_ids: []
   pattern_ids:
   - comparative-cost
   evidence_criteria: Record meaning and target form separately; accept short answers
     and valid alternatives.
 - id: unit04.level03.pattern.superlative_singer
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   description: 'Pattern: He is the most famous singer in my city.'
-  vocabulary_ids: []
   pattern_ids:
   - superlative-singer
   evidence_criteria: Record meaning and target form separately; accept short answers
     and valid alternatives.
 - id: unit04.level03.pattern.correlative_preference
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   description: 'Pattern: The more I listen to this song, the more I like it.'
-  vocabulary_ids: []
   pattern_ids:
   - correlative-preference
   evidence_criteria: Record meaning and target form separately; accept short answers
     and valid alternatives.
 activities:
 - id: level-03.introduce-electric-guitar
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -242,19 +136,12 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model electric guitar twice, invite Quang to say it, wait, and give
     evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
     accuracy.
   examples:
   - electric guitar
 - id: level-03.introduce-drum-kit
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -264,18 +151,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model drum kit twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - drum kit
 - id: level-03.introduce-flute
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -285,18 +165,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model flute twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - flute
 - id: level-03.introduce-orchestra
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -306,18 +179,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model orchestra twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - orchestra
 - id: level-03.introduce-percussion-instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -327,19 +193,12 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model percussion instruments twice, invite Quang to say it, wait, and
     give evidence-based feedback. Move on after two attempts; do not claim text-only
     pronunciation accuracy.
   examples:
   - percussion instruments
 - id: level-03.introduce-wind-instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -349,19 +208,12 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model wind instruments twice, invite Quang to say it, wait, and give
     evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
     accuracy.
   examples:
   - wind instruments
 - id: level-03.introduce-string-instruments
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -371,19 +223,12 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model string instruments twice, invite Quang to say it, wait, and give
     evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation
     accuracy.
   examples:
   - string instruments
 - id: level-03.introduce-hit
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -393,18 +238,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model hit twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - hit
 - id: level-03.introduce-interact
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -414,18 +252,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model interact twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - interact
 - id: level-03.introduce-amazed
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H11
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -435,18 +266,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model amazed twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - amazed
 - id: level-03.comparative-cost
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   stage_id: level-03
   kind: guided_response
   objective_ids:
@@ -456,18 +280,11 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise this free-time or music pattern with fictional or general
     examples.
   examples:
   - This song is better, but it's much more expensive.
 - id: level-03.superlative-singer
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   stage_id: level-03
   kind: guided_response
   objective_ids:
@@ -477,18 +294,11 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise this free-time or music pattern with fictional or general
     examples.
   examples:
   - He is the most famous singer in my city.
 - id: level-03.correlative-preference
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   stage_id: level-03
   kind: guided_response
   objective_ids:
@@ -498,18 +308,11 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise this free-time or music pattern with fictional or general
     examples.
   examples:
   - The more I listen to this song, the more I like it.
 - id: level-03.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I11
   stage_id: level-03
   kind: ask_teacher
   objective_ids:
@@ -519,10 +322,6 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Invite Quang to ask Luna the target question; support without fabricating
     the question.
   examples:

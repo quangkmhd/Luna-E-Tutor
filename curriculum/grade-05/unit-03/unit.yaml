@@ -1,86 +1,57 @@
-schema_version: 1
 id: grade05.unit03
 grade: 5
 unit: 3
 title: "My foreign friends"
-source:
-  file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-  section: "Lớp 5 (3 Level)!A8:M10"
-shared_dir: ../../shared
 content_files: [lesson-01/content.yaml, lesson-02/content.yaml, lesson-03/content.yaml, level-02/content.yaml, level-03/content.yaml, free-talk/content.yaml]
 opening:
-  schema_version: 1
   stage:
     id: warm-up
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: "Lớp 5 (3 Level)!A8:M10"
     title: "Welcome to My foreign friends"
-    level: 0
-    lesson: null
     exits: [lesson-01]
     prerequisite_stage_ids: []
     completion_rule: all_required_activities_handled
   activities:
   - id: warm-up.hello
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: "Lớp 5 (3 Level)!A8"
     stage_id: warm-up
     kind: greeting
     objective_ids: []
     required: true
     max_attempts: 1
-    completion_rule: {mode: delivered, model_repetitions: 0, response_opportunity_required: false, feedback_required: false, allow_support_limit_exit: false, mastery_required: false}
+    completion_rule: {mode: delivered, model_repetitions: 0}
     instruction: "Greet Quang warmly without teaching target vocabulary."
     examples: ["Hi Quang!"]
   - id: warm-up.feelings
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: "Lớp 5 (3 Level)!A8"
     stage_id: warm-up
     kind: emotion_check
     objective_ids: []
     required: true
     max_attempts: 2
-    completion_rule: {mode: interaction, model_repetitions: 0, response_opportunity_required: true, feedback_required: true, allow_support_limit_exit: true, mastery_required: false}
+    completion_rule: {mode: interaction, model_repetitions: 0}
     instruction: "Ask how Quang feels; accept Vietnamese and do not teach vocabulary."
     examples: ["How are you today?"]
   - id: warm-up.start
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: "Lớp 5 (3 Level)!A8"
     stage_id: warm-up
     kind: bridge
     objective_ids: []
     required: false
     max_attempts: 1
-    completion_rule: {mode: delivered, model_repetitions: 0, response_opportunity_required: false, feedback_required: false, allow_support_limit_exit: false, mastery_required: false}
+    completion_rule: {mode: delivered, model_repetitions: 0}
     instruction: "Bridge to fictional foreign friends without introducing targets."
     examples: ["Let's meet some fictional friends."]
 closing:
-  schema_version: 1
   stage:
     id: summary
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: "Lớp 5 (3 Level)!M8"
     title: "Celebrate and save progress"
-    level: 0
-    lesson: null
     exits: [finish]
     prerequisite_stage_ids: []
     completion_rule: all_required_activities_handled
   activities:
   - id: summary.reflect
-    source:
-      file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-      section: "Lớp 5 (3 Level)!M8"
     stage_id: summary
     kind: summary
     objective_ids: []
     required: true
     max_attempts: 1
-    completion_rule: {mode: delivered, model_repetitions: 0, response_opportunity_required: false, feedback_required: false, allow_support_limit_exit: false, mastery_required: false}
+    completion_rule: {mode: delivered, model_repetitions: 0}
     instruction: "End the role, praise naturally, and report only evidenced progress."
     examples: ["Scene done!"]

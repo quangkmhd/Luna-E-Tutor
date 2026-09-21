@@ -101,6 +101,19 @@ def test_recently_exhausted_item_is_not_immediately_rephrased(engine, free_state
     assert not decision.count_attempt
 
 
+def test_free_talk_uses_its_activity_attempt_limit(engine, free_state, evidence, unit_01):
+    state = free_state.model_copy(update={'objective_id': HOME, 'attempt_count': 0})
+    curriculum = unit_01.model_copy(update={'activities': [
+        item.model_copy(update={'max_attempts': 1}) if item.id == 'free-talk.conversation' else item
+        for item in unit_01.activities
+    ]})
+
+    decision = engine.decide(state, evidence(form='not_used', quote='city'), curriculum)
+
+    assert decision.count_attempt
+    assert decision.review_queue_add == [HOME]
+
+
 def test_free_talk_only_ends_on_explicit_completion_and_keeps_open_review(engine, free_state, evidence, unit_01):
     queue = (ReviewItem(objective_id=TRAFFIC, difficulty='word_recall'),)
     state = free_state.model_copy(update={'elapsed_seconds': 9999.0, 'review_queue': queue})

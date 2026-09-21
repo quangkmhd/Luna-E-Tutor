@@ -47,13 +47,13 @@ def _progress(state: LessonState, activity: Activity) -> ActivityProgress:
 def _handled(progress: ActivityProgress, activity: Activity) -> bool:
     return (progress.status == 'completed'
             or (progress.status == 'support_limit_reached'
-                and activity.completion_rule.allow_support_limit_exit
+                and activity.max_attempts == 2
                 and bool(progress.completion_reason)))
 
 
 def _ready_for_response(progress: ActivityProgress, activity: Activity) -> bool:
     rule = activity.completion_rule
-    return ((not rule.response_opportunity_required or progress.response_opportunity_given)
+    return (progress.response_opportunity_given
             and progress.model_repetitions_delivered >= rule.model_repetitions)
 
 
@@ -240,7 +240,7 @@ class TeachingEngine:
             return TeachingDecision(progression_action='stay', **base)
 
         attempts = max(state.attempt_count, progress.attempt_count)
-        count = attempts < min(activity.max_attempts, curriculum.teaching_policy.max_attempts)
+        count = attempts < activity.max_attempts
         base['count_attempt'] = count
         # A question activity needs a question, even when an answer is fluent.
         demonstrated = set(progress.demonstrated_meaning_ids) | {
@@ -254,13 +254,10 @@ class TeachingEngine:
         if attempts + int(count) >= activity.max_attempts:
             add.extend(oid for oid in (sorted(targets if activity.kind == 'ask_teacher' else targets - demonstrated) if targets else [])
                        if oid not in add and oid not in remove)
-            if activity.completion_rule.allow_support_limit_exit:
+            if activity.max_attempts == 2:
                 move = _next_move(state, curriculum, stage, activity)
                 return TeachingDecision(support_limit_exit=move['progression_action'] != 'stay',
                                         **move, **base)
-            return TeachingDecision(progression_action='reduce_difficulty', **base)
-        last_success = state.last_success_at_seconds or 0.0
-        if state.elapsed_seconds - last_success >= curriculum.teaching_policy.reduce_difficulty_after_seconds:
             return TeachingDecision(progression_action='reduce_difficulty', **base)
         return TeachingDecision(progression_action='stay', **base)
 
@@ -299,7 +296,7 @@ class TeachingEngine:
         if _handled(progress, activity):
             return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
         excluded = set(base['review_queue_remove']) | set(base['review_queue_add'])
-        limit = curriculum.teaching_policy.max_attempts
+        limit = activity.max_attempts
         attempts = state.attempt_count
         if base['feedback_action'] == 'offer_support' and not state.objective_id and evidence.response_kind == 'answer':
             base['feedback_action'] = 'acknowledge_and_continue'

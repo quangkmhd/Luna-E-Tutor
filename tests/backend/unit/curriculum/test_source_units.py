@@ -1,4 +1,3 @@
-import re
 from pathlib import Path
 
 import pytest
@@ -8,10 +7,10 @@ ROOT = Path(__file__).resolve().parents[4]
 WORKBOOK = ROOT / "docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx"
 
 EXPECTED = {
-    2: ("Our homes", 19, 7, "A5", range(5, 8)),
-    3: ("My foreign friends", 20, 7, "A8", range(8, 11)),
-    4: ("Our free-time activities", 22, 7, "A11", range(11, 14)),
-    5: ("My future job", 23, 7, "A14", range(14, 17)),
+    2: ("Our homes", 19, 7),
+    3: ("My foreign friends", 20, 7),
+    4: ("Our free-time activities", 22, 7),
+    5: ("My future job", 23, 7),
 }
 
 
@@ -33,22 +32,15 @@ def test_unit4_slash_instrument_groups_are_three_targets():
 
 
 @pytest.mark.parametrize(
-    ("unit", "title", "vocabulary_count", "pattern_count", "anchor", "source_rows"),
+    ("unit", "title", "vocabulary_count", "pattern_count"),
     [(unit, *expected) for unit, expected in EXPECTED.items()],
 )
-def test_units_match_reviewed_source_bounds(
-    unit, title, vocabulary_count, pattern_count, anchor, source_rows
+def test_units_match_reviewed_content_bounds(
+    unit, title, vocabulary_count, pattern_count
 ):
     imported = import_workbook(WORKBOOK, grade=5, unit=unit)
 
     assert imported.title == title
-    assert imported.source.section == f"Lớp 5 (3 Level)!{anchor}"
     assert len(imported.vocabulary) == vocabulary_count
     assert len(imported.patterns) == pattern_count
     assert [len(lesson.objective_ids) for lesson in imported.lessons] == [5, 5, 10]
-
-    sourced_items = [*imported.vocabulary, *imported.patterns, *imported.objectives]
-    observed_rows = {
-        int(re.search(r"\d+$", item.source.section).group()) for item in sourced_items
-    }
-    assert observed_rows <= set(source_rows)

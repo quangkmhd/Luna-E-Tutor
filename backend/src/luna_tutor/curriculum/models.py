@@ -12,28 +12,20 @@ class StrictModel(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
 
 
-class Source(StrictModel):
-    file: Text
-    section: Text
-
-
-class SourcedItem(StrictModel):
+class VocabularyItem(StrictModel):
     id: Identifier
-    source: Source
-
-
-class VocabularyItem(SourcedItem):
     text: Text
     usage: Literal['taught', 'supporting'] = 'taught'
 
 
-class Pattern(SourcedItem):
+class Pattern(StrictModel):
+    id: Identifier
     text: Text
-    examples: list[Text] = Field(default_factory=list)
     acceptable_alternatives: list[Text] = Field(default_factory=list)
 
 
-class Objective(SourcedItem):
+class Objective(StrictModel):
+    id: Identifier
     description: Text
     vocabulary_ids: list[Identifier] = Field(default_factory=list)
     pattern_ids: list[Identifier] = Field(default_factory=list)
@@ -49,15 +41,12 @@ class Objective(SourcedItem):
 class CompletionRule(StrictModel):
     mode: Literal['delivered', 'interaction', 'vocabulary_turn', 'communicative_turn', 'ask_teacher', 'user_end']
     model_repetitions: int = Field(default=0, ge=0, le=2)
-    response_opportunity_required: bool = False
-    feedback_required: bool = False
-    allow_support_limit_exit: bool = False
-    mastery_required: Literal[False] = False
     meaning_objective_ids: list[Identifier] = Field(default_factory=list)
     require_all_meanings: bool = False
 
 
-class Activity(SourcedItem):
+class Activity(StrictModel):
+    id: Identifier
     stage_id: Identifier
     kind: Literal['greeting', 'emotion_check', 'bridge', 'vocabulary_introduction',
                   'comprehension', 'guided_response', 'review', 'ask_teacher',
@@ -87,14 +76,11 @@ class Activity(SourcedItem):
         if self.kind == 'vocabulary_introduction':
             if len(self.objective_ids) != 1:
                 raise ValueError('Vocabulary introduction needs exactly one objective')
-            if not (rule.mode == 'vocabulary_turn' and rule.model_repetitions == 2
-                    and rule.response_opportunity_required and rule.feedback_required):
-                raise ValueError('Vocabulary completion requires two models, an opportunity, and feedback')
+            if not (rule.mode == 'vocabulary_turn' and rule.model_repetitions == 2):
+                raise ValueError('Vocabulary completion requires two models')
         if self.kind in {'guided_response', 'comprehension', 'review', 'ask_teacher'}:
-            if not self.objective_ids or not rule.response_opportunity_required:
-                raise ValueError('Practice requires objectives and a response opportunity')
-        if self.max_attempts == 2 and not rule.allow_support_limit_exit:
-            raise ValueError('Retryable activity must exit after the support limit')
+            if not self.objective_ids:
+                raise ValueError('Practice requires objectives')
         return self
 
 
@@ -112,10 +98,9 @@ class ReviewSelection(StrictModel):
     allow_unresolved_on_exit: Literal[True]
 
 
-class Stage(SourcedItem):
+class Stage(StrictModel):
+    id: Identifier
     title: Text
-    level: int = Field(ge=0, le=3)
-    lesson: int | None = Field(default=None, ge=1)
     exits: list[Identifier] = Field(min_length=1)
     prerequisite_stage_ids: list[Identifier] = Field(default_factory=list)
     completion_rule: Literal['all_required_activities_handled', 'user_end']
@@ -123,14 +108,8 @@ class Stage(SourcedItem):
     review: ReviewSelection | None = None
 
 
-class TeachingPolicy(StrictModel):
-    schema_version: Literal[1]
-    max_attempts: Literal[2]
-    reduce_difficulty_after_seconds: int = Field(gt=0)
-
-
-class UnitCurriculum(SourcedItem):
-    schema_version: Literal[1]
+class UnitCurriculum(StrictModel):
+    id: Identifier
     grade: int = Field(ge=1, le=5)
     unit: int = Field(ge=1)
     title: Text
@@ -139,7 +118,6 @@ class UnitCurriculum(SourcedItem):
     objectives: list[Objective] = Field(min_length=1)
     activities: list[Activity] = Field(min_length=1)
     stages: list[Stage] = Field(min_length=1)
-    teaching_policy: TeachingPolicy
 
     def vocabulary_ids(self) -> set[str]:
         return {item.id for item in self.vocabulary if item.usage == 'taught'}
@@ -245,7 +223,6 @@ class UnitCurriculum(SourcedItem):
 
 
 class ContentFragment(StrictModel):
-    schema_version: Literal[1]
     stage: Stage
     vocabulary: list[VocabularyItem] = Field(default_factory=list)
     patterns: list[Pattern] = Field(default_factory=list)
@@ -253,13 +230,12 @@ class ContentFragment(StrictModel):
     activities: list[Activity]
 
 
-class UnitManifest(SourcedItem):
-    schema_version: Literal[1]
+class UnitManifest(StrictModel):
+    id: Identifier
     grade: int = Field(ge=1, le=5)
     unit: int = Field(ge=1)
     title: Text
     content_files: list[Text] = Field(min_length=1)
-    shared_dir: Text
     opening: ContentFragment
     closing: ContentFragment
 
@@ -267,14 +243,12 @@ class UnitManifest(SourcedItem):
 class ImportedLesson(StrictModel):
     lesson: int = Field(ge=1)
     objective_ids: list[Identifier]
-    source: Source
 
 
 class ImportedUnit(StrictModel):
     grade: int = Field(ge=1, le=5)
     unit: int = Field(ge=1)
     title: Text
-    source: Source
     vocabulary: list[VocabularyItem]
     patterns: list[Pattern]
     objectives: list[Objective]

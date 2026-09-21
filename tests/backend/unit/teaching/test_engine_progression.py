@@ -138,13 +138,6 @@ def test_warm_up_greeting_and_feelings_bridge_directly_to_lesson(engine, state, 
     assert not decision.count_attempt
 
 
-def test_no_success_for_three_minutes_reduces_difficulty_from_supplied_elapsed_time(engine, state, evidence, unit_01):
-    state = state.model_copy(update={'elapsed_seconds': 240.0, 'last_success_at_seconds': 60.0})
-    decision = engine.decide(state, evidence(items=[]), unit_01)
-    assert decision.progression_action == 'reduce_difficulty'
-    assert decision.feedback_action == 'offer_support'
-
-
 def test_summary_can_finish_without_objective_mastery(engine, state, evidence, unit_01):
     state = state.model_copy(update={'stage_id': 'summary', 'activity_id': 'summary.reflect',
         'objective_id': None, 'activity_progress': (ActivityProgress(activity_id='summary.reflect', status='completed'),)})

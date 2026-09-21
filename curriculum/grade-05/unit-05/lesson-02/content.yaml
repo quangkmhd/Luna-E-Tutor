@@ -1,101 +1,55 @@
-schema_version: 1
 stage:
   id: lesson-02
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15:E15
   title: Lesson 02
-  level: 1
-  lesson: 2
   exits:
   - lesson-03
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: grow-flowers
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   text: grow flowers
   usage: taught
 - id: report-the-news
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   text: report the news
   usage: taught
 - id: teach-children
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   text: teach children
   usage: taught
 - id: write-stories
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   text: write stories
   usage: taught
 patterns:
 - id: job-reason
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E15
   text: Why would you like to be a ___? – Because I'd like to ___.
-  examples:
-  - Why would you like to be a gardener? – Because I'd like to grow flowers.
   acceptable_alternatives: []
 objectives:
 - id: unit05.lesson02.vocabulary.grow_flowers
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   description: 'Vocabulary: grow flowers'
   vocabulary_ids:
   - grow-flowers
-  pattern_ids: []
   evidence_criteria: Understand or use grow flowers in context; imitation alone is not independent use.
 - id: unit05.lesson02.vocabulary.report_the_news
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   description: 'Vocabulary: report the news'
   vocabulary_ids:
   - report-the-news
-  pattern_ids: []
   evidence_criteria: Understand or use report the news in context; imitation alone is not independent use.
 - id: unit05.lesson02.vocabulary.teach_children
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   description: 'Vocabulary: teach children'
   vocabulary_ids:
   - teach-children
-  pattern_ids: []
   evidence_criteria: Understand or use teach children in context; imitation alone is not independent use.
 - id: unit05.lesson02.vocabulary.write_stories
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   description: 'Vocabulary: write stories'
   vocabulary_ids:
   - write-stories
-  pattern_ids: []
   evidence_criteria: Understand or use write stories in context; imitation alone is not independent use.
 - id: unit05.lesson02.pattern.job_reason
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E15
   description: 'Pattern: Why would you like to be a ___? – Because I''d like to ___.'
-  vocabulary_ids: []
   pattern_ids:
   - job-reason
   evidence_criteria: Record meaning and target form separately; accept short answers and valid alternatives.
 activities:
 - id: lesson-02.introduce-grow-flowers
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -105,17 +59,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model grow flowers twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - grow flowers
 - id: lesson-02.introduce-report-the-news
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -125,17 +72,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model report the news twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - report the news
 - id: lesson-02.introduce-teach-children
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -145,17 +85,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model teach children twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - teach children
 - id: lesson-02.introduce-write-stories
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D15
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -165,17 +98,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model write stories twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - write stories
 - id: lesson-02.job-reason
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E15
   stage_id: lesson-02
   kind: guided_response
   objective_ids:
@@ -185,17 +111,10 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise the occupation pattern with fictional or general examples.
   examples:
   - Why would you like to be a gardener? – Because I'd like to grow flowers.
 - id: lesson-02.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E15
   stage_id: lesson-02
   kind: ask_teacher
   objective_ids:
@@ -205,10 +124,6 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Invite Quang to ask Luna the target question; support without fabricating the question.
   examples:
   - Why would you like to be a ___? – Because I'd like to ___.

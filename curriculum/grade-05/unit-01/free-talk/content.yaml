@@ -1,12 +1,6 @@
-schema_version: 1
 stage:
   id: free-talk
-  source:
-    file: docs/superpowers/specs/2026-09-19-luna-unit1-design.md
-    section: 4. Luồng và trạng thái học tập; 4.2. Quyết định B
   title: Meet Emma
-  level: 3
-  lesson: null
   exits:
   - summary
   prerequisite_stage_ids:
@@ -32,9 +26,6 @@ stage:
     allow_unresolved_on_exit: true
 activities:
 - id: free-talk.conversation
-  source:
-    file: docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md
-    section: Free Talk 10 phút — Gặp bạn mới Emma từ England
   stage_id: free-talk
   kind: roleplay
   objective_ids:
@@ -70,10 +61,6 @@ activities:
   completion_rule:
     mode: user_end
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: false
-    mastery_required: false
   instruction: Announce Luna is playing Emma from England. Meet for the first time; follow Quang’s interests
     with short questions and invite him to ask Emma. Weave at most one relevant pending review target
     into a turn; cancel a planned prompt if he independently uses it. End on user request even if review

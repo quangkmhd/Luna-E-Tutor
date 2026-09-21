@@ -1,240 +1,127 @@
-schema_version: 1
 stage:
   id: level-03
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14:I14
   title: Level 03
-  level: 3
-  lesson: null
   exits:
   - free-talk
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: fire-engine
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: fire engine
   usage: taught
 - id: equipment
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: equipment
   usage: taught
 - id: rescue
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: rescue
   usage: taught
 - id: accident
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: accident
   usage: taught
 - id: trap
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: trap
   usage: taught
 - id: hose
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: hose
   usage: taught
 - id: invent
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: invent
   usage: taught
 - id: inventor
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: inventor
   usage: taught
 - id: create
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: create
   usage: taught
 - id: creative
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: creative
   usage: taught
 - id: imagination
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   text: imagination
   usage: taught
 patterns:
 - id: hypothetical-firefighter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   text: If I were a firefighter, I would help people like my dad.
-  examples:
-  - If I were a firefighter, I would help people like my dad.
   acceptable_alternatives: []
 - id: firefighter-rescue
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   text: Firefighters rescue people from accidents and floods.
-  examples:
-  - Firefighters rescue people from accidents and floods.
   acceptable_alternatives: []
 - id: inventors-imagination
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   text: Kids are great inventors because they have a lot of imagination.
-  examples:
-  - Kids are great inventors because they have a lot of imagination.
   acceptable_alternatives: []
 objectives:
 - id: unit05.level03.vocabulary.fire_engine
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: fire engine'
   vocabulary_ids:
   - fire-engine
-  pattern_ids: []
   evidence_criteria: Understand or use fire engine in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.equipment
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: equipment'
   vocabulary_ids:
   - equipment
-  pattern_ids: []
   evidence_criteria: Understand or use equipment in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.rescue
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: rescue'
   vocabulary_ids:
   - rescue
-  pattern_ids: []
   evidence_criteria: Understand or use rescue in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.accident
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: accident'
   vocabulary_ids:
   - accident
-  pattern_ids: []
   evidence_criteria: Understand or use accident in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.trap
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: trap'
   vocabulary_ids:
   - trap
-  pattern_ids: []
   evidence_criteria: Understand or use trap in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.hose
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: hose'
   vocabulary_ids:
   - hose
-  pattern_ids: []
   evidence_criteria: Understand or use hose in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.invent
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: invent'
   vocabulary_ids:
   - invent
-  pattern_ids: []
   evidence_criteria: Understand or use invent in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.inventor
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: inventor'
   vocabulary_ids:
   - inventor
-  pattern_ids: []
   evidence_criteria: Understand or use inventor in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.create
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: create'
   vocabulary_ids:
   - create
-  pattern_ids: []
   evidence_criteria: Understand or use create in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.creative
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: creative'
   vocabulary_ids:
   - creative
-  pattern_ids: []
   evidence_criteria: Understand or use creative in context; imitation alone is not independent use.
 - id: unit05.level03.vocabulary.imagination
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   description: 'Vocabulary: imagination'
   vocabulary_ids:
   - imagination
-  pattern_ids: []
   evidence_criteria: Understand or use imagination in context; imitation alone is not independent use.
 - id: unit05.level03.pattern.hypothetical_firefighter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   description: 'Pattern: If I were a firefighter, I would help people like my dad.'
-  vocabulary_ids: []
   pattern_ids:
   - hypothetical-firefighter
   evidence_criteria: Record meaning and target form separately; accept short answers and valid alternatives.
 - id: unit05.level03.pattern.firefighter_rescue
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   description: 'Pattern: Firefighters rescue people from accidents and floods.'
-  vocabulary_ids: []
   pattern_ids:
   - firefighter-rescue
   evidence_criteria: Record meaning and target form separately; accept short answers and valid alternatives.
 - id: unit05.level03.pattern.inventors_imagination
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   description: 'Pattern: Kids are great inventors because they have a lot of imagination.'
-  vocabulary_ids: []
   pattern_ids:
   - inventors-imagination
   evidence_criteria: Record meaning and target form separately; accept short answers and valid alternatives.
 activities:
 - id: level-03.introduce-fire-engine
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -244,17 +131,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model fire engine twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - fire engine
 - id: level-03.introduce-equipment
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -264,17 +144,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model equipment twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - equipment
 - id: level-03.introduce-rescue
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -284,17 +157,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model rescue twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - rescue
 - id: level-03.introduce-accident
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -304,17 +170,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model accident twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - accident
 - id: level-03.introduce-trap
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -324,17 +183,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model trap twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - trap
 - id: level-03.introduce-hose
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -344,17 +196,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model hose twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - hose
 - id: level-03.introduce-invent
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -364,17 +209,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model invent twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - invent
 - id: level-03.introduce-inventor
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -384,17 +222,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model inventor twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - inventor
 - id: level-03.introduce-create
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -404,17 +235,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model create twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - create
 - id: level-03.introduce-creative
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -424,17 +248,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model creative twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - creative
 - id: level-03.introduce-imagination
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!H14
   stage_id: level-03
   kind: vocabulary_introduction
   objective_ids:
@@ -444,17 +261,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model imagination twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - imagination
 - id: level-03.hypothetical-firefighter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   stage_id: level-03
   kind: guided_response
   objective_ids:
@@ -464,17 +274,10 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise the occupation pattern with fictional or general examples.
   examples:
   - If I were a firefighter, I would help people like my dad.
 - id: level-03.firefighter-rescue
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   stage_id: level-03
   kind: guided_response
   objective_ids:
@@ -484,17 +287,10 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise the occupation pattern with fictional or general examples.
   examples:
   - Firefighters rescue people from accidents and floods.
 - id: level-03.creativity
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   stage_id: level-03
   kind: guided_response
   objective_ids:
@@ -504,17 +300,10 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Respond to the learner's idea first and praise it naturally before any pronunciation support; do not use a fixed praise sentence.
   examples:
   - Kids are great inventors because they have a lot of imagination.
 - id: level-03.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!I14
   stage_id: level-03
   kind: ask_teacher
   objective_ids:
@@ -524,10 +313,6 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Invite Quang to ask Luna the target question; support without fabricating the question.
   examples:
   - If I were a firefighter, I would help people like my dad.

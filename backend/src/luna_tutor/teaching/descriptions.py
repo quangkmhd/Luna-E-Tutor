@@ -22,11 +22,8 @@ class TeacherDescriptions:
                          for name, item in self.data['planner_branches'].items()}
         if set(self.branches) != BRANCH_NAMES:
             raise ValueError('Teacher catalog branch names do not match Planner branches')
-        self.activities = {item['activity_id']: item['description_en']
-                           for item in self.data['activity_instructions']}
-
     def instruction(self, activity):
-        return self.activities.get(activity.id, activity.instruction)
+        return activity.instruction
 
     def branch(self, name, *, target=None, current=None):
         text = self.branches[name]

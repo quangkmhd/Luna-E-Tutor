@@ -1,101 +1,55 @@
-schema_version: 1
 stage:
   id: lesson-01
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14:E14
   title: Lesson 01
-  level: 1
-  lesson: 1
   exits:
   - lesson-02
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: firefighter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   text: firefighter
   usage: taught
 - id: gardener
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   text: gardener
   usage: taught
 - id: reporter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   text: reporter
   usage: taught
 - id: writer
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   text: writer
   usage: taught
 patterns:
 - id: future-job
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E14
   text: What would you like to be in the future? – I'd like to be a ___.
-  examples:
-  - What would you like to be in the future? – I'd like to be a firefighter.
   acceptable_alternatives: []
 objectives:
 - id: unit05.lesson01.vocabulary.firefighter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   description: 'Vocabulary: firefighter'
   vocabulary_ids:
   - firefighter
-  pattern_ids: []
   evidence_criteria: Understand or use firefighter in context; imitation alone is not independent use.
 - id: unit05.lesson01.vocabulary.gardener
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   description: 'Vocabulary: gardener'
   vocabulary_ids:
   - gardener
-  pattern_ids: []
   evidence_criteria: Understand or use gardener in context; imitation alone is not independent use.
 - id: unit05.lesson01.vocabulary.reporter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   description: 'Vocabulary: reporter'
   vocabulary_ids:
   - reporter
-  pattern_ids: []
   evidence_criteria: Understand or use reporter in context; imitation alone is not independent use.
 - id: unit05.lesson01.vocabulary.writer
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   description: 'Vocabulary: writer'
   vocabulary_ids:
   - writer
-  pattern_ids: []
   evidence_criteria: Understand or use writer in context; imitation alone is not independent use.
 - id: unit05.lesson01.pattern.future_job
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E14
   description: 'Pattern: What would you like to be in the future? – I''d like to be a ___.'
-  vocabulary_ids: []
   pattern_ids:
   - future-job
   evidence_criteria: Record meaning and target form separately; accept short answers and valid alternatives.
 activities:
 - id: lesson-01.introduce-firefighter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   stage_id: lesson-01
   kind: vocabulary_introduction
   objective_ids:
@@ -105,17 +59,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model firefighter twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - firefighter
 - id: lesson-01.introduce-gardener
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   stage_id: lesson-01
   kind: vocabulary_introduction
   objective_ids:
@@ -125,17 +72,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model gardener twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - gardener
 - id: lesson-01.introduce-reporter
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   stage_id: lesson-01
   kind: vocabulary_introduction
   objective_ids:
@@ -145,17 +85,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model reporter twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - reporter
 - id: lesson-01.introduce-writer
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D14
   stage_id: lesson-01
   kind: vocabulary_introduction
   objective_ids:
@@ -165,17 +98,10 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model writer twice, invite Quang to say it, wait, and give evidence-based feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - writer
 - id: lesson-01.future-job
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E14
   stage_id: lesson-01
   kind: guided_response
   objective_ids:
@@ -185,17 +111,10 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise the occupation pattern with fictional or general examples.
   examples:
   - What would you like to be in the future? – I'd like to be a firefighter.
 - id: lesson-01.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E14
   stage_id: lesson-01
   kind: ask_teacher
   objective_ids:
@@ -205,10 +124,6 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Invite Quang to ask Luna the target question; support without fabricating the question.
   examples:
   - What would you like to be in the future? – I'd like to be a ___.

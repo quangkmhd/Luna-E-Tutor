@@ -118,7 +118,7 @@ class TurnPlanner:
         delivered = next((p for p in state.activity_progress if p.activity_id == activity.id), None) if state else None
         remaining_models = max(0, activity.completion_rule.model_repetitions - (
             delivered.model_repetitions_delivered if delivered else 0)) if enforce_delivery else 0
-        needs_invitation = (enforce_delivery and activity.completion_rule.response_opportunity_required
+        needs_invitation = (enforce_delivery
                             and not (delivered and delivered.response_opportunity_given))
         return TeacherActivityContext(
             stage_id=activity.stage_id, activity_id=activity.id, kind=activity.kind,
@@ -133,7 +133,6 @@ class TurnPlanner:
                       else tuple(activity.examples)),
             model_repetitions=activity.completion_rule.model_repetitions,
             remaining_model_repetitions=remaining_models, needs_response_invitation=needs_invitation,
-            response_opportunity_required=activity.completion_rule.response_opportunity_required,
             delivery_only=activity.completion_rule.mode == 'delivered',
         )
 

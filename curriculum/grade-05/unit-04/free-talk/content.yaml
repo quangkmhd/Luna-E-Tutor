@@ -1,12 +1,6 @@
-schema_version: 1
 stage:
   id: free-talk
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!J11
   title: Music and free time
-  level: 3
-  lesson: null
   exits:
   - summary
   prerequisite_stage_ids:
@@ -32,9 +26,6 @@ stage:
     allow_unresolved_on_exit: true
 activities:
 - id: free-talk.conversation
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!J11
   stage_id: free-talk
   kind: roleplay
   objective_ids:
@@ -72,10 +63,6 @@ activities:
   completion_rule:
     mode: user_end
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: false
-    mastery_required: false
   instruction: Discuss music and free-time preferences and comparisons. Never ask
     for an Internet username, account, handle, or platform identity. End on request.
   examples:

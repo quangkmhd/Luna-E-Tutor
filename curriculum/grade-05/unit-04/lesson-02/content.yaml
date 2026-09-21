@@ -1,106 +1,60 @@
-schema_version: 1
 stage:
   id: lesson-02
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12:E12
   title: Lesson 02
-  level: 1
-  lesson: 2
   exits:
   - lesson-03
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 vocabulary:
 - id: always
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   text: always
   usage: taught
 - id: often
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   text: often
   usage: taught
 - id: sometimes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   text: sometimes
   usage: taught
 - id: usually
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   text: usually
   usage: taught
 patterns:
 - id: weekend-routine
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E12
   text: What do you do at the weekend? – I ___.
-  examples:
-  - What do you do at the weekend? – I go for a walk.
   acceptable_alternatives: []
 objectives:
 - id: unit04.lesson02.vocabulary.always
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   description: 'Vocabulary: always'
   vocabulary_ids:
   - always
-  pattern_ids: []
   evidence_criteria: Understand or use always in context; imitation alone is not independent
     use.
 - id: unit04.lesson02.vocabulary.often
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   description: 'Vocabulary: often'
   vocabulary_ids:
   - often
-  pattern_ids: []
   evidence_criteria: Understand or use often in context; imitation alone is not independent
     use.
 - id: unit04.lesson02.vocabulary.sometimes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   description: 'Vocabulary: sometimes'
   vocabulary_ids:
   - sometimes
-  pattern_ids: []
   evidence_criteria: Understand or use sometimes in context; imitation alone is not
     independent use.
 - id: unit04.lesson02.vocabulary.usually
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   description: 'Vocabulary: usually'
   vocabulary_ids:
   - usually
-  pattern_ids: []
   evidence_criteria: Understand or use usually in context; imitation alone is not
     independent use.
 - id: unit04.lesson02.pattern.weekend_routine
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E12
   description: 'Pattern: What do you do at the weekend? – I ___.'
-  vocabulary_ids: []
   pattern_ids:
   - weekend-routine
   evidence_criteria: Record meaning and target form separately; accept short answers
     and valid alternatives.
 activities:
 - id: lesson-02.introduce-always
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -110,18 +64,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model always twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - always
 - id: lesson-02.introduce-often
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -131,18 +78,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model often twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - often
 - id: lesson-02.introduce-sometimes
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -152,18 +92,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model sometimes twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - sometimes
 - id: lesson-02.introduce-usually
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!D12
   stage_id: lesson-02
   kind: vocabulary_introduction
   objective_ids:
@@ -173,18 +106,11 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Model usually twice, invite Quang to say it, wait, and give evidence-based
     feedback. Move on after two attempts; do not claim text-only pronunciation accuracy.
   examples:
   - usually
 - id: lesson-02.weekend-routine
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E12
   stage_id: lesson-02
   kind: guided_response
   objective_ids:
@@ -194,18 +120,11 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Practise this free-time or music pattern with fictional or general
     examples.
   examples:
   - What do you do at the weekend? – I go for a walk.
 - id: lesson-02.ask-luna
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: Lớp 5 (3 Level)!E12
   stage_id: lesson-02
   kind: ask_teacher
   objective_ids:
@@ -215,10 +134,6 @@ activities:
   completion_rule:
     mode: ask_teacher
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
   instruction: Invite Quang to ask Luna the target question; support without fabricating
     the question.
   examples:

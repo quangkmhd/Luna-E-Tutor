@@ -1,20 +1,11 @@
-schema_version: 1
 stage:
   id: lesson-03
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!C7:L5"
   title: "Lesson 03 review"
-  level: 1
-  lesson: 3
   exits: [level-02]
   prerequisite_stage_ids: []
   completion_rule: all_required_activities_handled
 activities:
 - id: lesson-03.review-level-one
-  source:
-    file: docs/Global_Success_Khung_Nghe_Noi_3_Level_v3.xlsx
-    section: "Lớp 5 (3 Level)!C7:L5"
   stage_id: lesson-03
   kind: review
   objective_ids:
@@ -33,10 +24,6 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-    response_opportunity_required: true
-    feedback_required: true
-    allow_support_limit_exit: true
-    mastery_required: false
     meaning_objective_ids:
     - unit02.lesson01.vocabulary.building
     - unit02.lesson01.vocabulary.flat

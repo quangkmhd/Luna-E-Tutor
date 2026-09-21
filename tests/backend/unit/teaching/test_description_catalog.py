@@ -35,10 +35,12 @@ def test_teacher_prompt_uses_soniox_pause_tags_between_teaching_beats():
 
 
 @pytest.mark.asyncio
-async def test_yaml_edits_reach_planner_and_teacher(tmp_path, monkeypatch, unit_01):
+async def test_catalog_branches_and_curriculum_instructions_reach_planner_and_teacher(tmp_path, monkeypatch, unit_01):
     data = yaml.safe_load(descriptions.CATALOG_PATH.read_text())
     data['planner_branches']['clarify']['description_en'] = 'Ask gently what Quang meant.'
-    data['activity_instructions'][0]['description_en'] = 'Say a warm hello.'
+    data['activity_instructions'] = [
+        {'activity_id': 'warm-up.hello', 'description_en': 'Obsolete catalog greeting.'}
+    ]
     path = tmp_path / 'descriptions.yaml'
     path.write_text(yaml.safe_dump(data))
     monkeypatch.setattr(descriptions, 'CATALOG_PATH', path)
@@ -50,7 +52,7 @@ async def test_yaml_edits_reach_planner_and_teacher(tmp_path, monkeypatch, unit_
     assert move == 'Ask gently what Quang meant.'
     current_move = planner._next_move_text(current, TeachingDecision(
         feedback_action='acknowledge_and_continue', progression_action='stay'))
-    assert current_move.endswith('Say a warm hello.')
+    assert current_move.endswith(current.instruction)
     assert 'Respond to what Quang just said' in current_move
 
     class CaptureClient:

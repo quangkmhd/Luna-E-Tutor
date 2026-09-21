@@ -29,23 +29,62 @@ def test_unit_01_has_expected_vocabulary(unit_01):
     assert {p.id for p in unit_01.patterns} == EXPECTED_PATTERNS
 
 
-def test_load_unit_requires_only_runtime_teaching_policy(tmp_path):
-    """Curriculum loading does not depend on unused shared prompt metadata."""
+def test_load_unit_does_not_require_a_shared_directory(tmp_path):
+    """A unit's activity config is self-contained."""
     unit_root = tmp_path / "grade-05" / "unit-01"
     shutil.copytree(UNIT, unit_root)
-    shared_root = tmp_path / "shared"
-    shared_root.mkdir()
-    (shared_root / "teaching-policy.yaml").write_text(
-        "schema_version: 1\nmax_attempts: 2\nreduce_difficulty_after_seconds: 180\n",
-        encoding="utf-8",
-    )
 
     from luna_tutor.curriculum.loader import load_unit
 
     unit = load_unit(unit_root)
 
-    assert unit.teaching_policy.max_attempts == 2
-    assert unit.teaching_policy.reduce_difficulty_after_seconds == 180
+    assert next(item for item in unit.activities if item.id == "warm-up.hello").max_attempts == 1
+
+
+def test_load_unit_does_not_require_legacy_curriculum_metadata(tmp_path):
+    """Runtime curriculum does not need format, stage, or pattern-example metadata."""
+    unit_root = tmp_path / "grade-05" / "unit-01"
+    shutil.copytree(UNIT, unit_root)
+
+    def strip_metadata(fragment):
+        if isinstance(fragment, dict):
+            fragment.pop("schema_version", None)
+            fragment.pop("source", None)
+            stage = fragment.get("stage")
+            if stage:
+                stage.pop("level", None)
+                stage.pop("lesson", None)
+            for value in fragment.values():
+                strip_metadata(value)
+        elif isinstance(fragment, list):
+            for value in fragment:
+                strip_metadata(value)
+
+    for path in unit_root.rglob("*.yaml"):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+        strip_metadata(payload)
+        for name in ("opening", "closing"):
+            if name in payload:
+                strip_metadata(payload[name])
+        path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
+
+    from luna_tutor.curriculum.loader import load_unit
+
+    unit = load_unit(unit_root)
+
+    assert unit.id == "grade05.unit01"
+    assert next(item for item in unit.patterns if item.id == "class").text.startswith("Can you tell")
+
+
+def test_completion_rules_do_not_expose_repeated_policy_flags():
+    from luna_tutor.curriculum.models import CompletionRule
+
+    assert not {
+        "response_opportunity_required",
+        "feedback_required",
+        "allow_support_limit_exit",
+        "mastery_required",
+    } & CompletionRule.model_fields.keys()
 
 
 @pytest.mark.parametrize(('collection', 'field', 'value', 'message'), [
