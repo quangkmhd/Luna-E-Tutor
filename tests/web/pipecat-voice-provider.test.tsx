@@ -310,6 +310,22 @@ describe('PipecatVoiceProvider', () => {
     )).toBeInTheDocument();
   });
 
+  it('hides bracketed delivery cues from live Pipecat Luna messages', () => {
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '1', parts: [
+        { text: { spoken: 'My name is Luna. [pause] ', unspoken: 'Can you say “city”? [long pause]' }, final: false, createdAt: '1' },
+      ],
+    }];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[]} />
+      </PipecatVoiceProvider>,
+    );
+
+    expect(screen.getByText('My name is Luna. Can you say “city”?')).toBeInTheDocument();
+    expect(screen.queryByText(/\[(?:long )?pause\]/i)).not.toBeInTheDocument();
+  });
+
   it('keeps all final learner transcript chunks in the current Pipecat turn', () => {
     sdk.conversationMessages = [{
       role: 'user', final: false, createdAt: '1', parts: [

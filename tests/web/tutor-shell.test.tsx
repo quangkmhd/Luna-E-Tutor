@@ -249,6 +249,15 @@ describe('TutorShell', () => {
     await waitFor(() => expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'smooth', block: 'end' }));
   });
 
+  it('hides bracketed delivery cues from backend Luna messages', () => {
+    render(<ChatPanel messages={[
+      { role: 'teacher', text: 'Nice thinking. [pause] Can you say “city”? [long pause]' },
+    ]} />);
+
+    expect(screen.getByText('Nice thinking. Can you say “city”?')).toBeVisible();
+    expect(screen.queryByText(/\[(?:long )?pause\]/i)).not.toBeInTheDocument();
+  });
+
   it('shows retryable provider errors without inventing a message', async () => {
     const api = mockApi({ submitTurn: vi.fn().mockRejectedValue(new ApiError('PROVIDER_UNAVAILABLE', 'Provider down', true, 503)) });
     const user = userEvent.setup(); await openLesson(api);

@@ -12,6 +12,10 @@ function conversationText(message: ConversationMessage): string {
   }).join(' ').trim();
 }
 
+function teacherDisplayText(text: string): string {
+  return text.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim();
+}
+
 export function ChatPanel({ messages }: { messages: Message[] }) {
   const latestMessage = useRef<HTMLDivElement>(null);
   const { messages: pipecatMessages } = usePipecatConversation();
@@ -34,7 +38,7 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
   return <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
     {displayedMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.timestamp}`}>
       {message.role === 'teacher' && <div className="avatar" aria-hidden="true">L</div>}
-      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span><p>{message.text}</p></div>
+      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span><p>{message.role === 'teacher' ? teacherDisplayText(message.text) : message.text}</p></div>
     </article>)}
     <div ref={latestMessage} aria-hidden="true" />
   </div>;
