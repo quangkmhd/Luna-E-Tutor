@@ -70,7 +70,8 @@ async def test_teacher_gets_prior_question_and_actual_next_activity_content(stat
     assert request.activity_context.kind == activity.kind
     assert request.activity_context.examples == tuple(activity.examples)
     assert request.activity_context.objectives
-    assert 'wait for his question' in request.next_teaching_move
+    assert 'try again' in request.next_teaching_move
+    assert request.constraints.require_repetition
 
 
 @pytest.mark.asyncio
@@ -189,12 +190,13 @@ async def test_reduced_difficulty_requests_concrete_choice_not_normal_lesson_scr
 
 
 @pytest.mark.asyncio
-async def test_successful_recast_is_not_recorded_as_exhausted_support(state, unit_01):
+async def test_first_recast_stays_for_one_retry_without_exhausting_support(state, unit_01):
     plan = await TurnPlanner(FakeEvaluator(result()), TeachingEngine(), unit_01).plan(
         state, 'I live countryside', 'recast-success')
     progress = next(p for p in plan.proposed_next_state.activity_progress
                     if p.activity_id == state.activity_id)
-    assert progress.status == 'completed'
+    assert progress.status == 'in_progress'
+    assert progress.attempt_count == 1
     assert progress.completion_reason != 'support limit reached'
     assert plan.decision.review_queue_add == [state.objective_id]
 

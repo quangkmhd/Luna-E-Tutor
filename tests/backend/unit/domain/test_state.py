@@ -81,10 +81,15 @@ def test_recast_request_can_delegate_missing_wording_to_teacher():
     assert parsed.corrected_form is None
 
 
+def test_teacher_can_be_authorized_to_invite_one_retry():
+    parsed = TeacherTurnRequest.model_validate(teacher_request(
+        constraints={'require_repetition': True}))
+    assert parsed.constraints.require_repetition
+
+
 @pytest.mark.parametrize('changes', [
     {'corrected_form': 'Unexpected correction'},
     {'progression_action': 'stay'}, {'state': state()},
-    {'constraints': {'require_repetition': True}},
     {'constraints': {'max_questions': 2}},
     {'learner_meaning': 'Call 0912345678'},
 ])

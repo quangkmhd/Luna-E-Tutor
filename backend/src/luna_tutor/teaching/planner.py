@@ -94,6 +94,9 @@ class TurnPlanner:
                 target_activity.id != activity.id or decision.feedback_action not in {
                     'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'})),
             constraints=TeacherConstraints(
+                require_repetition=(decision.count_attempt
+                                    and decision.progression_action == 'stay'
+                                    and decision.feedback_action in {'offer_support', 'recast'}),
                 encouragement_required=(
                     decision.feedback_action == 'acknowledge_and_continue'
                     and target_activity.id != activity.id
@@ -181,9 +184,21 @@ class TurnPlanner:
             if target.completion_rule.mode == 'delivered':
                 return self._descriptions.branch('no_response_move_to_delivery', target=target)
             return self._descriptions.branch('no_response_move_with_support', target=target)
+        if (decision.count_attempt and decision.progression_action == 'stay'
+                and decision.feedback_action in {'offer_support', 'recast'}):
+            if current.kind == 'vocabulary_introduction':
+                return self._descriptions.branch('retry_vocabulary')
+            if decision.feedback_action == 'recast':
+                return self._descriptions.branch('retry_target_form')
+            return self._descriptions.branch('retry_meaning')
         stage = next(s for s in self._curriculum.stages if s.id == current.stage_id)
         if stage.review is not None and not decision.next_activity_id:
             return self._descriptions.branch('free_talk')
+        if decision.support_limit_exit and decision.next_activity_id:
+            target = next(a for a in self._curriculum.activities
+                          if a.id == decision.next_activity_id)
+            return self._descriptions.branch('support_limit_then_move',
+                                             current=current, target=target)
         if (decision.feedback_action == 'offer_support'
                 or decision.progression_action == 'reduce_difficulty'
                 or decision.support_limit_exit

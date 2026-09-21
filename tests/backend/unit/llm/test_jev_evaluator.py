@@ -41,6 +41,7 @@ async def test_jev_uses_decisions_api_and_returns_correlated_evidence(
     assert body['state']['active_objectives'][0]['objective_id'] == 'pattern.live-in'
     assert body['questions']['objective_0_meaning']['type'] == 'choice'
     assert body['questions']['objective_0_recast']['type'] == 'noul'
+    assert 'word imitation' in body['questions']['objective_0_form']['instructions'].lower()
     assert 'description_en' not in body
     assert result.turn_id == 'turn-1'
     assert result.state_version == 4

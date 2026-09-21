@@ -7,9 +7,19 @@ from luna_tutor.config import Settings
 from luna_tutor.domain.evidence import ContextTurn, EvaluatorResult
 from luna_tutor.llm.evaluator import GeminiEvaluator, InvalidEvaluatorResultError
 from luna_tutor.llm.openrouter import OpenRouterClient, ProviderError
+from luna_tutor.prompts.loader import load_system_prompt
 
 ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 pytestmark = pytest.mark.asyncio
+
+
+async def test_evaluator_prompt_rejects_answers_that_do_not_answer_the_current_question():
+    prompt = ' '.join(load_system_prompt('evaluator.yaml').split())
+
+    assert 'must answer the teacher_turn' in prompt
+    assert 'must demonstrate an active objective' in prompt
+    assert '“It’s the last group.”' in prompt
+    assert 'wrong_semantic_category' in prompt
 
 
 async def test_evaluator_returns_domain_result_and_sends_only_sanitized_request(

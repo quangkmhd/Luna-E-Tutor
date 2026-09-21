@@ -1,15 +1,28 @@
 # Tests
 
-- `backend/`: Python unit and integration tests.
-- `voice/`: Pipecat text pipeline and flow tests.
-- `web/`: Vitest component and API client tests.
-- `e2e/`: Playwright browser tests.
+| Thư mục | Phạm vi | Môi trường chạy |
+| --- | --- | --- |
+| `backend/` | Python unit/integration tests cho API và teaching core | `backend/.venv` |
+| `voice/` | Pipecat text pipeline, voice flow và scripts | `voice/server/.venv` |
+| `web/` | Vitest component và API-client tests | Node.js workspace `web/` |
+| `e2e/` | Playwright browser tests | Node.js workspace `web/` |
 
-From the repository root:
+Từ repository root:
 
-- Python: `python -m pytest` using the voice server environment with backend installed.
-- JavaScript dependencies: `npm install` (root workspace).
-- Web: `npm test`.
-- Browser: `npm run test:e2e` (ports 3090 and 8091 must be free).
+```bash
+uv run --project backend pytest -q
+uv run --project voice/server pytest -q tests/voice tests/scripts tests/ops
+uv run --project talk/server pytest -q talk/server/tests
+npm test
+cd web && npm run lint && npm run build
+```
 
-Scenario data and recorded evaluation results remain in `evals/`.
+Không chạy `python -m pytest` chung từ root rồi coi đó là xác nhận toàn bộ
+project: mỗi Python service có venv/dependencies riêng. Chạy e2e với:
+
+```bash
+npm run test:e2e
+```
+
+Các port test cho browser phải đang rảnh. Scenario data và kết quả evaluation
+được lưu trong `evals/`.

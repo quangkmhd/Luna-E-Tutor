@@ -1,96 +1,72 @@
-# voice
+# Voice — lớp học theo Unit
 
-A Pipecat AI voice agent built with a cascade pipeline (STT → LLM → TTS).
+Pipecat WebRTC bot cho luồng học có lộ trình. Bot dùng pipeline cascade:
+Soniox STT → OpenRouter LLM → Soniox TTS, và dùng teaching core từ `backend`.
+Nó khác với `talk`: Voice có lesson state, mục tiêu Unit và tiến trình học.
 
-## Configuration
+Xem [README root](../README.md) để biết bốn service cùng chạy như thế nào.
 
-- **Bot Type**: Web
-- **Transport(s)**: SmallWebRTC
-- **Pipeline**: Cascade
-  - **STT**: Soniox
-  - **LLM**: OpenRouter
-  - **TTS**: Soniox
+## Môi trường riêng
 
-## Setup
+Python project nằm trong `server/`; venv của service là
+`voice/server/.venv`. Nó độc lập với `backend/.venv` và `talk/server/.venv`.
+`luna-tutor` từ `../../backend` được khai báo là editable dependency trong venv
+này, không có nghĩa hai service dùng chung venv.
 
-### Server
-
-1. **Navigate to server directory**:
-
-   ```bash
-   cd server
-   ```
-
-2. **Install dependencies**:
-
-   ```bash
-   uv sync
-   ```
-
-3. **Configure environment variables once at the repository root**:
-
-   ```bash
-   cd ../..
-   cp .env.example .env
-   # Edit E-Voice-Tutor-v1/.env and add your API keys
-   cd voice/server
-   ```
-
-4. **Run the bot**:
-
-   ```bash
-   uv run bot.py
-   ```
-
-   The runner serves every transport; the caller selects which one (a web/mobile
-   client picks its transport when it connects; a telephony provider connects to
-   `/ws`).
-
-## Testing with evals
-
-This project includes behavioral evals: scripted conversations that drive the bot headless — no live call needed. Starter scenarios live in `server/evals/`; edit them as your bot takes shape and copy them to add more.
-
-From `server/`, run the bot with the eval transport, then drive scenarios against it from a second terminal (the bot stays up across runs):
-
-```bash
-uv run bot.py -t eval
-# In another terminal:
-uv run pipecat eval run evals/starter_text.yaml -v    # fast text-mode check
-uv run pipecat eval run evals/starter_audio.yaml -v   # full audio round trip (local models, no API keys)
-```
-
-`eval:` criteria are scored by a judge LLM — a local Ollama by default (`ollama pull gemma4:12b`). The comments in the scenario files cover the schema and how to use an OpenAI judge instead.
-
-## Project Structure
-
-```
-voice/
-├── server/              # Python bot server
-│   ├── bot.py           # Main bot implementation
-│   ├── evals/           # Behavioral eval scenarios
-│   ├── pyproject.toml   # Python dependencies
-│   └── ...
-├── .gitignore           # Git ignore patterns
-└── README.md            # This file
-```
-
-All Voice credentials are loaded from the repository-root `.env`; do not create
+Tất cả credentials được nạp từ `.env` ở repository root. Không tạo
 `voice/server/.env`.
-## Building with an AI coding agent
-
-Extending this bot with Claude Code, Codex, or another AI coding assistant? Give it live, accurate Pipecat context instead of stale training data with the **Pipecat Context Hub** — a local index of Pipecat docs, examples, and API source your agent queries over MCP:
 
 ```bash
-# The Context Hub ships with the CLI
-uv tool install "pipecat-ai[cli]"
-pipecat context-hub install
+cd server
+uv sync
+uv run --env-file ../../.env bot.py -t webrtc \
+  --host 127.0.0.1 --port 7860 \
+  --allowed-origins http://localhost:3000
 ```
 
-`install` registers the MCP server with each coding agent it finds and builds the index — a few minutes and about 900 MB the first time. MCP servers load at session start, so do this before opening your coding session, and note the server won't start against an empty index. See the [Pipecat Context Hub docs](https://docs.pipecat.ai/api-reference/context-hub) for the full setup.
+Browser client local: http://127.0.0.1:7860/client/.
 
-## Learn More
+## Cấu hình cần thiết
 
-- [Pipecat Documentation](https://docs.pipecat.ai/)
-- [Pipecat GitHub](https://github.com/pipecat-ai/pipecat)
-- [Pipecat Examples](https://github.com/pipecat-ai/pipecat-examples)
-- [Discord Community](https://discord.gg/pipecat)
+Các biến chính trong `.env` root:
+
+```text
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=google/gemini-3.5-flash-lite
+SONIOX_API_KEY=
+SONIOX_VOICE_ID=Grace
+SONIOX_TTS_VOICE=Grace
+```
+
+Xem [`.env.example`](../.env.example) cho CORS và ICE/STUN khi chạy qua mạng.
+
+## Evals và test
+
+Chạy từ `voice/server`:
+
+```bash
+# Text-mode behavioral eval
+uv run bot.py -t eval
+
+# Terminal khác, khi bot eval đang chạy
+uv run pipecat eval run evals/starter_text.yaml -v
+uv run pipecat eval run evals/starter_audio.yaml -v
+
+# Focused test suite từ repository root
+uv run --project voice/server pytest -q tests/voice tests/scripts tests/ops
+```
+
+Text eval kiểm tra quyết định/hội thoại; audio eval mới kiểm tra đường STT, VAD
+và TTS. Các scenario nằm ở `server/evals/`.
+
+## Cấu trúc
+
+```text
+voice/
+├── server/
+│   ├── bot.py       # Pipecat bot entry point
+│   ├── evals/       # headless behavioral scenarios
+│   ├── pyproject.toml
+│   └── .venv/       # service-specific Python environment
+└── README.md
+```

@@ -109,8 +109,8 @@ activities:
   completion_rule:
     mode: communicative_turn
     model_repetitions: 0
-  instruction: Ask which place usually has tall buildings, then trees. Give a choice if needed; move on
-    within the attempt limit.
+  instruction: Ask which place usually has tall buildings, then trees. Tall buildings are usually in a city;
+    the countryside usually has more trees. Give a choice if needed; move on within the attempt limit.
   examples:
   - Which place has many tall buildings — a city or the countryside?
 - id: lesson-01.class

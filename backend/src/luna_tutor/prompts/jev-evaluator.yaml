@@ -22,7 +22,7 @@ needs_clarification:
     false: The learner's intent and evidence can be assessed.
 objective_meaning:
   type: choice
-  instructions: Judge whether the learner communicates this objective's meaning. Meaning is separate from exact English form and may be communicated in Vietnamese.
+  instructions: Judge whether the learner communicates this objective's meaning. Meaning is separate from exact English form and may be communicated in Vietnamese. When Luna only asks the learner to say a vocabulary word, exact word imitation alone does not demonstrate independent understanding; mark meaning not_demonstrated while assessing the word separately under objective_form.
   criteria:
     satisfied: The requested idea is communicated clearly enough.
     partially_satisfied: A relevant part of the requested idea is communicated, but an essential detail is missing.
@@ -31,7 +31,7 @@ objective_meaning:
     uncertain: Transcript quality or ambiguity prevents a safe judgement.
 objective_form:
   type: choice
-  instructions: Judge only the learner's use of the current target English. A correct idea in Vietnamese or a one-word answer does not demonstrate the full target pattern.
+  instructions: Judge only the learner's use of the current target English. In a vocabulary_introduction, exact word imitation of a target_word is correct_target_form even when meaning is not_demonstrated; never mark that word not_used merely because it is a one-word reply. A correct idea in Vietnamese or a one-word answer does not demonstrate a full target sentence pattern.
   criteria:
     correct_target_form: The learner uses the target word or pattern correctly.
     valid_alternative: The learner uses grammatical English that communicates the goal without using the target form.

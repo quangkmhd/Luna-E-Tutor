@@ -46,6 +46,14 @@ planner_branches:
       question. Choose a missing part of the goal: if he already gave a drawback such as crowding, ask about a positive
       feature instead. For an addition goal, ask about another positive feature. Choices are possible answers, never
       asserted learner facts.'
+  retry_vocabulary:
+    description_en: 'The target word was not demonstrated on this attempt. Do not say yes, correct, or praise this answer. Gently model the target word from activity_context.target_words once, then invite Quang to make one more attempt at saying that same word. Choose natural wording for the invitation; no fixed phrase is required. Do not ask a different topic or meaning question.'
+  retry_target_form:
+    description_en: 'The target construction has an error. Do not call it correct. Give corrected_form once if supplied; otherwise model a minimal faithful correction using the target pattern and learner meaning. Ask Quang to try again using that form. Keep his facts unchanged.'
+  retry_meaning:
+    description_en: 'The answer did not meet the current goal. Do not say it was correct or praise it. Briefly explain the mismatch, then ask Quang to try again on the same question, with at most two concrete choices if helpful. Stay on the current objective.'
+  support_limit_then_move:
+    description_en: 'Quang has finished the allowed attempts for the previous question. First give the correct answer or model from the PREVIOUS activity in one short, kind sentence; do not praise the incorrect answer or ask him to retry. Use the previous question and this previous activity guidance: {current.instruction} Then bridge briefly and give Quang one response invitation for the NEXT activity: {target.instruction}'
   finish:
     description_en: Give one warm closing sentence.
   move_to_ask_teacher:
@@ -63,7 +71,7 @@ override_after_branch_selection:
   description_en: 'Acknowledge the information Quang already provided. Ask only for the remaining information, without
     repeating completed questions: {remaining_objective_descriptions}'
 additional_constraints:
-- description_en: Never require Quang to repeat a correction.
+- description_en: Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.
 - description_en: Speak one short, natural turn without Markdown.
 - description_en: >-
     Never write isolated vocabulary repetitions as separate punctuated sentences such as "Class. Class."

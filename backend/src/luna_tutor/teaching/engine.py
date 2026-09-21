@@ -39,6 +39,23 @@ def _english_success(item: ObjectiveEvidence, curriculum: UnitCurriculum) -> boo
                                         item.evidence_quote or '', re.IGNORECASE) for word in words)
 
 
+def _word_imitation(activity: Activity, evidence: EvaluatorResult,
+                    curriculum: UnitCurriculum, learner_text: str) -> bool:
+    """Recognize the requested word without claiming independent meaning/use."""
+    if activity.kind != 'vocabulary_introduction' or evidence.response_kind != 'answer':
+        return False
+    objective_id = activity.objective_ids[0]
+    item = next((item for item in evidence.objective_evidence
+                 if item.objective_id == objective_id), None)
+    if item and item.target_form_status == 'correct_target_form':
+        return True
+    objective = next(obj for obj in curriculum.objectives if obj.id == objective_id)
+    words = [word.text for word in curriculum.vocabulary
+             if word.id in objective.vocabulary_ids]
+    normalize = lambda value: ' '.join(re.findall(r'[^\W_]+', value.casefold()))
+    return len(words) == 1 and normalize(learner_text) == normalize(words[0])
+
+
 def _progress(state: LessonState, activity: Activity) -> ActivityProgress:
     return next((item for item in state.activity_progress if item.activity_id == activity.id),
                 ActivityProgress(activity_id=activity.id))
@@ -217,10 +234,11 @@ class TeachingEngine:
                    {state.objective_id} if state.objective_id else set(activity.objective_ids))
         meaningful = any(item.objective_id in targets and item.meaning_status == 'satisfied'
                          for item in evidence.objective_evidence)
+        word_imitation = _word_imitation(activity, evidence, curriculum, learner_text)
         recast = next((item for item in evidence.objective_evidence if item.recast_needed), None)
         feedback = ('recast' if recast else 'reassure' if emotion else
                     'redirect' if kind == 'off_topic' else
-                    'acknowledge_and_continue' if meaningful else 'offer_support')
+                    'acknowledge_and_continue' if meaningful or word_imitation else 'offer_support')
         base['feedback_action'] = feedback
         if recast:
             base['corrected_form'] = recast.corrected_form
@@ -248,7 +266,10 @@ class TeachingEngine:
             if item.meaning_status == 'satisfied'}
         complete_meaning = (targets <= demonstrated if activity.completion_rule.require_all_meanings
                             else meaningful)
-        successful_activity = complete_meaning and activity.kind != 'ask_teacher'
+        target_form_error = any(item.objective_id in targets and item.recast_needed
+                                for item in evidence.objective_evidence)
+        successful_activity = ((complete_meaning and meaningful or word_imitation)
+                               and activity.kind != 'ask_teacher' and not target_form_error)
         if successful_activity:
             return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
         if attempts + int(count) >= activity.max_attempts:

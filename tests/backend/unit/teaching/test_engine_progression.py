@@ -58,6 +58,34 @@ def test_word_completion_requires_delivered_models_and_response_opportunity(
         assert decision.next_activity_id == 'lesson-01.introduce-class'
 
 
+@pytest.mark.parametrize(('word', 'activity_id', 'objective_id', 'next_activity'), [
+    ('city', 'lesson-01.introduce-city', CITY, 'lesson-01.introduce-class'),
+    ('class', 'lesson-01.introduce-class', 'unit01.lesson01.vocabulary.class',
+     'lesson-01.introduce-countryside'),
+])
+def test_correct_imitation_completes_word_step_without_claiming_meaning(
+        engine, state, evidence, unit_01, word, activity_id, objective_id, next_activity):
+    prior = tuple(ActivityProgress(activity_id=item.id, status='completed')
+                  for item in unit_01.activities if item.stage_id == 'lesson-01'
+                  and item.id == 'lesson-01.introduce-city' and activity_id != item.id)
+    state = state.model_copy(update={
+        'activity_id': activity_id, 'objective_id': objective_id,
+        'last_teacher_turn': f'Can you say “{word}”?',
+        'activity_progress': prior + (ActivityProgress(
+            activity_id=activity_id, status='in_progress',
+            model_repetitions_delivered=2, response_opportunity_given=True),),
+    })
+    result = evidence(objective_id=objective_id, meaning='not_demonstrated',
+                      form='correct_target_form', quote=word)
+    decision = engine.decide(state, result, unit_01)
+    assert decision.feedback_action == 'acknowledge_and_continue'
+    assert decision.progression_action == 'move_to_next_objective'
+    assert decision.next_activity_id == next_activity
+    assert not decision.support_limit_exit
+    assert decision.review_queue_add == []
+    assert decision.mastery_updates == []
+
+
 def test_stage_cannot_skip_unhandled_required_activity(engine, state, evidence, unit_01):
     state = state.model_copy(update={'activity_id': 'lesson-01.ask-luna', 'activity_progress': (
         ActivityProgress(activity_id='lesson-01.ask-luna', status='in_progress', response_opportunity_given=True),

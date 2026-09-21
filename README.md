@@ -1,92 +1,163 @@
-# Luna English Tutor — Grade 5 Units 1–5
+# Luna English Tutor
 
-Luna is a stateful English tutor for Quang. This repository contains source-audited Grade 5 Units 1–5 and an independent, topic-based Free Talk room in the same Next.js interface. It also includes a selectable Jev or Gemini Evaluator, a separately prompted Gemini Teacher, deterministic teaching progression, local SQLite history, and a FastAPI API. The web interface lists the available units and stores the selected `unit_id` with each lesson session.
+Ứng dụng học tiếng Anh lớp 5 gồm bốn dịch vụ chạy cục bộ độc lập: giao diện
+web, API/teaching engine, phòng học có lộ trình, và phòng Free Talk.
 
-The Evaluator answers “what did Quang demonstrate?”. The Teaching Engine alone decides “what happens next?”. The Teacher receives that bounded decision and turns it into one short, natural spoken response. Contact information is removed locally before any model call.
+## Kiến trúc cục bộ
 
-## Setup
+```text
+Browser
+  │ http://localhost:3000
+  ▼
+web (Next.js)
+  ├── API bài học ─────────────► backend (FastAPI, :8000)
+  ├── Phòng học theo bài ──────► voice (Pipecat/WebRTC, :7860)
+  └── Free Talk ───────────────► talk  (Pipecat/WebRTC, :7863)
+```
 
-Requirements: Python 3.12 or newer, `uv`, Node.js, and npm.
+| Thành phần | Thư mục | Vai trò | Local URL/port | Runtime riêng |
+| --- | --- | --- | --- | --- |
+| `web` | `web/` | Next.js UI; chọn Unit, hiển thị lớp học và Free Talk | http://localhost:3000 | Node.js/npm, không dùng Python venv |
+| `backend` | `backend/` | FastAPI API, Teaching Engine, Evaluator, SQLite | http://127.0.0.1:8000 | `backend/.venv` |
+| `voice` | `voice/server/` | Pipecat WebRTC cho bài học có lộ trình | http://127.0.0.1:7860/client/ | `voice/server/.venv` |
+| `talk` | `talk/server/` | Pipecat WebRTC cho trang `/talk`, không có lesson state | http://127.0.0.1:7863/client/ | `talk/server/.venv` |
+
+Ba Python environment là các venv **tách biệt**, dù cùng được `uv` tạo từ
+CPython. Cài dependency tại một dịch vụ sẽ không cài sang dịch vụ khác.
+Riêng `voice` dùng package `luna-tutor` từ `backend` dưới dạng editable dependency,
+nhưng vẫn chạy bằng `voice/server/.venv`.
+
+## Chuẩn bị lần đầu
+
+Cần có Python 3.12+, [uv](https://docs.astral.sh/uv/), Node.js và npm.
+`talk` hiện yêu cầu Python 3.11+; thực tế các venv hiện tại cùng dùng Python 3.14.
 
 ```bash
 cp .env.example .env
-# Unit 1: OPENROUTER_API_KEY, SONIOX_API_KEY, SONIOX_TTS_VOICE.
-# Free Talk: OPENROUTER_API_KEY, OPENROUTER_MODEL, SONIOX_API_KEY, SONIOX_VOICE_ID.
-# The checked-in model defaults can be overridden with TUTOR_EVALUATOR_MODEL
-# and OPENROUTER_MODEL.
 
-cd backend
-uv sync
-
-cd ../voice/server
-uv sync
-
-cd ../../talk/server
-uv sync
-
-cd ../../web
-npm install
+cd backend && uv sync
+cd ../voice/server && uv sync
+cd ../../talk/server && uv sync
+cd ../../web && npm install
 ```
 
-The Gemini Teacher and standalone Free Talk room use `OPENROUTER_MODEL=google/gemini-3.5-flash-lite` through OpenRouter. Select the real-learning evaluator with `TUTOR_EVALUATOR_MODEL`: use `~typesafe/jev-latest` or `google/gemini-3.5-flash-lite`. The checked-in example selects Jev. Real keys stay in `.env` and are never sent to the browser. The same selection is used by the web API and Pipecat voice runtimes.
+Điền khóa thật vào `.env` ở root; không tạo `.env` riêng trong `voice/server`
+hoặc `talk/server`.
 
-## Run the web experiment
+| Biến | Dùng bởi |
+| --- | --- |
+| `OPENROUTER_API_KEY` | backend, voice, talk |
+| `OPENROUTER_MODEL` | Teacher/Free Talk; mặc định `google/gemini-3.5-flash-lite` |
+| `TUTOR_EVALUATOR_MODEL` | Evaluator của backend |
+| `SONIOX_API_KEY`, `SONIOX_VOICE_ID`, `SONIOX_TTS_VOICE` | voice và talk |
+
+Xem đầy đủ biến môi trường, CORS và ICE/STUN trong [`.env.example`](.env.example).
+Không commit `.env` hoặc khóa API.
+
+## Chạy cả bốn dịch vụ
+
+Từ root repository:
 
 ```bash
 chmod +x scripts/run-local.sh
 ./scripts/run-local.sh
 ```
 
-Open `http://localhost:3000` for Unit 1 or `http://localhost:3000/talk` for the standalone Free Talk room. Unit 1's final guided Free Talk stage remains part of the curriculum and uses its lesson state; `/talk` is a separate Pipecat service with no stations, mastery, lesson summary, or saved lesson session.
+Script khởi động đồng thời:
 
-The local runner starts the Unit 1 API on port 8000, Unit 1 voice on 7860, standalone Talk voice on 7863, and the web app on 3000. Logs are written separately to `.run/logs/backend.log`, `.run/logs/voice.log`, `.run/logs/talk.log`, and `.run/logs/web.log`.
+- `backend` tại `127.0.0.1:8000` (tự reload khi sửa `backend/src`)
+- `voice` tại `127.0.0.1:7860` (theo dõi `voice/server` và `backend/src`)
+- `talk` tại `127.0.0.1:7863` (theo dõi `talk/server`)
+- `web` tại `http://localhost:3000`
 
-Select a unit in the web interface before starting a session. API clients create a session with an explicit curriculum ID, for example:
+Mở `http://localhost:3000` để học theo Unit, hoặc
+`http://localhost:3000/talk` để dùng Free Talk. Nhấn `Ctrl+C` ở terminal chạy
+script để dừng toàn bộ bốn process.
 
-```json
-{"unit_id": "grade05.unit02"}
+Log tách riêng tại:
+
+```text
+.run/logs/backend.log
+.run/logs/voice.log
+.run/logs/talk.log
+.run/logs/web.log
 ```
 
-The supported IDs are `grade05.unit01` through `grade05.unit05`.
+## Chạy từng dịch vụ
 
-You can also start each process separately:
+Mỗi lệnh cần được chạy trong terminal riêng.
+
+### Backend
 
 ```bash
 cd backend
-uv run uvicorn luna_tutor.api.runtime:build_runtime_app --factory --port 8000 --env-file ../.env
-
-cd talk/server
-uv run --env-file ../../.env bot.py -t webrtc --host 127.0.0.1 --port 7863 --allowed-origins http://localhost:3000
-
-cd web
-NEXT_PUBLIC_TUTOR_API_URL=http://localhost:8000 \
-NEXT_PUBLIC_TALK_PIPECAT_URL=http://localhost:7863 npm run dev
+uv run --env-file ../.env uvicorn luna_tutor.api.runtime:build_runtime_app \
+  --factory --host 127.0.0.1 --port 8000 --reload --reload-dir src
 ```
 
-## Verification
+Kiểm tra API: `http://127.0.0.1:8000/docs`.
+
+### Voice — lớp học theo Unit
 
 ```bash
-uv run --project voice/server pytest -q tests/voice tests/scripts tests/ops
-uv run --project talk/server pytest -q talk/server/tests
-uv run --project talk/server ruff check talk/server
-uv run --project talk/server pyright talk/server
-uv run --project backend python -m luna_tutor.evals.cli verify-baseline evals/unit-01/baseline.json
-uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit02 --set development --repetitions 1 --out evals/unit-02/reports
-uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit03 --set development --repetitions 1 --out evals/unit-03/reports
-uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit04 --set development --repetitions 1 --out evals/unit-04/reports
-uv run --project backend python -m luna_tutor.evals.cli run --unit grade05.unit05 --set development --repetitions 1 --out evals/unit-05/reports
-
-npm install
-npm test
-cd web
-npm run lint
-npm run build
-npx playwright install chromium
-npm run test:e2e
+cd voice/server
+uv run --env-file ../../.env bot.py -t webrtc \
+  --host 127.0.0.1 --port 7860 \
+  --allowed-origins http://localhost:3000
 ```
 
-The browser suite uses a deterministic fixture service that is accepted only when both `ENV=test` and `TUTOR_LLM_MODE=fixture` are set. Production/local live mode cannot accidentally enable it.
+### Talk — Free Talk
 
-Evaluation details and the reviewed Teacher samples are in `docs/evaluation/unit-01-report.md`.
-The standalone room's provider-backed browser and eval evidence is retained in
-`docs/evaluation/free-talk-room-verification.md`.
+```bash
+cd talk/server
+uv run --env-file ../../.env bot.py -t webrtc \
+  --host 127.0.0.1 --port 7863 \
+  --allowed-origins http://localhost:3000
+```
+
+### Web
+
+```bash
+cd web
+NEXT_PUBLIC_TUTOR_API_URL=http://localhost:8000 \
+NEXT_PUBLIC_PIPECAT_URL=http://localhost:7860 \
+NEXT_PUBLIC_TALK_PIPECAT_URL=http://localhost:7863 \
+  npm run dev
+```
+
+Các `NEXT_PUBLIC_*` được trình duyệt đọc khi Next.js khởi động. Nếu đổi URL
+API/bot, hãy dừng và khởi động lại `web`.
+
+## Kiểm tra nhanh
+
+```bash
+# Web UI
+curl -I http://localhost:3000
+
+# Backend API
+curl -I http://127.0.0.1:8000/docs
+
+# Pipecat browser clients
+curl -I http://127.0.0.1:7860/client/
+curl -I http://127.0.0.1:7863/client/
+```
+
+## Test
+
+```bash
+uv run --project backend pytest -q
+uv run --project voice/server pytest -q tests/voice tests/scripts tests/ops
+uv run --project talk/server pytest -q talk/server/tests
+npm test
+cd web && npm run lint && npm run build
+```
+
+Các test Python phải được gọi bằng project/venv tương ứng; không chạy `pytest`
+chung từ root rồi suy ra cả ba Python service đều đã được kiểm tra.
+
+## Docker
+
+`docker-compose.yml` cũng định nghĩa bốn service `backend`, `voice`, `talk`,
+và `web` cho môi trường triển khai. Các cổng host mặc định trong `.env.example`
+là `8090` cho backend và `3001` cho web; chúng khác với cổng local development
+`8000` và `3000` nêu ở trên.

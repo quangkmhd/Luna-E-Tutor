@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Web — Luna English Tutor
 
-## Getting Started
+Next.js frontend cho lớp học theo Unit và trang Free Talk. Đây là một trong bốn
+service của repository; xem [README root](../README.md) để biết toàn bộ kiến trúc.
 
-First, run the development server:
+## Kết nối service
+
+| Biến khi khởi động | Mặc định local | Service đích |
+| --- | --- | --- |
+| `NEXT_PUBLIC_TUTOR_API_URL` | `http://localhost:8000` | backend FastAPI |
+| `NEXT_PUBLIC_PIPECAT_URL` | `http://localhost:7860` | voice Pipecat |
+| `NEXT_PUBLIC_TALK_PIPECAT_URL` | `http://localhost:7863` | talk Pipecat |
+
+Đây là biến `NEXT_PUBLIC_*`: URL được đưa vào bundle trình duyệt khi Next.js
+khởi động. Dừng và chạy lại web sau khi thay đổi chúng.
+
+## Chạy local
+
+Từ thư mục này, sau khi backend, voice và talk đã chạy:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+NEXT_PUBLIC_TUTOR_API_URL=http://localhost:8000 \
+NEXT_PUBLIC_PIPECAT_URL=http://localhost:7860 \
+NEXT_PUBLIC_TALK_PIPECAT_URL=http://localhost:7863 \
+  npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở http://localhost:3000 cho lớp học theo Unit hoặc http://localhost:3000/talk
+cho Free Talk. Để chạy cả bốn service bằng một lệnh, dùng từ repository root:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+./scripts/run-local.sh
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+```bash
+npm run dev       # development server
+npm run lint      # ESLint
+npm test          # Vitest
+npm run build     # production build
+npm run test:e2e  # Playwright
+```
 
-To learn more about Next.js, take a look at the following resources:
+`npm run test:e2e` dùng các port test riêng; xem [tests/README.md](../tests/README.md).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cấu trúc
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+web/
+├── src/app/          # Next.js routes, gồm /talk
+├── src/components/   # UI components
+├── src/lib/          # API client và helpers
+└── package.json      # scripts và dependencies
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Không lưu API key trong web hoặc trong biến `NEXT_PUBLIC_*`; các khóa provider
+chỉ nằm trong `.env` ở root và được Python services sử dụng.

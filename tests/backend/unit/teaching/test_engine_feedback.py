@@ -14,7 +14,7 @@ HOME = 'unit01.lesson01.pattern.live_in'
      'acknowledge_and_continue', 'move_to_next_objective', True, 0, []),
     ({'form': 'error_in_target_form', 'quote': 'I live countryside.', 'recast': True,
       'correction': 'I live in the countryside.'},
-     'recast', 'move_to_next_objective', True, 0, [HOME]),
+     'recast', 'stay', True, 0, [HOME]),
     ({'meaning': 'wrong_semantic_category', 'form': 'not_used', 'quote': 'Pink.'},
      'offer_support', 'stay', True, 0, []),
     ({'kind': 'asks_meaning', 'items': []}, 'explain_meaning', 'stay', False, 0, []),

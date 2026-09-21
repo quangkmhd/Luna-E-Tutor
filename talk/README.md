@@ -1,100 +1,74 @@
-# talk
+# Talk — Free Talk room
 
-A Pipecat AI voice agent built with a cascade pipeline (STT → LLM → TTS).
+Pipecat WebRTC bot cho trang `/talk`: hội thoại tự do theo chủ đề, không có
+station, mastery, lesson summary hoặc lesson session. Đây là service riêng với
+Voice lớp học theo Unit.
 
-## Configuration
+Pipeline: Soniox STT → OpenRouter LLM → Soniox TTS. Xem [README root](../README.md)
+để biết cách bốn service phối hợp.
 
-- **Bot Type**: Web
-- **Transport(s)**: SmallWebRTC
-- **Pipeline**: Cascade
-  - **STT**: Soniox
-  - **LLM**: Google Gemini
-  - **TTS**: Soniox
+## Môi trường riêng
 
-## Setup
+Python project nằm trong `server/`; service chạy bằng `talk/server/.venv`, độc
+lập với `backend/.venv` và `voice/server/.venv`.
 
-### Server
-
-1. **Navigate to server directory**:
-
-   ```bash
-   cd server
-   ```
-
-2. **Install dependencies**:
-
-   ```bash
-   uv sync
-   ```
-
-3. **Configure environment variables once at the repository root**:
-
-   ```bash
-   cd ../..
-   cp .env.example .env
-   # Edit E-Voice-Tutor-v1/.env and add your API keys
-   cd talk/server
-   ```
-
-4. **Run the bot**:
-
-   ```bash
-   uv run bot.py
-   ```
-
-   The runner serves every transport; the caller selects which one (a web/mobile
-   client picks its transport when it connects; a telephony provider connects to
-   `/ws`).
-
-## Testing with evals
-
-This project includes behavioral evals: scripted conversations that drive the bot headless — no live call needed. Starter scenarios live in `server/evals/`; edit them as your bot takes shape and copy them to add more.
-
-From `server/`, run the bot with the eval transport, then drive scenarios against it from a second terminal (the bot stays up across runs):
+Tất cả credentials được nạp rõ ràng từ `.env` ở repository root. Không tạo
+`talk/server/.env`.
 
 ```bash
+cd server
+uv sync
+uv run --env-file ../../.env bot.py -t webrtc \
+  --host 127.0.0.1 --port 7863 \
+  --allowed-origins http://localhost:3000
+```
+
+Browser client local: http://127.0.0.1:7863/client/.
+
+## Cấu hình cần thiết
+
+Các biến trong `.env` root:
+
+```text
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=google/gemini-3.5-flash-lite
+SONIOX_API_KEY=
+SONIOX_VOICE_ID=Grace
+```
+
+Không dùng `GEMINI_API_KEY`: LLM hiện chạy qua OpenRouter. Xem
+[`.env.example`](../.env.example) cho CORS và ICE/STUN.
+
+## Evals và test
+
+Chạy từ `talk/server`:
+
+```bash
+# Eval WebSocket server
 uv run bot.py -t eval --runner-body evals/runner-body.yaml --port 7864
-# In another terminal:
+
+# Terminal khác
 uv run pipecat eval run evals/starter_text.yaml --bot-url ws://localhost:7864 -v
 uv run pipecat eval run evals/starter_audio.yaml --bot-url ws://localhost:7864 -v
-# Provider-backed judge check (uses GEMINI_API_KEY from the repository-root .env):
-PYTHONPATH=. uv run --env-file ../../.env pipecat eval run evals/simple_language_text.yaml --bot-url ws://localhost:7864 -v
+PYTHONPATH=. uv run --env-file ../../.env pipecat eval run \
+  evals/simple_language_text.yaml --bot-url ws://localhost:7864 -v
+
+# Focused tests từ repository root
+uv run --project talk/server pytest -q talk/server/tests
 ```
 
-`eval:` criteria are scored by the local Ollama model selected in the scenarios:
-`ollama pull gemma4:12b-it-qat`. Audio mode additionally initializes the local
-Kokoro and Moonshine models and may download their assets on its first run.
+Text mode kiểm tra logic hội thoại nhanh. Audio mode thêm STT/VAD/TTS và có thể
+tải Kokoro/Moonshine assets ở lần đầu chạy.
 
-## Project Structure
+## Cấu trúc
 
-```
+```text
 talk/
-├── server/              # Python bot server
-│   ├── bot.py           # Main bot implementation
-│   ├── evals/           # Behavioral eval scenarios
-│   ├── pyproject.toml   # Python dependencies
-│   └── ...
-├── .gitignore           # Git ignore patterns
-└── README.md            # This file
+├── server/
+│   ├── bot.py       # Pipecat bot entry point
+│   ├── evals/       # headless behavioral scenarios
+│   ├── tests/
+│   ├── pyproject.toml
+│   └── .venv/       # service-specific Python environment
+└── README.md
 ```
-
-All Talk credentials are loaded from the repository-root `.env`; do not create
-`talk/server/.env`.
-## Building with an AI coding agent
-
-Extending this bot with Claude Code, Codex, or another AI coding assistant? Give it live, accurate Pipecat context instead of stale training data with the **Pipecat Context Hub** — a local index of Pipecat docs, examples, and API source your agent queries over MCP:
-
-```bash
-# The Context Hub ships with the CLI
-uv tool install "pipecat-ai[cli]"
-pipecat context-hub install
-```
-
-`install` registers the MCP server with each coding agent it finds and builds the index — a few minutes and about 900 MB the first time. MCP servers load at session start, so do this before opening your coding session, and note the server won't start against an empty index. See the [Pipecat Context Hub docs](https://docs.pipecat.ai/api-reference/context-hub) for the full setup.
-
-## Learn More
-
-- [Pipecat Documentation](https://docs.pipecat.ai/)
-- [Pipecat GitHub](https://github.com/pipecat-ai/pipecat)
-- [Pipecat Examples](https://github.com/pipecat-ai/pipecat-examples)
-- [Discord Community](https://discord.gg/pipecat)

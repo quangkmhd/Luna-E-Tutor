@@ -44,7 +44,7 @@ class TeachingDecision(Contract):
 
 class TeacherConstraints(Contract):
     max_questions: int = Field(default=1, ge=0, le=1)
-    require_repetition: Literal[False] = False
+    require_repetition: bool = False
     allow_pronunciation_claims: Literal[False] = False
     plain_spoken_text: Literal[True] = True
     encouragement_required: bool = False
