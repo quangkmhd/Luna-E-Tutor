@@ -16,19 +16,24 @@ export function UnitSelector({
     <span className="eyebrow">Luna English</span>
     <h1>Choose a unit</h1>
     <p>Select what you would like to practise with Luna.</p>
-    {[...new Set(units.map((unit) => unit.grade))].map((grade) => <section key={grade} aria-label={`Grade ${grade}`}>
-    <h2>Grade {grade}</h2>
-    <div className="unit-grid">
-      {units.filter((unit) => unit.grade === grade).map((unit) => <button
-        key={unit.id}
-        type="button"
-        disabled={busy}
-        onClick={() => onSelect(unit.id)}
-      >
-        <strong>Unit {unit.unit}</strong>
-        <span>{unit.title}</span>
-      </button>)}
-    </div></section>)}
+    {[...new Set(units.map((unit) => unit.grade))].sort((a, b) => a - b).map((grade) => <section
+      className="grade-unit-group"
+      key={grade}
+      aria-labelledby={`grade-${grade}-heading`}
+    >
+      <h2 id={`grade-${grade}-heading`}>Grade {grade}</h2>
+      <div className="unit-grid">
+        {units.filter((unit) => unit.grade === grade).map((unit) => <button
+          key={unit.id}
+          type="button"
+          disabled={busy}
+          onClick={() => onSelect(unit.id)}
+        >
+          <strong>Unit {unit.unit}</strong>
+          <span>{unit.title}</span>
+        </button>)}
+      </div>
+    </section>)}
     <section className="free-talk-card" aria-labelledby="free-talk-title">
       <div className="free-talk-icon" aria-hidden="true">
         <span>···</span>
