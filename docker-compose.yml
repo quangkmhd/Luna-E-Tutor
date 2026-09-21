@@ -27,7 +27,7 @@ services:
       - .env
     environment:
       - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
-      - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-stun:stun.l.google.com:19302}
+      - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-}
       - TUTOR_DATABASE_PATH=/app/backend/data/luna-tutor.sqlite3
     volumes:
       - backend_data:/app/backend/data
@@ -43,7 +43,7 @@ services:
       - .env
     environment:
       - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
-      - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-stun:stun.l.google.com:19302}
+      - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-}
     network_mode: host
 
   nginx:
