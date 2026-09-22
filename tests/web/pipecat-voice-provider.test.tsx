@@ -372,7 +372,99 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.getByText('Can you use class in a sentence?')).toBeInTheDocument();
   });
 
-  it('renders Pipecat conversation as the single source instead of mixing backend messages into it', () => {
+  it('keeps the saved greeting separate when a live answer arrives', () => {
+    sdk.conversationMessages = [
+      { role: 'user', final: true, createdAt: '2', parts: [{ text: 'xin chào', final: true, createdAt: '2' }] },
+      { role: 'assistant', final: false, createdAt: '3', parts: [{ text: { spoken: 'Chào con!', unspoken: '' }, final: false, createdAt: '3' }] },
+    ];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[{ role: 'teacher', text: 'Hi! My name is Luna.' }]} />
+      </PipecatVoiceProvider>,
+    );
+
+    const rows = document.querySelectorAll('.bubble-row');
+    expect(rows).toHaveLength(3);
+    expect(rows[0]).toHaveTextContent('Hi! My name is Luna.');
+    expect(rows[1]).toHaveTextContent('xin chào');
+    expect(rows[2]).toHaveTextContent('Chào con!');
+  });
+
+  it('does not collapse the saved greeting and introduction into one live bubble', () => {
+    sdk.conversationMessages = [{
+      role: 'assistant', final: true, createdAt: '1', parts: [{
+        text: { spoken: 'Hi! My name is Luna. Let us learn HELLO.', unspoken: '' }, final: true, createdAt: '1',
+      }],
+    }];
+    render(
+      <PipecatVoiceProvider sessionId="session-7">
+        <ChatPanel messages={[
+          { role: 'teacher', text: 'Hi! My name is Luna.' },
+          { role: 'teacher', text: 'Let us learn HELLO.' },
+        ]} />
+      </PipecatVoiceProvider>,
+    );
+
+    const rows = document.querySelectorAll('.bubble-row');
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toHaveTextContent('Hi! My name is Luna.');
+    expect(rows[1]).toHaveTextContent('Let us learn HELLO.');
+  });
+
+  it('does not repeat typed learner text after the saved session catches up', async () => {
+    const user = userEvent.setup();
+    function TypedInput() {
+      const voice = useVoiceLesson();
+      return <button onClick={() => void voice.sendText('xin chào')}>Type answer</button>;
+    }
+    render(<PipecatVoiceProvider sessionId="session-7">
+      <ChatPanel messages={[
+        { role: 'teacher', text: 'Hello!' },
+        { role: 'learner', text: 'xin chào' },
+      ]} />
+      <TypedInput />
+    </PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Type answer' }));
+
+    expect(screen.getAllByText('xin chào')).toHaveLength(1);
+  });
+
+  it('still shows a newly repeated learner answer while an older copy is saved', async () => {
+    const user = userEvent.setup();
+    function TypedInput() {
+      const voice = useVoiceLesson();
+      return <button onClick={() => void voice.sendText('xin chào')}>Repeat answer</button>;
+    }
+    render(<PipecatVoiceProvider sessionId="session-7">
+      <ChatPanel messages={[
+        { role: 'teacher', text: 'Hello!' },
+        { role: 'learner', text: 'xin chào' },
+      ]} />
+      <TypedInput />
+    </PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Repeat answer' }));
+    await user.click(screen.getByRole('button', { name: 'Repeat answer' }));
+
+    expect(screen.getAllByText('xin chào')).toHaveLength(2);
+  });
+
+  it('keeps a second spoken answer even when its words repeat a saved answer', () => {
+    sdk.conversationMessages = [
+      { role: 'user', final: true, createdAt: '1', parts: [{ text: 'hello', final: true, createdAt: '1' }] },
+      { role: 'user', final: true, createdAt: '2', parts: [{ text: 'hello', final: true, createdAt: '2' }] },
+    ];
+    render(<PipecatVoiceProvider sessionId="session-7">
+      <ChatPanel messages={[{ role: 'learner', text: 'hello' }]} />
+    </PipecatVoiceProvider>);
+
+    expect(screen.getAllByText('hello')).toHaveLength(2);
+  });
+
+  it('keeps saved lesson history alongside live Pipecat turns', () => {
     sdk.conversationMessages = [
       { role: 'assistant', final: true, createdAt: '1', parts: [{ text: { spoken: 'Old interrupted answer.', unspoken: '' }, final: true, createdAt: '1' }] },
       { role: 'user', final: true, createdAt: '2', parts: [{ text: 'City.', final: true, createdAt: '2' }] },
@@ -380,17 +472,17 @@ describe('PipecatVoiceProvider', () => {
     ];
     render(
       <PipecatVoiceProvider sessionId="session-7">
-        <ChatPanel messages={[{ role: 'teacher', text: 'Backend copy of the current answer.' }]} />
+        <ChatPanel messages={[{ role: 'teacher', text: 'Saved opening greeting.' }]} />
       </PipecatVoiceProvider>,
     );
 
     expect(screen.getByText('Old interrupted answer.')).toBeInTheDocument();
     expect(screen.getByText('City.')).toBeInTheDocument();
     expect(screen.getByText('Current answer.')).toBeInTheDocument();
-    expect(screen.queryByText('Backend copy of the current answer.')).not.toBeInTheDocument();
+    expect(screen.getByText('Saved opening greeting.')).toBeInTheDocument();
   });
 
-  it('does not switch back to backend messages while Pipecat owns the conversation', () => {
+  it('replaces live partial text with the saved complete turn without duplication', () => {
     sdk.conversationMessages = [
       { role: 'user', final: true, createdAt: '1', parts: [{ text: 'I live in Hanoi.', final: true, createdAt: '1' }] },
       { role: 'assistant', final: false, createdAt: '2', parts: [{ text: { spoken: '', unspoken: 'What do you like about it?' }, final: false, createdAt: '2' }] },
@@ -413,7 +505,7 @@ describe('PipecatVoiceProvider', () => {
     );
 
     expect(screen.getAllByText('I live in Hanoi.')).toHaveLength(1);
-    expect(screen.getAllByText('What do you like about it?')).toHaveLength(1);
-    expect(screen.queryByText('Hanoi is a busy city. What do you like about it?')).not.toBeInTheDocument();
+    expect(screen.getByText('Hanoi is a busy city. What do you like about it?')).toBeInTheDocument();
+    expect(screen.queryByText('What do you like about it?')).not.toBeInTheDocument();
   });
 });

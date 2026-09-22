@@ -29,13 +29,31 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
       timestamp: message.createdAt,
     }))
     .filter((message) => message.text);
-  const baseMessages = pipecatConversation.length > 0
-    ? pipecatConversation
-    : messages.map((message, index) => ({
+  const savedMessages = messages.map((message, index) => ({
       ...message,
       timestamp: `${message.turn_id ?? 'opening'}-${index}`,
     }));
-  const displayedMessages = [...baseMessages, ...(voice?.sentText ?? []).map((message) => ({
+  const sentText = voice?.sentText ?? [];
+  const liveMessages = messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
+    if (message.role === 'learner') {
+      const savedCount = savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length;
+      const liveCount = pipecatConversation.slice(0, index + 1)
+        .filter((live) => live.role === 'learner' && live.text === message.text).length;
+      return savedCount >= liveCount || sentText.some((sent) => sent.text === message.text) ? [] : [message];
+    }
+    let text = teacherDisplayText(message.text);
+    for (const saved of savedMessages) {
+      if (saved.role !== 'teacher') continue;
+      const savedText = teacherDisplayText(saved.text);
+      if (text.startsWith(savedText)) text = text.slice(savedText.length).trim();
+      else if (savedText.includes(text)) return [];
+    }
+    return text ? [{ ...message, text }] : [];
+  });
+  const displayedMessages = [...savedMessages, ...liveMessages, ...sentText.filter((message, index) =>
+    savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length
+      < sentText.slice(0, index + 1).filter((sent) => sent.text === message.text).length,
+  ).map((message) => ({
     role: 'learner' as const,
     text: message.text,
     timestamp: message.timestamp,
