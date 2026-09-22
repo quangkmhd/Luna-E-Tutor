@@ -10,9 +10,38 @@ The session request identifies the unit and lesson. Grade 3 Unit 1 Lesson 1 load
 
 ## Authoring format
 
-Lesson YAML has a lesson ID, a required `greeting` text field, and exactly three ordered stations: `vocabulary`, `patterns`, `conversation`. The greeting is delivered first and can be edited without code changes. Each station has a title, learning targets, and ordered script turns. A teacher turn has a stable source row ID (for example `B1-15`) and `teacher_text`. A learner opportunity has a source row ID, objective reference, `acceptance_description`, and optional examples. Teacher text is the sheet's wording, with `[long pause]` inserted only at suitable spoken boundaries; preserve the wording, case, and punctuation. Text shown to the learner can be added separately if needed and must not alter the spoken script.
+Lesson YAML has `lesson`, `title`, a required `greeting`, short `words` and `patterns` definitions, and exactly three ordered `stations`: `vocabulary`, `patterns`, `conversation`. The greeting is delivered first and can be edited without code changes. Each station has ordered `steps`. A step groups consecutive teacher lines in `say` and the learner opportunity that follows in `accept`; `target` refers to a word or pattern key. Teacher-only steps omit `accept`. Optional `source` links workbook row IDs (for example `B1-15:B1-19`). Teacher text is the sheet's wording, with `[long pause]` inserted only at suitable spoken boundaries; preserve the wording, case, and punctuation.
 
-Targets are authored once in the lesson: vocabulary entries and patterns carry stable IDs; objectives state the communicative evidence to accept. A script opportunity references those IDs. The YAML should make it possible to fill later lessons without embedding the exact teacher script inside a long procedural `instruction` paragraph. Machine rules (required opportunities, attempt limit, repetitions) are separate from teacher wording and acceptance descriptions.
+Targets are authored once. The loader derives internal activity and objective IDs, stage links, required flags, and normal completion rules. The YAML does not repeat these fields. Attempts and repetitions have code defaults and appear in a step only when that lesson needs an override. This makes a new lesson a script to fill, rather than a serialized runtime state machine.
+
+Illustrative authoring shape (the real file has all steps):
+
+```yaml
+lesson: 1
+title: Chào hỏi và giới thiệu tên
+greeting: "Hi, con! Cô là Luna. Hôm nay cô trò mình học chào hỏi nhé!"
+words: [hello, hi, "I'm", Ben, Mai, Minh, good evening, nice to meet you]
+patterns:
+  introduce: "Hi. I'm {name}."
+  reply: "Hello, {friend}. I'm {name}."
+stations:
+  - id: vocabulary
+    steps:
+      - source: B1-15:B1-19
+        say: |-
+          Cô trò mình sang Trạm 1 — học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé! [long pause]
+          HELLO nghĩa là xin chào — con nói khi gặp bất kỳ ai: bạn bè, thầy cô, hay cô Luna. [long pause]
+          Listen first! HELLO. [long pause]
+          Your turn now! Can you say: Hello?
+        target: hello
+        accept: Con nói “hello”; âm /h/ có thể cần cô nói mẫu lại.
+  - id: patterns
+    steps: []
+  - id: conversation
+    steps: []
+```
+
+Empty `steps` lists abbreviate this illustration only; they are invalid in a real lesson. Authors can edit the greeting, words, patterns, teacher lines, and acceptance descriptions without touching Python.
 
 ## Lesson 1 mapping
 
@@ -30,8 +59,8 @@ Silence still counts as a learner event in the existing runtime. This design sup
 
 ## Validation and verification
 
-Validate nonempty greeting, unique row IDs, target references, exactly three ordered stations, and at least one learner opportunity per station. Reject empty teacher text and empty acceptance descriptions. Check all Lesson 1 workbook teacher rows and learner opportunities in the three stations against the YAML; ignore opening and ending rows. Test that editing only the greeting field changes the first teacher message, lesson selection and completion within one session, progression through all three stations, acceptable alternatives, incorrect and silent responses, and that Grade 5 routes are unaffected. Run the focused backend tests and a real session route through the available local stack when services and credentials are available.
+Validate nonempty greeting, nonoverlapping source rows, target references, exactly three ordered stations, and at least one learner opportunity per station. Reject empty `say` for teacher-led steps and empty `accept` when a response is expected. Check all Lesson 1 workbook teacher rows and learner opportunities in the three stations against the YAML; ignore opening and ending rows. Test that editing only the greeting field changes the first teacher message, lesson selection and completion within one session, progression through all three stations, acceptable alternatives, incorrect and silent responses, and that Grade 5 routes are unaffected. Run the focused backend tests and a real session route through the available local stack when services and credentials are available.
 
 ## Deliberate additions
 
-Keep source row IDs for Excel traceability. Keep spoken text separate from acceptance criteria and progression rules. Add an explicit response mode for nonverbal workbook activities rather than treating a clap as a spoken word. Defer Lesson 2–4 content conversion until Lesson 1's format and runtime are verified.
+Keep optional source row ranges for Excel traceability. Keep spoken text separate from acceptance criteria and progression rules. Add an explicit response mode for nonverbal workbook activities rather than treating a clap as a spoken word. Defer Lesson 2–4 content conversion until Lesson 1's format and runtime are verified.
