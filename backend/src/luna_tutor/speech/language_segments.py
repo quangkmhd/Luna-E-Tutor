@@ -7,6 +7,7 @@ from typing import Literal
 
 LanguageCode = Literal['vi', 'en']
 _TAG = re.compile(r'<(/?)([a-z]{2})>')
+_TAG_LIKE = re.compile(r'</?[A-Za-z][^>]*>')
 _CUE = re.compile(r'\[[^\]]*\]')
 _logger = logging.getLogger(__name__)
 
@@ -21,11 +22,14 @@ def _parse(text: str) -> tuple[SpeechSegment, ...]:
     active: LanguageCode | None = None
     pieces: list[tuple[LanguageCode, str]] = []
     position = 0
-    for tag in _TAG.finditer(text):
+    for candidate in _TAG_LIKE.finditer(text):
+        tag = _TAG.fullmatch(candidate.group())
+        if tag is None:
+            raise ValueError(f'Unsupported language tag {candidate.group()}')
         language = tag.group(2)
         if language not in ('vi', 'en'):
             raise ValueError(f'Unsupported language tag <{language}>')
-        pieces.append((active or 'vi', text[position:tag.start()]))
+        pieces.append((active or 'vi', text[position:candidate.start()]))
         if tag.group(1):
             if active != language:
                 raise ValueError(f'Mismatched language tag </{language}>')
@@ -34,7 +38,7 @@ def _parse(text: str) -> tuple[SpeechSegment, ...]:
             if active is not None:
                 raise ValueError(f'Nested language tag <{language}>')
             active = language
-        position = tag.end()
+        position = candidate.end()
     if active is not None:
         raise ValueError(f'Unclosed language tag <{active}>')
     pieces.append(('vi', text[position:]))
@@ -57,10 +61,10 @@ def parse_speech_segments(text: str, *, strict: bool = True) -> tuple[SpeechSegm
         if strict:
             raise
         _logger.warning('Invalid language markup in generated teacher speech; using Vietnamese')
-        clean = _TAG.sub('', text).strip()
+        clean = _TAG_LIKE.sub('', text).strip()
         return (SpeechSegment('vi', clean),) if clean else ()
 
 
 def plain_speech_text(text: str) -> str:
     """Keep authored spacing/newlines while hiding language and TTS delivery tokens."""
-    return _CUE.sub('', _TAG.sub('', text))
+    return _CUE.sub('', _TAG_LIKE.sub('', text))

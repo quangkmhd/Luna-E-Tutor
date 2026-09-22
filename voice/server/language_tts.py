@@ -13,6 +13,8 @@ from pipecat.frames.frames import (
     InterruptionFrame,
     LLMFullResponseEndFrame,
     TTSSpeakFrame,
+    TTSStartedFrame,
+    TTSStoppedFrame,
     TTSUpdateSettingsFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
@@ -33,8 +35,30 @@ class LanguageSpeechFinishedFrame(DataFrame):
     logical_turn_id: str | None = None
 
 
+@dataclass
+class LanguageSynthesisStartedFrame(DataFrame):
+    context_id: str
+
+
+@dataclass
+class LanguageSynthesisFinishedFrame(DataFrame):
+    context_id: str
+
+
+class LanguageTTSCompletionObserver(FrameProcessor):
+    """Relay Soniox context boundaries upstream without delaying playback."""
+
+    async def process_frame(self, frame: Frame, direction: FrameDirection):
+        await super().process_frame(frame, direction)
+        if direction == FrameDirection.DOWNSTREAM and isinstance(frame, TTSStartedFrame) and frame.context_id:
+            await self.push_frame(LanguageSynthesisStartedFrame(frame.context_id), FrameDirection.UPSTREAM)
+        elif direction == FrameDirection.DOWNSTREAM and isinstance(frame, TTSStoppedFrame) and frame.context_id:
+            await self.push_frame(LanguageSynthesisFinishedFrame(frame.context_id), FrameDirection.UPSTREAM)
+        await self.push_frame(frame, direction)
+
+
 class LanguageTaggedTTSProcessor(FrameProcessor):
-    """Wait for each output stop before changing Soniox's stream language."""
+    """Wait for Soniox termination and playback drain before switching language."""
 
     def __init__(self):
         super().__init__()
@@ -42,9 +66,13 @@ class LanguageTaggedTTSProcessor(FrameProcessor):
         self._active: LanguageTaggedSpeechFrame | None = None
         self._remaining: deque[SpeechSegment] = deque()
         self._deferred: list[Frame] = []
+        self._active_context_id: str | None = None
+        self._synthesis_done = False
 
     async def _next_segment(self) -> None:
         span = self._remaining.popleft()
+        self._active_context_id = None
+        self._synthesis_done = False
         await self.push_frame(TTSUpdateSettingsFrame(delta=SonioxTTSSettings(
             language=Language.VI if span.language == 'vi' else Language.EN,
         )))
@@ -77,10 +105,20 @@ class LanguageTaggedTTSProcessor(FrameProcessor):
             self._remaining.clear()
             self._deferred.clear()
             self._active = None
+            self._active_context_id = None
+            self._synthesis_done = False
+            await self.push_frame(frame, direction)
+        elif direction == FrameDirection.UPSTREAM and isinstance(frame, LanguageSynthesisStartedFrame):
+            if self._active is not None and self._active_context_id is None:
+                self._active_context_id = frame.context_id
+            await self.push_frame(frame, direction)
+        elif direction == FrameDirection.UPSTREAM and isinstance(frame, LanguageSynthesisFinishedFrame):
+            if self._active is not None and frame.context_id == self._active_context_id:
+                self._synthesis_done = True
             await self.push_frame(frame, direction)
         elif direction == FrameDirection.UPSTREAM and isinstance(frame, BotStoppedSpeakingFrame):
             await self.push_frame(frame, direction)
-            if self._active is not None:
+            if self._active is not None and self._synthesis_done:
                 if self._remaining:
                     await self._next_segment()
                 else:

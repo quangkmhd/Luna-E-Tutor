@@ -24,7 +24,7 @@ from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.workers.runner import WorkerRunner
 
 from text_flows import BoundedTeacherLLM
-from language_tts import LanguageTaggedSpeechFrame, LanguageTaggedTTSProcessor
+from language_tts import LanguageTaggedSpeechFrame, LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
 from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
 from voice_teaching import (
     VoiceCommitProcessor,
@@ -103,6 +103,7 @@ def build_voice_worker(
             teacher_llm,
             language_tts,
             tts,
+            LanguageTTSCompletionObserver(),
             transport.output(),
             voice_commit,
             aggregators.assistant(),

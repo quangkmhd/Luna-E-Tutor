@@ -197,7 +197,7 @@ async def test_build_voice_worker_routes_persisted_unit2_state(
 
 def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypatch):
     import bot
-    from language_tts import LanguageTaggedTTSProcessor
+    from language_tts import LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
     from text_flows import BoundedTeacherLLM
     from voice_teaching import VoiceCommitProcessor, VoiceTeachingProcessor
 
@@ -237,6 +237,7 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
                 BoundedTeacherLLM,
                 LanguageTaggedTTSProcessor,
                 TTSProcessor,
+                LanguageTTSCompletionObserver,
                 OutputProcessor,
                 VoiceCommitProcessor,
             ),
@@ -249,6 +250,7 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
         BoundedTeacherLLM,
         LanguageTaggedTTSProcessor,
         TTSProcessor,
+        LanguageTTSCompletionObserver,
         OutputProcessor,
         VoiceCommitProcessor,
     ]

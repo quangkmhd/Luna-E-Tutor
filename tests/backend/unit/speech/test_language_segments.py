@@ -28,6 +28,7 @@ def test_legacy_and_multiline_speech_keep_their_text():
 
 @pytest.mark.parametrize('text', [
     '<vi>Xin chào', '<en>Hello</vi>', '<vi>Xin <en>Hello</en></vi>', '</en>Hello',
+    '<EN>Hello</EN>', '<en lang="x">Hello</en>', '<fr>Bonjour</fr>',
 ])
 def test_rejects_malformed_authored_markup(text):
     with pytest.raises(ValueError, match='language tag'):
@@ -38,3 +39,7 @@ def test_generated_malformed_markup_falls_back_to_vi_without_tags():
     assert parse_speech_segments('<en>Hello</vi> con', strict=False) == (
         SpeechSegment('vi', 'Hello con'),
     )
+    assert parse_speech_segments('<EN>Hello</EN> con', strict=False) == (
+        SpeechSegment('vi', 'Hello con'),
+    )
+    assert plain_speech_text('<EN>Hello</EN>') == 'Hello'
