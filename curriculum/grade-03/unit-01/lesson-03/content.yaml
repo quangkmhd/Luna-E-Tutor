@@ -2,7 +2,7 @@ lesson: 3
 title: Chào tạm biệt và chào theo thời điểm
 greeting:
   order: 1
-  say: "Hi! Great to see you again! How are you today?"
+  say: "<en>Hi! Great to see you again! How are you today?</en>"
   accept: Chấp nhận câu trả lời thăm hỏi hợp lý; Fine, thank you hoặc cảm xúc thật đều đạt.
 words: [goodbye, bye, see you tomorrow, good night, good morning, good afternoon, hello, how, Ben]
 patterns:
@@ -15,98 +15,98 @@ stations:
   - order: 2
     target: goodbye
     say: |-
-      Hôm nay cô trò mình học cách chào tạm biệt, và chào cho đúng lúc sáng, chiều, tối. Trạm 1: từ mới nhé! [long pause]
-      Goodbye là tạm biệt — chính là câu cô nói cuối mỗi buổi đấy! [long pause]
-      Listen first! [long pause] "GOODBYE" [long pause]
-      Your turn now! Goodbye!
+      <vi>Hôm nay cô trò mình học cách chào tạm biệt, và chào cho đúng lúc sáng, chiều, tối. Trạm 1: từ mới nhé! [long pause]</vi>
+      <en>Goodbye</en><vi> là tạm biệt — chính là câu cô nói cuối mỗi buổi đấy! [long pause]</vi>
+      <en>Listen first! [long pause] "GOODBYE" [long pause]</en>
+      <en>Your turn now! Goodbye!</en>
     accept: Chấp nhận “goodbye”; nhấn trọng âm chưa đúng vẫn đạt.
   - order: 3
     target: bye
     say: |-
-      Bye cũng là tạm biệt, nhưng ngắn và thân mật hơn — con dùng với bạn bè. [long pause]
-      Listen first! [long pause] "BYE" [long pause]
-      Your turn now! Bye!
+      <en>Bye</en><vi> cũng là tạm biệt, nhưng ngắn và thân mật hơn — con dùng với bạn bè. [long pause]</vi>
+      <en>Listen first! [long pause] "BYE" [long pause]</en>
+      <en>Your turn now! Bye!</en>
     accept: Chấp nhận “bye”.
     more:
     - say: |-
-        Cô phát âm chậm: B-B-BYE. Con mím chặt hai môi rồi bật ra; đặt tay lên cổ — thấy rung không? Đó là âm /b/. [long pause]
-        Now you!
+        <vi>Cô phát âm chậm: </vi><en>B-B-BYE.</en><vi> Con mím chặt hai môi rồi bật ra; đặt tay lên cổ — thấy rung không? Đó là âm /b/. [long pause]</vi>
+        <en>Now you!</en>
       accept: Chấp nhận “B-b-bye” với âm /b/ đầu rõ.
   - order: 4
     target: [hello, bye, how, Ben]
     say: |-
-      Let's play! Listen: /h/ or /b/? [long pause]
-      Hello… bye… how… Ben… hi… book.
+      <en>Let's play! Listen: /h/ or /b/? [long pause]</en>
+      <en>Hello… bye… how… Ben… hi… book.</en>
     accept: Chấp nhận con phân biệt đúng ít nhất 5 trong 6 âm /h/ và /b/; Mức 1 chỉ cần hello, bye, hi, Ben.
   - order: 5
     target: see you tomorrow
     say: |-
-      Khi chia tay và hẹn mai gặp lại — đúng như cô với con mỗi tối — con nói See you tomorrow. [long pause]
-      Listen first! [long pause] "SEE YOU TOMORROW" [long pause]
-      Your turn now!
+      <vi>Khi chia tay và hẹn mai gặp lại — đúng như cô với con mỗi tối — con nói </vi><en>See you tomorrow.</en><vi> [long pause]</vi>
+      <en>Listen first! [long pause] "SEE YOU TOMORROW" [long pause]</en>
+      <en>Your turn now!</en>
     accept: Chấp nhận “See you tomorrow”; Mức 1 chỉ nghe không bắt buộc nói lại.
   - order: 6
     target: good night
     say: |-
-      Good night là chúc ngủ ngon — con nói lúc CHIA TAY đi ngủ. Còn Good evening là lúc GẶP nhau. Con đừng nhầm nhé! [long pause]
-      Listen first! [long pause] "GOOD NIGHT" [long pause]
-      Your turn now! Good night!
+      <en>Good night</en><vi> là chúc ngủ ngon — con nói lúc CHIA TAY đi ngủ. Còn </vi><en>Good evening</en><vi> là lúc GẶP nhau. Con đừng nhầm nhé! [long pause]</vi>
+      <en>Listen first! [long pause] "GOOD NIGHT" [long pause]</en>
+      <en>Your turn now! Good night!</en>
     accept: Chấp nhận “good night” như lời chúc ngủ ngon khi chia tay.
   - order: 7
     target: [good morning, good afternoon]
     say: |-
-      Sáng gặp nhau thì chào Good morning, chiều gặp nhau thì chào Good afternoon. [long pause]
-      Listen first! [long pause] "GOOD MORNING" [long pause] "GOOD AFTERNOON" [long pause]
-      Your turn now!
+      <vi>Sáng gặp nhau thì chào </vi><en>Good morning</en><vi>, chiều gặp nhau thì chào </vi><en>Good afternoon.</en><vi> [long pause]</vi>
+      <en>Listen first! [long pause] "GOOD MORNING" [long pause] "GOOD AFTERNOON" [long pause]</en>
+      <en>Your turn now!</en>
     accept: Chấp nhận cả “Good morning” và “Good afternoon”; Mức 1 chỉ nghe vẫn có thể chuyển tiếp.
 - id: patterns
   steps:
   - order: 8
     target: farewell
     say: |-
-      Khi chia tay, con chào và gọi tên bạn. Listen first! [long pause] "Goodbye, Mai." [long pause]
-      Your turn now!
+      <vi>Khi chia tay, con chào và gọi tên bạn. </vi><en>Listen first! [long pause] "Goodbye, Mai." [long pause]</en>
+      <en>Your turn now!</en>
     accept: Chấp nhận “Goodbye, Mai”; một lời chào tạm biệt đúng tình huống cũng đạt.
   - order: 9
     target: see_you
     say: |-
-      Listen first! [long pause] "Bye, Ben. See you tomorrow!" [long pause]
-      Your turn now!
+      <en>Listen first! [long pause] "Bye, Ben. See you tomorrow!" [long pause]</en>
+      <en>Your turn now!</en>
     accept: Chấp nhận “Bye, Ben”; “See you tomorrow” là mở rộng, không bắt buộc ở Mức 1.
   - order: 10
     say: |-
-      Mình chơi trò chọn câu đúng lúc: cô kể tình huống, con nói câu tiếng Anh hợp nhất nhé! [long pause]
-      Tình huống 1: Sáng đến lớp, con gặp bạn Minh.
+      <vi>Mình chơi trò chọn câu đúng lúc: cô kể tình huống, con nói câu tiếng Anh hợp nhất nhé! [long pause]</vi>
+      <vi>Tình huống 1: Sáng đến lớp, con gặp bạn Minh.</vi>
     accept: Chấp nhận lời chào khi gặp Minh như Hello hoặc Hi; Mức 3 dùng Good morning, Minh.
     more:
-    - say: 'Tình huống 2: Hết giờ học, con chia tay bạn Mai.'
+    - say: '<vi>Tình huống 2: Hết giờ học, con chia tay bạn Mai.</vi>'
       accept: Chấp nhận Goodbye hoặc Bye với Mai; “See you tomorrow” là mở rộng.
-    - say: 'Tình huống 3: Bạn Ben hỏi con: How are you?'
+    - say: '<vi>Tình huống 3: Bạn Ben hỏi con: </vi><en>How are you?</en>'
       accept: Chấp nhận câu trả lời cảm xúc hợp lý, như Fine, thank you. And you.
-    - say: 'Tình huống 4: Tối muộn, con chào bố mẹ trước khi đi ngủ.'
+    - say: '<vi>Tình huống 4: Tối muộn, con chào bố mẹ trước khi đi ngủ.</vi>'
       accept: Chấp nhận “Good night”; Mức 1 có thể nói “Bye”.
   - order: 11
     target: ask
-    say: 'Now your turn to ask ME! Say: How are you?'
+    say: '<en>Now your turn to ask ME! Say: How are you?</en>'
     accept: Chấp nhận “How are you?”, có hoặc không gọi tên Luna.
     more:
-    - say: "I'm OK, thank you! Goodbye, {tên}!"
+    - say: "<en>I'm OK, thank you! Goodbye, {tên}!</en>"
       accept: Chấp nhận Goodbye hoặc Bye, có thể gọi tên Luna.
 - id: conversation
   steps:
   - order: 12
     target: farewell
     say: |-
-      Trạm 3: cô trò mình nói chuyện trọn vẹn bằng tiếng Anh nhé! Let's have a whole talk — hello to goodbye! [long pause]
-      Good evening, {tên}!
+      <vi>Trạm 3: cô trò mình nói chuyện trọn vẹn bằng tiếng Anh nhé! </vi><en>Let's have a whole talk — hello to goodbye! [long pause]</en>
+      <en>Good evening, {tên}!</en>
     accept: Chấp nhận lời chào lúc gặp, như Good evening, Hello hoặc Hi.
     more:
-    - say: 'How are you today?'
+    - say: '<en>How are you today?</en>'
       accept: Chấp nhận câu trả lời phù hợp; Mức 1 “Fine” là đủ, Mức 2–3 khuyến khích hỏi lại “And you?”.
     - say: |-
-        I'm fine, thank you. [long pause]
-        Oh, it's late! I have to go. Goodbye, {tên}!
+        <en>I'm fine, thank you. [long pause]</en>
+        <en>Oh, it's late! I have to go. Goodbye, {tên}!</en>
       accept: Chấp nhận Goodbye hoặc Bye; có thể thêm tên Luna và “See you tomorrow”.
-    - say: 'See you tomorrow! Good night!'
+    - say: '<en>See you tomorrow! Good night!</en>'
       accept: Chấp nhận Good night hoặc Bye.
-    - say: 'Wow! You started AND ended a talk in English!'
+    - say: '<en>Wow! You started AND ended a talk in English!</en>'

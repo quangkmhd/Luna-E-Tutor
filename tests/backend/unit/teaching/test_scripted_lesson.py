@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 import pytest
 
@@ -253,7 +254,7 @@ async def test_second_wrong_pattern_correction_precedes_next_authored_example():
     assert completed.plan.decision.support_limit_exit
     assert 'brief declarative sentence' in teacher.requests[0].next_teaching_move
     assert teacher.requests[0].activity_context.examples == (current.say,)
-    assert completed.teacher_utterance.spoken_text.startswith(
+    assert re.sub(r'</?(?:vi|en)>', '', completed.teacher_utterance.spoken_text).startswith(
         'The correct sentence is "Hi. I\'m Mai." [long pause] Listen first!')
     assert '"Hello. I\'m Minh."' in completed.teacher_utterance.spoken_text
 

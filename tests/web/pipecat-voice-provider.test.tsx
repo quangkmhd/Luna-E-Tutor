@@ -387,6 +387,24 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.queryByText(/LO means hello|Your turn now/)).not.toBeInTheDocument();
   });
 
+  it('hides language markup without revealing unheard voice words', async () => {
+    const user = userEvent.setup();
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '2026-09-22T00:00:00Z', parts: [{
+        text: { spoken: '<vi>Xin chào.</vi> <en>HE', unspoken: 'LLO</en> [long pause]' },
+        final: false, createdAt: '1',
+      }],
+    }];
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
+      <ChatPanel messages={[]} /><VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+
+    expect(screen.getByText('Xin chào. HE')).toBeVisible();
+    expect(screen.queryByText(/LLO|<\/?(?:vi|en)>|\[long pause\]/)).not.toBeInTheDocument();
+  });
+
   it('adds Luna lines only as TTS spoken progress advances', async () => {
     const user = userEvent.setup();
     const spoken = (value: string) => [{

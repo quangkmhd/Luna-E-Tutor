@@ -82,7 +82,8 @@ def test_each_unit_uses_its_yaml_greeting(tmp_path):
                 from luna_tutor.curriculum.lesson_script import load_lesson_script
                 script = load_lesson_script(
                     root / 'grade-03/unit-01/lesson-01/content.yaml')
-                assert response.json()['messages'][0]['text'] == script.greeting.say
+                from luna_tutor.speech.language_segments import plain_speech_text
+                assert response.json()['messages'][0]['text'] == plain_speech_text(script.greeting.say)
             else:
                 assert response.json()['messages'][0]['text'] == unit.greeting
 

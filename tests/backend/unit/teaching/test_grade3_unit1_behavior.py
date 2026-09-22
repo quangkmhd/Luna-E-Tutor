@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import shutil
 
 import yaml
@@ -178,12 +179,12 @@ def test_lesson_one_moves_from_pattern_practice_to_good_evening():
     decision = TeachingEngine().decide(state, evidence, unit, learner_text="Hi, Luna. I'm Quang.")
     assert decision.next_activity_id == 'lesson-01.introduce-good-evening'
     target = next(item for item in unit.activities if item.id == decision.next_activity_id)
-    assert 'Good evening là chào buổi tối' in target.instruction
+    assert 'Good evening là chào buổi tối' in re.sub(r'</?(?:vi|en)>', '', target.instruction)
     assert 'Listen first! [long pause] GOOD EVENING.' in target.instruction
     assert 'Your turn now! Good evening!' in target.instruction
     current = next(item for item in unit.activities if item.id == state.activity_id)
     move = TurnPlanner(None, TeachingEngine(), unit)._next_move_text(current, decision)
-    assert 'Good evening là chào buổi tối' in move
+    assert 'Good evening là chào buổi tối' in re.sub(r'</?(?:vi|en)>', '', move)
     assert 'Do not ask Quang to ask Luna a question here.' in move
 
 

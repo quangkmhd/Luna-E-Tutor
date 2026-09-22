@@ -1,7 +1,7 @@
 id: grade03.unit01
 grade: 3
 unit: 1
-greeting: "Hi! My name is Luna — I'm your English tutor![long pause] Xin chào con! Cô là Luna, gia sư tiếng Anh của con."
+greeting: "<en>Hi! My name is Luna — I'm your English tutor![long pause]</en> <vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>"
 title: Hello
 content_files:
 - lesson-01/legacy.yaml

@@ -3,8 +3,8 @@ title: Chào hỏi và giới thiệu tên
 greeting:
   order: 1
   say: |-
-    Hi! My name is Luna — I'm your English tutor! [long pause]
-    Xin chào con! Cô là Luna, gia sư tiếng Anh của con.
+    <en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>
+    <vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>
   accept: Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.
 words:
 - hello
@@ -25,120 +25,125 @@ stations:
   - order: 2
     target: hello
     say: |-
-      Cô trò mình sang Trạm 1 — học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé! [long pause]
-      [long pause] "HELLO" [long pause] nghĩa là xin chào — con nói khi gặp bất kỳ ai: bạn bè, thầy cô, hay cô Luna.
-      Listen first! [long pause] "HELLO" [long pause]
-      Your turn now! Can you say: [long pause] "Hello" [long pause]?
+      <vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>
+      <en>[long pause] "HELLO"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>
+      <en>[long pause] Listen first! [long pause] "HELLO" </en>
+      <en>[long pause] Your turn now! Can you say: [long pause] [slowly] "Hello"?</en>
     accept: hello (có /h/)
     more:
     - say: |-
-        Once more! [long pause] "Hello" [long pause]
+        <en>Once more! [long pause] "Hello" [long pause]</en>
       accept: hello
     - say: |-
-        Cô phát âm chậm nhé: [long pause] "H-H-HELLO" [long pause] Con đặt tay trước miệng — thấy hơi ấm phả ra không? Đó là âm /h/, giống như một hơi thở. [long pause]
-        Now you!
+        <vi>Cô phát âm chậm nhé: </vi>
+        <en>[long pause] "H-H-HELLO"</en><vi> </vi>
+        <vi>[long pause] Con đặt tay trước miệng — thấy hơi ấm phả ra không? Đó là âm giống như một hơi thở. [long pause]</vi>
+        <en>Now you!</en>
       accept: Có /h/ rõ
   - order: 3
     target: hi
     say: |-
-      [long pause] "Hi" [long pause] cũng là xin chào, nhưng ngắn và thân mật hơn — con dùng với bạn bè.
-      Listen first! [long pause] "HI" [long pause]
-      Your turn now! [long pause] "Hi" [long pause]
+      <en>[long pause] "Hi"</en><vi> [long pause] cũng là xin chào, nhưng ngắn và thân mật hơn — con dùng với bạn bè.</vi>
+      <en>Listen first! [long pause] "Hi" [long pause]</en>
+      <en>Your turn now! [long pause][slowly] "Hi" [long pause]</en>
     accept: hi
   - order: 4
     target: I'm
     say: |-
-      [long pause] "I" [long pause] nghĩa là mình — khi con nói về chính con. [long pause] "I'm" [long pause] nghĩa là 'mình là'. Cuối chữ, con ngậm môi lại: [long pause] "I'mmm" [long pause]
-      Listen first! [long pause] "I'M" [long pause]
-      Your turn now! Can you say: [long pause] "I'm" [long pause]?
+      <en>[long pause] "I"</en><vi> [long pause] nghĩa là mình — khi con nói về chính con. </vi>
+      <en>[long pause] "I'm"</en><vi> [long pause] nghĩa là 'mình là'. Cuối chữ, con ngậm môi lại: </vi>
+      <en>[long pause] "I'mmm" [long pause]</en>
+      <en>Listen first! [long pause] "I'M" [long pause]</en>
+      <en>Your turn now! Can you say: [long pause][slowly] "I'm" [long pause]?</en>
     accept: Có /m/ cuối
   - order: 5
     target: good evening
     say: |-
-      [long pause] "Good evening" [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.
-      Listen first! [long pause] "GOOD EVENING" [long pause]
-      Your turn now! [long pause] "Good evening" [long pause]!
+      <en>"Good evening"</en><vi> [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.</vi>
+      <en>Listen first! [long pause] "GOOD EVENING" [long pause]</en>
+      <en>Your turn now! [long pause] "Good evening" [long pause]!</en>
     accept: good evening
   - order: 6
     target: nice to meet you
     say: |-
-      Khi gặp ai LẦN ĐẦU, con nói [long pause] "Nice to meet you" [long pause] — nghĩa là rất vui được gặp bạn.
-      Listen first! [long pause] "NICE TO MEET YOU" [long pause]
-      Your turn now! [long pause] "Nice to meet you" [long pause]!
+      <vi>Khi gặp ai LẦN ĐẦU, con nói </vi><en>[long pause] "Nice to meet you"</en>
+      <vi> [long pause] — nghĩa là rất vui được gặp bạn.</vi>
+      <en>Listen first! [long pause] "NICE TO MEET YOU" [long pause]</en>
+      <en>Your turn now! [long pause] "Nice to meet you" [long pause]!</en>
     accept: Đủ cụm, nối âm chưa chuẩn vẫn đạt
   - order: 7
     target: [hi, good evening]
     say: |-
-      Cô đố con trò Mật mã hai cửa nhé! [long pause]
-      Cửa thứ nhất: con gặp một bạn thân. Cửa thứ hai: con gặp cô Luna vào buổi tối. [long pause]
-      Con nói hai lời chào phù hợp theo đúng thứ tự để mở cả hai cửa nào!
+      <vi>Cô đố con trò Mật mã hai cửa nhé! [long pause]</vi>
+      <vi>Cửa thứ nhất: con gặp một bạn thân. Cửa thứ hai: con gặp cô Luna vào buổi tối. [long pause]</vi>
+      <vi>Con nói hai lời chào phù hợp theo đúng thứ tự để mở cả hai cửa nào!</vi>
     accept: Cửa 1 chấp nhận Hi hoặc Hello; cửa 2 chấp nhận Good evening. Con nói được cả hai lời chào theo đúng thứ tự thì đạt; không cần thêm câu khác.
 - id: patterns
   steps:
   - order: 8
     target: introduce
     say: |-
-      Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]
-      Khi gặp một bạn mới, con chào rồi nói tên của con. Listen first! [long pause] "Hi. I'm Mai." [long pause]
-      Your turn now! Can you say: [long pause] "Hi. I'm Mai." [long pause]?
+      <vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>
+      <vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] "Hi. I'm Mai." [long pause]</en>
+      <en>Your turn now! Can you say: [long pause] "Hi. I'm Mai." [long pause]?</en>
     accept: Hi/Hello + I'm + Mai
     more:
     - say: |-
-        Listen first! [long pause] "Hello. I'm Minh." [long pause]
+        <en>Listen first! [long pause] "Hello. I'm Minh." [long pause]</en>
       accept: Đủ câu
     - say: |-
-        Now say YOUR name! [long pause] "Hi. I'm Luna." [long pause] Your turn!
+        <en>Now say YOUR name! [long pause] "Hi. I'm Luna." [long pause] Your turn!</en>
       accept: Hi/Hello + I'm + tên. Thiếu Hi vẫn đạt.
   - order: 9
     target: reply
     say: |-
-      Khi bạn chào con trước, con chào lại, gọi tên bạn, rồi nói tên con. Listen first! [long pause] "Hello, Ben. I'm Mai." [long pause]
-      Your turn now!
+      <vi>Khi bạn chào con trước, con chào lại, gọi tên bạn, rồi nói tên con. </vi><en>Listen first! [long pause] "Hello, Ben. I'm Mai." [long pause]</en>
+      <en>Your turn now!</en>
     accept: Đủ câu
   - order: 10
     target: reply
     say: |-
-      Now I'm going to play a character — I'm Tom from England! [long pause]
-      [long pause] "Hi. I'm Tom." [long pause]
+      <en>Now I'm going to play a character — I'm Tom from England! [long pause]</en>
+      <en>[long pause] "Hi. I'm Tom." [long pause]</en>
     accept: Hi/Hello + Tom + I'm + tên. Quên gọi 'Tom' vẫn đạt.
     more:
     - say: |-
-        Now I'm Emma from England! [long pause] "Hello. I'm Emma." [long pause]
+        <en>Now I'm Emma from England! [long pause] "Hello. I'm Emma." [long pause]</en>
       accept: Đủ các thành phần
     - say: |-
-        Scene done! You just had a real conversation in English! 🎉
+        <en>Scene done! You just had a real conversation in English! 🎉</en>
   - order: 11
     target: introduce
     say: |-
-      Bây giờ đổi vai — con là người chào cô trước nhé! Say: [long pause] "Hi. I'm…" [long pause]
+      <vi>Bây giờ đổi vai — con là người chào cô trước nhé! </vi><en>Say: [long pause] "Hi. I'm…" [long pause]</en>
     accept: Tự mở lời bằng câu trọn vẹn
     more:
     - say: |-
-        [long pause] "Hi, {tên}! I'm Luna. Nice to meet you!" [long pause]
+        <en>[long pause] "Hi, {tên}! I'm Luna. Nice to meet you!" [long pause]</en>
 - id: conversation
   steps:
   - order: 12
     target: introduce
     say: |-
-      Giờ con nói chuyện thật với cô bằng tiếng Anh nhé — cô luôn giúp con! [long pause]
-      Let's meet again — all in English! Ready? [long pause]
-      [long pause] "Good evening!" [long pause]
+      <vi>Giờ con nói chuyện thật với cô bằng tiếng Anh nhé — cô luôn giúp con! [long pause]</vi>
+      <en>Let's meet again — all in English! Ready? [long pause]</en>
+      <en>[long pause] "Good evening!" [long pause]</en>
     accept: Good evening / Hello / Hi (đều đạt)
     more:
     - say: |-
-        [long pause] "I'm Luna." [long pause]
+        <en>[long pause] "I'm Luna." [long pause]</en>
       accept: Gọi tên Luna + I'm + tên
     - say: |-
-        [long pause] "Hi, {tên}! Nice to meet you." [long pause]
+        <en>[long pause] "Hi, {tên}! Nice to meet you." [long pause]</en>
       accept: 'Nice to meet you (Mức 3: …, too)'
     - say: |-
-        Wow! That was your first English conversation! 🎉
+        <en>Wow! That was your first English conversation! 🎉</en>
   - order: 13
     target: introduce
     say: |-
-      Now YOU start! Say hello to me first.
+      <en>Now YOU start! Say hello to me first.</en>
     accept: Chào + I'm + tên
     more:
     - say: |-
-        [long pause] "Good evening, {tên}! I'm Luna. Nice to meet you!" [long pause]
+        <en>[long pause] "Good evening, {tên}! I'm Luna. Nice to meet you!" [long pause]</en>
       accept: 'Mức 2: Nice to meet you · Mức 3: …, too'

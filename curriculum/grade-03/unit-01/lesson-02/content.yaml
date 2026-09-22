@@ -2,7 +2,7 @@ lesson: 2
 title: Hỏi thăm sức khỏe và cảm ơn
 greeting:
   order: 1
-  say: "Hi! Great to see you again! How are you today?"
+  say: "<en>Hi! Great to see you again! How are you today?</en>"
   accept: Chấp nhận lời chào hoặc câu trả lời thăm hỏi ngắn; Fine, Great, OK hoặc cảm xúc thật đều đạt.
 words: [how, you, fine, thank you, great, OK, tired, sleepy, happy]
 patterns:
@@ -16,112 +16,112 @@ stations:
   - order: 2
     target: how
     say: |-
-      Trạm 1 nhé: hôm nay có bốn từ mới để hỏi thăm nhau, và mấy từ nói về cảm xúc của con. [long pause]
-      How nghĩa là thế nào, ra sao. Con nghe không — how cũng bắt đầu bằng hơi thở /h/ giống hello hôm qua! [long pause]
-      Listen first! [long pause] "HOW" [long pause]
-      Your turn now! How!
+      <vi>Trạm 1 nhé: hôm nay có bốn từ mới để hỏi thăm nhau, và mấy từ nói về cảm xúc của con. [long pause]</vi>
+      <en>How</en><vi> nghĩa là thế nào, ra sao. Con nghe không — </vi><en>how</en><vi> cũng bắt đầu bằng hơi thở /h/ giống </vi><en>hello</en><vi> hôm qua! [long pause]</vi>
+      <en>Listen first! [long pause] "HOW" [long pause]</en>
+      <en>Your turn now! How!</en>
     accept: Chấp nhận con nói “how”; âm /h/ đầu rõ. Chưa cần dùng trong câu.
   - order: 3
     target: you
     say: |-
-      You là bạn — người con đang nói chuyện cùng. Khi cô nói với con, you chính là con. [long pause]
-      Listen first! [long pause] "YOU" [long pause]
-      Your turn now! You!
+      <en>You</en><vi> là bạn — người con đang nói chuyện cùng. Khi cô nói với con, </vi><en>you</en><vi> chính là con. [long pause]</vi>
+      <en>Listen first! [long pause] "YOU" [long pause]</en>
+      <en>Your turn now! You!</en>
     accept: Chấp nhận “you”.
   - order: 4
     target: fine
     say: |-
-      Fine là khoẻ, ổn. [long pause]
-      Listen first! [long pause] "FINE" [long pause]
-      Your turn now! Fine!
+      <en>Fine</en><vi> là khoẻ, ổn. [long pause]</vi>
+      <en>Listen first! [long pause] "FINE" [long pause]</en>
+      <en>Your turn now! Fine!</en>
     accept: Chấp nhận “fine”; mất /n/ cuối vẫn đạt.
   - order: 5
     target: thank you
     say: |-
-      Thank you là cảm ơn — con nói khi ai hỏi thăm hay giúp con. Cô phát âm chậm: TH-ANK YOU — đầu lưỡi đặt nhẹ giữa hai hàm răng. [long pause]
-      Listen first! [long pause] "THANK YOU" [long pause]
-      Now you!
+      <en>Thank you</en><vi> là cảm ơn — con nói khi ai hỏi thăm hay giúp con. Cô phát âm chậm: </vi><en>TH-ANK YOU</en><vi> — đầu lưỡi đặt nhẹ giữa hai hàm răng. [long pause]</vi>
+      <en>Listen first! [long pause] "THANK YOU" [long pause]</en>
+      <en>Now you!</en>
     accept: Chấp nhận “thank you”, kể cả khi đọc /th/ như /t/.
   - order: 6
     target: [great, OK]
     say: |-
-      Great là tuyệt, rất tốt. OK là bình thường, ổn. [long pause]
-      Listen first! [long pause] "GREAT" [long pause] "OK" [long pause]
-      Your turn now! Great… OK!
+      <en>Great</en><vi> là tuyệt, rất tốt. </vi><en>OK</en><vi> là bình thường, ổn. [long pause]</vi>
+      <en>Listen first! [long pause] "GREAT" [long pause] "OK" [long pause]</en>
+      <en>Your turn now! Great… OK!</en>
     accept: Chấp nhận con nói được great và OK; ở Mức 1 chỉ nghe cũng có thể chuyển tiếp.
   - order: 7
     target: [tired, sleepy, happy]
     say: |-
-      Tired là mệt, sleepy là buồn ngủ, happy là vui — con dùng để nói con đang thấy thế nào. [long pause]
-      Listen first! [long pause] "TIRED" [long pause] "SLEEPY" [long pause] "HAPPY" [long pause]
-      Your turn now!
+      <en>Tired</en><vi> là mệt, </vi><en>sleepy</en><vi> là buồn ngủ, </vi><en>happy</en><vi> là vui — con dùng để nói con đang thấy thế nào. [long pause]</vi>
+      <en>Listen first! [long pause] "TIRED" [long pause] "SLEEPY" [long pause] "HAPPY" [long pause]</en>
+      <en>Your turn now!</en>
     accept: Chấp nhận con nói được các từ; Mức 3 khuyến khích ít nhất hai từ. Mức 1 chỉ nghe vẫn đạt.
   - order: 8
     target: [happy, tired, fine]
     say: |-
-      Let's play! Happy — laugh. Tired — sigh. Fine — say OK! [long pause]
-      Great!… Tired… Fine… Happy!
+      <en>Let's play! Happy — laugh. Tired — sigh. Fine — say OK! [long pause]</en>
+      <en>Great!… Tired… Fine… Happy!</en>
     accept: Chấp nhận phản ứng hoặc nói đúng ít nhất ba trong bốn cảm xúc; với Mức 1, great và fine là đủ.
 - id: patterns
   steps:
   - order: 9
     target: ask
     say: |-
-      Trạm 2: cô trò mình ghép các từ vừa học thành một câu hỏi thăm hoàn chỉnh. [long pause]
-      Here's our secret question! Listen first: [long pause] "How are you?" [long pause]
-      Nghĩa là: Bạn có khoẻ không? — con hỏi khi gặp người quen. [long pause]
-      Your turn now! Can you say: How are you?
+      <vi>Trạm 2: cô trò mình ghép các từ vừa học thành một câu hỏi thăm hoàn chỉnh. [long pause]</vi>
+      <en>Here's our secret question! Listen first: [long pause] "How are you?" [long pause]</en>
+      <vi>Nghĩa là: Bạn có khoẻ không? — con hỏi khi gặp người quen. [long pause]</vi>
+      <en>Your turn now! Can you say: How are you?</en>
     accept: Chấp nhận câu hỏi đủ “How are you?”.
     more:
-    - say: 'Once more, smoothly! [long pause] "How are you?" [long pause]'
+    - say: '<en>Once more, smoothly! [long pause] "How are you?" [long pause]</en>'
       accept: Chấp nhận “How are you?” nói liền mạch; không cần phát âm hoàn hảo.
   - order: 10
     target: answer
     say: |-
-      Listen first! [long pause] "Fine, thank you." [long pause]
-      Nghĩa là: Mình khoẻ, cảm ơn — con trả lời khi ai hỏi How are you. [long pause]
-      Your turn now!
+      <en>Listen first! [long pause] "Fine, thank you." [long pause]</en>
+      <vi>Nghĩa là: Mình khoẻ, cảm ơn — con trả lời khi ai hỏi </vi><en>How are you.</en><vi> [long pause]</vi>
+      <en>Your turn now!</en>
     accept: Chấp nhận “Fine, thank you.”; Mức 1 có thể nói “Fine.”
     more:
-    - say: 'Now for real! How are you?'
+    - say: '<en>Now for real! How are you?</en>'
       accept: Chấp nhận Fine, I'm fine, Fine thank you, Great, OK hoặc câu trả lời cảm xúc phù hợp.
   - order: 11
     target: answer
-    say: Con không phải lúc nào cũng nói fine đâu. Hôm nay con thấy thế nào thật sự? Tell me — how are you really?
+    say: <vi>Con không phải lúc nào cũng nói </vi><en>fine</en><vi> đâu. Hôm nay con thấy thế nào thật sự? </vi><en>Tell me — how are you really?</en>
     accept: Chấp nhận bất kỳ cảm xúc đã học, có hoặc không có “I'm”; Fine và Great cũng đạt.
     more:
-    - say: 'Really?! Tell me more about that!'
+    - say: '<en>Really?! Tell me more about that!</en>'
       accept: Chấp nhận lời nói thêm về cảm xúc, bằng tiếng Anh hoặc tiếng Việt; Mức 1 có thể trả lời ngắn.
   - order: 12
     target: ask_back
     say: |-
-      Listen first! [long pause] "Fine, thank you. And you?" [long pause]
-      And you nghĩa là: còn bạn thì sao? — hỏi lại cho lịch sự. [long pause]
-      Your turn now!
+      <en>Listen first! [long pause] "Fine, thank you. And you?" [long pause]</en>
+      <en>And you</en><vi> nghĩa là: còn bạn thì sao? — hỏi lại cho lịch sự. [long pause]</vi>
+      <en>Your turn now!</en>
     accept: Chấp nhận “Fine, thank you. And you?”; Mức 1 không bắt buộc “And you?”.
   - order: 13
     target: ask
-    say: 'Now your turn to ask ME! Say: How are you?'
+    say: '<en>Now your turn to ask ME! Say: How are you?</en>'
     accept: Chấp nhận “How are you?”, có hoặc không gọi tên Luna.
     more:
-    - say: "I'm great, thank you! And you?"
+    - say: "<en>I'm great, thank you! And you?</en>"
       accept: Chấp nhận bất kỳ câu trả lời cảm xúc hợp lý.
 - id: conversation
   steps:
   - order: 14
     target: ask_back
     say: |-
-      Trạm 3: cô trò mình nói chuyện bằng tiếng Anh nhé! Let's talk, just like every evening! [long pause]
-      Good evening, {tên}!
+      <vi>Trạm 3: cô trò mình nói chuyện bằng tiếng Anh nhé! </vi><en>Let's talk, just like every evening! [long pause]</en>
+      <en>Good evening, {tên}!</en>
     accept: Chấp nhận lời chào khi gặp, như Good evening, Hello hoặc Hi.
     more:
-    - say: 'How are you today?'
+    - say: '<en>How are you today?</en>'
       accept: Chấp nhận câu trả lời phù hợp; Mức 1 “Fine” là đủ, Mức 2–3 khuyến khích hỏi lại “And you?”.
     - say: |-
-        I'm great, thank you! [long pause]
-        Now I'm going to play a character — I'm Tom from England! [long pause]
-        Hi. I'm Tom.
+        <en>I'm great, thank you! [long pause]</en>
+        <en>Now I'm going to play a character — I'm Tom from England! [long pause]</en>
+        <en>Hi. I'm Tom.</en>
       accept: Chấp nhận con chào Tom rồi giới thiệu tên; Mức 1 “Hi, Tom” là đủ, “Nice to meet you” là mở rộng.
-    - say: 'Nice to meet you, too! How are you?'
+    - say: '<en>Nice to meet you, too! How are you?</en>'
       accept: Chấp nhận câu trả lời cảm xúc hợp lý, có hoặc không hỏi lại “And you?”.
-    - say: "I'm great, thanks! [long pause] Scene done! You just had a real conversation in English! 🎉"
+    - say: "<en>I'm great, thanks! [long pause] Scene done! You just had a real conversation in English! 🎉</en>"

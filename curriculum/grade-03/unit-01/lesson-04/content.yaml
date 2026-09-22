@@ -2,7 +2,7 @@ lesson: 4
 title: Ôn tập Unit 1
 greeting:
   order: 1
-  say: "Hi! Great to see you again! Now your turn to ask ME!"
+  say: "<en>Hi! Great to see you again! Now your turn to ask ME!</en>"
   accept: Chấp nhận lời chào rồi hỏi “How are you?”, có hoặc không gọi tên Luna.
 words: [hello, hi, goodbye, bye, thank you, how, nice to meet you, good night, sleepy]
 patterns:
@@ -16,81 +16,81 @@ stations:
   - order: 2
     target: hello
     say: |-
-      I'm great, thank you! And you? [long pause]
-      Hôm nay là buổi cuối của bài 1 — cô trò mình ôn thật nhanh nhé! Cô nói tiếng Việt, con nói tiếng Anh! [long pause]
-      Xin chào!
+      <en>I'm great, thank you! And you? [long pause]</en>
+      <vi>Hôm nay là buổi cuối của bài 1 — cô trò mình ôn thật nhanh nhé! Cô nói tiếng Việt, con nói tiếng Anh! [long pause]</vi>
+      <vi>Xin chào!</vi>
     accept: Chấp nhận “Hello” hoặc “Hi” khi gặp.
   - order: 3
     target: goodbye
-    say: 'Tạm biệt!'
+    say: '<vi>Tạm biệt!</vi>'
     accept: Chấp nhận “Goodbye” hoặc “Bye” khi chia tay.
   - order: 4
     target: thank you
-    say: 'Cảm ơn!'
+    say: '<vi>Cảm ơn!</vi>'
     accept: Chấp nhận “Thank you”; đọc /th/ như /t/ vẫn đạt.
   - order: 5
     target: ask
-    say: 'Bạn có khoẻ không?'
+    say: '<vi>Bạn có khoẻ không?</vi>'
     accept: Chấp nhận “How are you?”.
   - order: 6
     target: nice to meet you
-    say: 'Rất vui được gặp bạn!'
+    say: '<vi>Rất vui được gặp bạn!</vi>'
     accept: Chấp nhận “Nice to meet you”; Mức 1 chỉ nghe vẫn có thể chuyển tiếp.
   - order: 7
     target: good night
-    say: 'Chúc ngủ ngon!'
+    say: '<vi>Chúc ngủ ngon!</vi>'
     accept: Chấp nhận “Good night” khi chia tay đi ngủ.
   - order: 8
     target: sleepy
-    say: 'Mình buồn ngủ!'
+    say: '<vi>Mình buồn ngủ!</vi>'
     accept: Chấp nhận “Sleepy” hoặc “I'm sleepy”; Mức 1 chỉ nghe vẫn có thể chuyển tiếp.
   - order: 9
     target: [hello, how]
     say: |-
-      So fast! Now: which words start with /h/? [long pause]
-      Hello… bye… how… Ben.
+      <en>So fast! Now: which words start with /h/? [long pause]</en>
+      <en>Hello… bye… how… Ben.</en>
     accept: Chấp nhận “hello” và “how” theo đúng thứ tự; không tính bye hoặc Ben.
 - id: patterns
   steps:
   - order: 10
     target: introduce
     say: |-
-      Trạm 2: cô nói, con đáp thật tự nhiên — như nói chuyện thật vậy. Rồi mình thử đoán câu hỏi nhé! [long pause]
-      I say, you answer! Hi. I'm Mai.
+      <vi>Trạm 2: cô nói, con đáp thật tự nhiên — như nói chuyện thật vậy. Rồi mình thử đoán câu hỏi nhé! [long pause]</vi>
+      <en>I say, you answer! Hi. I'm Mai.</en>
     accept: Chấp nhận lời chào Mai và “I'm” cùng tên của con; Mức 3 có thể thêm “Nice to meet you”.
   - order: 11
     target: reply
-    say: 'Nice to meet you.'
+    say: '<en>Nice to meet you.</en>'
     accept: Chấp nhận “Nice to meet you” hoặc “Nice to meet you, too”; Mức 1 có thể đáp “Hi”.
   - order: 12
     target: farewell
-    say: 'Goodbye, {tên}!'
+    say: '<en>Goodbye, {tên}!</en>'
     accept: Chấp nhận Goodbye hoặc Bye với Luna.
   - order: 13
     target: ask
     say: |-
-      Giờ khó hơn nhé: cô nói câu trả lời, con đoán câu hỏi. Here's the answer: Fine, thank you. [long pause]
-      What's the question?
+      <vi>Giờ khó hơn nhé: cô nói câu trả lời, con đoán câu hỏi. </vi><en>Here's the answer: Fine, thank you. [long pause]</en>
+      <en>What's the question?</en>
     accept: Chấp nhận “How are you?”; Mức 1 có thể chỉ nghe phần đảo ngược.
   - order: 14
     target: introduce
-    say: "Answer: Hi, Ben. I'm Mai. What did Ben say first?"
+    say: "<en>Answer: Hi, Ben. I'm Mai. What did Ben say first?</en>"
     accept: Chấp nhận “Hi. I'm Ben.” hoặc “Hello. I'm Ben.”; Mức 1 có thể chỉ nghe phần đảo ngược.
 - id: conversation
   steps:
   - order: 15
     target: introduce
     say: |-
-      Now I'm going to play a character — I'm Emma from England! [long pause]
-      Emma là bạn mới chuyển đến lớp con. Bây giờ là buổi SÁNG, giờ ra chơi. Con chào Emma trước nhé!
+      <en>Now I'm going to play a character — I'm Emma from England! [long pause]</en>
+      <vi>Emma là bạn mới chuyển đến lớp con. Bây giờ là buổi SÁNG, giờ ra chơi. Con chào Emma trước nhé!</vi>
     accept: Chấp nhận lời chào lúc gặp như Hello, Hi hoặc Good morning; không dùng Good evening. Mức 3 dùng Good morning.
     more:
-    - say: "Good morning! I'm Emma."
+    - say: "<en>Good morning! I'm Emma.</en>"
       accept: Chấp nhận con nói “I'm” và tên mình với Emma; có thể thêm “Nice to meet you”.
-    - say: 'Nice to meet you, too! How are you?'
+    - say: '<en>Nice to meet you, too! How are you?</en>'
       accept: Chấp nhận câu trả lời cảm xúc phù hợp; Mức 1 “Fine” là đủ, Mức 2–3 có thể hỏi lại “And you?”.
     - say: |-
-        I'm OK, thank you. [long pause]
-        Ring, ring! Break time is over!
+        <en>I'm OK, thank you. [long pause]</en>
+        <en>Ring, ring! Break time is over!</en>
       accept: Chấp nhận lời chào tạm biệt Emma như Bye hoặc Goodbye; có thể thêm “See you”.
-    - say: 'Bye, {tên}! [long pause] Scene done! You just had a real conversation in English! 🎉'
+    - say: '<en>Bye, {tên}! [long pause] Scene done! You just had a real conversation in English! 🎉</en>'
