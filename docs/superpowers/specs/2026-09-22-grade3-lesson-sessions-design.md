@@ -10,7 +10,7 @@ The session request identifies the unit and lesson. Grade 3 Unit 1 Lesson 1 load
 
 ## Authoring format
 
-Lesson YAML has `lesson`, `title`, a required `greeting`, short `words` and `patterns` definitions, and exactly three ordered `stations`: `vocabulary`, `patterns`, `conversation`. The greeting is delivered first and can be edited without code changes. Each station has ordered `steps`. A step groups consecutive teacher lines in `say` and the learner opportunity that follows in `accept`; `target` refers to a word or pattern key. Teacher-only steps omit `accept`. Workbook row numbers are not stored in the lesson YAML. Teacher text is the sheet's wording, with `[long pause]` inserted only at suitable spoken boundaries; preserve the wording, case, and punctuation.
+Lesson YAML has `lesson`, `title`, a required `greeting`, short `words` and `patterns` definitions, and exactly three ordered `stations`: `vocabulary`, `patterns`, `conversation`. The greeting has `order: 1`; each teaching step has the next lesson-wide order number, so `hello` is 2, `hi` is 3, and so on across all stations. A step groups the teacher lines for one teaching item in `say` and the learner opportunity that follows in `accept`; `target` refers to a word or pattern key. Teacher-only steps omit `accept`. The number identifies a teaching item, not every sentence or learner reply. Workbook row numbers are not stored in the lesson YAML. Teacher text is the sheet's wording, with `[long pause]` inserted only at suitable spoken boundaries; preserve the wording, case, and punctuation.
 
 Targets are authored once. The loader derives internal activity and objective IDs, stage links, required flags, and normal completion rules. The YAML does not repeat these fields. Attempts and repetitions have code defaults and appear in a step only when that lesson needs an override. This makes a new lesson a script to fill, rather than a serialized runtime state machine.
 
@@ -19,7 +19,9 @@ Illustrative authoring shape (the real file has all steps):
 ```yaml
 lesson: 1
 title: Chào hỏi và giới thiệu tên
-greeting: "Hi, con! Cô là Luna. Hôm nay cô trò mình học chào hỏi nhé!"
+greeting:
+  order: 1
+  say: "Hi, con! Cô là Luna. Hôm nay cô trò mình học chào hỏi nhé!"
 words: [hello, hi, "I'm", Ben, Mai, Minh, good evening, nice to meet you]
 patterns:
   introduce: "Hi. I'm {name}."
@@ -27,13 +29,21 @@ patterns:
 stations:
   - id: vocabulary
     steps:
-      - say: |-
+      - order: 2
+        say: |-
           Cô trò mình sang Trạm 1 — học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé! [long pause]
           HELLO nghĩa là xin chào — con nói khi gặp bất kỳ ai: bạn bè, thầy cô, hay cô Luna. [long pause]
           Listen first! HELLO. [long pause]
           Your turn now! Can you say: Hello?
         target: hello
         accept: Con nói “hello”; âm /h/ có thể cần cô nói mẫu lại.
+      - order: 3
+        say: |-
+          Hi cũng là xin chào, nhưng ngắn và thân mật hơn — con dùng với bạn bè. [long pause]
+          Listen first! HI. [long pause]
+          Your turn now! Hi!
+        target: hi
+        accept: Con nói “hi” như lời chào.
   - id: patterns
     steps: []
   - id: conversation
@@ -58,7 +68,7 @@ Silence still counts as a learner event in the existing runtime. This design sup
 
 ## Validation and verification
 
-Validate nonempty greeting, target references, exactly three ordered stations, and at least one learner opportunity per station. Reject empty `say` for teacher-led steps and empty `accept` when a response is expected. Review all Lesson 1 workbook teacher lines and learner opportunities in the three stations against the YAML, using a test fixture if mechanical traceability is needed; ignore opening and ending rows. Test that editing only the greeting field changes the first teacher message, lesson selection and completion within one session, progression through all three stations, acceptable alternatives, incorrect and silent responses, and that Grade 5 routes are unaffected. Run the focused backend tests and a real session route through the available local stack when services and credentials are available.
+Validate nonempty greeting, `greeting.order == 1`, unique consecutive `order` values across the whole lesson, target references, exactly three ordered stations, and at least one learner opportunity per station. Reject empty `say` for teacher-led steps and empty `accept` when a response is expected. Review all Lesson 1 workbook teacher lines and learner opportunities in the three stations against the YAML, using a test fixture if mechanical traceability is needed; ignore opening and ending rows. Test that editing only the greeting field changes the first teacher message, lesson selection and completion within one session, progression through all three stations, acceptable alternatives, incorrect and silent responses, and that Grade 5 routes are unaffected. Run the focused backend tests and a real session route through the available local stack when services and credentials are available.
 
 ## Deliberate additions
 
