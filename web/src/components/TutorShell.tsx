@@ -70,7 +70,7 @@ export function TutorShell({
     setBusy(true); setError(null);
     router.push(unitPath(selectedUnit.grade, selectedUnit.unit));
   }
-  function chooseAnotherUnit() { setCurrent(null); router.push('/'); }
+  function chooseAnotherUnit() { setCurrent(null); router.push(current?.lesson_id ? '/grade3/unit1' : '/'); }
   async function startNew() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await (
     current.lesson_id == null
       ? api.resetSession(current.unit.id)
@@ -79,7 +79,7 @@ export function TutorShell({
   async function finish() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.finishSession(current.session_id, current.state_version)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   if (!current && busy) return <main className="loading"><div className="logo-mark">L</div><p>{error ? error.message : 'Loading units…'}</p></main>;
   if (!current) return <><UnitSelector units={units} busy={busy} onSelect={(unitId) => { void selectUnit(unitId); }} />{error && <div className="error-banner" role="alert">{error.message}</div>}</>;
-  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession}><main className="app-shell"><header className="topbar"><div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Grade {current.unit.grade} · Unit {current.unit.unit}</small></div></div><div className="top-actions"><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={chooseAnotherUnit}>Choose another unit</button><span className={`status-pill ${current.status}`}>{current.status}</span><NewSessionButton busy={busy} onClick={startNew} /></div></header>
+  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession}><main className="app-shell"><header className="topbar"><div className="brand"><div className="logo-mark">L</div><div><span>Luna</span><small>English Tutor · Grade {current.unit.grade} · Unit {current.unit.unit}{current.lesson_id ? ` · Lesson ${current.lesson_id}` : ''}</small></div></div><div className="top-actions"><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={chooseAnotherUnit}>{current.lesson_id ? 'Chọn Lesson khác' : 'Choose another unit'}</button><span className={`status-pill ${current.status}`}>{current.status}</span><NewSessionButton busy={busy} onClick={startNew} /></div></header>
     <div className="workspace"><section className="lesson-card"><div className="lesson-heading"><div><span className="eyebrow">{current.unit.title}</span><h1 className="lesson-title">Practice with Luna</h1></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><ChatPanel messages={current.messages} />
       {error && <div className="error-banner" role="alert"><strong>{error.retryable ? 'Please try again.' : 'Something changed.'}</strong> {error.message}</div>}
       {current.status === 'active' && <Composer disabled={busy} onSend={send} voiceControls={<VoiceControls />} />}

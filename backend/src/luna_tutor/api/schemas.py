@@ -20,6 +20,11 @@ class UnitView(Contract):
     title: str
 
 
+class LessonView(Contract):
+    lesson: int
+    title: str
+
+
 class TurnRequest(Contract):
     turn_id: Text
     expected_state_version: int = Field(ge=0)

@@ -75,7 +75,8 @@ Mở `http://localhost:3000` để học theo Unit, hoặc
 script để dừng toàn bộ bốn process.
 
 Màn chọn bài hiện có lớp 3 Unit 1 **Hello** và lớp 5 Unit 1–5. Unit 1 lớp 3
-có URL `/grade3/unit1`; các URL `/unit1`–`/unit5` của lớp 5 vẫn dùng được.
+có URL `/grade3/unit1` để chọn Lesson; Lesson 1 mở tại
+`/grade3/unit1/lesson/1`. Các URL `/unit1`–`/unit5` của lớp 5 vẫn dùng được.
 
 Trong `curriculum/grade-*/unit-*/.../content.yaml`, hoạt động giới thiệu từ vựng
 mặc định cần **3 lượt học sinh nói đúng** trước khi chuyển từ. Có thể đổi cho từng

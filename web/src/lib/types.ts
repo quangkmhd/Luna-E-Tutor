@@ -12,6 +12,8 @@ export type UnitSummary = {
   title: string;
 };
 
+export type LessonSummary = { lesson: number; title: string };
+
 export type Evidence = {
   response_kind: string;
   emotional_signals: string[];

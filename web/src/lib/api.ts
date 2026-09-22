@@ -1,4 +1,4 @@
-import type { ComparisonResult, SessionView, TurnInput, TurnResponse, UnitSummary } from './types';
+import type { ComparisonResult, LessonSummary, SessionView, TurnInput, TurnResponse, UnitSummary } from './types';
 
 export class ApiError extends Error {
   constructor(public code: string, message: string, public retryable = false, public status = 0) {
@@ -32,6 +32,9 @@ export class TutorApi {
 
   listUnits(signal?: AbortSignal) {
     return this.request<UnitSummary[]>('/api/units', { signal });
+  }
+  listLessons(unitId: string, signal?: AbortSignal) {
+    return this.request<LessonSummary[]>(`/api/units/${encodeURIComponent(unitId)}/lessons`, { signal });
   }
   createSession(unitId: string, signal?: AbortSignal, lessonId?: number) {
     return this.request<SessionView>('/api/sessions', {

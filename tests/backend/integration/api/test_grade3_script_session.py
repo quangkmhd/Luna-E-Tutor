@@ -17,6 +17,9 @@ def test_grade3_session_starts_lesson_one_and_rejects_unknown_lesson(tmp_path: P
         repository=SessionRepository(tmp_path / 'sessions.db'),
         turn_service=UnusedService(),
     ))
+    lessons = api.get('/api/units/grade03.unit01/lessons')
+    assert lessons.status_code == 200
+    assert lessons.json() == [{'lesson': 1, 'title': 'Chào hỏi và giới thiệu tên'}]
     response = api.post('/api/sessions', json={
         'unit_id': 'grade03.unit01', 'lesson_id': 1,
     })

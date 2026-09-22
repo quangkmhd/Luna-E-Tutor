@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from luna_tutor.api.schemas import (
     CreateSessionRequest,
     LearningStageFocusView,
+    LessonView,
     MessageView,
     ReviewRequest,
     SessionView,
@@ -196,6 +197,15 @@ def build_router(
             UnitView(id=item.id, grade=item.grade, unit=item.unit, title=item.title)
             for item in curriculum_registry.list_units()
         ]
+
+    @router.get('/units/{unit_id}/lessons', response_model=list[LessonView])
+    async def list_lessons(unit_id: str):
+        try:
+            curriculum_registry.get(unit_id)
+        except UnknownUnitError:
+            _error(404, 'UNKNOWN_UNIT', f'Unknown curriculum unit {unit_id}.')
+        return [LessonView(lesson=script.lesson, title=script.title)
+                for script in curriculum_registry.list_lesson_scripts(unit_id)]
 
     @router.post('/sessions', response_model=SessionView)
     async def create_session(request: CreateSessionRequest):
