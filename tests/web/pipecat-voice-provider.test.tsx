@@ -363,6 +363,95 @@ describe('PipecatVoiceProvider', () => {
     ]);
   });
 
+  it('reveals only Luna words confirmed spoken during an active voice lesson', async () => {
+    const user = userEvent.setup();
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '2026-09-22T00:00:00Z', parts: [
+        { text: { spoken: 'Listen first!\nHEL', unspoken: 'LO means hello.\nYour turn now!' }, final: false, createdAt: '1' },
+      ],
+    }];
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={2}>
+      <ChatPanel messages={[
+        { role: 'teacher', text: 'Hello, Quang!' },
+        { role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' },
+      ]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
+    act(() => callbacks.onTransportStateChanged('ready'));
+
+    expect(screen.getByText('Listen first!')).toBeVisible();
+    expect(screen.getByText('HEL')).toBeVisible();
+    expect(screen.queryByText('Hello, Quang!')).not.toBeInTheDocument();
+    expect(screen.queryByText(/LO means hello|Your turn now/)).not.toBeInTheDocument();
+  });
+
+  it('adds Luna lines only as TTS spoken progress advances', async () => {
+    const user = userEvent.setup();
+    const spoken = (value: string) => [{
+      role: 'assistant', final: false, createdAt: '2026-09-22T00:00:00Z', parts: [{
+        text: { spoken: value, unspoken: 'HELLO means hello.\nYour turn now!' }, final: false, createdAt: '1',
+      }],
+    }];
+    sdk.conversationMessages = spoken('');
+    const view = render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(0);
+
+    sdk.conversationMessages = spoken('Listen first!');
+    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    expect(screen.getByText('Listen first!')).toBeVisible();
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
+
+    sdk.conversationMessages = spoken('Listen first!\nHELLO');
+    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    expect(screen.getByText('HELLO')).toBeVisible();
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(2);
+    expect(screen.queryByText('Your turn now!')).not.toBeInTheDocument();
+  });
+
+  it('keeps only the spoken prefix after interruption and allows later text-only turns', async () => {
+    const user = userEvent.setup();
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '2026-09-22T00:00:00Z', parts: [
+        { text: { spoken: 'HEL', unspoken: 'LO means hello.' }, final: false, createdAt: '1' },
+      ],
+    }];
+    const view = render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: 'HELLO means hello.' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Stop voice lesson' }));
+
+    expect(screen.getByText('HEL')).toBeVisible();
+    expect(screen.queryByText('HELLO means hello.')).not.toBeInTheDocument();
+    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={3}>
+      <ChatPanel messages={[
+        { role: 'teacher', text: 'HELLO means hello.' },
+        { role: 'learner', text: 'Hi' },
+        { role: 'teacher', text: 'Nice to see you!' },
+      ]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    expect(screen.getByText('Nice to see you!')).toBeVisible();
+    expect(screen.queryByText('HELLO means hello.')).not.toBeInTheDocument();
+  });
+
   it('keeps all final learner transcript chunks in the current Pipecat turn', () => {
     sdk.conversationMessages = [{
       role: 'user', final: false, createdAt: '1', parts: [

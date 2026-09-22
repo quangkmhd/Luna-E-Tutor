@@ -5,11 +5,11 @@ import type { Message } from '@/lib/types';
 import { VoiceLatency } from './voice/VoiceLatency';
 import { useOptionalVoiceLesson } from './voice/PipecatVoiceProvider';
 
-function conversationText(message: ConversationMessage): string {
+function conversationText(message: ConversationMessage, spokenOnly: boolean): string {
   return message.parts.map((part) => {
-    if (typeof part.text === 'string') return part.text;
+    if (typeof part.text === 'string') return spokenOnly && message.role === 'assistant' ? '' : part.text;
     const output = part.text as BotOutputText;
-    return `${output.spoken}${output.unspoken}`;
+    return spokenOnly ? output.spoken : `${output.spoken}${output.unspoken}`;
   }).join(' ').trim();
 }
 
@@ -35,21 +35,28 @@ function stripSavedTeacherPrefix(text: string, savedText: string): string | null
 export function ChatPanel({ messages }: { messages: Message[] }) {
   const latestMessage = useRef<HTMLDivElement>(null);
   const voice = useOptionalVoiceLesson();
-  const { messages: pipecatMessages } = usePipecatConversation();
+  const { messages: pipecatMessages } = usePipecatConversation({
+    botOutputFilter: { spoken: true, unspoken: false },
+  });
+  const voiceRuns = voice?.voiceRuns ?? [];
+  const spokenOnly = voiceRuns.length > 0;
   const pipecatConversation = pipecatMessages
     .filter((message) => message.role === 'user' || message.role === 'assistant')
     .map((message) => ({
       role: message.role === 'user' ? 'learner' as const : 'teacher' as const,
-      text: conversationText(message),
+      text: conversationText(message, spokenOnly),
       timestamp: message.createdAt,
     }))
     .filter((message) => message.text);
-  const savedMessages = messages.map((message, index) => ({
-      ...message,
-      timestamp: `${message.turn_id ?? 'opening'}-${index}`,
-    }));
+  const savedMessages = messages.flatMap((message, index) => {
+    if (voiceRuns.some((run) => index >= run.start && (run.end === undefined || index < run.end))) return [];
+    const precedingRun = voiceRuns.findLast((run) => run.end !== undefined && index >= run.end);
+    return [{ ...message, timestamp: precedingRun?.endedAt ?? `${message.turn_id ?? 'opening'}-${index}` }];
+  });
   const sentText = voice?.sentText ?? [];
-  const liveMessages = messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
+  const liveMessages = spokenOnly
+    ? pipecatConversation.filter((message) => message.role !== 'learner' || !sentText.some((sent) => sent.text === message.text))
+    : messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
     if (message.role === 'learner') {
       const savedCount = savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length;
       const liveCount = pipecatConversation.slice(0, index + 1)

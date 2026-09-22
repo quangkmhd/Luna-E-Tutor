@@ -14,11 +14,15 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
+export type VoiceRun = { start: number; end?: number; endedAt?: string; connected: boolean };
+
 type VoiceContextValue = {
   error: string | null;
+  voiceRuns: VoiceRun[];
   phase: VoicePhase;
   sentText: Array<{ id: string; text: string; timestamp: string }>;
   ttfaSeconds: number | null;
@@ -46,6 +50,8 @@ type PipecatVoiceProviderProps = {
   endpoint?: string;
   onSessionChanged?: () => void | Promise<void>;
   requestBody?: Record<string, VoiceRequestValue>;
+  savedMessageCount?: number;
+  savedHasTurn?: boolean;
   sessionId?: string;
 };
 
@@ -89,10 +95,15 @@ export function PipecatVoiceProvider({
   enabled = true,
   endpoint,
   requestBody,
+  savedMessageCount = 0,
+  savedHasTurn = false,
 }: PipecatVoiceProviderProps) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
   const [error, setError] = useState<string | null>(null);
+  const [voiceRuns, setVoiceRuns] = useState<VoiceRun[]>([]);
+  const savedMessageCountRef = useRef(savedMessageCount);
+  useEffect(() => { savedMessageCountRef.current = savedMessageCount; }, [savedMessageCount]);
   const [sentText, setSentText] = useState<VoiceContextValue['sentText']>([]);
   const [ttfaSeconds, setTtfaSeconds] = useState<number | null>(null);
   const [, setUserStoppedAt] = useState<number | null>(null);
@@ -111,6 +122,21 @@ export function PipecatVoiceProvider({
           setPhase('connecting');
         } else if (state === 'disconnected') {
           setPhase('off');
+          setVoiceRuns((previous) => {
+            const current = previous.at(-1);
+            if (!current || current.end !== undefined) return previous;
+            if (!current.connected) return previous.slice(0, -1);
+            return [...previous.slice(0, -1), {
+              ...current, end: savedMessageCountRef.current, endedAt: new Date().toISOString(),
+            }];
+          });
+        } else if (state === 'ready' || state === 'connected') {
+          setVoiceRuns((previous) => {
+            const current = previous.at(-1);
+            return current && current.end === undefined && !current.connected
+              ? [...previous.slice(0, -1), { ...current, connected: true }]
+              : previous;
+          });
         }
       },
       onBotReady: () => {
@@ -164,6 +190,10 @@ export function PipecatVoiceProvider({
   });
 
   async function start() {
+    setVoiceRuns((previous) => [...previous, {
+      start: savedHasTurn ? savedMessageCount : 0,
+      connected: false,
+    }]);
     setError(null);
     setPhase('connecting');
     try {
@@ -180,6 +210,7 @@ export function PipecatVoiceProvider({
         },
       });
     } catch (reason) {
+      setVoiceRuns((previous) => previous.at(-1)?.connected ? previous : previous.slice(0, -1));
       setPhase('off');
       setError(reason instanceof Error ? reason.message : 'Could not start the voice lesson.');
     }
@@ -191,6 +222,14 @@ export function PipecatVoiceProvider({
     } catch {
       setError('The voice session could not close cleanly. You can reconnect.');
     } finally {
+      setVoiceRuns((previous) => {
+        const current = previous.at(-1);
+        return current && current.end === undefined
+          ? [...previous.slice(0, -1), {
+            ...current, end: savedMessageCount, endedAt: new Date().toISOString(),
+          }]
+          : previous;
+      });
       setTransportState('disconnected');
       setPhase('off');
     }
@@ -225,6 +264,7 @@ export function PipecatVoiceProvider({
 
   const value: VoiceContextValue = {
     error,
+    voiceRuns,
     phase,
     sentText,
     sendText,
