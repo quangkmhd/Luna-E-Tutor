@@ -8,7 +8,6 @@ from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
 from loguru import logger
 from pipecat.frames.frames import (
-    BotStoppedSpeakingFrame,
     CancelFrame,
     EndWorkerFrame,
     ErrorFrame,
@@ -17,6 +16,8 @@ from pipecat.frames.frames import (
     LLMContextFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
+
+from language_tts import LanguageSpeechFinishedFrame
 
 
 @dataclass
@@ -132,7 +133,7 @@ class VoiceTeachingProcessor(FrameProcessor):
 
 
 class VoiceCommitProcessor(FrameProcessor):
-    """Commit only teacher turns whose audio Pipecat reports as finished."""
+    """Commit only after the final language span has stopped playing."""
 
     def __init__(self, exchange: VoiceTeachingExchange):
         super().__init__()
@@ -144,8 +145,9 @@ class VoiceCommitProcessor(FrameProcessor):
             self.exchange.discard_pending()
         elif (
             direction == FrameDirection.DOWNSTREAM
-            and isinstance(frame, BotStoppedSpeakingFrame)
+            and isinstance(frame, LanguageSpeechFinishedFrame)
             and self.exchange.pending_completion is not None
+            and frame.logical_turn_id == self.exchange.pending_completion.plan.turn_id
         ):
             completed = self.exchange.pending_completion
             self.exchange.pending_completion = None

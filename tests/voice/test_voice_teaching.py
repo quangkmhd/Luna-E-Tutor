@@ -119,7 +119,8 @@ async def test_eval_send_text_plans_one_typed_turn(tmp_path):
 
 
 @pytest.mark.asyncio
-async def test_completed_turn_commits_only_after_bot_stops(tmp_path):
+async def test_completed_turn_commits_only_after_final_language_segment(tmp_path):
+    from language_tts import LanguageSpeechFinishedFrame
     from voice_teaching import VoiceCommitProcessor
 
     exchange, _, service = make_exchange(tmp_path)
@@ -129,13 +130,20 @@ async def test_completed_turn_commits_only_after_bot_stops(tmp_path):
 
     assert exchange.repository.get_session(exchange.session_id).state.state_version == 0
     await commit.process_frame(BotStoppedSpeakingFrame(), FrameDirection.DOWNSTREAM)
+    assert exchange.repository.get_session(exchange.session_id).state.state_version == 0
+    await commit.process_frame(LanguageSpeechFinishedFrame('wrong-turn'), FrameDirection.DOWNSTREAM)
+    assert exchange.repository.get_session(exchange.session_id).state.state_version == 0
+    await commit.process_frame(LanguageSpeechFinishedFrame(completed.plan.turn_id), FrameDirection.DOWNSTREAM)
     stored = exchange.repository.get_session(exchange.session_id)
     assert stored.state.state_version == 1
     assert len(stored.turns) == 1
+    await commit.process_frame(LanguageSpeechFinishedFrame(completed.plan.turn_id), FrameDirection.DOWNSTREAM)
+    assert exchange.repository.get_session(exchange.session_id).state.state_version == 1
 
 
 @pytest.mark.asyncio
 async def test_interruption_discards_unspoken_pending_completion(tmp_path, monkeypatch):
+    from language_tts import LanguageSpeechFinishedFrame
     from voice_teaching import VoiceCommitProcessor
 
     async def skip_framework_dispatch(_processor, _frame, _direction):
@@ -154,6 +162,7 @@ async def test_interruption_discards_unspoken_pending_completion(tmp_path, monke
 
     await commit.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
     await commit.process_frame(BotStoppedSpeakingFrame(), FrameDirection.DOWNSTREAM)
+    await commit.process_frame(LanguageSpeechFinishedFrame('voice:u:two'), FrameDirection.DOWNSTREAM)
 
     stored = exchange.repository.get_session(exchange.session_id)
     assert stored.state.state_version == 0
