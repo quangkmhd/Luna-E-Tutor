@@ -327,6 +327,31 @@ describe('TutorShell', () => {
     expect(await screen.findByText('Nice to see you!')).toBeVisible();
   });
 
+  it('keeps the answer field focused and editable while Luna responds', async () => {
+    let resolveTurn: ((value: { turn_id: string; session: SessionView }) => void) | undefined;
+    const pendingTurn = new Promise<{ turn_id: string; session: SessionView }>((resolve) => { resolveTurn = resolve; });
+    const api = mockApi({ submitTurn: vi.fn().mockReturnValue(pendingTurn) });
+    const user = userEvent.setup();
+    await openLesson(api);
+
+    const input = screen.getByRole('textbox', { name: 'Your answer' });
+    await user.type(input, 'hello');
+    await user.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(input).toHaveFocus();
+    expect(input).toBeEnabled();
+    expect(screen.getByRole('status')).toHaveTextContent('Luna đang nghĩ');
+    await user.type(input, 'How are you?');
+    expect(input).toHaveValue('How are you?');
+    expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
+    expect(api.submitTurn).toHaveBeenCalledOnce();
+
+    resolveTurn?.({ turn_id: 't1', session: session({ state_version: 1 }) });
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Send' })).toBeEnabled());
+    expect(input).toHaveValue('How are you?');
+    expect(input).toHaveFocus();
+  });
+
   it('scrolls the conversation to the latest message after messages change', async () => {
     const scrollIntoView = vi.fn();
     Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
