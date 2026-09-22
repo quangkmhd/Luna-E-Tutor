@@ -4,10 +4,13 @@ import { expect, it, vi } from 'vitest';
 
 import { UnitSelector } from '@/components/UnitSelector';
 
-it('shows the classroom header and an honest empty Unit state', () => {
+it('opens the classroom layout instead of a separate Unit picker', () => {
   render(<UnitSelector units={[]} busy={false} onSelect={vi.fn()} />);
+  expect(screen.getByRole('main')).toHaveClass('classroom-shell');
+  expect(screen.getByRole('navigation', { name: 'Chương trình học' })).toBeVisible();
+  expect(screen.getByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
   expect(screen.getByText('Chưa có Unit để học.')).toBeVisible();
-  expect(screen.getByRole('link', { name: /Enter Free Talk/i })).toHaveAttribute('href', '/talk');
+  expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
   expect(screen.getByRole('banner')).toHaveTextContent('Luna');
 });
 
@@ -36,13 +39,13 @@ it('shows both Unit 1 choices under their own grades', async () => {
     { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
   ]} busy={false} onSelect={onSelect} />);
 
-  expect(screen.getByRole('heading', { name: 'Grade 3' })).toBeVisible();
-  expect(screen.getByRole('heading', { name: 'Grade 5' })).toBeVisible();
+  expect(screen.getByRole('heading', { name: /Lớp 3.*Global Success/i })).toBeVisible();
+  expect(screen.getByRole('heading', { name: /Lớp 5.*Global Success/i })).toBeVisible();
   await userEvent.click(screen.getByRole('button', { name: /Unit 1.*Hello/i }));
   expect(onSelect).toHaveBeenCalledWith('grade03.unit01');
 });
 
-it('offers Free Talk as a separate destination outside the unit choices', () => {
+it('keeps Free Talk in the classroom header, separate from the Unit buttons', () => {
   render(<UnitSelector
     units={[
       { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
@@ -51,10 +54,9 @@ it('offers Free Talk as a separate destination outside the unit choices', () => 
     onSelect={vi.fn()}
   />);
 
-  const freeTalk = screen.getByRole('link', { name: /Enter Free Talk/i });
+  const freeTalk = screen.getByRole('link', { name: 'Free Talk Room' });
   expect(freeTalk).toHaveAttribute('href', '/talk');
-  expect(freeTalk.closest('.free-talk-card')).not.toBeNull();
-  expect(screen.getByText(/Practise any topic with Luna/i)).toBeVisible();
+  expect(freeTalk.closest('header')).toHaveClass('learner-header');
   expect(screen.getByRole('button', { name: /Unit 1.*All about me!/i }))
     .not.toContainElement(freeTalk);
 });
@@ -70,9 +72,5 @@ it('offers the Luna design principles as a separate document destination', () =>
 
   const designLink = screen.getByRole('link', { name: /Xem thiết kế/i });
   expect(designLink).toHaveAttribute('href', '/design');
-  expect(designLink.closest('.design-entry-card')).not.toBeNull();
-  expect(screen.getByRole('heading', { name: 'Nguyên tắc thiết kế Luna' }))
-    .toBeVisible();
-  expect(screen.getByText(/11 nguyên tắc định hướng trải nghiệm học/i))
-    .toBeVisible();
+  expect(designLink.closest('.sidebar')).not.toBeNull();
 });

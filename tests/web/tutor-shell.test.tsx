@@ -215,7 +215,9 @@ describe('TutorShell', () => {
   it('starts with a fresh session and renders the server greeting without history', async () => {
     const api = mockApi();
     const view = render(<TutorShell api={api} />);
-    expect(await screen.findByRole('heading', { name: 'Choose a unit' })).toBeVisible();
+    expect(await screen.findByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
+    expect(screen.getByRole('navigation', { name: 'Chương trình học' })).toBeVisible();
+    expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
     expect(api.createSession).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole(
       'button', { name: /Unit 1.*All about me!/i },
