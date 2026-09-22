@@ -62,7 +62,7 @@ talk_pid=$!
 
 (
   cd "$project_root/web"
-  NEXT_PUBLIC_TUTOR_API_URL="${NEXT_PUBLIC_TUTOR_API_URL:-http://localhost:8000}" \
+  NEXT_PUBLIC_TUTOR_API_URL="${NEXT_PUBLIC_TUTOR_API_URL:-}" \
   NEXT_PUBLIC_PIPECAT_URL="${NEXT_PUBLIC_PIPECAT_URL:-http://localhost:7860}" \
   NEXT_PUBLIC_TALK_PIPECAT_URL="${NEXT_PUBLIC_TALK_PIPECAT_URL:-http://localhost:7863}" \
     npm run dev \

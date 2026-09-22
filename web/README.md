@@ -7,12 +7,14 @@ service của repository; xem [README root](../README.md) để biết toàn b�
 
 | Biến khi khởi động | Mặc định local | Service đích |
 | --- | --- | --- |
-| `NEXT_PUBLIC_TUTOR_API_URL` | `http://localhost:8000` | backend FastAPI |
+| `NEXT_PUBLIC_TUTOR_API_URL` | để trống (`/api` cùng cổng web) | backend FastAPI qua Next.js proxy |
 | `NEXT_PUBLIC_PIPECAT_URL` | `http://localhost:7860` | voice Pipecat |
 | `NEXT_PUBLIC_TALK_PIPECAT_URL` | `http://localhost:7863` | talk Pipecat |
 
 Đây là biến `NEXT_PUBLIC_*`: URL được đưa vào bundle trình duyệt khi Next.js
-khởi động. Dừng và chạy lại web sau khi thay đổi chúng.
+khởi động. Dừng và chạy lại web sau khi thay đổi chúng. Proxy `/api` mặc định
+trỏ tới `127.0.0.1:8000`; khi triển khai có thể đặt `VPS_HOST` và
+`BACKEND_PORT` để đổi backend đích.
 
 ## Chạy local
 
@@ -20,7 +22,6 @@ Từ thư mục này, sau khi backend, voice và talk đã chạy:
 
 ```bash
 npm install
-NEXT_PUBLIC_TUTOR_API_URL=http://localhost:8000 \
 NEXT_PUBLIC_PIPECAT_URL=http://localhost:7860 \
 NEXT_PUBLIC_TALK_PIPECAT_URL=http://localhost:7863 \
   npm run dev
