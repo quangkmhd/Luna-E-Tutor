@@ -1,16 +1,22 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
-import type { SessionView, UnitSummary } from '@/lib/types';
+import type { LessonSummary, SessionView, UnitSummary } from '@/lib/types';
 
-export function CurriculumNav({ units, session, busy, onSelect }: {
+export function CurriculumNav({ units, session, busy, onSelect, expandedUnitId, lessons = [], lessonBasePath, initialGrade }: {
   units: UnitSummary[];
   session?: SessionView | null;
   busy: boolean;
   onSelect(unitId: string): void;
+  expandedUnitId?: string;
+  lessons?: LessonSummary[];
+  lessonBasePath?: string;
+  initialGrade?: number;
 }) {
   const [query, setQuery] = useState('');
-  const [grade, setGrade] = useState<number | null>(session?.unit.grade ?? null);
+  const [grade, setGrade] = useState<number | null>(session?.unit.grade ?? initialGrade ?? null);
+  const currentUnitId = session?.unit_id ?? expandedUnitId;
   const grades = [...new Set(units.map((unit) => unit.grade))].sort((a, b) => a - b);
   const visible = units.filter((unit) => {
     const focusTerms = session && unit.id === session.unit_id
@@ -35,10 +41,16 @@ export function CurriculumNav({ units, session, busy, onSelect }: {
       {grades.filter((item) => visible.some((unit) => unit.grade === item)).map((item) => <div key={item} className="curriculum-grade">
         <h3>Lớp {item} · Global Success</h3>
         {visible.filter((unit) => unit.grade === item).map((unit) => <div className="curriculum-unit" key={unit.id}>
-          <button type="button" className={unit.id === session?.unit_id ? 'current' : ''} disabled={busy || unit.id === session?.unit_id}
-            onClick={() => onSelect(unit.id)} aria-current={unit.id === session?.unit_id ? 'page' : undefined}>
+          <button type="button" className={unit.id === currentUnitId ? 'current' : ''} disabled={busy || unit.id === currentUnitId}
+            onClick={() => onSelect(unit.id)} aria-current={unit.id === currentUnitId ? 'page' : undefined}>
             <span className="curriculum-number">{unit.unit}</span><span>Unit {unit.unit} · {unit.title}</span>
           </button>
+          {unit.id === expandedUnitId && lessonBasePath && <div className="curriculum-lessons">
+            {lessons.map((lesson) => <Link className="curriculum-lesson-choice" href={`${lessonBasePath}/${lesson.lesson}`} key={lesson.lesson}>
+              <span className="curriculum-lesson-number">{lesson.lesson}</span>
+              <span><strong>Lesson {lesson.lesson}</strong><small>{lesson.title}</small></span>
+            </Link>)}
+          </div>}
           {unit.id === session?.unit_id && session.lesson_id != null && <div className="curriculum-lesson" aria-current="step">Lesson {session.lesson_id} · Đang học</div>}
         </div>)}
       </div>)}
