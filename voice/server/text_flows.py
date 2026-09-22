@@ -14,7 +14,6 @@ from pipecat.frames.frames import (
     LLMContextFrame,
     LLMFullResponseEndFrame,
     LLMFullResponseStartFrame,
-    LLMTextFrame,
 )
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineWorker
@@ -30,6 +29,7 @@ from pipecat.turns.user_turn_strategies import ExternalUserTurnStrategies
 from pipecat.workers.runner import WorkerRunner
 
 from text_frames import CompletedTeachingFrame, LearnerTextFrame, TextResultProcessor
+from language_tts import LanguageTaggedSpeechFrame
 
 
 @dataclass
@@ -137,7 +137,7 @@ class BoundedTeacherLLM(LLMService):
                 # persist the Engine's proposed transition. Keep voice alive so
                 # the learner can try again on the unchanged stored state.
                 await self.push_frame(LLMFullResponseStartFrame())
-                await self.push_frame(LLMTextFrame(utterance.spoken_text))
+                await self.push_frame(LanguageTaggedSpeechFrame(utterance.spoken_text))
                 await self.push_frame(LLMFullResponseEndFrame())
                 return
             completed = exchange.service.complete(exchange.state, exchange.plan, utterance)
@@ -149,7 +149,9 @@ class BoundedTeacherLLM(LLMService):
             if hasattr(exchange, "pending_completion"):
                 exchange.pending_completion = completed
             await self.push_frame(LLMFullResponseStartFrame())
-            await self.push_frame(LLMTextFrame(completed.teacher_utterance.spoken_text))
+            await self.push_frame(LanguageTaggedSpeechFrame(
+                completed.teacher_utterance.spoken_text, completed.plan.turn_id,
+            ))
             await self.push_frame(LLMFullResponseEndFrame())
             await self.push_frame(CompletedTeachingFrame(completed))
             if self.end_after_response:

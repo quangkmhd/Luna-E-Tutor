@@ -11,7 +11,6 @@ from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.evals.transport import EvalTransportParams
 from pipecat.flows import ContextStrategy, ContextStrategyConfig, FlowManager
-from pipecat.frames.frames import TTSSpeakFrame
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
 from pipecat.processors.aggregators.llm_context import LLMContext
@@ -25,6 +24,7 @@ from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.workers.runner import WorkerRunner
 
 from text_flows import BoundedTeacherLLM
+from language_tts import LanguageTaggedSpeechFrame, LanguageTaggedTTSProcessor
 from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
 from voice_teaching import (
     VoiceCommitProcessor,
@@ -93,6 +93,7 @@ def build_voice_worker(
         ),
     )
     teacher_llm = BoundedTeacherLLM(exchange, end_after_response=False)
+    language_tts = LanguageTaggedTTSProcessor()
     pipeline = Pipeline(
         [
             transport.input(),
@@ -100,6 +101,7 @@ def build_voice_worker(
             aggregators.user(),
             voice_teaching,
             teacher_llm,
+            language_tts,
             tts,
             transport.output(),
             voice_commit,
@@ -137,11 +139,11 @@ def build_voice_worker(
         if not greeted and not latest.turns and latest.state.opening_message:
             greeted = True
             await worker.queue_frame(
-                TTSSpeakFrame(latest.state.opening_message, append_to_context=True)
+                LanguageTaggedSpeechFrame(latest.state.opening_message)
             )
             if latest.state.opening_script:
                 await worker.queue_frame(
-                    TTSSpeakFrame(latest.state.opening_script, append_to_context=True)
+                    LanguageTaggedSpeechFrame(latest.state.opening_script)
                 )
 
     @transport.event_handler("on_client_connected")

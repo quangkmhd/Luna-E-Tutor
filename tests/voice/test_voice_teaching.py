@@ -15,7 +15,6 @@ from pipecat.frames.frames import (
     InterimTranscriptionFrame,
     InterruptionFrame,
     LLMContextFrame,
-    LLMTextFrame,
     TranscriptionFrame,
 )
 from pipecat.processors.aggregators.llm_context import LLMContext
@@ -239,7 +238,9 @@ async def test_invalid_teacher_fallback_is_spoken_without_ending_voice_session(
 
     await teacher.process_frame(LLMContextFrame(context=context), FrameDirection.DOWNSTREAM)
 
-    assert [frame.text for frame in output if isinstance(frame, LLMTextFrame)] == [
+    from language_tts import LanguageTaggedSpeechFrame
+
+    assert [frame.text for frame in output if isinstance(frame, LanguageTaggedSpeechFrame)] == [
         "Let us take a moment, Quang. We can try that together."
     ]
     assert exchange.error is None
