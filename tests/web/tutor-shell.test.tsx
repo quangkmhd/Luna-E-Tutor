@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { StrictMode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { TutorShell } from '@/components/TutorShell';
@@ -67,6 +68,45 @@ async function openLesson(api: TutorApi) {
 }
 
 describe('TutorShell', () => {
+  it('keeps a classroom loading frame while a direct-route session is opening', async () => {
+    let openSession: ((value: SessionView) => void) | undefined;
+    const api = mockApi({
+      createSession: vi.fn().mockImplementation(() => new Promise<SessionView>((resolve) => { openSession = resolve; })),
+    });
+
+    render(<TutorShell api={api} initialUnitId="grade05.unit02" />);
+    await waitFor(() => expect(openSession).toBeDefined());
+
+    expect(screen.getByRole('status')).toHaveTextContent('Đang mở lớp học');
+    expect(screen.getByRole('status').closest('main')).toHaveClass('learner-app');
+    expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
+    openSession?.(session({ unit: UNITS[1], unit_id: UNITS[1].id }));
+    expect(await screen.findByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
+  });
+
+  it('does not flash the Unit picker when a superseded request is aborted', async () => {
+    let resolveSecond: ((value: UnitSummary[]) => void) | undefined;
+    let calls = 0;
+    const api = mockApi({
+      listUnits: vi.fn().mockImplementation((signal: AbortSignal) => {
+        calls += 1;
+        if (calls === 1) return new Promise<UnitSummary[]>((_, reject) => {
+          signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+        });
+        return new Promise<UnitSummary[]>((resolve) => { resolveSecond = resolve; });
+      }),
+    });
+
+    render(<StrictMode><TutorShell api={api} initialUnitId="grade05.unit01" /></StrictMode>);
+    await waitFor(() => expect(resolveSecond).toBeDefined());
+    await waitFor(() => expect(calls).toBe(2));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Đang mở lớp học');
+    expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
+    resolveSecond?.(UNITS);
+    expect(await screen.findByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
+  });
+
   it('shows the three classroom regions using available units and real learning targets', async () => {
     await openLesson(mockApi());
     expect(screen.getByRole('navigation', { name: 'Chương trình học' })).toBeVisible();
