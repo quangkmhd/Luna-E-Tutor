@@ -2,7 +2,9 @@
 
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from luna_tutor.speech.language_segments import parse_speech_segments
 
 Text = Annotated[str, Field(min_length=1, pattern=r'\S')]
 Identifier = Annotated[str, Field(min_length=1, pattern=r'^[a-z0-9][a-z0-9._-]*$')]
@@ -248,6 +250,12 @@ class UnitManifest(StrictModel):
     content_files: list[Text] = Field(min_length=1)
     opening: ContentFragment
     closing: ContentFragment
+
+    @field_validator('greeting')
+    @classmethod
+    def check_language_tags(cls, value: str) -> str:
+        parse_speech_segments(value)
+        return value
 
 
 class ImportedLesson(StrictModel):

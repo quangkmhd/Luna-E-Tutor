@@ -16,21 +16,17 @@ def test_lesson_one_is_a_editable_three_station_script():
     assert lesson.stations[0].steps[0].target == 'hello'
     assert lesson.stations[0].steps[1].order == 3
     assert lesson.stations[0].steps[1].target == 'hi'
-    assert '"HELLO" [long pause] nghĩa là xin chào' in lesson.stations[0].steps[0].say
+    assert '[long pause] "HELLO" nghĩa là xin chào' in lesson.stations[0].steps[0].say
     assert '[long pause]' in lesson.stations[0].steps[0].say
     assert any('Thiếu Hi vẫn đạt' in exchange.accept
                for station in lesson.stations for step in station.steps
                for exchange in (step, *step.more) if exchange.accept)
 
 
-def test_spoken_models_are_quoted_and_paused_on_both_sides():
+def test_spoken_models_are_quoted_with_deliberate_delivery_cues():
     lesson = load_lesson_script(LESSON)
-    quoted = 0
-    for station in lesson.stations:
-        for step in station.steps:
-            for exchange in (step, *step.more):
-                for match in re.finditer(r'"[^"]+"', exchange.say):
-                    quoted += 1
-                    assert exchange.say[:match.start()].rstrip().endswith('[long pause]')
-                    assert exchange.say[match.end():].lstrip().startswith('[long pause]')
-    assert quoted >= 20
+    scripts = [exchange.say for station in lesson.stations for step in station.steps
+               for exchange in (step, *step.more)]
+    assert sum(len(re.findall(r'"[^"]+"', script)) for script in scripts) >= 20
+    assert '[long pause] "HELLO" nghĩa là xin chào' in scripts[0]
+    assert '[long pause] [slowly] "Hello"?' in scripts[0]

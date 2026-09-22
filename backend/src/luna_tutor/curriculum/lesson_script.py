@@ -4,7 +4,9 @@ from pathlib import Path
 from typing import Literal, Self
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from luna_tutor.speech.language_segments import parse_speech_segments
 
 from luna_tutor.curriculum.models import Text
 
@@ -17,11 +19,23 @@ class Exchange(_Strict):
     say: Text
     accept: Text | None = None
 
+    @field_validator('say')
+    @classmethod
+    def check_language_tags(cls, value: str) -> str:
+        parse_speech_segments(value)
+        return value
+
 
 class Greeting(_Strict):
     order: int = Field(ge=1)
     say: Text
     accept: Text
+
+    @field_validator('say')
+    @classmethod
+    def check_language_tags(cls, value: str) -> str:
+        parse_speech_segments(value)
+        return value
 
 
 class TeachingStep(Exchange):

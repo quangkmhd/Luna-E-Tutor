@@ -39,6 +39,13 @@ def test_loads_compact_lesson_and_preserves_accept_for_llm(tmp_path):
     assert [step.order for station in script.stations for step in station.steps] == [2, 3, 4, 5]
 
 
+def test_rejects_malformed_speech_tag_with_field_name(tmp_path):
+    data = payload()
+    data['stations'][0]['steps'][0]['say'] = '<en>HELLO</vi>'
+    with pytest.raises(ValueError, match='say'):
+        load_lesson_script(write(tmp_path, data))
+
+
 def test_one_item_can_reference_several_vocabulary_words(tmp_path):
     data = payload()
     data['stations'][0]['steps'][0]['target'] = ['hello', 'hi']
