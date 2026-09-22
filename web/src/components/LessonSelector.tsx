@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { tutorApi, type TutorApi } from '@/lib/api';
+import { LearnerHeader } from './LearnerHeader';
 import type { LessonSummary } from '@/lib/types';
 
 export function LessonSelector({
@@ -27,9 +28,10 @@ export function LessonSelector({
     return () => controller.abort();
   }, [api, unitId]);
 
-  return <main className="unit-selector lesson-selector">
+  return <div className="learner-app learner-picker-page">
+    <LearnerHeader subtitle="Gia sư tiếng Anh · Lớp 3" />
+    <main className="unit-selector lesson-selector">
     <Link className="lesson-back" href="/">← Chọn Unit khác</Link>
-    <div className="logo-mark">L</div>
     <span className="eyebrow">Luna English · Lớp 3 · Unit 1</span>
     <h1>{unitTitle}</h1>
     <p>Chọn một Lesson. Mỗi Lesson là một buổi học với cô Luna.</p>
@@ -47,5 +49,6 @@ export function LessonSelector({
         <small>Vào buổi học →</small>
       </Link>)}
     </div>
-  </main>;
+    </main>
+  </div>;
 }

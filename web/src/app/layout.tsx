@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
+import './learner.css';
 
 export const metadata: Metadata = { title: 'Luna English Tutor', description: 'English conversation practice with Luna' };
 

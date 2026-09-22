@@ -4,6 +4,13 @@ import { expect, it, vi } from 'vitest';
 
 import { UnitSelector } from '@/components/UnitSelector';
 
+it('shows the classroom header and an honest empty Unit state', () => {
+  render(<UnitSelector units={[]} busy={false} onSelect={vi.fn()} />);
+  expect(screen.getByText('Chưa có Unit để học.')).toBeVisible();
+  expect(screen.getByRole('link', { name: /Enter Free Talk/i })).toHaveAttribute('href', '/talk');
+  expect(screen.getByRole('banner')).toHaveTextContent('Luna');
+});
+
 it('reports the exact selected curriculum id', async () => {
   const onSelect = vi.fn();
   render(<UnitSelector

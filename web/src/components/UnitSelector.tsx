@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LearnerHeader } from './LearnerHeader';
 
 import type { UnitSummary } from '@/lib/types';
 
@@ -11,11 +12,13 @@ export function UnitSelector({
   busy: boolean;
   onSelect: (unitId: string) => void;
 }) {
-  return <main className="unit-selector">
-    <div className="logo-mark">L</div>
+  return <div className="learner-app learner-picker-page">
+    <LearnerHeader subtitle="Gia sư tiếng Anh" />
+    <main className="unit-selector learner-home">
     <span className="eyebrow">Luna English</span>
     <h1>Choose a unit</h1>
     <p>Select what you would like to practise with Luna.</p>
+    {units.length === 0 && <p className="learner-empty">Chưa có Unit để học.</p>}
     {[...new Set(units.map((unit) => unit.grade))].sort((a, b) => a - b).map((grade) => <section
       className="grade-unit-group"
       key={grade}
@@ -58,5 +61,6 @@ export function UnitSelector({
         Xem thiết kế <span aria-hidden="true">→</span>
       </span>
     </Link>
-  </main>;
+    </main>
+  </div>;
 }
