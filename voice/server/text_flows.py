@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from typing import Any, cast
 
+from loguru import logger
 from luna_tutor.domain.decisions import PlannedTurn, TeacherTurnRequest
 from luna_tutor.domain.evidence import InputEvent, TranscriptStatus
 from luna_tutor.domain.state import LessonState
@@ -112,10 +113,8 @@ class BoundedTeacherLLM(LLMService):
         try:
             if exchange.plan is None:
                 raise RuntimeError("Flow must request exactly one authorized Teacher response")
-            turn_id = exchange.plan.turn_id
-            if turn_id in self.responded_turn_ids:
-                raise RuntimeError("Flow must request exactly one authorized Teacher response")
-            self.responded_turn_ids.add(turn_id)
+            plan = exchange.plan
+            state = exchange.state
             generation_epoch = getattr(exchange, "generation_epoch", None)
             messages = cast(list[dict[str, Any]], frame.context.get_messages())
             if len(messages) != 1 or messages[0].get("role") != "developer":
@@ -124,19 +123,35 @@ class BoundedTeacherLLM(LLMService):
             if not isinstance(content, str):
                 raise ValueError("Unexpected teaching node content")
             request = TeacherTurnRequest.model_validate_json(content)
+            if not self.end_after_response and request.turn_id != plan.turn_id:
+                # A second completed STT fragment may authorize a newer turn
+                # before the previous Flow context reaches the Teacher.
+                logger.info("Skipped superseded voice Flow turn {}", request.turn_id)
+                return
+            if plan.turn_id in self.responded_turn_ids:
+                if not self.end_after_response:
+                    return
+                raise RuntimeError("Flow must request exactly one authorized Teacher response")
             if (
-                request != exchange.plan.teacher_request
-                or exchange.flow.current_node != exchange.plan.proposed_next_state.activity_id
+                request != plan.teacher_request
+                or exchange.flow.current_node != plan.proposed_next_state.activity_id
             ):
                 raise ValueError("Flow node and teaching authorization disagree")
+            self.responded_turn_ids.add(plan.turn_id)
             utterance = await exchange.service.respond(request)
+            if not self.end_after_response and (
+                exchange.plan is not plan
+                or generation_epoch != exchange.generation_epoch
+            ):
+                logger.info("Discarded superseded voice Teacher response for turn {}", plan.turn_id)
+                return
             if utterance.generation_mode == "fallback" and not self.end_after_response:
                 # A safe Teacher fallback is speakable but cannot authorize or
                 # persist the Engine's proposed transition. Keep voice alive so
                 # the learner can try again on the unchanged stored state.
                 await self.push_frame(LanguageTaggedSpeechFrame(utterance.spoken_text))
                 return
-            completed = exchange.service.complete(exchange.state, exchange.plan, utterance)
+            completed = exchange.service.complete(state, plan, utterance)
             if (
                 generation_epoch is not None
                 and generation_epoch != exchange.generation_epoch

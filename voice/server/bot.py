@@ -26,6 +26,7 @@ from pipecat.workers.runner import WorkerRunner
 from text_flows import BoundedTeacherLLM
 from language_tts import LanguageTaggedSpeechFrame, LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
 from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
+from voice_rtvi import LunaRTVIProcessor
 from voice_teaching import (
     VoiceCommitProcessor,
     VoiceTeachingExchange,
@@ -43,6 +44,7 @@ class LunaVoiceWorker(PipelineWorker):
         super().__init__(
             pipeline,
             params=PipelineParams(enable_metrics=True, enable_usage_metrics=True),
+            rtvi_processor=LunaRTVIProcessor(),
         )
         self.luna_exchange = exchange
         self.luna_components = components

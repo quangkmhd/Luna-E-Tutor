@@ -65,7 +65,7 @@ class VoiceTeachingExchange:
         self.discard_pending()
         if self.worker is not None:
             await self.worker.queue_frames(
-                [ErrorFrame(str(error), exception=error), EndWorkerFrame()]
+                [ErrorFrame(str(error), fatal=True, exception=error), EndWorkerFrame()]
             )
 
 

@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from pathlib import Path
 
@@ -285,7 +286,7 @@ async def test_teaching_failure_keeps_the_original_exception_on_pipecat_error_fr
     assert isinstance(error_frame, ErrorFrame)
     assert error_frame.error == "teacher generation failed"
     assert error_frame.exception is failure
-    assert error_frame.fatal is False
+    assert error_frame.fatal is True
     assert isinstance(end_frame, EndWorkerFrame)
 
 
@@ -375,3 +376,97 @@ async def test_voice_teacher_does_not_open_empty_llm_tts_stream(tmp_path, monkey
         CompletedTeachingFrame,
     ]
     assert not any(isinstance(frame, (LLMFullResponseStartFrame, LLMFullResponseEndFrame)) for frame in output)
+
+
+@pytest.mark.asyncio
+async def test_voice_teacher_ignores_superseded_flow_frame_and_answers_latest(tmp_path, monkeypatch):
+    from pipecat.services.llm_service import LLMService
+
+    from language_tts import LanguageTaggedSpeechFrame
+    from text_flows import BoundedTeacherLLM
+
+    async def skip_framework_dispatch(_processor, _frame, _direction):
+        return None
+
+    monkeypatch.setattr(LLMService, "process_frame", skip_framework_dispatch)
+    exchange, _, service = make_exchange(tmp_path)
+    exchange.worker = RecordingWorker()
+    first = await service.plan(exchange.state, "Hello.", "voice:old")
+    latest = await service.plan(exchange.state, "I'm Minh.", "voice:latest")
+    exchange.plan = latest
+    exchange.flow.current_node = latest.proposed_next_state.activity_id
+    teacher = BoundedTeacherLLM(exchange, end_after_response=False)
+    output = []
+
+    async def record(frame, _direction=FrameDirection.DOWNSTREAM):
+        output.append(frame)
+
+    monkeypatch.setattr(teacher, "push_frame", record)
+    for plan in (first, latest):
+        context = LLMContext(messages=[{
+            "role": "developer",
+            "content": plan.teacher_request.model_dump_json(),
+        }])
+        await teacher.process_frame(LLMContextFrame(context=context), FrameDirection.DOWNSTREAM)
+
+    assert exchange.error is None
+    assert [frame.logical_turn_id for frame in output
+            if isinstance(frame, LanguageTaggedSpeechFrame)] == ["voice:latest"]
+    assert exchange.pending_completion is not None
+    assert exchange.pending_completion.plan.turn_id == "voice:latest"
+
+
+@pytest.mark.asyncio
+async def test_voice_teacher_drops_response_superseded_during_generation(tmp_path, monkeypatch):
+    from pipecat.services.llm_service import LLMService
+
+    from language_tts import LanguageTaggedSpeechFrame
+    from text_flows import BoundedTeacherLLM
+
+    async def skip_framework_dispatch(_processor, _frame, _direction):
+        return None
+
+    monkeypatch.setattr(LLMService, "process_frame", skip_framework_dispatch)
+    exchange, _, service = make_exchange(tmp_path)
+    exchange.worker = RecordingWorker()
+    first = await service.plan(exchange.state, "Hello.", "voice:old")
+    latest = await service.plan(exchange.state, "I'm Minh.", "voice:latest")
+    exchange.plan = first
+    exchange.flow.current_node = first.proposed_next_state.activity_id
+    started = asyncio.Event()
+    release = asyncio.Event()
+    original_respond = service.respond
+
+    async def respond(request):
+        if request.turn_id == first.turn_id:
+            started.set()
+            await release.wait()
+        return await original_respond(request)
+
+    monkeypatch.setattr(service, "respond", respond)
+    teacher = BoundedTeacherLLM(exchange, end_after_response=False)
+    output = []
+
+    async def record(frame, _direction=FrameDirection.DOWNSTREAM):
+        output.append(frame)
+
+    monkeypatch.setattr(teacher, "push_frame", record)
+
+    def context_for(plan):
+        return LLMContextFrame(context=LLMContext(messages=[{
+            "role": "developer", "content": plan.teacher_request.model_dump_json(),
+        }]))
+
+    old_response = asyncio.create_task(teacher.process_frame(
+        context_for(first), FrameDirection.DOWNSTREAM,
+    ))
+    await started.wait()
+    exchange.plan = latest
+    exchange.flow.current_node = latest.proposed_next_state.activity_id
+    await teacher.process_frame(context_for(latest), FrameDirection.DOWNSTREAM)
+    release.set()
+    await old_response
+
+    assert exchange.error is None
+    assert [frame.logical_turn_id for frame in output if isinstance(frame, LanguageTaggedSpeechFrame)] == ["voice:latest"]
+    assert exchange.pending_completion.plan.turn_id == "voice:latest"

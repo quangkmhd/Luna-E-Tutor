@@ -199,6 +199,7 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
     import bot
     from language_tts import LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
     from text_flows import BoundedTeacherLLM
+    from voice_rtvi import LunaRTVIObserver
     from voice_teaching import VoiceCommitProcessor, VoiceTeachingProcessor
 
     repository = SessionRepository(tmp_path / "voice.sqlite3")
@@ -259,6 +260,7 @@ def test_build_voice_worker_uses_canonical_teaching_pipeline(tmp_path, monkeypat
     )
     assert worker.luna_exchange.session_id == "selected-session"
     assert worker.luna_exchange.state == state
+    assert any(isinstance(observer, LunaRTVIObserver) for observer in worker._observer._observers)
 
 
 def test_voice_worker_does_not_finalize_on_a_brief_pause_inside_a_sentence(
