@@ -81,6 +81,7 @@ class TeacherTurnRequest(Contract):
     corrected_form: SpokenText | None = None
     learner_meaning: Annotated[SanitizedText, Field(max_length=2000)]
     next_teaching_move: SpokenText
+    scripted_say: SpokenText | None = None
     emotional_support: bool = False
     previous_teacher_turn: Annotated[SanitizedText, Field(max_length=4000)] = ''
     activity_context: TeacherActivityContext | None = None
@@ -98,7 +99,7 @@ class TeacherTurnRequest(Contract):
 class TeacherUtterance(Contract):
     spoken_text: SpokenText
     delivery_intent: Literal['warm', 'reassuring', 'encouraging', 'neutral', 'roleplay']
-    generation_mode: Literal['model', 'fallback'] = 'model'
+    generation_mode: Literal['model', 'fallback', 'script'] = 'model'
 
 
 class PlannedTurn(Contract):

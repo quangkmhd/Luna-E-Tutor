@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import httpx
 import pytest
@@ -6,6 +7,26 @@ from luna_tutor.api import runtime
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.storage.session_repository import SessionRepository
 from luna_tutor.teaching.unit_router import UnitTurnRouter
+
+
+def test_database_path_is_root_relative_independent_of_service_cwd(tmp_path, monkeypatch):
+    root = tmp_path / 'project'
+    backend_cwd = root / 'backend'
+    voice_cwd = root / 'voice' / 'server'
+    backend_cwd.mkdir(parents=True)
+    voice_cwd.mkdir(parents=True)
+    expected = root / 'backend' / 'data' / 'luna-tutor.sqlite3'
+
+    for cwd in (backend_cwd, voice_cwd):
+        monkeypatch.chdir(cwd)
+        assert runtime._resolve_database_path(
+            'backend/data/luna-tutor.sqlite3', root,
+        ) == expected
+
+
+def test_database_path_preserves_absolute_override(tmp_path):
+    absolute_path = tmp_path / 'custom.sqlite3'
+    assert runtime._resolve_database_path(str(absolute_path), Path('/unrelated')) == absolute_path
 
 
 def test_fixture_components_are_deterministic_and_have_repository(tmp_path):

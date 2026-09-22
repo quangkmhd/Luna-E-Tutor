@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from fastapi.testclient import TestClient
 
 from luna_tutor.api.app import create_app
@@ -19,7 +21,12 @@ def test_grade3_session_starts_lesson_one_and_rejects_unknown_lesson(tmp_path: P
     ))
     lessons = api.get('/api/units/grade03.unit01/lessons')
     assert lessons.status_code == 200
-    assert lessons.json() == [{'lesson': 1, 'title': 'Chào hỏi và giới thiệu tên'}]
+    assert lessons.json() == [
+        {'lesson': 1, 'title': 'Chào hỏi và giới thiệu tên'},
+        {'lesson': 2, 'title': 'Hỏi thăm sức khỏe và cảm ơn'},
+        {'lesson': 3, 'title': 'Chào tạm biệt và chào theo thời điểm'},
+        {'lesson': 4, 'title': 'Ôn tập Unit 1'},
+    ]
     response = api.post('/api/sessions', json={
         'unit_id': 'grade03.unit01', 'lesson_id': 1,
     })
@@ -37,14 +44,15 @@ def test_grade3_session_starts_lesson_one_and_rejects_unknown_lesson(tmp_path: P
     assert bad.status_code == 400
 
 
-def test_grade3_fixture_session_runs_all_three_stations(tmp_path: Path):
+@pytest.mark.parametrize('lesson_id', [1, 2, 3, 4])
+def test_grade3_fixture_session_runs_all_three_stations(tmp_path: Path, lesson_id: int):
     app = build_runtime_app({
         'ENV': 'test', 'TUTOR_LLM_MODE': 'fixture',
         'TUTOR_DATABASE_PATH': str(tmp_path / 'fixture.db'),
     })
     with TestClient(app) as api:
         session = api.post('/api/sessions', json={
-            'unit_id': 'grade03.unit01', 'lesson_id': 1,
+            'unit_id': 'grade03.unit01', 'lesson_id': lesson_id,
         }).json()
         visited = {session['stage_id']}
         greeting = api.post(
@@ -55,9 +63,9 @@ def test_grade3_fixture_session_runs_all_three_stations(tmp_path: Path):
         assert greeting.status_code == 200, greeting.text
         session = greeting.json()['session']
         assert session['stage_id'] == 'vocabulary'
-        assert 'HELLO' in session['messages'][-1]['text']
+        assert session['lesson_id'] == lesson_id
         visited.add(session['stage_id'])
-        for n in range(40):
+        for n in range(100):
             if session['status'] == 'completed':
                 break
             response = api.post(

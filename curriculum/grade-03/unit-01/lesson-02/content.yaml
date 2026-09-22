@@ -1,193 +1,127 @@
-stage:
-  id: lesson-02
-  title: 'Lesson 02: Feelings and goodbyes'
-  exits:
-  - lesson-03
-  prerequisite_stage_ids: []
-  completion_rule: all_required_activities_handled
-vocabulary:
-- id: goodbye
-  text: goodbye
-- id: bye
-  text: bye
-- id: how-are-you
-  text: how are you
-- id: fine
-  text: fine
-- id: thank-you
-  text: thank you
+lesson: 2
+title: Hỏi thăm sức khỏe và cảm ơn
+greeting:
+  order: 1
+  say: "Hi! Great to see you again! How are you today?"
+  accept: Chấp nhận lời chào hoặc câu trả lời thăm hỏi ngắn; Fine, Great, OK hoặc cảm xúc thật đều đạt.
+words: [how, you, fine, thank you, great, OK, tired, sleepy, happy]
 patterns:
-- id: pattern-hi-how-are-you
-  text: Hi. How are you?
-- id: pattern-fine-thank-you
-  text: Fine, thank you.
-- id: pattern-goodbye-bye
-  text: Goodbye./Bye ___.
-objectives:
-- id: unit01.lesson02.vocabulary.goodbye
-  description: 'Vocabulary: goodbye'
-  vocabulary_ids:
-  - goodbye
-  evidence_criteria: Understand or use goodbye in context; imitation alone is not independent use.
-- id: unit01.lesson02.vocabulary.bye
-  description: 'Vocabulary: bye'
-  vocabulary_ids:
-  - bye
-  evidence_criteria: Understand or use bye in context; imitation alone is not independent use.
-- id: unit01.lesson02.vocabulary.how_are_you
-  description: 'Vocabulary: how are you'
-  vocabulary_ids:
-  - how-are-you
-  evidence_criteria: Understand or use how are you in context; imitation alone is not independent use.
-- id: unit01.lesson02.vocabulary.fine
-  description: 'Vocabulary: fine'
-  vocabulary_ids:
-  - fine
-  evidence_criteria: Understand or use fine in context; imitation alone is not independent use.
-- id: unit01.lesson02.vocabulary.thank_you
-  description: 'Vocabulary: thank you'
-  vocabulary_ids:
-  - thank-you
-  evidence_criteria: Understand or use thank you in context; imitation alone is not independent use.
-- id: unit01.lesson02.pattern.pattern_hi_how_are_you
-  description: 'Pattern: Hi. How are you?'
-  pattern_ids:
-  - pattern-hi-how-are-you
-  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
-- id: unit01.lesson02.pattern.pattern_fine_thank_you
-  description: 'Pattern: Fine, thank you.'
-  pattern_ids:
-  - pattern-fine-thank-you
-  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
-- id: unit01.lesson02.pattern.pattern_goodbye_bye
-  description: 'Pattern: Goodbye./Bye ___.'
-  pattern_ids:
-  - pattern-goodbye-bye
-  evidence_criteria: Record communicative meaning and target form separately; accept valid alternatives.
-activities:
-- id: lesson-02.introduce-goodbye
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.lesson02.vocabulary.goodbye
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “goodbye” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Use short exchanges about a fictional friend. Accept brief
-    answers.
-  examples:
-  - goodbye
-- id: lesson-02.introduce-bye
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.lesson02.vocabulary.bye
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “bye” twice, invite Quang to say it, wait for one response, then give evidence-based feedback.
-    Move on after at most two attempts. Use short exchanges about a fictional friend. Accept brief answers.
-  examples:
-  - bye
-- id: lesson-02.introduce-how-are-you
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.lesson02.vocabulary.how_are_you
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “how are you” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Use short exchanges about a fictional friend. Accept brief
-    answers.
-  examples:
-  - how are you
-- id: lesson-02.introduce-fine
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.lesson02.vocabulary.fine
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “fine” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Use short exchanges about a fictional friend. Accept brief
-    answers.
-  examples:
-  - fine
-- id: lesson-02.introduce-thank-you
-  stage_id: lesson-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.lesson02.vocabulary.thank_you
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “thank you” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Use short exchanges about a fictional friend. Accept brief
-    answers.
-  examples:
-  - thank you
-- id: lesson-02.practice-01
-  stage_id: lesson-02
-  kind: guided_response
-  objective_ids:
-  - unit01.lesson02.pattern.pattern_hi_how_are_you
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: communicative_turn
-  instruction: 'Practise this short exchange with one learner response opportunity: Hi. How are you? Use short
-    exchanges about a fictional friend. Accept brief answers.'
-  examples:
-  - Hi. How are you?
-- id: lesson-02.practice-02
-  stage_id: lesson-02
-  kind: guided_response
-  objective_ids:
-  - unit01.lesson02.pattern.pattern_fine_thank_you
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: communicative_turn
-  instruction: 'Practise this short exchange with one learner response opportunity: Fine, thank you. Use short
-    exchanges about a fictional friend. Accept brief answers.'
-  examples:
-  - Fine, thank you.
-- id: lesson-02.practice-03
-  stage_id: lesson-02
-  kind: guided_response
-  objective_ids:
-  - unit01.lesson02.pattern.pattern_goodbye_bye
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: communicative_turn
-  instruction: 'Practise this short exchange with one learner response opportunity: Goodbye./Bye ___. Use short
-    exchanges about a fictional friend. Accept brief answers.'
-  examples:
-  - Goodbye./Bye ___.
-- id: lesson-02.ask-luna
-  stage_id: lesson-02
-  kind: ask_teacher
-  objective_ids:
-  - unit01.lesson02.pattern.pattern_hi_how_are_you
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: ask_teacher
-  instruction: Invite Quang to ask Luna one short question about the current greeting scene. Use short exchanges
-    about a fictional friend. Accept brief answers.
-  examples:
-  - 'Pattern: Hi. How are you?'
+  ask: "How are you?"
+  answer: "Fine, thank you."
+  ask_back: "Fine, thank you. And you?"
+  introduce: "Hi. I'm {name}."
+stations:
+- id: vocabulary
+  steps:
+  - order: 2
+    target: how
+    say: |-
+      Trạm 1 nhé: hôm nay có bốn từ mới để hỏi thăm nhau, và mấy từ nói về cảm xúc của con. [long pause]
+      How nghĩa là thế nào, ra sao. Con nghe không — how cũng bắt đầu bằng hơi thở /h/ giống hello hôm qua! [long pause]
+      Listen first! [long pause] "HOW" [long pause]
+      Your turn now! How!
+    accept: Chấp nhận con nói “how”; âm /h/ đầu rõ. Chưa cần dùng trong câu.
+  - order: 3
+    target: you
+    say: |-
+      You là bạn — người con đang nói chuyện cùng. Khi cô nói với con, you chính là con. [long pause]
+      Listen first! [long pause] "YOU" [long pause]
+      Your turn now! You!
+    accept: Chấp nhận “you”.
+  - order: 4
+    target: fine
+    say: |-
+      Fine là khoẻ, ổn. [long pause]
+      Listen first! [long pause] "FINE" [long pause]
+      Your turn now! Fine!
+    accept: Chấp nhận “fine”; mất /n/ cuối vẫn đạt.
+  - order: 5
+    target: thank you
+    say: |-
+      Thank you là cảm ơn — con nói khi ai hỏi thăm hay giúp con. Cô phát âm chậm: TH-ANK YOU — đầu lưỡi đặt nhẹ giữa hai hàm răng. [long pause]
+      Listen first! [long pause] "THANK YOU" [long pause]
+      Now you!
+    accept: Chấp nhận “thank you”, kể cả khi đọc /th/ như /t/.
+  - order: 6
+    target: [great, OK]
+    say: |-
+      Great là tuyệt, rất tốt. OK là bình thường, ổn. [long pause]
+      Listen first! [long pause] "GREAT" [long pause] "OK" [long pause]
+      Your turn now! Great… OK!
+    accept: Chấp nhận con nói được great và OK; ở Mức 1 chỉ nghe cũng có thể chuyển tiếp.
+  - order: 7
+    target: [tired, sleepy, happy]
+    say: |-
+      Tired là mệt, sleepy là buồn ngủ, happy là vui — con dùng để nói con đang thấy thế nào. [long pause]
+      Listen first! [long pause] "TIRED" [long pause] "SLEEPY" [long pause] "HAPPY" [long pause]
+      Your turn now!
+    accept: Chấp nhận con nói được các từ; Mức 3 khuyến khích ít nhất hai từ. Mức 1 chỉ nghe vẫn đạt.
+  - order: 8
+    target: [happy, tired, fine]
+    say: |-
+      Let's play! Happy — laugh. Tired — sigh. Fine — say OK! [long pause]
+      Great!… Tired… Fine… Happy!
+    accept: Chấp nhận phản ứng hoặc nói đúng ít nhất ba trong bốn cảm xúc; với Mức 1, great và fine là đủ.
+- id: patterns
+  steps:
+  - order: 9
+    target: ask
+    say: |-
+      Trạm 2: cô trò mình ghép các từ vừa học thành một câu hỏi thăm hoàn chỉnh. [long pause]
+      Here's our secret question! Listen first: [long pause] "How are you?" [long pause]
+      Nghĩa là: Bạn có khoẻ không? — con hỏi khi gặp người quen. [long pause]
+      Your turn now! Can you say: How are you?
+    accept: Chấp nhận câu hỏi đủ “How are you?”.
+    more:
+    - say: 'Once more, smoothly! [long pause] "How are you?" [long pause]'
+      accept: Chấp nhận “How are you?” nói liền mạch; không cần phát âm hoàn hảo.
+  - order: 10
+    target: answer
+    say: |-
+      Listen first! [long pause] "Fine, thank you." [long pause]
+      Nghĩa là: Mình khoẻ, cảm ơn — con trả lời khi ai hỏi How are you. [long pause]
+      Your turn now!
+    accept: Chấp nhận “Fine, thank you.”; Mức 1 có thể nói “Fine.”
+    more:
+    - say: 'Now for real! How are you?'
+      accept: Chấp nhận Fine, I'm fine, Fine thank you, Great, OK hoặc câu trả lời cảm xúc phù hợp.
+  - order: 11
+    target: answer
+    say: Con không phải lúc nào cũng nói fine đâu. Hôm nay con thấy thế nào thật sự? Tell me — how are you really?
+    accept: Chấp nhận bất kỳ cảm xúc đã học, có hoặc không có “I'm”; Fine và Great cũng đạt.
+    more:
+    - say: 'Really?! Tell me more about that!'
+      accept: Chấp nhận lời nói thêm về cảm xúc, bằng tiếng Anh hoặc tiếng Việt; Mức 1 có thể trả lời ngắn.
+  - order: 12
+    target: ask_back
+    say: |-
+      Listen first! [long pause] "Fine, thank you. And you?" [long pause]
+      And you nghĩa là: còn bạn thì sao? — hỏi lại cho lịch sự. [long pause]
+      Your turn now!
+    accept: Chấp nhận “Fine, thank you. And you?”; Mức 1 không bắt buộc “And you?”.
+  - order: 13
+    target: ask
+    say: 'Now your turn to ask ME! Say: How are you?'
+    accept: Chấp nhận “How are you?”, có hoặc không gọi tên Luna.
+    more:
+    - say: "I'm great, thank you! And you?"
+      accept: Chấp nhận bất kỳ câu trả lời cảm xúc hợp lý.
+- id: conversation
+  steps:
+  - order: 14
+    target: ask_back
+    say: |-
+      Trạm 3: cô trò mình nói chuyện bằng tiếng Anh nhé! Let's talk, just like every evening! [long pause]
+      Good evening, {tên}!
+    accept: Chấp nhận lời chào khi gặp, như Good evening, Hello hoặc Hi.
+    more:
+    - say: 'How are you today?'
+      accept: Chấp nhận câu trả lời phù hợp; Mức 1 “Fine” là đủ, Mức 2–3 khuyến khích hỏi lại “And you?”.
+    - say: |-
+        I'm great, thank you! [long pause]
+        Now I'm going to play a character — I'm Tom from England! [long pause]
+        Hi. I'm Tom.
+      accept: Chấp nhận con chào Tom rồi giới thiệu tên; Mức 1 “Hi, Tom” là đủ, “Nice to meet you” là mở rộng.
+    - say: 'Nice to meet you, too! How are you?'
+      accept: Chấp nhận câu trả lời cảm xúc hợp lý, có hoặc không hỏi lại “And you?”.
+    - say: "I'm great, thanks! [long pause] Scene done! You just had a real conversation in English! 🎉"

@@ -133,10 +133,14 @@ class RuntimeComponents:
     comparison_service: object | None = None
 
 
+def _resolve_database_path(configured_path: str | None, root: Path) -> Path:
+    path = Path(configured_path or 'backend/data/luna-tutor.sqlite3')
+    return path if path.is_absolute() else root / path
+
+
 def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponents:
     root = Path(__file__).resolve().parents[4]
-    database_path = Path(environment.get(
-        'TUTOR_DATABASE_PATH', str(root / 'backend/data/luna-tutor.sqlite3')))
+    database_path = _resolve_database_path(environment.get('TUTOR_DATABASE_PATH'), root)
     repository = SessionRepository(database_path)
     registry = CurriculumRegistry(root / 'curriculum', SUPPORTED_UNIT_IDS)
     mode = environment.get('TUTOR_LLM_MODE', 'live')
