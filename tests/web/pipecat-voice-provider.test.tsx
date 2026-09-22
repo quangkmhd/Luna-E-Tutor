@@ -5,11 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const sdk = vi.hoisted(() => {
   const startBotAndConnect = vi.fn().mockResolvedValue(undefined);
   const disconnect = vi.fn().mockResolvedValue(undefined);
+  const sendText = vi.fn().mockResolvedValue(undefined);
   const enableMic = vi.fn();
-  const client = { startBotAndConnect, disconnect, enableMic, state: 'disconnected' };
+  const client = { startBotAndConnect, disconnect, sendText, enableMic, state: 'disconnected' };
   return {
     startBotAndConnect,
     disconnect,
+    sendText,
     enableMic,
     client,
     conversationMessages: [] as Array<Record<string, unknown>>,
@@ -40,6 +42,7 @@ vi.mock('@pipecat-ai/client-react', () => ({
 }));
 
 import { PipecatVoiceProvider } from '@/components/voice/PipecatVoiceProvider';
+import { useVoiceLesson } from '@/components/voice/PipecatVoiceProvider';
 import { VoiceControls } from '@/components/voice/VoiceControls';
 import { VoiceLatency } from '@/components/voice/VoiceLatency';
 import { ChatPanel } from '@/components/ChatPanel';
@@ -48,6 +51,7 @@ describe('PipecatVoiceProvider', () => {
   beforeEach(() => {
     sdk.startBotAndConnect.mockClear();
     sdk.disconnect.mockClear();
+    sdk.sendText.mockClear();
     sdk.enableMic.mockClear();
     sdk.conversationMessages = [];
     sdk.options = undefined;
@@ -76,6 +80,23 @@ describe('PipecatVoiceProvider', () => {
     });
     view.unmount();
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
+  });
+
+  it('sends typed text through the active voice pipeline and displays it beside voice messages', async () => {
+    const user = userEvent.setup();
+    sdk.conversationMessages = [{ role: 'assistant', final: true, createdAt: new Date(Date.now() - 1000).toISOString(), parts: [{ text: { spoken: 'Hello!', unspoken: '' }, final: true, createdAt: '1' }] }];
+    function TypedInput() {
+      const voice = useVoiceLesson();
+      return <button onClick={() => void voice.sendText('I like dolphins')}>Type answer</button>;
+    }
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><TypedInput /></PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    await user.click(screen.getByRole('button', { name: 'Type answer' }));
+
+    expect(sdk.sendText).toHaveBeenCalledWith('I like dolphins', { run_immediately: true, audio_response: true });
+    expect(screen.getByText('I like dolphins')).toBeVisible();
+    expect(screen.getByText('Hello!')).toBeVisible();
   });
 
   it('connects Talk with topic metadata and Talk-specific labels', async () => {

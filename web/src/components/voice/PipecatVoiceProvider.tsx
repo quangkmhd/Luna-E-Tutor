@@ -20,7 +20,9 @@ import {
 type VoiceContextValue = {
   error: string | null;
   phase: VoicePhase;
+  sentText: Array<{ id: string; text: string; timestamp: string }>;
   ttfaSeconds: number | null;
+  sendText: (text: string) => Promise<void>;
   start: () => Promise<void>;
   stop: () => Promise<void>;
   transportState: TransportState;
@@ -91,6 +93,7 @@ export function PipecatVoiceProvider({
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
   const [error, setError] = useState<string | null>(null);
+  const [sentText, setSentText] = useState<VoiceContextValue['sentText']>([]);
   const [ttfaSeconds, setTtfaSeconds] = useState<number | null>(null);
   const [, setUserStoppedAt] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
@@ -193,6 +196,21 @@ export function PipecatVoiceProvider({
     }
   }
 
+  async function sendText(text: string) {
+    if (transportState !== 'connected' && transportState !== 'ready') {
+      throw new Error('Voice is not connected yet. Please try again in a moment.');
+    }
+    const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+    setSentText((previous) => [...previous, { id, text, timestamp: new Date().toISOString() }]);
+    try {
+      await client.sendText(text, { run_immediately: true, audio_response: true });
+    } catch (reason) {
+      setSentText((previous) => previous.filter((message) => message.id !== id));
+      setError('Could not send your typed message. Please try again.');
+      throw reason;
+    }
+  }
+
   useEffect(() => {
     if (!enabled) void client.disconnect();
   }, [client, enabled]);
@@ -208,6 +226,8 @@ export function PipecatVoiceProvider({
   const value: VoiceContextValue = {
     error,
     phase,
+    sentText,
+    sendText,
     start,
     stop,
     ttfaSeconds,

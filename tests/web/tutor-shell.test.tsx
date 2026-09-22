@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StrictMode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TutorShell } from '@/components/TutorShell';
 import { ChatPanel } from '@/components/ChatPanel';
@@ -9,6 +9,7 @@ import { ApiError, TutorApi } from '@/lib/api';
 import type { SessionView, UnitSummary } from '@/lib/types';
 
 const push = vi.fn();
+const voice = vi.hoisted(() => ({ transportState: 'disconnected', sendText: vi.fn().mockResolvedValue(undefined) }));
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push }),
@@ -21,7 +22,8 @@ const UNITS: UnitSummary[] = [
 
 vi.mock('@/components/voice/PipecatVoiceProvider', () => ({
   PipecatVoiceProvider: ({ children }: { children: React.ReactNode }) => children,
-  useOptionalVoiceLesson: () => ({ ttfaSeconds: 2.84 }),
+  useOptionalVoiceLesson: () => ({ ttfaSeconds: 2.84, ...voice }),
+  useVoiceLesson: () => voice,
 }));
 vi.mock('@/components/voice/VoiceControls', () => ({
   VoiceControls: () => <button type="button">Start voice lesson</button>,
@@ -68,6 +70,7 @@ async function openLesson(api: TutorApi) {
 }
 
 describe('TutorShell', () => {
+  beforeEach(() => { voice.transportState = 'disconnected'; voice.sendText.mockClear(); });
   it('keeps a classroom loading frame while a direct-route session is opening', async () => {
     let openSession: ((value: SessionView) => void) | undefined;
     const api = mockApi({
@@ -305,6 +308,16 @@ describe('TutorShell', () => {
     expect(voiceButton.closest('form')).toHaveClass('composer');
     expect(screen.queryByText('Prefer typing?')).not.toBeInTheDocument();
     await user.click(voiceButton);
+    expect(api.submitTurn).not.toHaveBeenCalled();
+  });
+
+  it('routes a typed turn to Pipecat while voice is connected, not the REST teacher', async () => {
+    voice.transportState = 'ready';
+    const api = mockApi(); const user = userEvent.setup(); await openLesson(api);
+    await user.type(await screen.findByLabelText('Your answer'), 'I like dolphins');
+    await user.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(voice.sendText).toHaveBeenCalledWith('I like dolphins');
     expect(api.submitTurn).not.toHaveBeenCalled();
   });
 

@@ -3,6 +3,7 @@ import { usePipecatConversation } from '@pipecat-ai/client-react';
 import type { BotOutputText, ConversationMessage } from '@pipecat-ai/client-react';
 import type { Message } from '@/lib/types';
 import { VoiceLatency } from './voice/VoiceLatency';
+import { useOptionalVoiceLesson } from './voice/PipecatVoiceProvider';
 
 function conversationText(message: ConversationMessage): string {
   return message.parts.map((part) => {
@@ -18,6 +19,7 @@ function teacherDisplayText(text: string): string {
 
 export function ChatPanel({ messages }: { messages: Message[] }) {
   const latestMessage = useRef<HTMLDivElement>(null);
+  const voice = useOptionalVoiceLesson();
   const { messages: pipecatMessages } = usePipecatConversation();
   const pipecatConversation = pipecatMessages
     .filter((message) => message.role === 'user' || message.role === 'assistant')
@@ -27,12 +29,21 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
       timestamp: message.createdAt,
     }))
     .filter((message) => message.text);
-  const displayedMessages = pipecatConversation.length > 0
+  const baseMessages = pipecatConversation.length > 0
     ? pipecatConversation
     : messages.map((message, index) => ({
       ...message,
       timestamp: `${message.turn_id ?? 'opening'}-${index}`,
     }));
+  const displayedMessages = [...baseMessages, ...(voice?.sentText ?? []).map((message) => ({
+    role: 'learner' as const,
+    text: message.text,
+    timestamp: message.timestamp,
+  }))].sort((left, right) => {
+    const leftTime = Date.parse(left.timestamp);
+    const rightTime = Date.parse(right.timestamp);
+    return (Number.isNaN(leftTime) ? 0 : leftTime) - (Number.isNaN(rightTime) ? 0 : rightTime);
+  });
   const latestTeacherIndex = displayedMessages.findLastIndex((message) => message.role === 'teacher');
   useEffect(() => { latestMessage.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, [displayedMessages.length]);
   return <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
