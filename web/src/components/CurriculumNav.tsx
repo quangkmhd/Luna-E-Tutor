@@ -46,12 +46,12 @@ export function CurriculumNav({ units, session, busy, onSelect, expandedUnitId, 
             <span className="curriculum-number">{unit.unit}</span><span>Unit {unit.unit} · {unit.title}</span>
           </button>
           {unit.id === expandedUnitId && lessonBasePath && <div className="curriculum-lessons">
-            {lessons.map((lesson) => <Link className="curriculum-lesson-choice" href={`${lessonBasePath}/${lesson.lesson}`} key={lesson.lesson}>
+            {lessons.map((lesson) => <Link className={`curriculum-lesson-choice${lesson.lesson === session?.lesson_id ? ' current' : ''}`} href={`${lessonBasePath}/${lesson.lesson}`} key={lesson.lesson} aria-current={lesson.lesson === session?.lesson_id ? 'page' : undefined}>
               <span className="curriculum-lesson-number">{lesson.lesson}</span>
               <span><strong>Lesson {lesson.lesson}</strong><small>{lesson.title}</small></span>
             </Link>)}
           </div>}
-          {unit.id === session?.unit_id && session.lesson_id != null && <div className="curriculum-lesson" aria-current="step">Lesson {session.lesson_id} · Đang học</div>}
+          {unit.id === session?.unit_id && session.lesson_id != null && !expandedUnitId && <div className="curriculum-lesson" aria-current="step">Lesson {session.lesson_id} · Đang học</div>}
         </div>)}
       </div>)}
     </nav>

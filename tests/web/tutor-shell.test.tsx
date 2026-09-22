@@ -119,6 +119,27 @@ describe('TutorShell', () => {
     expect(screen.queryByText('4 ngày')).not.toBeInTheDocument();
   });
 
+  it('keeps every Grade 3 lesson in the curriculum while Lesson 2 is active', async () => {
+    const grade3: UnitSummary = { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' };
+    const api = mockApi({
+      listUnits: vi.fn().mockResolvedValue([grade3, ...UNITS]),
+      listLessons: vi.fn().mockResolvedValue([
+        { lesson: 1, title: 'Chào hỏi và giới thiệu tên' },
+        { lesson: 2, title: 'Hỏi thăm sức khỏe và cảm ơn' },
+        { lesson: 3, title: 'Chào tạm biệt' },
+      ]),
+      createSession: vi.fn().mockResolvedValue(session({ unit_id: grade3.id, unit: grade3, lesson_id: 2 })),
+    });
+
+    render(<TutorShell api={api} initialUnitId={grade3.id} initialLessonId={2} />);
+
+    const nav = await screen.findByRole('navigation', { name: 'Chương trình học' });
+    expect(await screen.findByRole('link', { name: /Lesson 1.*Chào hỏi và giới thiệu tên/i })).toHaveAttribute('href', '/grade3/unit1/lesson/1');
+    expect(nav).toContainElement(screen.getByRole('link', { name: /Lesson 3.*Chào tạm biệt/i }));
+    expect(screen.getByRole('link', { name: /Lesson 2.*Hỏi thăm sức khỏe/i })).toHaveAttribute('aria-current', 'page');
+    expect(nav).not.toHaveTextContent('Lesson 2 · Đang học');
+  });
+
   it('filters the real curriculum and switches to progress without fabricated metrics', async () => {
     const user = userEvent.setup();
     await openLesson(mockApi());

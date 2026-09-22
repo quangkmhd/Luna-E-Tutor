@@ -12,7 +12,7 @@ import { UnitSelector } from './UnitSelector';
 import { PipecatVoiceProvider } from './voice/PipecatVoiceProvider';
 import { VoiceControls } from './voice/VoiceControls';
 import { ApiError, TutorApi, tutorApi } from '@/lib/api';
-import type { SessionView, UnitSummary } from '@/lib/types';
+import type { LessonSummary, SessionView, UnitSummary } from '@/lib/types';
 import { unitPath } from '@/lib/unit-route';
 
 function newTurnId() { return globalThis.crypto?.randomUUID?.() ?? `turn-${Date.now()}-${Math.random()}`; }
@@ -29,9 +29,11 @@ export function TutorShell({
   const router = useRouter();
   const [current, setCurrent] = useState<SessionView | null>(null);
   const [units, setUnits] = useState<UnitSummary[]>([]);
+  const [lessons, setLessons] = useState<LessonSummary[]>([]);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
   const currentSessionId = current?.session_id;
+  const lessonUnitId = current?.lesson_id != null ? current.unit_id : null;
   const replaceSession = useCallback((session: SessionView) => { setCurrent(session); }, []);
   useEffect(() => { const controller = new AbortController(); void (async () => {
     try {
@@ -45,6 +47,16 @@ export function TutorShell({
     }
     catch (reason) { if ((reason as Error).name !== 'AbortError') setError(reason as ApiError); } finally { if (!controller.signal.aborted) setBusy(false); }
   })(); return () => controller.abort(); }, [api, initialUnitId, initialLessonId, replaceSession]);
+  useEffect(() => {
+    if (!lessonUnitId) return;
+    const controller = new AbortController();
+    void api.listLessons(lessonUnitId, controller.signal).then((availableLessons) => {
+      if (!controller.signal.aborted) setLessons(availableLessons);
+    }).catch((reason: Error) => {
+      if (reason.name !== 'AbortError') setError(reason as ApiError);
+    });
+    return () => controller.abort();
+  }, [api, lessonUnitId]);
   const refreshVoiceSession = useCallback(async () => {
     if (!currentSessionId) return;
     try { replaceSession(await api.getSession(currentSessionId)); }
@@ -93,7 +105,7 @@ export function TutorShell({
   </main>;
   if (!current) return <><UnitSelector units={units} busy={busy} onSelect={(unitId) => { void selectUnit(unitId); }} />{error && <div className="error-banner" role="alert">{error.message}</div>}</>;
   return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession}><main className="app-shell classroom-shell learner-app"><LearnerHeader subtitle={`English Tutor · Grade ${current.unit.grade} · Unit ${current.unit.unit}${current.lesson_id ? ` · Lesson ${current.lesson_id}` : ''}`}><span className={`status-pill ${current.status}`}>{current.status === 'active' ? 'Đang học' : current.status}</span><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={chooseAnotherUnit}>{current.lesson_id ? 'Chọn Lesson khác' : 'Choose another unit'}</button><NewSessionButton busy={busy} onClick={startNew} /><span className="student-chip" aria-label="Học viên Quang">Q <span>Quang</span></span></LearnerHeader>
-    <div className="workspace classroom-workspace"><CurriculumNav units={units} session={current} busy={busy} onSelect={selectUnit} /><section className="lesson-card" role="region" aria-label="Lớp học Luna"><div className="lesson-heading"><div><h1 className="lesson-title">Practice with Luna</h1><span className="lesson-crumb">{current.lesson_id ? `Lesson ${current.lesson_id} · ` : ''}Lớp {current.unit.grade} · Unit {current.unit.unit} · {current.unit.title}</span></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><div className="lesson-phases" aria-label="Các chặng học">{current.learning_focus.length > 0 ? current.learning_focus.map((focus) => <span key={focus.stage_id} className={focus.highlighted ? 'phase-current' : ''} aria-current={focus.highlighted ? 'step' : undefined}><span aria-hidden="true">{focus.highlighted ? '●' : '○'}</span> {focus.stage_title}</span>) : <span className="phase-current">● {current.stage_id.replaceAll('-', ' ')}</span>}</div><ChatPanel messages={current.messages} />
+    <div className="workspace classroom-workspace"><CurriculumNav units={units} session={current} busy={busy} onSelect={selectUnit} expandedUnitId={lessonUnitId ?? undefined} lessons={lessons} lessonBasePath={lessonUnitId ? `${unitPath(current.unit.grade, current.unit.unit)}/lesson` : undefined} /><section className="lesson-card" role="region" aria-label="Lớp học Luna"><div className="lesson-heading"><div><h1 className="lesson-title">Practice with Luna</h1><span className="lesson-crumb">{current.lesson_id ? `Lesson ${current.lesson_id} · ` : ''}Lớp {current.unit.grade} · Unit {current.unit.unit} · {current.unit.title}</span></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><div className="lesson-phases" aria-label="Các chặng học">{current.learning_focus.length > 0 ? current.learning_focus.map((focus) => <span key={focus.stage_id} className={focus.highlighted ? 'phase-current' : ''} aria-current={focus.highlighted ? 'step' : undefined}><span aria-hidden="true">{focus.highlighted ? '●' : '○'}</span> {focus.stage_title}</span>) : <span className="phase-current">● {current.stage_id.replaceAll('-', ' ')}</span>}</div><ChatPanel messages={current.messages} />
       {error && <div className="error-banner" role="alert"><strong>{error.retryable ? 'Please try again.' : 'Something changed.'}</strong> {error.message}</div>}
       {current.status === 'active' && <Composer disabled={busy} onSend={send} voiceControls={<VoiceControls />} />}
       {current.stage_id === 'free-talk' && current.status === 'active' && <button className="finish-button" disabled={busy} onClick={finish}>End Free Talk</button>}
