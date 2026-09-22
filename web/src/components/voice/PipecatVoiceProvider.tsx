@@ -75,7 +75,10 @@ function voiceServiceErrorMessage(message: RTVIMessage): string {
     return 'The voice session ended. Reconnect when you are ready.';
   }
   console.warn('Pipecat reported a recoverable voice error:', data.error);
-  return 'Voice audio was interrupted. Please try speaking again.';
+  if (data.error.includes('completed with no audio')) {
+    return 'Luna could not produce audio for that reply. Please try speaking again.';
+  }
+  return 'The voice service could not complete that reply. Please try speaking again.';
 }
 
 function createThinkingTimeout() {
@@ -165,6 +168,7 @@ export function PipecatVoiceProvider({
       },
       onUserStartedSpeaking: () => {
         thinkingTimeout.clear();
+        setErrorState((previous) => previous.fatal ? previous : { message: null, fatal: false });
         setUserStoppedAt(null);
         setTtfaSeconds(null);
         setPhase('listening');
