@@ -14,7 +14,7 @@ function conversationText(message: ConversationMessage, spokenOnly: boolean): st
 }
 
 function teacherDisplayText(text: string): string {
-  return text.replace(/\[[^\]]*\]/g, '').split(/\r?\n/)
+  return text.replace(/<\/?(?:vi|en)>/g, '').replace(/\[[^\]]*\]/g, '').split(/\r?\n/)
     .map((line) => line.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n');
 }
 

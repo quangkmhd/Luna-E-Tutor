@@ -26,6 +26,7 @@ from luna_tutor.storage.session_repository import (
     StateConflictError,
     StoredSession,
 )
+from luna_tutor.speech.language_segments import plain_speech_text
 
 LEGACY_GREETING = "Hello, Quang! I'm Luna. It's lovely to see you today!"
 
@@ -99,14 +100,14 @@ def _learning_focus(curriculum, current_stage_id: str) -> list[LearningStageFocu
 
 
 def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
-    messages = [MessageView(role='teacher', text=stored.state.opening_message or LEGACY_GREETING)]
+    messages = [MessageView(role='teacher', text=plain_speech_text(stored.state.opening_message or LEGACY_GREETING))]
     if stored.state.opening_script:
-        messages.append(MessageView(role='teacher', text=stored.state.opening_script))
+        messages.append(MessageView(role='teacher', text=plain_speech_text(stored.state.opening_script)))
     for completed in stored.turns:
         messages.extend([
             MessageView(role='learner', text=completed.plan.learner_text,
                         turn_id=completed.plan.turn_id),
-            MessageView(role='teacher', text=completed.teacher_utterance.spoken_text,
+            MessageView(role='teacher', text=plain_speech_text(completed.teacher_utterance.spoken_text),
                         turn_id=completed.plan.turn_id,
                         delivery_intent=completed.teacher_utterance.delivery_intent),
         ])
@@ -114,7 +115,7 @@ def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
     state = stored.state
     curriculum = curriculum_registry.get(state.unit_id)
     if state.closing_message:
-        messages.append(MessageView(role='teacher', text=state.closing_message,
+        messages.append(MessageView(role='teacher', text=plain_speech_text(state.closing_message),
                                     delivery_intent='warm'))
     if state.lesson_id is None:
         focus = _learning_focus(curriculum, state.stage_id)

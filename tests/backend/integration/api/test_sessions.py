@@ -71,3 +71,19 @@ def test_historical_session_keeps_original_opening_text(tmp_path):
     assert old['messages'][0]['text'] == "Hello, Quang! I'm Luna. It's lovely to see you today!"
     assert new['messages'][0]['text'] != old['messages'][0]['text']
     assert repository.get_session(new['session_id']).state.opening_message == new['messages'][0]['text']
+
+
+def test_session_messages_hide_language_markup_and_delivery_cues(tmp_path):
+    from luna_tutor.domain.state import LessonState
+
+    repository = SessionRepository(tmp_path / 'tagged.sqlite3')
+    repository.create_session(LessonState(
+        session_id='tagged', unit_id='grade05.unit01', stage_id='warm-up',
+        activity_id='warm-up.hello',
+        opening_message='<vi>Xin chào.</vi> <en>[long pause] HELLO</en>',
+    ))
+    api = TestClient(create_app(repository=repository, turn_service=UnusedTurnService()))
+
+    response = api.get('/api/sessions/tagged')
+    assert response.status_code == 200
+    assert response.json()['messages'][0]['text'] == 'Xin chào.  HELLO'

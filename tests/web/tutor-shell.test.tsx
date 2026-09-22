@@ -388,6 +388,12 @@ describe('TutorShell', () => {
     expect(screen.queryByText(/\[(?:long )?pause\]/i)).not.toBeInTheDocument();
   });
 
+  it('hides language tags and cues from saved Luna messages', () => {
+    render(<ChatPanel messages={[{ role: 'teacher', text: '<vi>Xin chào.</vi> <en>[long pause] HELLO</en>' }]} />);
+    expect(screen.getByText('Xin chào. HELLO')).toBeVisible();
+    expect(screen.queryByText(/<\/?(?:vi|en)>|\[long pause\]/)).not.toBeInTheDocument();
+  });
+
   it('renders each YAML say line as a separate Luna turn', () => {
     render(<ChatPanel messages={[
       { role: 'teacher', text: 'Cô trò mình sang Trạm 1. [long pause]\nHELLO nghĩa là xin chào. [long pause]\n\nListen first! HELLO.\nYour turn now!' },
