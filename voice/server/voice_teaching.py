@@ -105,6 +105,8 @@ class VoiceTeachingProcessor(FrameProcessor):
                 return
             stored = self.exchange.repository.get_session(self.exchange.session_id)
             self.exchange.state = stored.state
+            if stored.state.status != 'active':
+                return
             plan = await self.exchange.service.plan(
                 stored.state,
                 text,

@@ -40,6 +40,7 @@ export type Decision = {
 export type SessionView = {
   session_id: string;
   unit_id: string;
+  lesson_id?: number | null;
   unit: UnitSummary;
   state_version: number;
   stage_id: string;

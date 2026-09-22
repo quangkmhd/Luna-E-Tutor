@@ -4,9 +4,9 @@ unit: 1
 greeting: "Hi! My name is Luna — I'm your English tutor![long pause] Xin chào con! Cô là Luna, gia sư tiếng Anh của con."
 title: Hello
 content_files:
-- lesson-01/content.yaml
-- lesson-02/content.yaml
-- lesson-03/content.yaml
+- lesson-01/legacy.yaml
+- lesson-02/legacy.yaml
+- lesson-03/legacy.yaml
 - level-02/content.yaml
 - level-03/content.yaml
 - free-talk/content.yaml

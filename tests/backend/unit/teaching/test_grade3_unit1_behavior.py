@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[4]
 def test_learner_repetitions_can_be_overridden_in_any_unit_yaml(tmp_path):
     root = tmp_path / 'unit-01'
     shutil.copytree(ROOT / 'curriculum/grade-03/unit-01', root)
-    path = root / 'lesson-01/content.yaml'
+    path = root / 'lesson-01/legacy.yaml'
     document = yaml.safe_load(path.read_text(encoding='utf-8'))
     hello = next(item for item in document['activities']
                  if item['id'] == 'lesson-01.introduce-hello')
@@ -89,7 +89,7 @@ async def test_vocabulary_requires_three_successful_learner_turns_by_default():
         if turn_number < 3:
             assert plan.decision.progression_action == 'stay'
             assert not plan.decision.count_attempt
-            assert 'different wording' in plan.teacher_request.next_teaching_move
+            assert 'invite another learner turn' in plan.teacher_request.next_teaching_move
             assert plan.teacher_request.constraints.require_repetition
         else:
             assert plan.decision.next_activity_id == 'lesson-01.introduce-hi'

@@ -48,6 +48,12 @@ class JevEvaluator:
                 f"Acceptable alternatives: {list(objective.acceptable_alternatives)}. "
                 f"Evidence criterion: {objective.evidence_criteria}."
             )
+            if request.activity_type == 'scripted_lesson':
+                context += (
+                    ' This criterion is the authored accept description. '
+                    'Treat its allowed omissions and small errors as acceptable learner answers; '
+                    'do not require literal string matching.'
+                )
             for suffix, rubric_name in (
                 ('meaning', 'objective_meaning'),
                 ('form', 'objective_form'),

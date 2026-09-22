@@ -37,3 +37,28 @@ class UnitComparisonRouter(UnitTurnRouter):
         return await self._service(state.unit_id).compare(
             state, learner_text, comparison_id
         )
+
+
+class LessonTurnRouter:
+    """Select the authored lesson while retaining legacy stored sessions."""
+
+    def __init__(self, services: Mapping[int | None, object]):
+        self._services = dict(services)
+
+    def _service(self, lesson_id: int | None):
+        try:
+            return self._services[lesson_id]
+        except KeyError as error:
+            raise UnknownUnitError(f'Unknown lesson {lesson_id}') from error
+
+    async def process(self, state, learner_text: str, turn_id: str, **kwargs):
+        return await self._service(state.lesson_id).process(state, learner_text, turn_id, **kwargs)
+
+    async def plan(self, state, learner_text: str, turn_id: str, **kwargs):
+        return await self._service(state.lesson_id).plan(state, learner_text, turn_id, **kwargs)
+
+    async def respond(self, request):
+        return await self._service(request.lesson_id).respond(request)
+
+    def complete(self, state, plan, utterance):
+        return self._service(state.lesson_id).complete(state, plan, utterance)

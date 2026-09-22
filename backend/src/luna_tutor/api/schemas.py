@@ -10,6 +10,7 @@ from luna_tutor.domain.state import ObjectiveProgress, ReviewItem
 
 class CreateSessionRequest(Contract):
     unit_id: Identifier
+    lesson_id: int | None = Field(default=None, ge=1)
 
 
 class UnitView(Contract):
@@ -58,6 +59,7 @@ class LearningStageFocusView(Contract):
 class SessionView(Contract):
     session_id: str
     unit_id: str
+    lesson_id: int | None = None
     unit: UnitView
     state_version: int
     stage_id: str

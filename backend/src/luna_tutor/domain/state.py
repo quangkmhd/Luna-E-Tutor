@@ -52,6 +52,9 @@ class ReviewItem(Contract):
 class LessonState(Contract):
     session_id: Text
     unit_id: Identifier
+    lesson_id: int | None = Field(default=None, ge=1)
+    script_index: int = Field(default=0, ge=0)
+    script_name: Text | None = None
     state_version: Version = 0
     stage_id: Identifier
     activity_id: Identifier | None = None
@@ -67,6 +70,7 @@ class LessonState(Contract):
     last_teacher_turn: SanitizedText = ''
     recent_context: SnapshotItems[ContextTurn] = Field(default=(), max_length=6)
     opening_message: SanitizedText | None = None
+    opening_script: SanitizedText | None = None
     closing_message: SanitizedText | None = None
     elapsed_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] = 0.0
     last_success_at_seconds: Annotated[float, Field(ge=0, allow_inf_nan=False)] | None = None

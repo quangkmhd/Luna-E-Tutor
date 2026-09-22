@@ -33,14 +33,14 @@ export class TutorApi {
   listUnits(signal?: AbortSignal) {
     return this.request<UnitSummary[]>('/api/units', { signal });
   }
-  createSession(unitId: string, signal?: AbortSignal) {
+  createSession(unitId: string, signal?: AbortSignal, lessonId?: number) {
     return this.request<SessionView>('/api/sessions', {
-      method: 'POST', body: JSON.stringify({ unit_id: unitId }), signal,
+      method: 'POST', body: JSON.stringify({ unit_id: unitId, ...(lessonId ? { lesson_id: lessonId } : {}) }), signal,
     });
   }
-  resetSession(unitId: string, signal?: AbortSignal) {
+  resetSession(unitId: string, signal?: AbortSignal, lessonId?: number) {
     return this.request<SessionView>('/api/sessions/reset', {
-      method: 'POST', body: JSON.stringify({ unit_id: unitId }), signal,
+      method: 'POST', body: JSON.stringify({ unit_id: unitId, ...(lessonId ? { lesson_id: lessonId } : {}) }), signal,
     });
   }
   listSessions(signal?: AbortSignal) {

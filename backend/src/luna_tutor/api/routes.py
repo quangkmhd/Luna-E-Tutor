@@ -15,6 +15,7 @@ from luna_tutor.api.schemas import (
     VersionRequest,
 )
 from luna_tutor.curriculum.registry import UnknownUnitError
+from luna_tutor.teaching.scripted_lesson import ScriptedLessonService
 from luna_tutor.domain.state import ActivityProgress, LessonState
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
 from luna_tutor.llm.teacher import InvalidTeacherResultError
@@ -98,6 +99,8 @@ def _learning_focus(curriculum, current_stage_id: str) -> list[LearningStageFocu
 
 def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
     messages = [MessageView(role='teacher', text=stored.state.opening_message or LEGACY_GREETING)]
+    if stored.state.opening_script:
+        messages.append(MessageView(role='teacher', text=stored.state.opening_script))
     for completed in stored.turns:
         messages.extend([
             MessageView(role='learner', text=completed.plan.learner_text,
@@ -112,15 +115,34 @@ def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
     if state.closing_message:
         messages.append(MessageView(role='teacher', text=state.closing_message,
                                     delivery_intent='warm'))
+    if state.lesson_id is None:
+        focus = _learning_focus(curriculum, state.stage_id)
+    else:
+        script = curriculum_registry.get_lesson_script(state.unit_id, state.lesson_id)
+        focus = [LearningStageFocusView(
+            stage_id=station.id,
+            stage_title={'vocabulary': 'Trạm 1 · Từ vựng',
+                         'patterns': 'Trạm 2 · Mẫu câu',
+                         'conversation': 'Trạm 3 · Hội thoại'}[station.id],
+            target_words=list(dict.fromkeys(
+                target for step in station.steps
+                for target in ([step.target] if isinstance(step.target, str) else step.target or [])
+                if target in script.words)),
+            target_patterns=list(dict.fromkeys(
+                script.patterns[target] for step in station.steps
+                for target in ([step.target] if isinstance(step.target, str) else step.target or [])
+                if target in script.patterns)),
+            highlighted=station.id == state.stage_id,
+        ) for station in script.stations]
     return SessionView(
-        session_id=state.session_id, unit_id=state.unit_id,
+        session_id=state.session_id, unit_id=state.unit_id, lesson_id=state.lesson_id,
         unit=UnitView(
             id=curriculum.id, grade=curriculum.grade,
             unit=curriculum.unit, title=curriculum.title,
         ),
         state_version=state.state_version, stage_id=state.stage_id,
         activity_id=state.activity_id, objective_id=state.objective_id,
-        learning_focus=_learning_focus(curriculum, state.stage_id),
+        learning_focus=focus,
         status=state.status, messages=messages,
         review_queue=list(state.review_queue),
         objective_progress=list(state.objective_progress),
@@ -181,7 +203,18 @@ def build_router(
             curriculum = curriculum_registry.get(request.unit_id)
         except UnknownUnitError:
             _error(400, 'UNKNOWN_UNIT', f'Unknown curriculum unit {request.unit_id}.')
-        return view(repository.create_session(_fresh_state(curriculum)))
+        if request.unit_id == 'grade03.unit01':
+            try:
+                script = curriculum_registry.get_lesson_script(
+                    request.unit_id, request.lesson_id or 1)
+            except UnknownUnitError:
+                _error(400, 'UNKNOWN_LESSON', 'Unknown lesson for this unit.')
+            state = ScriptedLessonService(script, None, None).fresh_state(str(uuid4()))
+        else:
+            if request.lesson_id is not None:
+                _error(400, 'UNKNOWN_LESSON', 'This unit does not use lesson selection.')
+            state = _fresh_state(curriculum)
+        return view(repository.create_session(state))
 
     @router.post('/sessions/reset', response_model=SessionView)
     async def reset_session(request: CreateSessionRequest):
@@ -189,7 +222,18 @@ def build_router(
             curriculum = curriculum_registry.get(request.unit_id)
         except UnknownUnitError:
             _error(400, 'UNKNOWN_UNIT', f'Unknown curriculum unit {request.unit_id}.')
-        return view(repository.replace_with_session(_fresh_state(curriculum)))
+        if request.unit_id == 'grade03.unit01':
+            try:
+                script = curriculum_registry.get_lesson_script(
+                    request.unit_id, request.lesson_id or 1)
+            except UnknownUnitError:
+                _error(400, 'UNKNOWN_LESSON', 'Unknown lesson for this unit.')
+            state = ScriptedLessonService(script, None, None).fresh_state(str(uuid4()))
+        else:
+            if request.lesson_id is not None:
+                _error(400, 'UNKNOWN_LESSON', 'This unit does not use lesson selection.')
+            state = _fresh_state(curriculum)
+        return view(repository.replace_with_session(state))
 
     @router.get('/sessions', response_model=list[SessionView])
     async def list_sessions():

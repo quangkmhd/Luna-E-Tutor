@@ -58,6 +58,8 @@ class PlanProcessor(FrameProcessor):
             return
         exchange = self.exchange
         try:
+            if frame.state.status != 'active':
+                return
             plan = await exchange.service.plan(
                 frame.state,
                 frame.text,

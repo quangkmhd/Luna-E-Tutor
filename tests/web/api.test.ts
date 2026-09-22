@@ -50,6 +50,14 @@ describe('TutorApi', () => {
     expect(JSON.parse(init.body)).toEqual({ unit_id: 'grade05.unit02' });
   });
 
+  it('selects a Grade 3 lesson when supplied', async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response('{}', { status: 200 }));
+    await new TutorApi('http://test', fetcher).createSession('grade03.unit01', undefined, 1);
+    expect(JSON.parse(fetcher.mock.calls[0][1].body)).toEqual({
+      unit_id: 'grade03.unit01', lesson_id: 1,
+    });
+  });
+
   it('returns stable typed server errors', async () => {
     const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       detail: { code: 'STATE_CONFLICT', message: 'changed', retryable: false },

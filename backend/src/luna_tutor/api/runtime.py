@@ -25,9 +25,10 @@ from luna_tutor.review.comparison import ComparisonService
 from luna_tutor.storage.session_repository import SessionRepository
 from luna_tutor.teaching.engine import TeachingEngine
 from luna_tutor.teaching.planner import TurnPlanner
+from luna_tutor.teaching.scripted_lesson import ScriptedLessonService
 from luna_tutor.teaching.turn_service import TurnService
 from luna_tutor.teaching.unit_router import (
-    UnitComparisonRouter,
+    LessonTurnRouter, UnitComparisonRouter,
     UnitTurnRouter,
 )
 
@@ -103,6 +104,26 @@ class FixtureTurnService:
         )
 
 
+class FixtureScriptEvaluator:
+    async def evaluate(self, request):
+        return EvaluatorResult(
+            turn_id=request.turn_id, state_version=request.state_version,
+            response_kind='answer', emotional_signals=[],
+            objective_evidence=[ObjectiveEvidence(
+                objective_id=request.active_objectives[0].objective_id,
+                meaning_status='satisfied', target_form_status='valid_alternative',
+                evidence_quote=request.learner_transcript,
+                recast_needed=False, corrected_form=None,
+            )],
+            needs_clarification=False, ambiguity_reason=None,
+        )
+
+
+class FixtureScriptTeacher:
+    async def respond(self, _request):
+        return TeacherUtterance(spoken_text='Good work!', delivery_intent='encouraging')
+
+
 @dataclass(frozen=True)
 class RuntimeComponents:
     repository: SessionRepository
@@ -123,11 +144,16 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
         if environment.get('ENV') != 'test':
             raise RuntimeError('TUTOR_LLM_MODE=fixture requires ENV=test')
         fixture = FixtureTurnService()
+        services = {item.id: fixture for item in registry.list_units()}
+        services['grade03.unit01'] = LessonTurnRouter({
+            None: fixture,
+            **{script.lesson: ScriptedLessonService(
+                script, FixtureScriptEvaluator(), FixtureScriptTeacher())
+               for script in registry.list_lesson_scripts('grade03.unit01')},
+        })
         return RuntimeComponents(
             repository=repository,
-            turn_service=UnitTurnRouter({
-                item.id: fixture for item in registry.list_units()
-            }),
+            turn_service=UnitTurnRouter(services),
             client=None,
             curriculum_registry=registry,
         )
@@ -157,18 +183,30 @@ def build_runtime_components(environment: Mapping[str, str]) -> RuntimeComponent
                 GeminiTeacher(client, grade=curriculum.grade),
             )
         evaluator, gemini_evaluator, jev_evaluator, teacher = grade_services[curriculum.grade]
-        selected = TurnService(
-            TurnPlanner(evaluator, engine, curriculum), teacher)
+        legacy = TurnService(TurnPlanner(evaluator, engine, curriculum), teacher)
+        selected = (LessonTurnRouter({
+            None: legacy,
+            **{script.lesson: ScriptedLessonService(script, evaluator, teacher)
+               for script in registry.list_lesson_scripts(summary.id)},
+        }) if summary.id == 'grade03.unit01' else legacy)
         turn_services[summary.id] = selected
         gemini = (
             selected if evaluator_model == GEMINI_EVALUATOR_MODEL
-            else TurnService(TurnPlanner(
-                gemini_evaluator, engine, curriculum), teacher)
+            else (LessonTurnRouter({
+                None: TurnService(TurnPlanner(gemini_evaluator, engine, curriculum), teacher),
+                **{script.lesson: ScriptedLessonService(script, gemini_evaluator, teacher)
+                   for script in registry.list_lesson_scripts(summary.id)},
+            }) if summary.id == 'grade03.unit01' else TurnService(TurnPlanner(
+                gemini_evaluator, engine, curriculum), teacher))
         )
         jev = (
             selected if evaluator_model == JEV_EVALUATOR_MODEL
-            else TurnService(TurnPlanner(
-                jev_evaluator, engine, curriculum), teacher)
+            else (LessonTurnRouter({
+                None: TurnService(TurnPlanner(jev_evaluator, engine, curriculum), teacher),
+                **{script.lesson: ScriptedLessonService(script, jev_evaluator, teacher)
+                   for script in registry.list_lesson_scripts(summary.id)},
+            }) if summary.id == 'grade03.unit01' else TurnService(TurnPlanner(
+                jev_evaluator, engine, curriculum), teacher))
         )
         comparison_services[summary.id] = ComparisonService(gemini, jev)
     return RuntimeComponents(

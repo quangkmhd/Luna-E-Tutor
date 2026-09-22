@@ -139,6 +139,10 @@ def build_voice_worker(
             await worker.queue_frame(
                 TTSSpeakFrame(latest.state.opening_message, append_to_context=True)
             )
+            if latest.state.opening_script:
+                await worker.queue_frame(
+                    TTSSpeakFrame(latest.state.opening_script, append_to_context=True)
+                )
 
     @transport.event_handler("on_client_connected")
     async def on_client_connected(_transport, _client):

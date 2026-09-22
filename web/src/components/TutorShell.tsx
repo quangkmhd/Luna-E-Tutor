@@ -18,9 +18,11 @@ function newTurnId() { return globalThis.crypto?.randomUUID?.() ?? `turn-${Date.
 export function TutorShell({
   api = tutorApi,
   initialUnitId,
+  initialLessonId,
 }: {
   api?: TutorApi;
   initialUnitId?: string;
+  initialLessonId?: number;
 }) {
   const router = useRouter();
   const [current, setCurrent] = useState<SessionView | null>(null);
@@ -33,10 +35,14 @@ export function TutorShell({
     try {
       const availableUnits = await api.listUnits(controller.signal);
       setUnits(availableUnits);
-      if (initialUnitId) replaceSession(await api.createSession(initialUnitId, controller.signal));
+      if (initialUnitId) replaceSession(await (
+        initialLessonId === undefined
+          ? api.createSession(initialUnitId, controller.signal)
+          : api.createSession(initialUnitId, controller.signal, initialLessonId)
+      ));
     }
     catch (reason) { if ((reason as Error).name !== 'AbortError') setError(reason as ApiError); } finally { setBusy(false); }
-  })(); return () => controller.abort(); }, [api, initialUnitId, replaceSession]);
+  })(); return () => controller.abort(); }, [api, initialUnitId, initialLessonId, replaceSession]);
   const refreshVoiceSession = useCallback(async () => {
     if (!currentSessionId) return;
     try { replaceSession(await api.getSession(currentSessionId)); }
@@ -65,7 +71,11 @@ export function TutorShell({
     router.push(unitPath(selectedUnit.grade, selectedUnit.unit));
   }
   function chooseAnotherUnit() { setCurrent(null); router.push('/'); }
-  async function startNew() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.resetSession(current.unit.id)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
+  async function startNew() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await (
+    current.lesson_id == null
+      ? api.resetSession(current.unit.id)
+      : api.resetSession(current.unit.id, undefined, current.lesson_id)
+  )); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   async function finish() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.finishSession(current.session_id, current.state_version)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   if (!current && busy) return <main className="loading"><div className="logo-mark">L</div><p>{error ? error.message : 'Loading units…'}</p></main>;
   if (!current) return <><UnitSelector units={units} busy={busy} onSelect={(unitId) => { void selectUnit(unitId); }} />{error && <div className="error-banner" role="alert">{error.message}</div>}</>;

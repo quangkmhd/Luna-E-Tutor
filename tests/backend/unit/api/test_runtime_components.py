@@ -43,10 +43,10 @@ async def test_live_runtime_binds_teacher_and_evaluator_prompts_to_grade(tmp_pat
         'TUTOR_DATABASE_PATH': str(tmp_path / 'prompts.sqlite3'),
     })
     try:
-        grade3 = components.turn_service._service('grade03.unit01')
+        grade3 = components.turn_service._service('grade03.unit01')._service(1)
         grade5 = components.turn_service._service('grade05.unit01')
         assert 'Grade 3' in grade3._teacher._prompt
-        assert 'Grade 3' in grade3._planner._evaluator._prompt
+        assert 'Grade 3' in grade3._evaluator._prompt
         assert 'Grade 5' in grade5._teacher._prompt
         assert 'Grade 5' in grade5._planner._evaluator._prompt
         assert grade3._teacher is not grade5._teacher
