@@ -1,9 +1,11 @@
+from pathlib import Path
+
 import pytest
 
-from luna_tutor.curriculum.lesson_script import LessonScript
+from luna_tutor.curriculum.lesson_script import LessonScript, load_lesson_script
 from luna_tutor.domain.decisions import TeacherUtterance
 from luna_tutor.domain.evidence import EvaluatorResult, ObjectiveEvidence
-from luna_tutor.teaching.scripted_lesson import ScriptedLessonService
+from luna_tutor.teaching.scripted_lesson import ScriptedLessonService, _join_spoken
 
 
 class Evaluator:
@@ -28,6 +30,31 @@ class Evaluator:
 class Teacher:
     async def respond(self, request):
         return TeacherUtterance(spoken_text='Good work!', delivery_intent='encouraging')
+
+
+def test_joined_teacher_turn_does_not_double_authored_long_pause():
+    assert _join_spoken('Good work!', '[long pause] "Hi" [long pause]') == (
+        'Good work! [long pause] "Hi" [long pause]')
+    assert _join_spoken('Good work! [long pause]', '[long pause] "Hi" [long pause]') == (
+        'Good work! [long pause] "Hi" [long pause]')
+
+
+@pytest.mark.asyncio
+async def test_recited_answer_delivers_only_the_next_authored_line():
+    class UnwantedTeacher:
+        async def respond(self, request):
+            raise AssertionError('Teacher must not add a conversational response')
+
+    service = ScriptedLessonService(script(), Evaluator(), UnwantedTeacher())
+    state = service.fresh_state('session-repeated-greeting').model_copy(update={
+        'script_index': 1, 'stage_id': 'vocabulary',
+        'activity_id': 'lesson-02.exchange-01',
+        'objective_id': 'lesson-02.objective-01',
+        'last_teacher_turn': 'Say hello.',
+    })
+    completed = await service.process(state, 'Hello', 'turn-repeated-greeting')
+    assert completed.teacher_utterance.spoken_text == 'Say hi.'
+    assert completed.teacher_utterance.generation_mode == 'script'
 
 
 def script():
@@ -116,13 +143,119 @@ async def test_wrong_answer_gets_one_retry_then_moves_without_false_praise():
                     'target_form_status': 'not_used',
                 })]})
 
-    service = ScriptedLessonService(script(), RejectingEvaluator(), Teacher())
-    first = await service.process(service.fresh_state('session-wrong'), 'book', 'wrong-1')
-    assert first.next_state.script_index == 0
+    class SupportTeacher:
+        def __init__(self):
+            self.requests = []
+
+        async def respond(self, request):
+            self.requests.append(request)
+            text = ('Mình nhớ cả từ "hello" nhé.' if request.constraints.max_questions == 0
+                    else 'Say "hello" once more.')
+            return TeacherUtterance(spoken_text=text,
+                                    delivery_intent='encouraging')
+
+    teacher = SupportTeacher()
+    service = ScriptedLessonService(script(), RejectingEvaluator(), teacher)
+    state = service.fresh_state('session-wrong').model_copy(update={
+        'script_index': 1, 'stage_id': 'vocabulary',
+        'activity_id': 'lesson-02.exchange-01',
+        'objective_id': 'lesson-02.objective-01',
+        'last_teacher_turn': 'Say hello.',
+    })
+    first = await service.process(state, 'book', 'wrong-1')
+    assert first.next_state.script_index == 1
+    assert first.teacher_utterance.spoken_text == 'Say "hello" once more.'
+    assert teacher.requests[0].activity_context is not None
     second = await service.process(first.next_state, 'book', 'wrong-2')
-    assert second.next_state.script_index == 1
-    assert second.teacher_utterance.spoken_text.endswith('Say hello.')
+    assert second.next_state.script_index == 2
+    assert second.teacher_utterance.spoken_text == 'Mình nhớ cả từ "hello" nhé. [long pause] Say hi.'
+    assert len(teacher.requests) == 2
+    assert teacher.requests[1].constraints.max_questions == 0
+    assert [item.text for item in teacher.requests[1].recent_context[-2:]] == [
+        'book', 'Say "hello" once more.']
     assert second.next_state.objective_progress == ()
+
+
+@pytest.mark.asyncio
+async def test_grade3_im_wrong_attempts_get_support_before_good_evening():
+    path = (Path(__file__).resolve().parents[4]
+            / 'curriculum/grade-03/unit-01/lesson-01/content.yaml')
+
+    class RejectingEvaluator(Evaluator):
+        async def evaluate(self, request):
+            result = await super().evaluate(request)
+            return result.model_copy(update={'objective_evidence': [
+                result.objective_evidence[0].model_copy(update={
+                    'meaning_status': 'not_demonstrated',
+                    'target_form_status': 'not_used',
+                })]})
+
+    class SupportTeacher:
+        async def respond(self, request):
+            text = ('Cả từ là "I’m" nhé.' if request.constraints.max_questions == 0
+                    else 'Listen: "I’m". Now you.')
+            return TeacherUtterance(spoken_text=text,
+                                    delivery_intent='encouraging')
+
+    service = ScriptedLessonService(load_lesson_script(path), RejectingEvaluator(), SupportTeacher())
+    im_index = next(i for i, item in enumerate(service.opportunities) if item.target == "I'm")
+    current = service.opportunities[im_index]
+    state = service.fresh_state('session-im-support').model_copy(update={
+        'script_index': im_index, 'stage_id': current.stage,
+        'activity_id': current.activity_id, 'objective_id': current.objective_id,
+        'last_teacher_turn': current.say,
+    })
+    first = await service.process(state, 'i', 'im-wrong-1')
+    assert first.teacher_utterance.spoken_text == 'Listen: "I’m". Now you.'
+    assert first.next_state.script_index == im_index
+
+    second = await service.process(first.next_state, 'am', 'im-wrong-2')
+    assert '"Good evening"' in second.teacher_utterance.spoken_text
+    assert second.teacher_utterance.spoken_text.startswith('Cả từ là "I’m" nhé.')
+    assert second.next_state.script_index == im_index + 1
+
+
+@pytest.mark.asyncio
+async def test_second_wrong_pattern_correction_precedes_next_authored_example():
+    path = (Path(__file__).resolve().parents[4]
+            / 'curriculum/grade-03/unit-01/lesson-01/content.yaml')
+
+    class RejectingEvaluator(Evaluator):
+        async def evaluate(self, request):
+            result = await super().evaluate(request)
+            return result.model_copy(update={'objective_evidence': [
+                result.objective_evidence[0].model_copy(update={
+                    'meaning_status': 'partially_satisfied',
+                    'target_form_status': 'error_in_target_form',
+                })]})
+
+    class CorrectingTeacher:
+        def __init__(self):
+            self.requests = []
+
+        async def respond(self, request):
+            self.requests.append(request)
+            return TeacherUtterance(
+                spoken_text='The correct sentence is "Hi. I\'m Mai."',
+                delivery_intent='encouraging')
+
+    teacher = CorrectingTeacher()
+    service = ScriptedLessonService(load_lesson_script(path), RejectingEvaluator(), teacher)
+    index = next(i for i, item in enumerate(service.opportunities)
+                 if item.order == 8 and item.exchange == 1)
+    current = service.opportunities[index]
+    state = service.fresh_state('session-pattern-correction').model_copy(update={
+        'script_index': index, 'stage_id': current.stage,
+        'activity_id': current.activity_id, 'objective_id': current.objective_id,
+        'last_teacher_turn': current.say, 'attempt_count': 1,
+    })
+    completed = await service.process(state, 'hi i is mai', 'pattern-wrong-2')
+    assert completed.plan.decision.support_limit_exit
+    assert 'brief declarative sentence' in teacher.requests[0].next_teaching_move
+    assert teacher.requests[0].activity_context.examples == (current.say,)
+    assert completed.teacher_utterance.spoken_text.startswith(
+        'The correct sentence is "Hi. I\'m Mai." [long pause] Listen first!')
+    assert '"Hello. I\'m Minh."' in completed.teacher_utterance.spoken_text
 
 
 @pytest.mark.asyncio

@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+body{margin:0;font:14px system-ui,-apple-system,sans-serif;background:#faf9f7}
+img{max-width:100%}[hidden]{display:none!important}
+</style>
+<title>Lớp học của Mina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --cream:#fdf8f1;
+  --surface:#ffffff;
+  --surface-2:#f7f1e7;
+  --surface-3:#ece2d2;
+  --ink:#2a2131;
+  --ink-2:#4e4359;
+  --muted:#6f6479;
+  --rule:#e6dbca;
+  --rule-2:#d2c4ae;
+
+  --coral:#ef6f4c;          /* nền nút, không dùng cho chữ nhỏ */
+  --coral-tx:#b8462a;       /* coral đủ tương phản để làm chữ */
+  --coral-soft:#fdeae3;
+  --teal:#0f6f6c;
+  --teal-soft:#dcefee;
+  --sun:#e09a15;
+  --sun-tx:#8a5f06;
+  --sun-soft:#fdf0d8;
+  --mint:#2f8558;
+  --mint-soft:#e0f1e8;
+  --rose:#c03f59;
+  --rose-soft:#fbe6ea;
+  --sky:#2f6cae;
+  --sky-soft:#e3edf9;
+  --plum:#6b4a86;
+  --plum-soft:#f0e9f6;
+
+  --shadow-s:0 1px 2px rgba(44,35,51,.07);
+  --shadow-m:0 2px 4px rgba(44,35,51,.06),0 10px 24px -14px rgba(44,35,51,.32);
+  --shadow-l:0 4px 8px rgba(44,35,51,.07),0 24px 46px -24px rgba(44,35,51,.46);
+
+  --display:"Baloo 2",system-ui,sans-serif;
+  --ui:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;
+
+  --r-s:9px; --r-m:15px; --r-l:21px; --r-xl:29px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --cream:#17131c; --surface:#1f1a26; --surface-2:#282131; --surface-3:#342b3e;
+    --ink:#f2ecf4; --ink-2:#cbc0d2; --muted:#9a8da5;
+    --rule:#352d40; --rule-2:#473c54;
+    --coral:#ff8d6b; --coral-tx:#ffa287; --coral-soft:#3a251f;
+    --teal:#56c2b9; --teal-soft:#16322f;
+    --sun:#f2bd5c; --sun-tx:#f5cc7d; --sun-soft:#362a15;
+    --mint:#63bd8c; --mint-soft:#1a3125;
+    --rose:#ec7d93; --rose-soft:#37202a;
+    --sky:#77aee2; --sky-soft:#1b2838;
+    --plum:#b08fcd; --plum-soft:#271e33;
+    --shadow-s:0 1px 2px rgba(0,0,0,.45);
+    --shadow-m:0 2px 4px rgba(0,0,0,.4),0 10px 24px -14px rgba(0,0,0,.75);
+    --shadow-l:0 4px 8px rgba(0,0,0,.45),0 24px 46px -24px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --cream:#17131c; --surface:#1f1a26; --surface-2:#282131; --surface-3:#342b3e;
+  --ink:#f2ecf4; --ink-2:#cbc0d2; --muted:#9a8da5; --rule:#352d40; --rule-2:#473c54;
+  --coral:#ff8d6b; --coral-tx:#ffa287; --coral-soft:#3a251f;
+  --teal:#56c2b9; --teal-soft:#16322f;
+  --sun:#f2bd5c; --sun-tx:#f5cc7d; --sun-soft:#362a15;
+  --mint:#63bd8c; --mint-soft:#1a3125; --rose:#ec7d93; --rose-soft:#37202a;
+  --sky:#77aee2; --sky-soft:#1b2838; --plum:#b08fcd; --plum-soft:#271e33;
+  --shadow-s:0 1px 2px rgba(0,0,0,.45);
+  --shadow-m:0 2px 4px rgba(0,0,0,.4),0 10px 24px -14px rgba(0,0,0,.75);
+  --shadow-l:0 4px 8px rgba(0,0,0,.45),0 24px 46px -24px rgba(0,0,0,.85);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--cream);color:var(--ink);
+  font-family:var(--ui);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+button,input{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer}
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px;border-radius:9px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.app{height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+
+/* ═════ topbar ═════ */
+.top{
+  flex:0 0 auto;display:flex;align-items:center;gap:13px;
+  padding:9px 18px;background:var(--surface);
+  border-bottom:1px solid var(--rule);z-index:5;
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand .av{
+  width:42px;height:42px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(145deg,var(--coral),var(--sun));
+  display:grid;place-items:center;box-shadow:var(--shadow-s);
+}
+.brand b{display:block;font-family:var(--display);font-weight:700;font-size:19px;line-height:1.15}
+.brand span{display:block;font-size:12px;color:var(--muted);line-height:1.3;font-weight:500}
+.top .sp{flex:1}
+.chipline{display:flex;align-items:center;gap:8px}
+.tchip{
+  display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:99px;
+  background:var(--surface-2);font-size:13.5px;font-weight:600;color:var(--ink-2);
+  white-space:nowrap;min-height:40px;
+}
+.tchip.live{background:var(--mint-soft);color:var(--mint)}
+.tchip .sub{font-size:11.5px;color:var(--muted);font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.dot.pulse{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.pbtn-top{
+  min-height:44px;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:99px;
+  background:var(--plum-soft);color:var(--plum);font-size:13.5px;font-weight:700;
+}
+.pbtn-top:hover{filter:brightness(.97)}
+.stu{display:flex;align-items:center;gap:9px}
+.stu .ava{
+  width:38px;height:38px;border-radius:50%;background:var(--sky-soft);
+  color:var(--sky);display:grid;place-items:center;
+  font-family:var(--display);font-weight:700;font-size:17px;
+}
+
+/* ═════ grid ═════ */
+.main{flex:1;min-height:0;display:grid;grid-template-columns:278px minmax(0,1fr) 340px}
+.pane{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.pane.left{border-right:1px solid var(--rule);background:var(--surface)}
+.pane.mid{background:var(--cream)}
+.pane.right{border-left:1px solid var(--rule);background:var(--surface)}
+.scroller{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+
+/* ═════ LEFT ═════ */
+.lhead{flex:0 0 auto;padding:13px 14px 11px;border-bottom:1px solid var(--rule)}
+.lhead h2{margin:0 0 10px;font-family:var(--display);font-weight:600;font-size:16px}
+.search{
+  display:flex;align-items:center;gap:9px;background:var(--surface-2);
+  border:2px solid transparent;border-radius:99px;padding:7px 14px;margin-bottom:10px;min-height:44px;
+}
+.search:focus-within{border-color:var(--coral);background:var(--surface)}
+.search input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14px}
+.search svg{flex:0 0 auto;color:var(--muted)}
+.filters{display:flex;gap:6px}
+.fchip{
+  flex:1;min-height:40px;padding:8px 5px;border-radius:99px;font-size:13.5px;font-weight:700;
+  color:var(--muted);background:var(--surface-2);text-align:center;transition:.15s;
+}
+.fchip:hover{background:var(--surface-3)}
+.fchip[aria-pressed="true"]{background:var(--coral);color:#fff}
+
+.tree{padding:8px 10px 24px}
+.glabel{
+  font-size:11.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);padding:10px 8px 5px;
+}
+.unit{margin-bottom:2px}
+.unit>summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;
+  padding:10px 9px;border-radius:var(--r-s);font-size:14px;font-weight:600;
+  color:var(--ink-2);min-height:44px;
+}
+.unit>summary::-webkit-details-marker{display:none}
+.unit>summary:hover{background:var(--surface-2)}
+.unit.cur>summary{background:var(--coral-soft);color:var(--coral-tx)}
+.unum{
+  width:24px;height:24px;border-radius:7px;flex:0 0 auto;display:grid;place-items:center;
+  background:var(--surface-3);color:var(--ink-2);font-size:12px;font-weight:700;
+}
+.unit.cur .unum{background:var(--coral);color:#fff}
+.utitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.caret{width:15px;height:15px;flex:0 0 auto;color:var(--muted);transition:transform .18s}
+details[open]>summary .caret{transform:rotate(90deg)}
+
+.steps{list-style:none;margin:3px 0 8px;padding:0 0 0 12px;
+  border-left:2px solid var(--rule);margin-left:20px}
+.step{
+  width:100%;text-align:left;display:flex;align-items:flex-start;gap:10px;
+  padding:9px;border-radius:var(--r-s);font-size:13.5px;color:var(--ink-2);
+  line-height:1.4;min-height:44px;
+}
+.step:hover{background:var(--surface-2)}
+.step.done .sname{color:var(--muted)}
+.step.cur{background:var(--teal-soft);color:var(--teal);font-weight:600}
+.step.lock{opacity:.6;cursor:not-allowed}
+.sdot{
+  width:19px;height:19px;border-radius:50%;flex:0 0 auto;margin-top:1px;
+  display:grid;place-items:center;font-size:10px;font-weight:700;
+  background:var(--surface-3);color:var(--muted);
+}
+.step.done .sdot{background:var(--mint);color:#fff}
+.step.cur .sdot{background:var(--teal);color:#fff}
+.sbody{min-width:0}
+.sname{display:block}
+.swords{
+  display:block;font-size:12px;color:var(--muted);font-weight:400;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;
+}
+.step.cur .swords{color:var(--teal);opacity:.85}
+.uprog{display:flex;align-items:center;gap:8px;padding:4px 9px 9px 20px}
+.bar{flex:1;height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--coral)}
+.uprog span{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ═════ MID ═════ */
+.lesbar{
+  flex:0 0 auto;padding:12px 20px 0;background:var(--surface);
+  border-bottom:1px solid var(--rule);
+}
+.lestop{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;margin-bottom:9px}
+.lestop h1{margin:0;font-family:var(--display);font-weight:700;font-size:18px}
+.lestop .crumb{font-size:12.5px;color:var(--muted);font-weight:500}
+
+/* chặng dạy — thanh nhỏ, thay cho 8 chấm vô nghĩa cũ */
+.phases{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+.phases::-webkit-scrollbar{display:none}
+.ph{
+  flex:1 1 0;min-width:76px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:5px 4px 8px;border-bottom:3px solid transparent;min-height:44px;transition:.18s;
+}
+.ph .pi{font-size:17px;line-height:1}
+.ph .pn{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ph:hover .pi{transform:translateY(-2px)}
+.ph.done .pn{color:var(--mint)}
+.ph[aria-current="true"]{border-bottom-color:var(--coral)}
+.ph[aria-current="true"] .pn{color:var(--coral-tx);font-weight:700}
+.ph.soon{opacity:.48}
+
+.chat{padding:20px 20px 8px;display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:11px;max-width:650px}
+.row.me{flex-direction:row-reverse;margin-left:auto}
+.bav{
+  width:36px;height:36px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  font-family:var(--display);font-weight:700;font-size:16px;
+}
+.bav.t{background:linear-gradient(145deg,var(--coral),var(--sun));color:#fff}
+.bav.s{background:var(--sky-soft);color:var(--sky)}
+.bub{
+  background:var(--surface);border:1px solid var(--rule);
+  padding:12px 16px;border-radius:var(--r-l);border-top-left-radius:7px;
+  box-shadow:var(--shadow-s);min-width:0;font-size:15px;
+}
+.row.me .bub{background:var(--sky-soft);border-color:transparent;
+  border-radius:var(--r-l);border-top-right-radius:7px}
+.bub p{margin:0}
+.bub p+p{margin-top:7px}
+.bub .vi{color:var(--muted);font-size:13.5px;font-style:italic}
+.bt{font-size:12px;color:var(--muted);margin-top:5px;font-weight:500}
+
+.voice{display:flex;align-items:center;gap:12px;min-width:226px}
+.play{
+  width:44px;height:44px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  background:var(--coral);color:#fff;box-shadow:var(--shadow-s);
+}
+.row.me .play{background:var(--sky)}
+.play:hover{filter:brightness(1.07)}
+.wave{display:flex;align-items:center;gap:2.5px;height:26px;flex:1}
+.wave i{display:block;width:3.5px;border-radius:99px;background:var(--coral);opacity:.42}
+.row.me .wave i{background:var(--sky)}
+.wave i.hi{opacity:1}
+.vtime{font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.mcard{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-l);
+  border-top-left-radius:7px;overflow:hidden;box-shadow:var(--shadow-s);width:282px;
+}
+.mcard .art{display:block;width:100%;height:auto;background:var(--sky-soft)}
+.mcard .cap{padding:11px 14px 13px}
+.mcard .w{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.2;
+  display:flex;align-items:center;gap:8px}
+.mcard .ipa{font-size:13px;color:var(--muted);font-weight:500;font-family:var(--ui)}
+.mcard .vn{font-size:14px;color:var(--ink-2);margin-top:2px}
+.spk{
+  width:40px;height:40px;border-radius:50%;background:var(--coral-soft);color:var(--coral-tx);
+  display:grid;place-items:center;margin-left:auto;flex:0 0 auto;
+}
+.spk:hover{background:var(--coral);color:#fff}
+
+.fb{
+  align-self:center;display:flex;align-items:center;gap:9px;
+  padding:9px 16px;border-radius:99px;font-size:13.5px;font-weight:600;
+  background:var(--mint-soft);color:var(--mint);max-width:94%;
+}
+.fb.warm{background:var(--sun-soft);color:var(--sun-tx)}
+.fb.wait{background:var(--sky-soft);color:var(--sky)}
+.fb svg{flex:0 0 auto}
+.fb .bd{width:11px;height:11px;border-radius:50%;background:currentColor;
+  animation:breathe 2.6s ease-in-out infinite;flex:0 0 auto}
+@keyframes breathe{0%,100%{transform:scale(.7);opacity:.45}50%{transform:scale(1);opacity:1}}
+
+.typing{display:flex;align-items:center;gap:5px;padding:6px 4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5;
+  animation:bounce 1.3s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.16s}
+.typing i:nth-child(3){animation-delay:.32s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.35}40%{transform:translateY(-4px);opacity:1}}
+
+/* composer */
+.comp{
+  flex:0 0 auto;padding:11px 20px calc(13px + env(safe-area-inset-bottom,0px));
+  background:var(--surface);border-top:1px solid var(--rule);
+}
+/* chữ nhận dạng trực tiếp */
+.heard{
+  max-width:780px;margin:0 auto 10px;padding:12px 17px;border-radius:var(--r-m);
+  background:var(--mint-soft);border:2px dashed var(--mint);display:none;
+}
+.heard.on{display:block;animation:fadein .28s}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.heard .hl{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--mint);margin-bottom:3px}
+.heard .ht{font-family:var(--display);font-weight:600;font-size:19px;color:var(--ink)}
+.heard .hc{width:2px;height:18px;background:var(--mint);display:inline-block;
+  vertical-align:-3px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+.cwrap{display:flex;align-items:center;gap:11px;max-width:780px;margin:0 auto}
+.cbox{
+  flex:1;display:flex;align-items:center;gap:8px;min-width:0;
+  background:var(--surface-2);border:2px solid transparent;
+  border-radius:var(--r-xl);padding:5px 5px 5px 16px;min-height:52px;
+}
+.cbox:focus-within{border-color:var(--coral);background:var(--surface)}
+.cbox input{flex:1;min-width:0;border:0;background:none;outline:none;font:inherit;padding:8px 0}
+.cbox input::placeholder{color:var(--muted)}
+.iconbtn{
+  width:44px;height:44px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  color:var(--muted);
+}
+.iconbtn:hover{background:var(--surface-3);color:var(--ink-2)}
+.micw{display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto}
+.mic{
+  width:64px;height:64px;border-radius:50%;display:grid;place-items:center;
+  background:var(--coral);color:#fff;box-shadow:var(--shadow-m);
+  transition:transform .15s ease, background .15s ease;
+}
+.mic:hover{transform:scale(1.05)}
+.mic[aria-pressed="true"]{background:var(--rose);animation:mic 1.6s ease-in-out infinite}
+@keyframes mic{0%,100%{box-shadow:0 0 0 0 rgba(192,63,89,.42),var(--shadow-m)}
+  50%{box-shadow:0 0 0 15px rgba(192,63,89,0),var(--shadow-m)}}
+.micl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.hintrow{display:flex;align-items:center;justify-content:center;gap:10px;margin:9px 0 0;flex-wrap:wrap}
+.hint{font-size:12.5px;color:var(--muted);font-weight:500;margin:0}
+.hint b{color:var(--coral-tx);font-weight:700}
+.shy{
+  min-height:40px;padding:8px 16px;border-radius:99px;font-size:13px;font-weight:600;
+  color:var(--plum);background:var(--plum-soft);border:2px dashed transparent;
+}
+.shy:hover{border-color:var(--plum)}
+
+/* ═════ RIGHT ═════ */
+.tabs{flex:0 0 auto;display:flex;gap:3px;padding:9px 12px 0;border-bottom:1px solid var(--rule)}
+.tab{
+  flex:1;padding:10px 6px 11px;border-radius:var(--r-s) var(--r-s) 0 0;
+  font-size:13.5px;font-weight:700;color:var(--muted);
+  border-bottom:3px solid transparent;margin-bottom:-1px;min-height:46px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.tab:hover{color:var(--ink-2)}
+.tab[aria-selected="true"]{color:var(--coral-tx);border-bottom-color:var(--coral)}
+.tcount{font-size:11px;font-weight:700;background:var(--surface-3);color:var(--muted);
+  padding:0 7px;border-radius:99px;line-height:18px}
+.tab[aria-selected="true"] .tcount{background:var(--coral-soft);color:var(--coral-tx)}
+.tpanel{padding:16px 15px 26px}
+
+.sec{margin-bottom:24px}
+.sec:last-child{margin-bottom:0}
+.sech{display:flex;align-items:center;gap:8px;margin:0 0 11px;
+  font-family:var(--display);font-weight:600;font-size:14.5px}
+.sech .n{margin-left:auto;font-family:var(--ui);font-size:11.5px;font-weight:600;color:var(--muted)}
+
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fcard{
+  border:1px solid var(--rule);border-radius:var(--r-m);overflow:hidden;
+  background:var(--surface);text-align:left;box-shadow:var(--shadow-s);
+  transition:transform .14s ease, box-shadow .14s ease;min-height:48px;
+}
+.fcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-m)}
+.fcard svg{display:block;width:100%;height:auto}
+.fcard .fc{padding:8px 10px 10px}
+.fcard .fw{font-family:var(--display);font-weight:700;font-size:15px;line-height:1.2}
+.fcard .fv{font-size:11.5px;color:var(--muted);margin-top:1px}
+.fstat{display:inline-flex;align-items:center;gap:4px;margin-top:5px;
+  font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px}
+.s-ok{background:var(--mint-soft);color:var(--mint)}
+.s-mid{background:var(--sun-soft);color:var(--sun-tx)}
+.s-new{background:var(--surface-2);color:var(--muted)}
+
+.vrow{
+  width:100%;display:flex;align-items:center;gap:11px;padding:9px 11px;
+  border-radius:var(--r-m);background:var(--surface-2);margin-bottom:6px;
+  text-align:left;min-height:56px;transition:.14s;
+}
+.vrow:hover{background:var(--surface-3);transform:translateX(2px)}
+.vrow .vw{font-family:var(--display);font-weight:600;font-size:15.5px;line-height:1.15}
+.vrow .vv{font-size:12px;color:var(--muted)}
+.vrow .sp2{flex:1}
+.vspk{width:38px;height:38px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  background:var(--surface);color:var(--coral-tx)}
+.expo{display:flex;gap:2.5px;margin-top:4px}
+.expo i{width:6px;height:6px;border-radius:2px;background:var(--rule-2)}
+.expo i.on{background:var(--mint)}
+.explain{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.5}
+
+.pat{border-left:4px solid var(--teal);background:var(--teal-soft);
+  padding:11px 14px;border-radius:0 var(--r-m) var(--r-m) 0;margin-bottom:8px;
+  width:100%;text-align:left;min-height:48px;display:block}
+.pat:hover{filter:brightness(.98)}
+.pat b{display:block;font-family:var(--display);font-weight:600;font-size:14.5px;
+  color:var(--teal);line-height:1.35}
+.pat span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.pat.g{border-left-color:var(--sky);background:var(--sky-soft)}
+.pat.g b{color:var(--sky)}
+
+/* tiến độ — bản cho TRẺ, không có điểm số */
+.journey{background:var(--surface-2);border-radius:var(--r-l);padding:16px 17px;margin-bottom:14px}
+.journey .jl{font-size:12.5px;color:var(--muted);font-weight:600}
+.journey .jv{font-family:var(--display);font-weight:700;font-size:32px;line-height:1.1;margin:3px 0 2px}
+.journey .jv small{font-size:16px;font-weight:600;color:var(--muted)}
+.jbar{height:11px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:10px 0 6px}
+.jbar i{display:block;height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--mint),var(--teal))}
+.journey .jn2{font-size:12.5px;color:var(--ink-2)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--surface-2);border-radius:var(--r-m);padding:13px 14px}
+.stat .sv{font-family:var(--display);font-weight:700;font-size:25px;line-height:1.1;
+  font-variant-numeric:tabular-nums}
+.stat .sl{font-size:12px;color:var(--muted);font-weight:600;margin-top:1px}
+.stat.ok .sv{color:var(--mint)}.stat.sun .sv{color:var(--sun-tx)}.stat.sky .sv{color:var(--sky)}
+
+.parentcard{
+  border:2px dashed var(--plum);background:var(--plum-soft);border-radius:var(--r-m);
+  padding:14px 15px;
+}
+.parentcard b{display:block;font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--plum)}
+.parentcard p{margin:4px 0 11px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.parentcard button{
+  width:100%;min-height:46px;border-radius:99px;background:var(--plum);color:#fff;
+  font-weight:700;font-size:14px;
+}
+.parentcard button:hover{filter:brightness(1.08)}
+
+/* game */
+.gcard{
+  border-radius:var(--r-l);padding:17px;margin-bottom:12px;position:relative;overflow:hidden;
+  background:linear-gradient(140deg,var(--coral),var(--sun));color:#fff;box-shadow:var(--shadow-m);
+}
+.gcard .gt{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.2}
+.gcard .gd{font-size:13px;opacity:.95;margin-top:3px;max-width:27ch}
+.stars{display:flex;gap:5px;margin:12px 0 14px}
+.gbtn{
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--coral-tx);
+  padding:12px 20px;border-radius:99px;font-weight:700;font-size:14px;min-height:46px;
+  box-shadow:0 2px 6px rgba(0,0,0,.14);
+}
+.gbtn:hover{transform:translateY(-1px)}
+.gblob{position:absolute;right:-26px;top:-26px;opacity:.18}
+
+.glock{
+  border:1px solid var(--rule);border-radius:var(--r-m);padding:13px;
+  display:flex;gap:12px;align-items:center;background:var(--surface-2);margin-bottom:9px;
+  min-height:56px;
+}
+.glock .gi{width:44px;height:44px;border-radius:13px;flex:0 0 auto;display:grid;place-items:center;
+  background:var(--surface-3);font-size:20px;filter:grayscale(.55)}
+.glock b{display:block;font-family:var(--display);font-weight:600;font-size:14.5px}
+.glock span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.glock .need{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--muted);
+  background:var(--surface);padding:4px 9px;border-radius:99px;white-space:nowrap}
+
+.badges{display:flex;gap:9px;flex-wrap:wrap}
+.badge{width:56px;text-align:center}
+.badge .bi{width:48px;height:48px;border-radius:15px;margin:0 auto 4px;display:grid;
+  place-items:center;font-size:23px;background:var(--sun-soft)}
+.badge.off .bi{background:var(--surface-2);filter:grayscale(1);opacity:.42}
+.badge small{font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.25;display:block}
+
+.why{background:var(--mint-soft);border-radius:var(--r-m);padding:14px 16px}
+.why b{display:block;font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--mint);margin-bottom:3px}
+.why p{margin:0;font-size:12.8px;color:var(--ink-2);line-height:1.55}
+
+/* ═════ overlays ═════ */
+.veil{position:fixed;inset:0;background:rgba(44,35,51,.55);backdrop-filter:blur(6px);
+  display:grid;place-items:center;padding:20px;z-index:60;animation:fadein .25s}
+.veil[hidden]{display:none}
+.sheet{
+  background:var(--surface);border-radius:var(--r-xl);padding:26px 24px 22px;max-width:480px;
+  width:100%;box-shadow:var(--shadow-l);animation:pop .34s cubic-bezier(.2,1.2,.4,1);
+  max-height:88vh;overflow-y:auto;
+}
+@keyframes pop{from{opacity:0;transform:scale(.93) translateY(14px)}to{opacity:1;transform:none}}
+.sheet h2{margin:0 0 6px;font-family:var(--display);font-weight:700;font-size:23px;text-wrap:balance}
+.sheet .sb{margin:0;color:var(--ink-2);font-size:14.5px}
+.center{text-align:center}
+.bst{width:72px;height:72px;border-radius:24px;margin:0 auto 14px;display:grid;
+  place-items:center;font-size:36px;background:var(--sun-soft)}
+.rw{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin:18px 0}
+.rwb{aspect-ratio:.86;border-radius:var(--r-l);background:var(--sun-soft);border:3px solid transparent;
+  display:grid;place-items:center;font-size:38px;transition:.18s;min-height:48px}
+.rwb:hover{transform:translateY(-6px) rotate(-3deg);border-color:var(--sun);box-shadow:var(--shadow-m)}
+.rwb.picked{border-color:var(--mint);background:var(--mint-soft);transform:none}
+.two{display:flex;gap:10px;margin-top:16px}
+.two button{flex:1;min-height:52px;padding:14px;border-radius:99px;font-weight:700;font-size:15px}
+.p1{background:var(--coral);color:#fff;box-shadow:var(--shadow-m)}
+.p1:hover{filter:brightness(1.07)}
+.p2{background:var(--surface-2);color:var(--ink-2)}
+.p2:hover{background:var(--surface-3)}
+
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.pst{background:var(--surface-2);border-radius:var(--r-m);padding:13px 15px}
+.pst .v{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.1;
+  font-variant-numeric:tabular-nums}
+.pst .l{font-size:12.5px;color:var(--muted);font-weight:600}
+.pst.g .v{color:var(--mint)}.pst.y .v{color:var(--sun-tx)}.pst.s .v{color:var(--sky)}
+.pnote{background:var(--sky-soft);border-radius:var(--r-m);padding:13px 15px;
+  font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.prow{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--rule)}
+.prow:last-child{border-bottom:0}
+.pri{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;font-size:16px}
+.prow b{display:block;font-size:14px;font-weight:700}
+.prow span{display:block;font-size:12.8px;color:var(--muted);line-height:1.45;margin-top:1px}
+
+/* ═════ mobile ═════ */
+.mnav{display:none}
+@media (max-width:1140px){
+  .main{grid-template-columns:1fr}
+  .pane{display:none;border:0}
+  .pane[data-show="1"]{display:flex}
+  .mnav{display:flex;flex:0 0 auto;background:var(--surface);border-top:1px solid var(--rule);
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px))}
+  .mnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 0;border-radius:var(--r-s);font-size:12px;font-weight:700;color:var(--muted);
+    min-height:52px}
+  .mnav button[aria-selected="true"]{color:var(--coral-tx);background:var(--coral-soft)}
+  .comp{padding-bottom:12px}
+  .top .chipline{display:none}
+}
+@media (max-width:560px){
+  .cards{grid-template-columns:1fr 1fr}
+  .brand span{display:none}
+  .lesbar{padding:11px 15px 0}
+  .chat{padding:15px 14px 8px}
+  .comp{padding-inline:14px}
+  .ph{min-width:66px}
+  .pbtn-top span{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════ TOP ══════ -->
+  <header class="top">
+    <div class="brand">
+      <div class="av" aria-hidden="true">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v3"/><circle cx="12" cy="12.5" r="6"/><path d="M9.6 11.6h.01M14.4 11.6h.01"/><path d="M10 15c1.2.9 2.8.9 4 0"/>
+        </svg>
+      </div>
+      <div><b>Mina</b><span>Gia sư tiếng Anh</span></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="chipline">
+      <span class="tchip live"><span class="dot pulse"></span>Đang học</span>
+      <span class="tchip">⏱ <span id="clock">12:30</span></span>
+      <span class="tchip">🔥 4 ngày <span class="sub">· còn 1 lần nghỉ</span></span>
+    </div>
+
+    <button class="pbtn-top" id="parentBtn">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-2a4 4 0 00-8 0v2"/><circle cx="12" cy="8" r="3.5"/><path d="M4 20v-1.5a3 3 0 013-3M20 20v-1.5a3 3 0 00-3-3"/></svg>
+      <span>Cho ba mẹ</span>
+    </button>
+
+    <div class="stu">
+      <div class="ava">Q</div>
+      <div style="line-height:1.25">
+        <b style="font-size:13.5px;display:block">Quang</b>
+        <span style="font-size:12px;color:var(--muted);font-weight:600">Lớp 5</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- ══════ LEFT ══════ -->
+    <aside class="pane left" data-pane="left" data-show="0">
+      <div class="lhead">
+        <h2>Chương trình học</h2>
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="Tìm bài hoặc từ…" aria-label="Tìm bài học">
+        </label>
+        <div class="filters" role="group" aria-label="Lọc theo lớp">
+          <button class="fchip" data-g="all" aria-pressed="false">Tất cả</button>
+          <button class="fchip" data-g="3" aria-pressed="false">Lớp 3</button>
+          <button class="fchip" data-g="5" aria-pressed="true">Lớp 5</button>
+        </div>
+      </div>
+
+      <div class="scroller"><nav class="tree" id="tree">
+
+        <div class="gs" data-grade="5">
+          <div class="glabel">Lớp 5 · Global Success</div>
+
+          <details class="unit cur" open data-w="all about me city class countryside dolphin pink sandwich table tennis birthday hobby cottage crowded">
+            <summary>
+              <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+              <span class="unum">1</span><span class="utitle">All about me!</span>
+            </summary>
+            <ul class="steps">
+              <li><button class="step done"><span class="sdot">✓</span><span class="sbody"><span class="sname">Khởi động</span><span class="swords">Chào hỏi · hỏi cảm xúc</span></span></button></li>
+              <li><button class="step done"><span class="sdot">✓</span><span class="sbody"><span class="sname">Lesson 1</span><span class="swords">city · class · countryside</span></span></button></li>
+              <li><button class="step cur" aria-current="true"><span class="sdot">▸</span><span class="sbody"><span class="sname">Lesson 2</span><span class="swords">dolphin · pink · sandwich · table tennis</span></span></button></li>
+              <li><button class="step"><span class="sdot">3</span><span class="sbody"><span class="sname">Lesson 3</span><span class="swords">Ôn tập Lesson 1 + 2</span></span></button></li>
+              <li><button class="step"><span class="sdot">↑</span><span class="sbody"><span class="sname">Level 2 · Mở rộng</span><span class="swords">birthday · hobby · subject</span></span></button></li>
+              <li><button class="step"><span class="sdot">★</span><span class="sbody"><span class="sname">Level 3 · Nâng cao</span><span class="swords">cottage · crowded · traffic jam</span></span></button></li>
+              <li><button class="step lock"><span class="sdot">🔒</span><span class="sbody"><span class="sname">Free Talk · Gặp Emma</span><span class="swords">Mở sau khi xong Level 3</span></span></button></li>
+            </ul>
+            <div class="uprog"><div class="bar"><i style="width:38%"></i></div><span>38%</span></div>
+          </details>
+
+          <details class="unit" data-w="our homes living room kitchen address numbers">
+            <summary><svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg><span class="unum">2</span><span class="utitle">Our homes</span></summary>
+            <ul class="steps">
+              <li><button class="step"><span class="sdot">1</span><span class="sbody"><span class="sname">Lesson 1</span><span class="swords">Phòng trong nhà</span></span></button></li>
+              <li><button class="step"><span class="sdot">2</span><span class="sbody"><span class="sname">Lesson 2</span><span class="swords">Số đếm · địa chỉ</span></span></button></li>
+            </ul>
+            <div class="uprog"><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+          </details>
+
+          <details class="unit" data-w="my foreign friends country nationality england">
+            <summary><svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg><span class="unum">3</span><span class="utitle">My foreign friends</span></summary>
+            <ul class="steps"><li><button class="step"><span class="sdot">1</span><span class="sbody"><span class="sname">Lesson 1</span><span class="swords">Quốc gia · quốc tịch</span></span></button></li></ul>
+            <div class="uprog"><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+          </details>
+
+          <details class="unit" data-w="our free-time activities hobby music instruments">
+            <summary><svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg><span class="unum">4</span><span class="utitle">Our free-time activities</span></summary>
+            <ul class="steps"><li><button class="step"><span class="sdot">1</span><span class="sbody"><span class="sname">Lesson 1</span><span class="swords">Hoạt động rảnh rỗi</span></span></button></li></ul>
+            <div class="uprog"><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+          </details>
+
+          <details class="unit" data-w="my future job doctor teacher pilot">
+            <summary><svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg><span class="unum">5</span><span class="utitle">My future job</span></summary>
+            <ul class="steps"><li><button class="step"><span class="sdot">1</span><span class="sbody"><span class="sname">Lesson 1</span><span class="swords">Nghề nghiệp</span></span></button></li></ul>
+            <div class="uprog"><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+          </details>
+        </div>
+
+        <div class="gs" data-grade="3" hidden>
+          <div class="glabel">Lớp 3 · Global Success</div>
+          <details class="unit" data-w="hello hi name friend">
+            <summary><svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg><span class="unum">1</span><span class="utitle">Hello</span></summary>
+            <ul class="steps"><li><button class="step"><span class="sdot">1</span><span class="sbody"><span class="sname">Lesson 1</span><span class="swords">Chào hỏi · tên</span></span></button></li></ul>
+            <div class="uprog"><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+          </details>
+        </div>
+
+        <p id="empty" hidden style="padding:24px 12px;text-align:center;font-size:13.5px;color:var(--muted)">
+          Không tìm thấy bài nào.
+        </p>
+      </nav></div>
+    </aside>
+
+    <!-- ══════ MID ══════ -->
+    <section class="pane mid" data-pane="mid" data-show="1">
+      <div class="lesbar">
+        <div class="lestop">
+          <h1>Lesson 2 · Sở thích của con</h1>
+          <span class="crumb">Lớp 5 · Unit 1 · All about me! · Level 1</span>
+        </div>
+        <div class="phases" role="group" aria-label="Sáu chặng của buổi học">
+          <div class="ph done"><span class="pi">👋</span><span class="pn">Chào hỏi</span></div>
+          <div class="ph done"><span class="pi">🔁</span><span class="pn">Ôn lại</span></div>
+          <div class="ph done"><span class="pi">👀</span><span class="pn">Từ mới</span></div>
+          <div class="ph" aria-current="true"><span class="pi">🗣</span><span class="pn">Nói theo</span></div>
+          <div class="ph soon"><span class="pi">💬</span><span class="pn">Trò chuyện</span></div>
+          <div class="ph soon"><span class="pi">🎁</span><span class="pn">Tạm biệt</span></div>
+        </div>
+      </div>
+
+      <div class="scroller"><div class="chat">
+
+        <div class="row">
+          <div class="bav t">M</div>
+          <div>
+            <div class="bub voice">
+              <button class="play" aria-label="Nghe lại lời cô Mina">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+              </button>
+              <div class="wave" aria-hidden="true">
+                <i style="height:8px"></i><i class="hi" style="height:16px"></i><i class="hi" style="height:22px"></i><i style="height:12px"></i><i class="hi" style="height:19px"></i><i style="height:9px"></i><i class="hi" style="height:24px"></i><i class="hi" style="height:15px"></i><i style="height:7px"></i><i class="hi" style="height:18px"></i><i style="height:11px"></i><i class="hi" style="height:21px"></i><i style="height:8px"></i><i style="height:13px"></i>
+              </div>
+              <span class="vtime">0:06</span>
+            </div>
+            <div class="bub" style="margin-top:7px">
+              <p>Hôm nay cô con mình nói về những thứ con thích nhé! <b>What's your favourite animal?</b></p>
+            </div>
+            <div class="bt">Cô Mina · 14:02</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="bav t">M</div>
+          <div>
+            <div class="mcard">
+              <svg class="art" viewBox="0 0 268 150" role="img" aria-label="Một con cá heo đang bơi trên mặt biển xanh">
+                <rect width="268" height="150" fill="#cfe7f7"/>
+                <circle cx="222" cy="34" r="17" fill="#ffd978"/>
+                <path d="M0 104c26-9 44 6 70-1s40-14 66-8 44 14 70 8 42-12 62-5v52H0z" fill="#79bde4"/>
+                <path d="M0 118c30-8 48 8 76 1s44-12 70-6 46 12 72 6 34-8 50-3v34H0z" fill="#4e9fd1"/>
+                <path d="M96 96c-14-24 4-48 32-48 22 0 34 12 42 24 6 9 16 10 24 6-4 12-14 18-26 18-6 12-20 20-36 20-16 0-30-8-36-20z" fill="#5b6f88"/>
+                <path d="M128 48c-4-14 2-24 10-28 2 10 0 20-4 28z" fill="#485c73"/>
+                <path d="M132 88c10 4 18 14 20 26-12-2-20-10-24-20z" fill="#485c73"/>
+                <circle cx="150" cy="66" r="3.4" fill="#1d2733"/>
+                <path d="M186 78c8-2 16 0 22 4" stroke="#485c73" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <circle cx="62" cy="60" r="4" fill="#ffffff" opacity=".7"/>
+                <circle cx="48" cy="76" r="6" fill="#ffffff" opacity=".55"/>
+              </svg>
+              <div class="cap">
+                <div class="w">dolphin
+                  <button class="spk" aria-label="Nghe phát âm từ dolphin">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9c1.2 1.2 1.2 4.8 0 6"/></svg>
+                  </button>
+                </div>
+                <div class="ipa">/ˈdɒl.fɪn/</div>
+                <div class="vn">con cá heo</div>
+              </div>
+            </div>
+            <div class="bt">Cô Mina đã gửi thẻ hình · 14:03</div>
+          </div>
+        </div>
+
+        <div class="fb wait">
+          <span class="bd"></span>
+          Cô đang đợi con — con cứ từ từ, không vội đâu
+        </div>
+
+        <div class="row me">
+          <div class="bav s">Q</div>
+          <div>
+            <div class="bub voice">
+              <button class="play" aria-label="Nghe lại lời con vừa nói">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+              </button>
+              <div class="wave" aria-hidden="true">
+                <i style="height:6px"></i><i class="hi" style="height:14px"></i><i style="height:10px"></i><i class="hi" style="height:20px"></i><i class="hi" style="height:16px"></i><i style="height:8px"></i><i class="hi" style="height:22px"></i><i style="height:11px"></i><i class="hi" style="height:17px"></i><i style="height:7px"></i><i class="hi" style="height:13px"></i>
+              </div>
+              <span class="vtime">0:03</span>
+            </div>
+            <div class="bub" style="margin-top:7px">
+              <p>My favourite animal <b>is dolphin</b>.</p>
+            </div>
+            <div class="bt" style="text-align:right">Quang · 14:03</div>
+          </div>
+        </div>
+
+        <div class="fb">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          Con nói đúng nghĩa rồi! Cô nhắc lại mẫu câu đầy đủ giúp con
+        </div>
+
+        <div class="row">
+          <div class="bav t">M</div>
+          <div>
+            <div class="bub">
+              <p>Oh, cô cũng thích cá heo lắm! <b>My favourite animal is <u>the</u> dolphin</b> — con nghe cô nói nhé.</p>
+              <p class="vi">Cô chỉ nhắc lại cho đúng thôi, con không cần nói lại đâu nha.</p>
+            </div>
+            <div class="bt">Cô Mina · 14:04</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="bav t">M</div>
+          <div>
+            <div class="mcard">
+              <svg class="art" viewBox="0 0 268 150" role="img" aria-label="Một chiếc bánh mì kẹp có rau xà lách và cà chua">
+                <rect width="268" height="150" fill="#fdeccd"/>
+                <circle cx="46" cy="36" r="20" fill="#f8dca2" opacity=".7"/>
+                <path d="M60 96l74-42 74 42-74 22z" fill="#e8a94e"/>
+                <path d="M60 96l74 22 74-22v13l-74 22-74-22z" fill="#d18f38"/>
+                <path d="M62 84c14 6 30 2 44 6s26 10 42 6 30-10 46-6l-10 6-74 20-56-18z" fill="#8cc06a"/>
+                <circle cx="118" cy="82" r="11" fill="#e2624f"/>
+                <circle cx="118" cy="82" r="5.5" fill="#f08b74"/>
+                <circle cx="158" cy="76" r="10" fill="#e2624f"/>
+                <circle cx="158" cy="76" r="5" fill="#f08b74"/>
+                <path d="M74 66l60-32 60 32-60 18z" fill="#f2c477"/>
+                <path d="M92 58c10-4 22-8 34-8" stroke="#e8a94e" stroke-width="3" fill="none" stroke-linecap="round"/>
+              </svg>
+              <div class="cap">
+                <div class="w">sandwich
+                  <button class="spk" aria-label="Nghe phát âm từ sandwich">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9c1.2 1.2 1.2 4.8 0 6"/></svg>
+                  </button>
+                </div>
+                <div class="ipa">/ˈsæn.wɪdʒ/</div>
+                <div class="vn">bánh mì kẹp</div>
+              </div>
+            </div>
+            <div class="bub" style="margin-top:7px">
+              <p>Còn đây là món ăn. <b>What's your favourite food?</b></p>
+            </div>
+            <div class="bt">Cô Mina · 14:06</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="bav t">M</div>
+          <div class="bub typing" aria-label="Cô Mina đang nghe">
+            <i></i><i></i><i></i>
+          </div>
+        </div>
+
+      </div></div>
+
+      <div class="comp">
+        <div class="heard" id="heard">
+          <div class="hl">Cô nghe con nói</div>
+          <div class="ht">My favourite food is sand<span class="hc"></span></div>
+        </div>
+        <div class="cwrap">
+          <div class="cbox">
+            <button class="iconbtn" aria-label="Gửi hình ảnh">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 15l-5-5L5 20"/></svg>
+            </button>
+            <button class="iconbtn" aria-label="Gửi thẻ từ vựng">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M7 10.5h6M7 14h4"/><path d="M6 6V4.5A1.5 1.5 0 017.5 3h9A1.5 1.5 0 0118 4.5V6"/></svg>
+            </button>
+            <input id="say" type="text" placeholder="Con gõ câu trả lời, hoặc bấm micro để nói…" aria-label="Nhập câu trả lời">
+            <button class="iconbtn" aria-label="Gửi">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+          <div class="micw">
+            <button class="mic" id="mic" aria-pressed="false" aria-label="Bấm để nói">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0"/><path d="M12 17.5V21"/></svg>
+            </button>
+            <span class="micl" id="micl">Bấm để nói</span>
+          </div>
+        </div>
+        <div class="hintrow">
+          <p class="hint" id="hint">Cô nghe hết câu rồi mới trả lời — con cứ nói thong thả nhé.</p>
+          <button class="shy" id="shy">🙈 Con chưa muốn nói — cho con chọn hình</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ RIGHT ══════ -->
+    <aside class="pane right" data-pane="right" data-show="0">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-tab="learn">Thẻ học <span class="tcount">7</span></button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="score">Tiến độ</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="game">Trò chơi <span class="tcount">1</span></button>
+      </div>
+
+      <div class="scroller">
+
+        <!-- ─── Thẻ học ─── -->
+        <div class="tpanel" data-panel="learn">
+
+          <div class="sec">
+            <h3 class="sech">🖼 Thẻ hình cô đã gửi <span class="n">2 thẻ</span></h3>
+            <div class="cards">
+              <button class="fcard">
+                <svg viewBox="0 0 124 80" role="img" aria-label="Cá heo">
+                  <rect width="124" height="80" fill="#cfe7f7"/>
+                  <circle cx="104" cy="17" r="9" fill="#ffd978"/>
+                  <path d="M0 55c14-5 24 4 38-1s22-7 36-4 24 7 38 4 12-4 12-4v30H0z" fill="#79bde4"/>
+                  <path d="M0 64c16-4 26 5 40 1s24-6 38-3 26 6 40 3l6-2v17H0z" fill="#4e9fd1"/>
+                  <path d="M42 50c-8-13 2-26 18-26 12 0 19 7 23 13 3 5 9 6 13 3-2 7-8 10-14 10-3 7-11 11-20 11s-16-4-20-11z" fill="#5b6f88"/>
+                  <path d="M60 24c-2-8 1-13 6-15 1 5 0 11-2 15z" fill="#485c73"/>
+                  <circle cx="72" cy="34" r="2" fill="#1d2733"/>
+                </svg>
+                <div class="fc">
+                  <div class="fw">dolphin</div>
+                  <div class="fv">con cá heo</div>
+                  <span class="fstat s-ok">✓ Đã dùng được</span>
+                </div>
+              </button>
+              <button class="fcard">
+                <svg viewBox="0 0 124 80" role="img" aria-label="Bánh mì kẹp">
+                  <rect width="124" height="80" fill="#fdeccd"/>
+                  <circle cx="22" cy="18" r="11" fill="#f8dca2" opacity=".7"/>
+                  <path d="M26 52l36-22 36 22-36 11z" fill="#e8a94e"/>
+                  <path d="M26 52l36 11 36-11v7L62 70 26 59z" fill="#d18f38"/>
+                  <path d="M28 45c7 3 15 1 22 3s13 5 20 3 15-5 22-3l-5 3-36 10-28-9z" fill="#8cc06a"/>
+                  <circle cx="54" cy="44" r="6" fill="#e2624f"/>
+                  <circle cx="54" cy="44" r="3" fill="#f08b74"/>
+                  <path d="M34 36l28-16 28 16-28 9z" fill="#f2c477"/>
+                </svg>
+                <div class="fc">
+                  <div class="fw">sandwich</div>
+                  <div class="fv">bánh mì kẹp</div>
+                  <span class="fstat s-mid">◐ Đang luyện</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="sec">
+            <h3 class="sech">📚 Từ vựng Lesson 2 <span class="n">bấm để nghe</span></h3>
+            <button class="vrow">
+              <span><span class="vw">dolphin</span><span class="vv">con cá heo</span>
+                <span class="expo" title="Con đã gặp từ này 7 trong 10 lần"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></span>
+              <span class="sp2"></span>
+              <span class="vspk"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9c1.2 1.2 1.2 4.8 0 6"/></svg></span>
+            </button>
+            <button class="vrow">
+              <span><span class="vw">pink</span><span class="vv">màu hồng</span>
+                <span class="expo" title="Con đã gặp từ này 6 trong 10 lần"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span></span>
+              <span class="sp2"></span>
+              <span class="vspk"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9c1.2 1.2 1.2 4.8 0 6"/></svg></span>
+            </button>
+            <button class="vrow">
+              <span><span class="vw">sandwich</span><span class="vv">bánh mì kẹp</span>
+                <span class="expo" title="Con đã gặp từ này 3 trong 10 lần"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+              <span class="sp2"></span>
+              <span class="vspk"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9c1.2 1.2 1.2 4.8 0 6"/></svg></span>
+            </button>
+            <button class="vrow">
+              <span><span class="vw">table tennis</span><span class="vv">bóng bàn</span>
+                <span class="expo" title="Con đã gặp từ này 1 trong 10 lần"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+              <span class="sp2"></span>
+              <span class="vspk"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9c1.2 1.2 1.2 4.8 0 6"/></svg></span>
+            </button>
+            <p class="explain">Mỗi ô vuông là một lần con gặp lại từ đó. Đủ 10 ô là con nhớ được lâu.</p>
+          </div>
+
+          <div class="sec">
+            <h3 class="sech">💬 Mẫu câu cần nhớ</h3>
+            <button class="pat">
+              <b>What's your favourite ___? &nbsp;–&nbsp; It's ___.</b>
+              <span>Hỏi và trả lời về thứ mình thích nhất · bấm để nghe</span>
+            </button>
+            <button class="pat">
+              <b>Can you tell me about yourself? &nbsp;–&nbsp; I'm in ___.</b>
+              <span>Đã học ở Lesson 1 · đang ôn lại</span>
+            </button>
+          </div>
+
+          <div class="sec">
+            <h3 class="sech">✏️ Điểm ngữ pháp</h3>
+            <button class="pat g">
+              <b>Mạo từ <i>the</i> với động vật nói chung</b>
+              <span>Nói <i>the dolphin</i> khi nói về loài cá heo nói chung. Đây là lỗi con vừa gặp — cô sẽ nhắc lại nhẹ nhàng trong bài.</span>
+            </button>
+            <button class="pat g">
+              <b>Rút gọn <i>What is</i> → <i>What's</i></b>
+              <span>Khi nói chuyện thường ngày, người bản xứ luôn rút gọn.</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ─── Tiến độ (bản cho TRẺ — không có điểm số) ─── -->
+        <div class="tpanel" data-panel="score" hidden>
+
+          <div class="journey">
+            <div class="jl">Con đã đi được</div>
+            <div class="jv">4<small>/6 chặng</small></div>
+            <div class="jbar"><i style="width:62%"></i></div>
+            <div class="jn2">Còn hai chặng nữa là xong buổi hôm nay: <b>Trò chuyện</b> rồi <b>Tạm biệt</b>.</div>
+          </div>
+
+          <div class="grid2" style="margin-bottom:14px">
+            <div class="stat ok"><div class="sv">17</div><div class="sl">Ô vuông thu được</div></div>
+            <div class="stat sun"><div class="sv">2</div><div class="sl">Từ đã nhớ chắc</div></div>
+            <div class="stat sky"><div class="sv">12:30</div><div class="sl">Thời gian học</div></div>
+            <div class="stat"><div class="sv">3</div><div class="sl">Huy hiệu đang có</div></div>
+          </div>
+
+          <div class="sec">
+            <h3 class="sech">📈 Bốn buổi gần đây</h3>
+            <div style="display:flex;align-items:flex-end;gap:10px;height:92px;padding:0 3px">
+              <div style="flex:1;text-align:center">
+                <div style="height:46px;background:var(--surface-3);border-radius:7px 7px 0 0"></div>
+                <small style="font-size:11.5px;color:var(--muted);font-weight:600">T2</small>
+              </div>
+              <div style="flex:1;text-align:center">
+                <div style="height:56px;background:var(--surface-3);border-radius:7px 7px 0 0"></div>
+                <small style="font-size:11.5px;color:var(--muted);font-weight:600">T3</small>
+              </div>
+              <div style="flex:1;text-align:center">
+                <div style="height:62px;background:var(--sun);border-radius:7px 7px 0 0"></div>
+                <small style="font-size:11.5px;color:var(--muted);font-weight:600">T5</small>
+              </div>
+              <div style="flex:1;text-align:center">
+                <div style="height:72px;background:var(--mint);border-radius:7px 7px 0 0"></div>
+                <small style="font-size:11.5px;color:var(--mint);font-weight:700">Hôm nay</small>
+              </div>
+            </div>
+            <p class="explain">Cột càng cao là buổi đó con nói càng nhiều. Bốn buổi liền con đều nói nhiều hơn buổi trước.</p>
+          </div>
+
+          <div class="parentcard">
+            <b>Số liệu chi tiết dành cho ba mẹ</b>
+            <p>Tỉ lệ con nói, thời gian cô chờ, danh sách cô sẽ ôn lại — nằm ở màn hình riêng. Trong lúc học, Quang không nhìn thấy con số nào.</p>
+            <button id="parentBtn2">Mở màn hình ba mẹ</button>
+          </div>
+        </div>
+
+        <!-- ─── Trò chơi ─── -->
+        <div class="tpanel" data-panel="game" hidden>
+
+          <div class="gcard">
+            <svg class="gblob" width="140" height="140" viewBox="0 0 140 140" aria-hidden="true"><circle cx="70" cy="70" r="70" fill="#ffffff"/></svg>
+            <div class="gt">Ghép từ với hình</div>
+            <div class="gd">Kéo 4 từ vừa học vào đúng bức hình. Mỗi lần ghép đúng, từ đó được thêm một ô vuông.</div>
+            <div class="stars" aria-label="Đạt 2 trên 3 sao">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" opacity=".6"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+            </div>
+            <button class="gbtn" id="playBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+              Chơi ngay
+            </button>
+          </div>
+
+          <div class="sec">
+            <h3 class="sech">🔒 Sắp mở khóa</h3>
+            <div class="glock">
+              <div class="gi">🎤</div>
+              <div><b>Bắt chước giọng cô</b><span>Nói theo cô, máy chấm độ giống</span></div>
+              <span class="need">cần 2 từ vững</span>
+            </div>
+            <div class="glock">
+              <div class="gi">🧩</div>
+              <div><b>Xếp câu lộn xộn</b><span>Sắp lại mẫu câu đúng thứ tự</span></div>
+              <span class="need">xong Lesson 3</span>
+            </div>
+            <div class="glock">
+              <div class="gi">🏝</div>
+              <div><b>Đảo của Emma</b><span>Trò chuyện tự do để mở đảo mới</span></div>
+              <span class="need">xong Level 3</span>
+            </div>
+          </div>
+
+          <div class="sec">
+            <h3 class="sech">🏅 Huy hiệu của Quang <span class="n">3 / 8</span></h3>
+            <div class="badges">
+              <div class="badge"><div class="bi">🌅</div><small>Buổi đầu</small></div>
+              <div class="badge"><div class="bi">🔥</div><small>4 ngày liền</small></div>
+              <div class="badge"><div class="bi">🗣</div><small>Nói nhiều hơn cô</small></div>
+              <div class="badge off"><div class="bi">📖</div><small>Xong Unit 1</small></div>
+              <div class="badge off"><div class="bi">⭐</div><small>10 từ vững</small></div>
+              <div class="badge off"><div class="bi">🌍</div><small>Gặp Emma</small></div>
+              <div class="badge off"><div class="bi">🎯</div><small>Không cần gợi ý</small></div>
+              <div class="badge off"><div class="bi">👑</div><small>Xong Lớp 5</small></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="why">
+              <b>Vì sao có trò chơi ở đây?</b>
+              <p>Mỗi trò chỉ dùng đúng từ và mẫu câu con vừa học trong buổi. Ghép đúng một lần là từ đó được thêm một ô vuông — nên chơi cũng chính là học lại lần nữa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="mnav" role="tablist" aria-label="Chuyển khu vực">
+    <button role="tab" aria-selected="false" data-go="left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5.5h16M4 12h16M4 18.5h10"/></svg>
+      Bài học
+    </button>
+    <button role="tab" aria-selected="true" data-go="mid">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 01-11.6 7.1L4 20l1.4-5.1A8 8 0 1121 11.5z"/></svg>
+      Lớp học
+    </button>
+    <button role="tab" aria-selected="false" data-go="right">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h11a2 2 0 012 2v14l-7-3-7 3V6a2 2 0 011-2z"/></svg>
+      Thẻ học
+    </button>
+  </nav>
+</div>
+
+<!-- ══ chọn hình thay vì nói ══ -->
+<div class="veil" id="shyVeil" hidden><div class="sheet center" role="dialog" aria-modal="true" aria-labelledby="shyH">
+  <div class="bst">👆</div>
+  <h2 id="shyH">Không sao đâu con!</h2>
+  <p class="sb">Con chỉ vào hình đúng thôi, chưa cần nói. Khi nào con muốn nói thì bấm micro nhé.</p>
+  <p class="sb" style="margin-top:16px;font-weight:700;color:var(--ink)">What's your favourite food?</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0 0">
+    <button class="fcard" style="min-height:auto">
+      <svg viewBox="0 0 124 80" role="img" aria-label="Bánh mì kẹp">
+        <rect width="124" height="80" fill="#fdeccd"/><circle cx="22" cy="18" r="11" fill="#f8dca2" opacity=".7"/>
+        <path d="M26 52l36-22 36 22-36 11z" fill="#e8a94e"/><path d="M26 52l36 11 36-11v7L62 70 26 59z" fill="#d18f38"/>
+        <path d="M28 45c7 3 15 1 22 3s13 5 20 3 15-5 22-3l-5 3-36 10-28-9z" fill="#8cc06a"/>
+        <circle cx="54" cy="44" r="6" fill="#e2624f"/><path d="M34 36l28-16 28 16-28 9z" fill="#f2c477"/>
+      </svg>
+      <div class="fc"><div class="fw">sandwich</div></div>
+    </button>
+    <button class="fcard" style="min-height:auto">
+      <svg viewBox="0 0 124 80" role="img" aria-label="Bóng bàn">
+        <rect width="124" height="80" fill="#dff0e6"/>
+        <rect x="18" y="58" width="88" height="5" rx="2" fill="#3c7a55"/>
+        <rect x="60" y="40" width="4" height="18" fill="#9bb0a3"/>
+        <ellipse cx="46" cy="30" rx="20" ry="22" fill="#d24f4f"/><ellipse cx="46" cy="30" rx="15" ry="17" fill="#e26a6a"/>
+        <rect x="41" y="50" width="10" height="20" rx="4" fill="#c08a4e" transform="rotate(-12 46 60)"/>
+        <circle cx="86" cy="24" r="8" fill="#fff" stroke="#cfdcd4" stroke-width="1.5"/>
+      </svg>
+      <div class="fc"><div class="fw">table tennis</div></div>
+    </button>
+  </div>
+  <div class="two"><button class="p1" id="shyClose" style="flex:1">Con hiểu rồi</button></div>
+</div></div>
+
+<!-- ══ phần thưởng: trẻ TỰ CHỌN ══ -->
+<div class="veil" id="rVeil" hidden><div class="sheet center" role="dialog" aria-modal="true" aria-labelledby="rH">
+  <div class="bst">🎁</div>
+  <h2 id="rH">Con chọn một hộp nhé!</h2>
+  <p class="sb">Hộp nào cũng có quà. Con thích hộp nào thì chọn hộp đó.</p>
+  <div class="rw">
+    <button class="rwb" aria-label="Hộp quà thứ nhất">🎁</button>
+    <button class="rwb" aria-label="Hộp quà thứ hai">🎁</button>
+    <button class="rwb" aria-label="Hộp quà thứ ba">🎁</button>
+  </div>
+  <p class="sb" id="rRes" style="min-height:24px;font-weight:700;color:var(--mint)"></p>
+  <div class="two"><button class="p1" id="rClose" style="flex:1">Xong</button></div>
+</div></div>
+
+<!-- ══ màn hình ba mẹ ══ -->
+<div class="veil" id="pVeil" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pH">
+  <h2 id="pH" style="text-align:center">Buổi học của Quang</h2>
+  <p class="sb" style="text-align:center">Thứ Hai, 22/09 · 28 phút · Unit 1 Lesson 2</p>
+  <div class="pgrid">
+    <div class="pst g"><div class="v">64%</div><div class="l">Con nói (mục tiêu ≥60%)</div></div>
+    <div class="pst y"><div class="v">4,2s</div><div class="l">Thời gian cô chờ con</div></div>
+    <div class="pst s"><div class="v">8/11</div><div class="l">Lượt trả lời đúng</div></div>
+    <div class="pst"><div class="v">2/4</div><div class="l">Từ mới đã vững</div></div>
+  </div>
+  <div class="pnote" style="margin-bottom:16px">
+    Điểm số và tỉ lệ chỉ hiện ở màn hình này. Trong lúc học, Quang không thấy con số nào —
+    nghiên cứu cho thấy hiện điểm lúc đang học làm giảm động lực tự thân của trẻ.
+  </div>
+  <h3 style="font-family:var(--display);font-weight:600;font-size:17px;margin:0 0 4px">Buổi sau cô sẽ ôn lại</h3>
+  <div class="prow"><div class="pri" style="background:var(--sun-soft)">🔤</div>
+    <div><b>sandwich</b><span>Mới gặp 3/10 lần. Con nói được khi cô đọc mẫu, chưa tự nhớ ra.</span></div></div>
+  <div class="prow"><div class="pri" style="background:var(--sky-soft)">💬</div>
+    <div><b>Mạo từ <i>the</i></b><span>Cô lồng dạng đúng vào câu trả lời, không bắt con lặp lại.</span></div></div>
+  <div class="prow"><div class="pri" style="background:var(--mint-soft)">⚡</div>
+    <div><b>Tăng độ khó cho <i>pink</i></b><span>Con trả lời nhanh và đúng 3 lần liền — cô sẽ hỏi câu mở rộng.</span></div></div>
+  <div class="prow"><div class="pri" style="background:var(--surface-2)">🕐</div>
+    <div><b>table tennis</b><span>Mới gặp 1/10 lần — chưa đủ dữ liệu để kết luận gì.</span></div></div>
+  <div class="two"><button class="p1" id="pClose" style="flex:1">Đóng</button></div>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+// ── tab bên phải
+const tabs=$$('.tab'), panels=$$('[data-panel]');
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.setAttribute('aria-selected',String(x===t)));
+  panels.forEach(p=>{p.hidden=p.dataset.panel!==t.dataset.tab;});
+}));
+
+// ── micro: nhãn khớp hành vi + hiện chữ nghe được
+const mic=$('#mic'), micl=$('#micl'), hint=$('#hint'), heard=$('#heard');
+const HINT=hint.innerHTML;
+mic.addEventListener('click',()=>{
+  const on=mic.getAttribute('aria-pressed')==='true';
+  mic.setAttribute('aria-pressed',String(!on));
+  micl.textContent=on?'Bấm để nói':'Bấm để dừng';
+  mic.setAttribute('aria-label',on?'Bấm để nói':'Bấm để dừng nói');
+  heard.classList.toggle('on',!on);
+  hint.innerHTML=on?HINT:'<b>Cô đang nghe con…</b> Nói xong con bấm lại để dừng';
+});
+
+// ── lối thoát cho trẻ chưa muốn nói
+$('#shy').addEventListener('click',()=>$('#shyVeil').hidden=false);
+$('#shyClose').addEventListener('click',()=>$('#shyVeil').hidden=true);
+
+// ── phần thưởng do trẻ tự chọn
+const GIFT=['🌟 Con được một ngôi sao vàng!','🐬 Con mở được bạn cá heo!','🎨 Con được đổi màu nền lớp học!'];
+$$('.rwb').forEach((b,i)=>b.addEventListener('click',()=>{
+  $$('.rwb').forEach(x=>{x.classList.remove('picked');x.textContent='🎁';});
+  b.classList.add('picked'); b.textContent='✨';
+  $('#rRes').textContent=GIFT[i];
+}));
+$('#playBtn').addEventListener('click',()=>{$('#rRes').textContent='';$('#rVeil').hidden=false;});
+$('#rClose').addEventListener('click',()=>$('#rVeil').hidden=true);
+
+// ── màn hình ba mẹ
+const openP=()=>$('#pVeil').hidden=false;
+$('#parentBtn').addEventListener('click',openP);
+$('#parentBtn2').addEventListener('click',openP);
+$('#pClose').addEventListener('click',()=>$('#pVeil').hidden=true);
+
+$$('.veil').forEach(v=>v.addEventListener('click',e=>{if(e.target===v)v.hidden=true;}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.veil').forEach(v=>v.hidden=true);});
+
+// ── chọn chặng học ở cột trái
+$$('.step:not(.lock)').forEach(s=>s.addEventListener('click',()=>{
+  $$('.step').forEach(x=>{x.classList.remove('cur');x.removeAttribute('aria-current');});
+  s.classList.add('cur'); s.setAttribute('aria-current','true');
+}));
+
+// ── lọc theo lớp + tìm kiếm
+let g='5';
+function filt(){
+  const q=$('#q').value.trim().toLowerCase(); let n=0;
+  $$('.gs').forEach(sec=>{
+    const show=(g==='all'||sec.dataset.grade===g); let v=0;
+    sec.querySelectorAll('.unit').forEach(u=>{
+      const hit=!q||(u.dataset.w||'').includes(q);
+      u.hidden=!(show&&hit); if(show&&hit)v++;
+    });
+    sec.hidden=!show||v===0; n+=v;
+  });
+  $('#empty').hidden=n>0;
+}
+$$('.fchip').forEach(f=>f.addEventListener('click',()=>{
+  g=f.dataset.g; $$('.fchip').forEach(x=>x.setAttribute('aria-pressed',String(x===f))); filt();
+}));
+$('#q').addEventListener('input',filt);
+
+// ── đồng hồ buổi học
+let t=750;
+setInterval(()=>{t++;$('#clock').textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');},1000);
+
+// ── điều hướng màn hình hẹp
+$$('.mnav button').forEach(b=>b.addEventListener('click',()=>{
+  $$('.mnav button').forEach(x=>x.setAttribute('aria-selected',String(x===b)));
+  $$('[data-pane]').forEach(p=>p.dataset.show=p.dataset.pane===b.dataset.go?'1':'0');
+}));
+</script>
+
+</body>
+</html>

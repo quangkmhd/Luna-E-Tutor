@@ -87,8 +87,8 @@ def build_talk_worker(
         settings=SonioxTTSService.Settings(
             model="tts-rt-v2",
             voice=config.voice_id,
-            language=Language.EN,
-            speed=0.8,
+            language=Language.VI,
+            speed=0.9,
         ),
     )
 

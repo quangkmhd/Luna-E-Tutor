@@ -5,7 +5,7 @@ import re
 
 from luna_tutor.curriculum.lesson_script import LessonScript
 from luna_tutor.domain.decisions import (
-    CompletedTurn, PlannedTurn, TeacherConstraints, TeacherTurnRequest,
+    CompletedTurn, PlannedTurn, TeacherActivityContext, TeacherConstraints, TeacherTurnRequest,
     TeacherUtterance, TeachingDecision,
 )
 from luna_tutor.domain.evidence import (
@@ -15,6 +15,20 @@ from luna_tutor.domain.evidence import (
 from luna_tutor.domain.privacy import redact_sensitive_contact
 from luna_tutor.domain.state import LessonState, ObjectiveProgress
 from luna_tutor.llm.teacher import InvalidTeacherResultError
+
+
+def _join_spoken(*parts: str) -> str:
+    result = parts[0].strip()
+    for part in parts[1:]:
+        following = part.strip()
+        if result.endswith('[long pause]') and following.startswith('[long pause]'):
+            following = following[len('[long pause]'):].lstrip()
+            result += ' ' + following
+        elif result.endswith('[long pause]') or following.startswith('[long pause]'):
+            result += ' ' + following
+        else:
+            result += ' [long pause] ' + following
+    return result
 
 
 @dataclass(frozen=True)
@@ -31,7 +45,7 @@ class Opportunity:
     def prompt(self, *, previous_success: bool = True, name: str | None = None) -> str:
         lead = [line for line in self.lead_in
                 if previous_success or not line.startswith(('Excellent!', 'Wow!', 'Scene done!'))]
-        return ' [long pause] '.join((*lead, self.say)).replace('{tên}', name or 'friend')
+        return _join_spoken(*lead, self.say).replace('{tên}', name or 'friend')
 
     @property
     def activity_id(self) -> str:
@@ -159,7 +173,7 @@ class ScriptedLessonService:
             next_activity_id=target.activity_id if advance and not finished else None,
             next_objective_id=target.objective_id if advance and not finished else None,
             count_attempt=not accepted and not unreliable and input_event != 'no_response',
-            support_limit_exit=advance and not accepted,
+            support_limit_exit=advance and not accepted and input_event != 'no_response',
         )
         progress = list(state.objective_progress)
         if accepted and not any(item.objective_id == current.objective_id for item in progress):
@@ -183,26 +197,58 @@ class ScriptedLessonService:
             'objective_progress': tuple(progress),
             'privacy_event': redacted.safety_event,
         })
+        support_limit_exit = decision.support_limit_exit
+        scripted_say = (target.prompt(previous_success=accepted, name=chosen_name)
+                        if advance and not finished and not support_limit_exit else None)
+        next_teaching_move = (
+            'The learner is reading the scripted lesson aloud. Deliver scripted_say exactly; '
+            'do not add a greeting, acknowledgement, praise, or another question.'
+            if scripted_say else
+            'The learner has used the allowed attempts on the current lesson line. '
+            'Correct the OLD answer in one brief declarative sentence. Compare learner_meaning '
+            'with the authored model in activity_context.examples and use recent_context to '
+            'understand the learner\'s previous attempts. State the complete correct word or '
+            'sentence for that old exercise, preserving its example name. This is a correction, '
+            'not another speaking task: do not say "Let\'s say", "Can you say", "Now you", '
+            'or ask the learner to repeat it. Do not praise the incorrect answer, claim to have '
+            'heard pronunciation details from text, or restart the introduction. Stop after the '
+            'correction; the next authored lesson line, possibly with a different name or target, '
+            'will be appended exactly afterward.'
+            if support_limit_exit else
+            'The learner has completed the scripted lesson. Give one brief closing without a new greeting or question.'
+            if advance else
+            'Protect private content and invite a safe reply.' if redacted.safety_event else
+            'Ask for a clear repeat because the input was uncertain; do not call it wrong.'
+            if evidence.needs_clarification else
+            'Answer the learner question briefly, then invite the same scripted response.'
+            if evidence.response_kind in {'asks_meaning', 'asks_teacher'} else
+            'Gently return to the same scripted response.'
+            if evidence.response_kind == 'off_topic' else
+            'The learner has not yet met the current lesson criterion. Give one short, '
+            'concrete model or hint from activity_context and invite one retry of '
+            'the current target. Do not repeat the entire introduction in previous_teacher_turn.'
+        )
+        if current.stage != 'greeting' and scripted_say is None:
+            next_teaching_move += (' The learner is practicing a scripted line, not greeting you. '
+                                   'Respond to the current question or difficulty without restarting the greeting.')
         teacher_request = TeacherTurnRequest(
             turn_id=turn_id, unit_id=state.unit_id, lesson_id=state.lesson_id,
             feedback_action=action,
             learner_meaning=redacted.text,
-            next_teaching_move=(
-                'Give one brief, honest response to the learner. Do not introduce a new task or ask a question. '
-                'The next scripted line will be appended exactly afterward.' if advance else
-                'Protect private content and invite a safe reply.' if redacted.safety_event else
-                'Ask for a clear repeat because the input was uncertain; do not call it wrong.'
-                if evidence.needs_clarification else
-                'Answer the learner question briefly, then invite the same scripted response.'
-                if evidence.response_kind in {'asks_meaning', 'asks_teacher'} else
-                'Gently return to the same scripted response.'
-                if evidence.response_kind == 'off_topic' else
-                'Give brief, gentle feedback and invite one retry of the same response. '
-                'Do not provide a silence hint.'
-            ),
+            next_teaching_move=next_teaching_move,
+            scripted_say=scripted_say,
             previous_teacher_turn=state.last_teacher_turn,
+            activity_context=TeacherActivityContext(
+                stage_id=current.stage, activity_id=current.activity_id,
+                kind='vocabulary_introduction' if current.stage == 'vocabulary'
+                else 'scripted_practice',
+                objectives=(current.accept,), target_words=tuple(target_words),
+                target_patterns=tuple(target_patterns), examples=(current.say,),
+            ),
             recent_context=state.recent_context,
-            constraints=TeacherConstraints(max_questions=0 if advance else 1),
+            constraints=TeacherConstraints(
+                max_questions=0 if advance else 1,
+                require_repetition=not advance and action == 'offer_support'),
         )
         return PlannedTurn(
             turn_id=turn_id, state_version=state.state_version,
@@ -212,6 +258,9 @@ class ScriptedLessonService:
         )
 
     async def respond(self, request: TeacherTurnRequest) -> TeacherUtterance:
+        if request.scripted_say is not None:
+            return TeacherUtterance(spoken_text=request.scripted_say,
+                                    delivery_intent='neutral', generation_mode='script')
         return await self._teacher.respond(request)
 
     def complete(self, state: LessonState, plan: PlannedTurn,
@@ -222,13 +271,16 @@ class ScriptedLessonService:
             raise InvalidTeacherResultError(
                 status_code=200, request_id=plan.turn_id,
                 reason='Teacher response could not be validated')
-        advanced = plan.proposed_next_state.script_index != state.script_index
-        if advanced and plan.proposed_next_state.status == 'active':
+        if plan.teacher_request.scripted_say is not None:
+            if (utterance.generation_mode != 'script'
+                    or utterance.spoken_text != plan.teacher_request.scripted_say):
+                raise ValueError('Scripted teacher line was changed')
+        elif (plan.decision.support_limit_exit
+              and plan.proposed_next_state.status == 'active'):
             next_say = self._opportunities[plan.proposed_next_state.script_index].prompt(
-                previous_success=plan.decision.feedback_action == 'acknowledge_and_continue',
-                name=plan.proposed_next_state.script_name)
+                previous_success=False, name=plan.proposed_next_state.script_name)
             utterance = utterance.model_copy(update={
-                'spoken_text': utterance.spoken_text + ' [long pause] ' + next_say,
+                'spoken_text': _join_spoken(utterance.spoken_text, next_say),
             })
         elif plan.proposed_next_state.status == 'completed' and self._closing_lines:
             closing = [line for line in self._closing_lines
@@ -236,8 +288,7 @@ class ScriptedLessonService:
                        or not line.startswith(('Excellent!', 'Wow!', 'Scene done!'))]
             if closing:
                 utterance = utterance.model_copy(update={
-                    'spoken_text': utterance.spoken_text + ' [long pause] '
-                    + ' [long pause] '.join(closing).replace(
+                    'spoken_text': _join_spoken(utterance.spoken_text, *closing).replace(
                         '{tên}', plan.proposed_next_state.script_name or 'friend'),
                 })
         next_state = plan.proposed_next_state.model_copy(update={

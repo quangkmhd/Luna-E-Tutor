@@ -57,7 +57,7 @@ def build_soniox_tts(config: VoiceConfig) -> SonioxTTSService:
         settings=SonioxTTSService.Settings(
             model="tts-rt-v2",
             voice=config.soniox_voice_id,
-            language=Language.EN,
-            speed=0.8,
+            language=Language.VI,
+            speed=0.9,
         ),
     )
