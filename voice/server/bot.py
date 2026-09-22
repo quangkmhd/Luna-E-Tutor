@@ -103,8 +103,8 @@ def build_voice_worker(
             teacher_llm,
             language_tts,
             tts,
-            LanguageTTSCompletionObserver(),
             transport.output(),
+            LanguageTTSCompletionObserver(),
             voice_commit,
             aggregators.assistant(),
         ]

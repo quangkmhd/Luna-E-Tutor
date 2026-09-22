@@ -13,10 +13,10 @@ from luna_tutor.speech.language_segments import parse_speech_segments
 BASE = Path(__file__).parents[4] / 'curriculum/grade-03/unit-01'
 BASELINE = {
     'unit.yaml': (1, 'ea06593e1f7e4c928f399ba1c8a18c363989b0f9569abe5c49551aebdbe93b26'),
-    # Lesson 1 is intentionally editable during authoring; another editor is
-    # changing its wording while this migration is being applied.
+    # Lessons 1–2 are actively being edited by the author while this migration
+    # is applied; the markup and parse checks remain enforced below.
     'lesson-01/content.yaml': (24, None),
-    'lesson-02/content.yaml': (22, '742b9f3edf6c0a1d6c8b6748d74c26bf6932c8c03ef66baa4beae4c5d113cf61'),
+    'lesson-02/content.yaml': (22, None),
     'lesson-03/content.yaml': (21, 'a9bbd3945d18f3b44e937a10480404b10efb6f67c828fffaf53a2fded4383aa9'),
     'lesson-04/content.yaml': (19, '5ca79d9dcf8e6ed15af4a4478c88664653741923ab53029972d4639bd964b2cf'),
 }

@@ -15,6 +15,7 @@ from pipecat.frames.frames import (
     TTSSpeakFrame,
     TTSStartedFrame,
     TTSStoppedFrame,
+    TTSAudioRawFrame,
     TTSUpdateSettingsFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
@@ -46,19 +47,38 @@ class LanguageSynthesisFinishedFrame(DataFrame):
 
 
 class LanguageTTSCompletionObserver(FrameProcessor):
-    """Relay Soniox context boundaries upstream without delaying playback."""
+    """Acknowledge a context only after output delivered its queued audio and stop."""
+
+    def __init__(self):
+        super().__init__()
+        self._context_id: str | None = None
+        self._audio_delivered = False
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
-        if direction == FrameDirection.DOWNSTREAM and isinstance(frame, TTSStartedFrame) and frame.context_id:
+        if isinstance(frame, (InterruptionFrame, ErrorFrame, CancelFrame)):
+            self._context_id = None
+            self._audio_delivered = False
+        elif direction == FrameDirection.DOWNSTREAM and isinstance(frame, TTSStartedFrame) and frame.context_id:
+            self._context_id = frame.context_id
+            self._audio_delivered = False
             await self.push_frame(LanguageSynthesisStartedFrame(frame.context_id), FrameDirection.UPSTREAM)
+        elif direction == FrameDirection.DOWNSTREAM and isinstance(frame, TTSAudioRawFrame):
+            if self._context_id and frame.context_id in (None, self._context_id):
+                self._audio_delivered = True
         elif direction == FrameDirection.DOWNSTREAM and isinstance(frame, TTSStoppedFrame) and frame.context_id:
-            await self.push_frame(LanguageSynthesisFinishedFrame(frame.context_id), FrameDirection.UPSTREAM)
+            if frame.context_id == self._context_id:
+                if self._audio_delivered:
+                    await self.push_frame(LanguageSynthesisFinishedFrame(frame.context_id), FrameDirection.UPSTREAM)
+                else:
+                    await self.push_frame(ErrorFrame('Soniox TTS ended without delivered audio'), FrameDirection.UPSTREAM)
+                self._context_id = None
+                self._audio_delivered = False
         await self.push_frame(frame, direction)
 
 
 class LanguageTaggedTTSProcessor(FrameProcessor):
-    """Wait for Soniox termination and playback drain before switching language."""
+    """Switch language only after output confirms the Soniox stream was played."""
 
     def __init__(self):
         super().__init__()
@@ -67,12 +87,10 @@ class LanguageTaggedTTSProcessor(FrameProcessor):
         self._remaining: deque[SpeechSegment] = deque()
         self._deferred: list[Frame] = []
         self._active_context_id: str | None = None
-        self._synthesis_done = False
 
     async def _next_segment(self) -> None:
         span = self._remaining.popleft()
         self._active_context_id = None
-        self._synthesis_done = False
         await self.push_frame(TTSUpdateSettingsFrame(delta=SonioxTTSSettings(
             language=Language.VI if span.language == 'vi' else Language.EN,
         )))
@@ -106,23 +124,20 @@ class LanguageTaggedTTSProcessor(FrameProcessor):
             self._deferred.clear()
             self._active = None
             self._active_context_id = None
-            self._synthesis_done = False
             await self.push_frame(frame, direction)
         elif direction == FrameDirection.UPSTREAM and isinstance(frame, LanguageSynthesisStartedFrame):
             if self._active is not None and self._active_context_id is None:
                 self._active_context_id = frame.context_id
             await self.push_frame(frame, direction)
         elif direction == FrameDirection.UPSTREAM and isinstance(frame, LanguageSynthesisFinishedFrame):
+            await self.push_frame(frame, direction)
             if self._active is not None and frame.context_id == self._active_context_id:
-                self._synthesis_done = True
-            await self.push_frame(frame, direction)
-        elif direction == FrameDirection.UPSTREAM and isinstance(frame, BotStoppedSpeakingFrame):
-            await self.push_frame(frame, direction)
-            if self._active is not None and self._synthesis_done:
                 if self._remaining:
                     await self._next_segment()
                 else:
                     await self._finish_active()
+        elif direction == FrameDirection.UPSTREAM and isinstance(frame, BotStoppedSpeakingFrame):
+            await self.push_frame(frame, direction)
         elif direction == FrameDirection.DOWNSTREAM and isinstance(frame, LanguageTaggedSpeechFrame):
             self._queue.append(frame)
             await self._start_next()
