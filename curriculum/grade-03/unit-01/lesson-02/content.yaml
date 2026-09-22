@@ -17,14 +17,14 @@ stations:
     target: how
     say: |-
       <vi>Trạm 1 nhé: hôm nay có bốn từ mới để hỏi thăm nhau, và mấy từ nói về cảm xúc của con. [long pause]</vi>
-      <en>How</en><vi> nghĩa là thế nào, ra sao. Con nghe không — </vi><en>how</en><vi> cũng bắt đầu bằng hơi thở /h/ giống </vi><en>hello</en><vi> hôm qua! [long pause]</vi>
+      <en>How</en><vi> nghĩa là thế nào, ra sao. Con nghe không — </vi><en>how</en><vi> cũng bắt đầu bằng hơi thở giống </vi><en>hello</en><vi> hôm qua! [long pause]</vi>
       <en>Listen first! [long pause] "HOW" [long pause]</en>
       <en>Your turn now! How!</en>
     accept: Chấp nhận con nói “how”; âm /h/ đầu rõ. Chưa cần dùng trong câu.
   - order: 3
     target: you
     say: |-
-      <en>You</en><vi> là bạn — người con đang nói chuyện cùng. Khi cô nói với con, </vi><en>you</en><vi> chính là con. [long pause]</vi>
+      <en>You</en><vi> là bạn — người con đang nói chuyện cùng. Khi cô nói với con, </vi><en>You</en><vi> chính là con. [long pause]</vi>
       <en>Listen first! [long pause] "YOU" [long pause]</en>
       <en>Your turn now! You!</en>
     accept: Chấp nhận “you”.

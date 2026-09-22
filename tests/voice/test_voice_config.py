@@ -43,4 +43,4 @@ def test_soniox_services_use_pipecat_settings():
     assert tts._settings.model == "tts-rt-v2"
     assert tts._settings.voice == "teacher-voice"
     assert tts._settings.language == Language.VI
-    assert tts._settings.speed == 0.9
+    assert tts._settings.speed == 1.0

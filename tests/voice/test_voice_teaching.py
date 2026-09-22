@@ -15,6 +15,8 @@ from pipecat.frames.frames import (
     InterimTranscriptionFrame,
     InterruptionFrame,
     LLMContextFrame,
+    LLMFullResponseEndFrame,
+    LLMFullResponseStartFrame,
     TranscriptionFrame,
 )
 from pipecat.processors.aggregators.llm_context import LLMContext
@@ -254,3 +256,39 @@ async def test_invalid_teacher_fallback_is_spoken_without_ending_voice_session(
     ]
     assert exchange.error is None
     assert exchange.pending_completion is None
+
+
+@pytest.mark.asyncio
+async def test_voice_teacher_does_not_open_empty_llm_tts_stream(tmp_path, monkeypatch):
+    from language_tts import LanguageTaggedSpeechFrame
+    from pipecat.services.llm_service import LLMService
+    from text_flows import BoundedTeacherLLM
+    from text_frames import CompletedTeachingFrame
+
+    async def skip_framework_dispatch(_processor, _frame, _direction):
+        return None
+
+    monkeypatch.setattr(LLMService, "process_frame", skip_framework_dispatch)
+    exchange, _, service = make_exchange(tmp_path)
+    plan = await service.plan(exchange.state, "I am fine.", "voice:no-empty-stream")
+    exchange.plan = plan
+    exchange.flow.current_node = plan.proposed_next_state.activity_id
+    teacher = BoundedTeacherLLM(exchange, end_after_response=False)
+    output = []
+
+    async def record(frame, _direction=FrameDirection.DOWNSTREAM):
+        output.append(frame)
+
+    monkeypatch.setattr(teacher, "push_frame", record)
+    context = LLMContext(messages=[{
+        "role": "developer",
+        "content": plan.teacher_request.model_dump_json(),
+    }])
+
+    await teacher.process_frame(LLMContextFrame(context=context), FrameDirection.DOWNSTREAM)
+
+    assert [type(frame) for frame in output] == [
+        LanguageTaggedSpeechFrame,
+        CompletedTeachingFrame,
+    ]
+    assert not any(isinstance(frame, (LLMFullResponseStartFrame, LLMFullResponseEndFrame)) for frame in output)

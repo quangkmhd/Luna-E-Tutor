@@ -363,6 +363,58 @@ describe('PipecatVoiceProvider', () => {
     ]);
   });
 
+  it('keeps sequential bilingual TTS segments in separate Luna bubbles', async () => {
+    const user = userEvent.setup();
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '2026-09-22T00:00:00Z', parts: [
+        { text: { spoken: 'Cô trò mình sang Trạm 1 học từ mới.', unspoken: '' }, final: true, createdAt: '1' },
+        { text: { spoken: '"HELLO"', unspoken: '' }, final: true, createdAt: '2' },
+        { text: { spoken: 'nghĩa là xin chào.', unspoken: '' }, final: true, createdAt: '3' },
+        { text: { spoken: 'Listen first! "HELLO"', unspoken: '' }, final: true, createdAt: '4' },
+        { text: { spoken: 'Your turn now!', unspoken: ' Can you say "Hello"?' }, final: false, createdAt: '5' },
+      ],
+    }];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+
+    const rows = document.querySelectorAll('.bubble-row.teacher');
+    expect(Array.from(rows, (row) => row.querySelector('p')?.textContent)).toEqual([
+      'Cô trò mình sang Trạm 1 học từ mới.',
+      '"HELLO"',
+      'nghĩa là xin chào.',
+      'Listen first! "HELLO"',
+      'Your turn now!',
+    ]);
+    expect(screen.queryByText(/Can you say/)).not.toBeInTheDocument();
+  });
+
+  it('restores YAML line boundaries after all bilingual speech is heard', async () => {
+    const user = userEvent.setup();
+    sdk.conversationMessages = [{
+      role: 'assistant', final: true, createdAt: '2026-09-22T00:00:00Z', parts: [
+        { text: { spoken: 'Cô trò mình sang Trạm 1.', unspoken: '' }, final: true, createdAt: '1' },
+        { text: { spoken: '"HELLO"', unspoken: '' }, final: true, createdAt: '2' },
+        { text: { spoken: 'nghĩa là xin chào.', unspoken: '' }, final: true, createdAt: '3' },
+        { text: { spoken: 'Listen first! "HELLO"', unspoken: '' }, final: true, createdAt: '4' },
+        { text: { spoken: 'Your turn now!', unspoken: '' }, final: true, createdAt: '5' },
+      ],
+    }];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[{
+      role: 'teacher',
+      text: '<vi>Cô trò mình sang Trạm 1.</vi>\n<en>"HELLO"</en><vi> nghĩa là xin chào.</vi>\n<en>Listen first! "HELLO"</en>\n<en>Your turn now!</en>',
+    }]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+
+    expect(Array.from(document.querySelectorAll('.bubble-row.teacher'), (row) => row.querySelector('p')?.textContent)).toEqual([
+      'Cô trò mình sang Trạm 1.',
+      '"HELLO" nghĩa là xin chào.',
+      'Listen first! "HELLO"',
+      'Your turn now!',
+    ]);
+  });
+
   it('reveals only Luna words confirmed spoken during an active voice lesson', async () => {
     const user = userEvent.setup();
     sdk.conversationMessages = [{

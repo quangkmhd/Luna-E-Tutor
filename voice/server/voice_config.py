@@ -58,6 +58,6 @@ def build_soniox_tts(config: VoiceConfig) -> SonioxTTSService:
             model="tts-rt-v2",
             voice=config.soniox_voice_id,
             language=Language.VI,
-            speed=0.9,
+            speed=1.0,
         ),
     )
