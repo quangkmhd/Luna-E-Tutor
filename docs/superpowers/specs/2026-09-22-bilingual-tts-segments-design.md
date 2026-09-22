@@ -1,0 +1,40 @@
+# Language-tagged Luna speech
+
+## Goal
+
+Curriculum authors can mark Vietnamese and English spans inside a Luna utterance. Voice playback uses Soniox's matching language for each span, in authored order, while the learner sees only the spoken words, progressively as audio plays. This applies to the initial scripted greeting and to subsequent Teacher responses. Text-only lessons keep their immediate display behavior. The existing Soniox voice and 0.9 speed remain unchanged.
+
+## Authoring contract
+
+Use explicit, paired `<vi>…</vi>` and `<en>…</en>` tags in `say` text, for example:
+
+```yaml
+say: |-
+  <vi>Cô trò mình sang Trạm 1 học từ mới.</vi>
+  <en>[long pause] "HELLO"</en> <vi>nghĩa là xin chào.</vi>
+  <en>[long pause] Listen first! "HELLO".</en>
+```
+
+Tags may share a line or span multiple lines. Nested, unclosed, or mismatched tags are invalid in authored curriculum and produce a lesson-loading error that identifies the source field. Untagged text remains Vietnamese for backward compatibility. Empty tagged spans are ignored. Preserve the authored segment order, ordinary whitespace and line breaks, and Soniox delivery cues such as `[long pause]` within their segment. No tag text is sent to TTS, persisted as learner-facing display text, or shown in the browser. A generated Teacher response with malformed tags is handled safely: remove recognizable tag tokens, speak the remaining text with the default Vietnamese setting, and log the invalid markup rather than failing the whole lesson.
+
+## Voice delivery
+
+Parse each utterance into an ordered sequence of `(language, text)` segments. The voice adapter sends each segment through the existing Soniox TTS service as its own complete stream, changing the service's language *between* streams. It never changes language on an active Soniox stream or relies on sentence punctuation to flush a segment. Await/serialize the previous segment's audio before opening the next, so the browser hears one ordered Luna utterance with no overlap. Maintain the same voice ID and speed for both languages. An untagged utterance uses one Vietnamese stream, preserving current behavior.
+
+Both the fixed opening-message/script path and `BoundedTeacherLLM`'s normal and fallback output use this adapter. The Teacher's content and the teaching engine's decisions remain otherwise unchanged. Existing text-only REST responses strip the language tags for display without changing their turn ordering. The Pipecat web conversation continues to use word-aligned `spoken` progress, so a later segment does not appear before its audio; interrupted speech retains only its spoken prefix.
+
+## Completion and interruption
+
+A tagged response is one **logical teaching turn**, even though it contains multiple TTS streams. The current commit trigger (`BotStoppedSpeakingFrame`) may occur between segments, so it cannot alone authorize persistence. The voice adapter emits a final-audio marker only after the last segment has drained through TTS/output. `VoiceCommitProcessor` commits a pending completion only after it has observed both that marker and the final stopped-speaking signal, regardless of which arrives first. Earlier stopped-speaking signals do not commit. An interruption, provider error, cancellation, or disconnect discards the pending completion and its markers. A fallback Teacher response remains speakable but cannot commit a proposed lesson transition.
+
+## Validation and tests
+
+- Parser tests cover VI → EN → VI, adjacent tags on one line, multiline spans, untagged legacy text, empty spans, malformed tags, and pause cues.
+- Frame-level voice tests prove settings and complete speech streams are emitted in order and no markup reaches Soniox or learner-facing frames. Include opening speech, normal Teacher response, and fallback response.
+- Commit tests prove an intermediate stop cannot commit, either final-signal order commits once, and interruption/error before completion commits nothing.
+- Web tests prove tags/cues never appear, while voice captions still reveal only spoken text and text-only responses display immediately.
+- Run the backend, voice, and web suites plus lint/build checks. Where credentials and local services permit, make one real Grade 3 Lesson 1 voice pass and inspect Soniox/provider logs for language transitions and `invalid_stream_state`; do not claim a live audio verification if that pass was unavailable.
+
+## Scope limits
+
+Do not change STT language detection, teacher evaluation, lesson progression rules, or the selected Soniox voice. Do not infer language automatically from the words: tags explicitly control it. Existing curriculum does not need mass conversion; update one representative Grade 3 Lesson 1 greeting or step to exercise the feature and retain legacy untagged material.
