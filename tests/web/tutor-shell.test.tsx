@@ -67,6 +67,32 @@ async function openLesson(api: TutorApi) {
 }
 
 describe('TutorShell', () => {
+  it('shows the three classroom regions using available units and real learning targets', async () => {
+    await openLesson(mockApi());
+    expect(screen.getByRole('navigation', { name: 'Chương trình học' })).toBeVisible();
+    expect(screen.getByRole('button', { name: /Unit 2.*Our homes/i })).toBeVisible();
+    expect(screen.getByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
+    expect(screen.getByLabelText('Các chặng học')).toHaveTextContent('Lesson 01');
+    expect(screen.getByRole('tab', { name: 'Thẻ học' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText('I am in Class ___.')).toBeVisible();
+    expect(screen.queryByRole('button', { name: /Trò chơi|Gửi hình ảnh|Nghe lại/i })).not.toBeInTheDocument();
+    expect(screen.queryByText('4 ngày')).not.toBeInTheDocument();
+  });
+
+  it('filters the real curriculum and switches to progress without fabricated metrics', async () => {
+    const user = userEvent.setup();
+    await openLesson(mockApi());
+    await user.type(screen.getByRole('searchbox', { name: 'Tìm bài học' }), 'Our homes');
+    expect(screen.queryByRole('button', { name: /Unit 1.*All about me/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Unit 2.*Our homes/i })).toBeVisible();
+    await user.clear(screen.getByRole('searchbox', { name: 'Tìm bài học' }));
+    await user.type(screen.getByRole('searchbox', { name: 'Tìm bài học' }), 'class');
+    expect(screen.getByRole('button', { name: /Unit 1.*All about me/i })).toBeVisible();
+    expect(screen.queryByRole('button', { name: /Unit 2.*Our homes/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Tiến độ' }));
+    expect(screen.getByText('Chưa ghi nhận lần sử dụng nào.')).toBeVisible();
+    expect(screen.queryByText('12:30')).not.toBeInTheDocument();
+  });
   it('opens the requested direct-route unit without showing or selecting another unit', async () => {
     const unit2 = session({
       session_id: 'direct-unit-2',
@@ -82,7 +108,12 @@ describe('TutorShell', () => {
     await waitFor(() => expect(api.createSession).toHaveBeenCalledWith(
       'grade05.unit02', expect.any(AbortSignal),
     ));
-    expect(await screen.findByText('English Tutor · Grade 5 · Unit 2')).toBeVisible();
+    const subtitle = await screen.findByText('English Tutor · Grade 5 · Unit 2');
+    expect(subtitle).toBeVisible();
+    expect(subtitle.closest('header')).toHaveClass('learner-header');
+    expect(subtitle.closest('header')).toHaveTextContent('Luna');
+    expect(screen.getByRole('link', { name: 'Free Talk Room' })).toHaveAttribute('href', '/talk');
+    expect(screen.getByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
     expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
   });
 
@@ -158,7 +189,7 @@ describe('TutorShell', () => {
     expect(api.listSessions).not.toHaveBeenCalled();
     expect(screen.queryByText('Session history')).not.toBeInTheDocument();
     expect(screen.getByText('warm up')).toBeVisible();
-    expect(screen.getByText('Lesson 01')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Lesson 01' })).toBeVisible();
     expect(screen.getByText('Đang học tiếp')).toBeVisible();
   });
 
@@ -183,8 +214,8 @@ describe('TutorShell', () => {
 
     expect(await screen.findByRole('heading', { name: 'Nội dung cần học' })).toBeVisible();
     expect(screen.getAllByText('Chặng')).toHaveLength(2);
-    expect(screen.getByText('Lesson 01')).toBeVisible();
-    expect(screen.getByText('Lesson 02')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Lesson 01' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Lesson 02' })).toBeVisible();
     expect(screen.getAllByText('Từ / cấu trúc trọng tâm')).toHaveLength(2);
     expect(screen.getByText('building')).toBeVisible();
     expect(screen.getByText("Do you live in this/that ___? – Yes, I do./No, I don't.")).toBeVisible();

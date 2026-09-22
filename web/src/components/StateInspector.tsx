@@ -1,7 +1,16 @@
+'use client';
+
+import { useState } from 'react';
 import type { SessionView } from '@/lib/types';
 
 export function StateInspector({ session }: { session: SessionView }) {
-  return <section className="panel learning-focus" aria-labelledby="learning-focus-title">
+  const [tab, setTab] = useState<'learn' | 'progress'>('learn');
+  return <section className="panel learning-focus" aria-label="Thẻ học và tiến độ">
+    <div className="classroom-tabs" role="tablist" aria-label="Thẻ học và tiến độ">
+      <button type="button" role="tab" aria-selected={tab === 'learn'} onClick={() => setTab('learn')}>Thẻ học</button>
+      <button type="button" role="tab" aria-selected={tab === 'progress'} onClick={() => setTab('progress')}>Tiến độ</button>
+    </div>
+    {tab === 'learn' ? <div role="tabpanel" aria-label="Thẻ học">
     <header className="learning-focus-heading">
       <span className="eyebrow">Unit {session.unit.unit}</span>
       <h2 id="learning-focus-title">Nội dung cần học</h2>
@@ -27,5 +36,16 @@ export function StateInspector({ session }: { session: SessionView }) {
         </div>
       </article>)}
     </div>
+    </div> : <div role="tabpanel" aria-label="Tiến độ" className="classroom-progress">
+      <h2>Tiến độ buổi học</h2>
+      <p>{session.status === 'completed' ? 'Buổi học đã hoàn thành.' : `Đang ở chặng ${session.stage_id.replaceAll('-', ' ')}.`}</p>
+      {session.objective_progress.length === 0 ? <p>Chưa ghi nhận lần sử dụng nào.</p> : <ul>
+        {session.objective_progress.map((item) => <li key={item.objective_id}>
+          <strong>{item.objective_id}</strong>
+          <span>Tự nói: {item.independent_uses} · Có hỗ trợ: {item.supported_uses}{item.needs_review ? ' · Cần ôn lại' : ''}</span>
+        </li>)}
+      </ul>}
+      {session.summary && <p>Đã thể hiện: {session.summary.demonstrated.join(', ') || 'Chưa có'} · Cần ôn: {session.summary.needs_review.join(', ') || 'Không có'}</p>}
+    </div>}
   </section>;
 }
