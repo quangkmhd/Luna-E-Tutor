@@ -3,21 +3,29 @@
 from dataclasses import dataclass, field
 from typing import Any, cast
 
+from loguru import logger
 from luna_tutor.domain.decisions import CompletedTurn, PlannedTurn
 from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
-from loguru import logger
 from pipecat.frames.frames import (
     CancelFrame,
+    DataFrame,
     EndWorkerFrame,
     ErrorFrame,
     Frame,
     InterruptionFrame,
     LLMContextFrame,
+    UninterruptibleFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 
-from language_tts import LanguageSpeechFinishedFrame
+from language_tts import LanguageSpeechFinishedFrame, LanguageSynthesisStartedFrame
+
+
+@dataclass
+class CompletedLearnerTurnFrame(DataFrame, UninterruptibleFrame):
+    text: str
+    turn_id: str
 
 
 @dataclass
@@ -30,6 +38,8 @@ class VoiceTeachingExchange:
     state: LessonState
     plan: PlannedTurn | None = None
     pending_completion: CompletedTurn | None = None
+    interrupted_completion: CompletedTurn | None = None
+    pending_delivery_started: bool = False
     error: Exception | None = None
     flow: Any = field(init=False, default=None)
     worker: Any = field(init=False, default=None)
@@ -38,6 +48,15 @@ class VoiceTeachingExchange:
 
     def discard_pending(self) -> None:
         self.pending_completion = None
+        self.interrupted_completion = None
+        self.pending_delivery_started = False
+        self.generation_epoch += 1
+
+    def interrupt_pending(self) -> None:
+        if self.pending_completion is not None and self.pending_delivery_started:
+            self.interrupted_completion = self.pending_completion
+        self.pending_completion = None
+        self.pending_delivery_started = False
         self.generation_epoch += 1
 
     async def fail(self, error: Exception) -> None:
@@ -64,9 +83,21 @@ class VoiceTeachingProcessor(FrameProcessor):
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
-        if isinstance(frame, (InterruptionFrame, ErrorFrame, CancelFrame)):
+        if isinstance(frame, InterruptionFrame):
+            self.exchange.interrupt_pending()
+            await self.push_frame(frame, direction)
+            return
+        if isinstance(frame, (ErrorFrame, CancelFrame)):
             self.exchange.discard_pending()
             await self.push_frame(frame, direction)
+            return
+        if isinstance(frame, LanguageSynthesisStartedFrame):
+            if self.exchange.pending_completion is not None:
+                self.exchange.pending_delivery_started = True
+            await self.push_frame(frame, direction)
+            return
+        if isinstance(frame, CompletedLearnerTurnFrame):
+            await self._plan_turn(frame.text, frame.turn_id)
             return
         if direction != FrameDirection.DOWNSTREAM:
             await self.push_frame(frame, direction)
@@ -90,7 +121,8 @@ class VoiceTeachingProcessor(FrameProcessor):
         # Consume Pipecat's generic inference frame. The authorized Flow node
         # below emits the only LLMContextFrame allowed to reach the teacher.
         logger.info("Pipecat completed learner turn: {!r}", content.strip())
-        await self._plan_turn(content.strip(), f"pipecat:{frame.id}")
+        await self.queue_frame(CompletedLearnerTurnFrame(
+            text=content.strip(), turn_id=f"pipecat:{frame.id}"))
 
     async def _plan_turn(self, text: str, turn_id: str) -> None:
         if turn_id in self.exchange.seen_turn_ids:
@@ -105,6 +137,19 @@ class VoiceTeachingProcessor(FrameProcessor):
                 ).state
                 return
             stored = self.exchange.repository.get_session(self.exchange.session_id)
+            interrupted = self.exchange.interrupted_completion
+            if interrupted is not None:
+                committed = self.exchange.repository.commit_turn(
+                    self.exchange.session_id,
+                    interrupted.plan.state_version,
+                    interrupted,
+                )
+                self.exchange.interrupted_completion = None
+                stored = self.exchange.repository.get_session(self.exchange.session_id)
+                logger.info(
+                    "Committed interrupted voice turn {} before learner turn {}",
+                    committed.plan.turn_id, turn_id,
+                )
             self.exchange.state = stored.state
             if stored.state.status != 'active':
                 return
@@ -141,7 +186,9 @@ class VoiceCommitProcessor(FrameProcessor):
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
-        if isinstance(frame, (InterruptionFrame, ErrorFrame, CancelFrame)):
+        if isinstance(frame, InterruptionFrame):
+            self.exchange.interrupt_pending()
+        elif isinstance(frame, (ErrorFrame, CancelFrame)):
             self.exchange.discard_pending()
         elif (
             direction == FrameDirection.DOWNSTREAM
@@ -151,6 +198,7 @@ class VoiceCommitProcessor(FrameProcessor):
         ):
             completed = self.exchange.pending_completion
             self.exchange.pending_completion = None
+            self.exchange.pending_delivery_started = False
             try:
                 committed = self.exchange.repository.commit_turn(
                     self.exchange.session_id,

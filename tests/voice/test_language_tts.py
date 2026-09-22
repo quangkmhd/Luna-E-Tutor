@@ -124,3 +124,51 @@ async def test_interruption_drops_remaining_speech(monkeypatch):
     await adapter.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
     await adapter.process_frame(BotStoppedSpeakingFrame(), FrameDirection.UPSTREAM)
     assert [frame.text for frame in sent if isinstance(frame, TTSSpeakFrame)] == ['Chào.']
+
+
+@pytest.mark.asyncio
+async def test_barge_in_during_audio_does_not_finish_or_start_next_language_segment(monkeypatch):
+    from language_tts import (
+        LanguageSpeechFinishedFrame,
+        LanguageSynthesisStartedFrame,
+        LanguageTaggedSpeechFrame,
+        LanguageTaggedTTSProcessor,
+        LanguageTTSCompletionObserver,
+    )
+    from pipecat.processors.frame_processor import FrameProcessor
+
+    async def skip_framework_dispatch(_processor, _frame, _direction):
+        return None
+
+    monkeypatch.setattr(FrameProcessor, 'process_frame', skip_framework_dispatch)
+
+    adapter = LanguageTaggedTTSProcessor()
+    observer = LanguageTTSCompletionObserver()
+    sent = []
+
+    async def record_adapter(frame, direction=FrameDirection.DOWNSTREAM):
+        sent.append(frame)
+
+    async def route_observer(frame, direction=FrameDirection.DOWNSTREAM):
+        if direction == FrameDirection.UPSTREAM:
+            await adapter.process_frame(frame, direction)
+
+    monkeypatch.setattr(adapter, 'push_frame', record_adapter)
+    monkeypatch.setattr(observer, 'push_frame', route_observer)
+
+    await adapter.process_frame(
+        LanguageTaggedSpeechFrame('<vi>Xin chào con.</vi><en>Hello!</en>', 'turn-barge-in'),
+        FrameDirection.DOWNSTREAM,
+    )
+    await observer.process_frame(TTSStartedFrame(context_id='spoken-context'), FrameDirection.DOWNSTREAM)
+    assert any(isinstance(frame, LanguageSynthesisStartedFrame) for frame in sent)
+    await observer.process_frame(
+        TTSAudioRawFrame(audio=b'\0\0', sample_rate=24000, num_channels=1, context_id='spoken-context'),
+        FrameDirection.DOWNSTREAM,
+    )
+    await adapter.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
+    await observer.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
+    await observer.process_frame(TTSStoppedFrame(context_id='spoken-context'), FrameDirection.DOWNSTREAM)
+
+    assert [frame.text for frame in sent if isinstance(frame, TTSSpeakFrame)] == ['Xin chào con.']
+    assert not any(isinstance(frame, (ErrorFrame, LanguageSpeechFinishedFrame)) for frame in sent)

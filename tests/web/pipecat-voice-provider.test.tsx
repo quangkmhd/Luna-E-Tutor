@@ -60,6 +60,40 @@ describe('PipecatVoiceProvider', () => {
 
   afterEach(() => vi.useRealTimers());
 
+  it('leaves Thinking with a retry message when a stopped voice turn produces no response', () => {
+    vi.useFakeTimers();
+    function Phase() {
+      const voice = useVoiceLesson();
+      return <><span>{voice.phase}</span><span>{voice.error}</span></>;
+    }
+    render(<PipecatVoiceProvider sessionId="session-7"><Phase /></PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as {
+      onUserStoppedSpeaking(): void;
+      onBotStartedSpeaking(): void;
+      onError(message: { data: { error: string; fatal: boolean } }): void;
+    };
+
+    act(() => callbacks.onUserStoppedSpeaking());
+    expect(screen.getByText('thinking')).toBeVisible();
+    act(() => callbacks.onBotStartedSpeaking());
+    act(() => vi.advanceTimersByTime(30_000));
+    expect(screen.getByText('speaking')).toBeVisible();
+    expect(screen.queryByText(/did not get a response/i)).not.toBeInTheDocument();
+
+    act(() => callbacks.onUserStoppedSpeaking());
+    act(() => vi.advanceTimersByTime(30_000));
+    expect(screen.getByText('ready')).toBeVisible();
+    expect(screen.getByText(/did not get a response/i)).toBeVisible();
+
+    act(() => callbacks.onBotStartedSpeaking());
+    expect(screen.getByText('speaking')).toBeVisible();
+    expect(screen.queryByText(/did not get a response/i)).not.toBeInTheDocument();
+
+    act(() => callbacks.onUserStoppedSpeaking());
+    act(() => callbacks.onError({ data: { error: 'Soniox TTS error 408', fatal: false } }));
+    expect(screen.getByText('ready')).toBeVisible();
+  });
+
   it('connects SmallWebRTC with the active REST session and disconnects on cleanup', async () => {
     const user = userEvent.setup();
     const view = render(
@@ -204,12 +238,34 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.queryByText(/stop and reconnect/i)).not.toBeInTheDocument();
   });
 
+  it('clears an old recoverable TTS warning when the bot speaks again, but retains a new failure', () => {
+    render(
+      <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onError(message: { data: { error: string; fatal: boolean } }): void;
+      onBotStartedSpeaking(): void;
+      onBotStoppedSpeaking(): void;
+    };
+
+    act(() => callbacks.onError({ data: { error: 'Soniox TTS error 408 request_timeout', fatal: false } }));
+    expect(screen.getByRole('alert')).toHaveTextContent('Voice audio was interrupted.');
+
+    act(() => callbacks.onBotStartedSpeaking());
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+
+    act(() => callbacks.onError({ data: { error: 'Soniox TTS error 408 request_timeout', fatal: false } }));
+    act(() => callbacks.onBotStoppedSpeaking());
+    expect(screen.getByRole('alert')).toHaveTextContent('Voice audio was interrupted.');
+  });
+
   it('disconnects and becomes startable again when Pipecat reports a fatal service error', async () => {
     render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
     );
     const callbacks = sdk.options?.callbacks as {
       onError(message: { data: { error: string; fatal: boolean } }): void;
+      onBotStartedSpeaking(): void;
       onTransportStateChanged(state: string): void;
     };
 
@@ -222,6 +278,10 @@ describe('PipecatVoiceProvider', () => {
       },
     }));
 
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'The voice session ended. Reconnect when you are ready.',
+    );
+    act(() => callbacks.onBotStartedSpeaking());
     expect(screen.getByRole('alert')).toHaveTextContent(
       'The voice session ended. Reconnect when you are ready.',
     );

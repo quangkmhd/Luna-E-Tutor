@@ -78,6 +78,23 @@ function voiceServiceErrorMessage(message: RTVIMessage): string {
   return 'Voice audio was interrupted. Please try speaking again.';
 }
 
+function createThinkingTimeout() {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return {
+    clear() {
+      if (timer !== null) clearTimeout(timer);
+      timer = null;
+    },
+    start(onTimeout: () => void) {
+      this.clear();
+      timer = setTimeout(() => {
+        timer = null;
+        onTimeout();
+      }, 30_000);
+    },
+  };
+}
+
 export function useVoiceLesson(): VoiceContextValue {
   const value = useOptionalVoiceLesson();
   if (!value) throw new Error('useVoiceLesson must be used inside PipecatVoiceProvider');
@@ -100,7 +117,7 @@ export function PipecatVoiceProvider({
 }: PipecatVoiceProviderProps) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
-  const [error, setError] = useState<string | null>(null);
+  const [errorState, setErrorState] = useState<{ message: string | null; fatal: boolean }>({ message: null, fatal: false });
   const [voiceRuns, setVoiceRuns] = useState<VoiceRun[]>([]);
   const savedMessageCountRef = useRef(savedMessageCount);
   useEffect(() => { savedMessageCountRef.current = savedMessageCount; }, [savedMessageCount]);
@@ -108,6 +125,7 @@ export function PipecatVoiceProvider({
   const [ttfaSeconds, setTtfaSeconds] = useState<number | null>(null);
   const [, setUserStoppedAt] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [thinkingTimeout] = useState(createThinkingTimeout);
   const [conversationStore] = useState(createStore);
   const [client] = useState(() => {
     const voiceClient = new PipecatClient({
@@ -121,6 +139,7 @@ export function PipecatVoiceProvider({
         if (['initializing', 'connecting', 'authenticating'].includes(state)) {
           setPhase('connecting');
         } else if (state === 'disconnected') {
+          thinkingTimeout.clear();
           setPhase('off');
           setVoiceRuns((previous) => {
             const current = previous.at(-1);
@@ -140,20 +159,29 @@ export function PipecatVoiceProvider({
         }
       },
       onBotReady: () => {
-        setError(null);
+        thinkingTimeout.clear();
+        setErrorState({ message: null, fatal: false });
         setPhase('ready');
       },
       onUserStartedSpeaking: () => {
+        thinkingTimeout.clear();
         setUserStoppedAt(null);
         setTtfaSeconds(null);
         setPhase('listening');
       },
       onUserStoppedSpeaking: () => {
+        thinkingTimeout.clear();
         setUserStoppedAt(Date.now());
         setPhase('thinking');
+        thinkingTimeout.start(() => {
+          setPhase('ready');
+          setErrorState({ message: 'Luna did not get a response. Please try speaking again.', fatal: false });
+        });
       },
       onBotLlmStarted: () => setPhase('thinking'),
       onBotStartedSpeaking: () => {
+        thinkingTimeout.clear();
+        setErrorState((previous) => previous.fatal ? previous : { message: null, fatal: false });
         setUserStoppedAt((stoppedAt) => {
           if (stoppedAt !== null) setTtfaSeconds((Date.now() - stoppedAt) / 1_000);
           return null;
@@ -161,6 +189,7 @@ export function PipecatVoiceProvider({
         setPhase('speaking');
       },
       onBotStoppedSpeaking: () => {
+        thinkingTimeout.clear();
         setPhase('ready');
         if (!onSessionChanged) return;
         setRefreshTimer((previous) => {
@@ -171,11 +200,15 @@ export function PipecatVoiceProvider({
           }, 150);
         });
       },
-      onDeviceError: (reason: DeviceError) => setError(deviceErrorMessage(reason)),
+      onDeviceError: (reason: DeviceError) => setErrorState({ message: deviceErrorMessage(reason), fatal: false }),
       onError: (message: RTVIMessage) => {
+        thinkingTimeout.clear();
         const data = message.data as ErrorData;
-        setError(voiceServiceErrorMessage(message));
-        if (!data.fatal) return;
+        setErrorState({ message: voiceServiceErrorMessage(message), fatal: data.fatal });
+        if (!data.fatal) {
+          setPhase('ready');
+          return;
+        }
         void voiceClient.disconnect()
           .catch(() => undefined)
           .finally(() => {
@@ -183,18 +216,23 @@ export function PipecatVoiceProvider({
             setPhase('off');
           });
       },
-      onMessageError: () => setError('The voice service could not process that message. Try again.'),
+      onMessageError: () => {
+        thinkingTimeout.clear();
+        setPhase('ready');
+        setErrorState({ message: 'The voice service could not process that message. Try again.', fatal: false });
+      },
       },
     });
     return voiceClient;
   });
 
   async function start() {
+    thinkingTimeout.clear();
     setVoiceRuns((previous) => [...previous, {
       start: savedHasTurn ? savedMessageCount : 0,
       connected: false,
     }]);
-    setError(null);
+    setErrorState({ message: null, fatal: false });
     setPhase('connecting');
     try {
       const resolvedEndpoint = endpoint
@@ -212,15 +250,16 @@ export function PipecatVoiceProvider({
     } catch (reason) {
       setVoiceRuns((previous) => previous.at(-1)?.connected ? previous : previous.slice(0, -1));
       setPhase('off');
-      setError(reason instanceof Error ? reason.message : 'Could not start the voice lesson.');
+      setErrorState({ message: reason instanceof Error ? reason.message : 'Could not start the voice lesson.', fatal: false });
     }
   }
 
   async function stop() {
+    thinkingTimeout.clear();
     try {
       await client.disconnect();
     } catch {
-      setError('The voice session could not close cleanly. You can reconnect.');
+      setErrorState({ message: 'The voice session could not close cleanly. You can reconnect.', fatal: false });
     } finally {
       setVoiceRuns((previous) => {
         const current = previous.at(-1);
@@ -245,7 +284,7 @@ export function PipecatVoiceProvider({
       await client.sendText(text, { run_immediately: true, audio_response: true });
     } catch (reason) {
       setSentText((previous) => previous.filter((message) => message.id !== id));
-      setError('Could not send your typed message. Please try again.');
+      setErrorState({ message: 'Could not send your typed message. Please try again.', fatal: false });
       throw reason;
     }
   }
@@ -258,12 +297,14 @@ export function PipecatVoiceProvider({
     if (refreshTimer) clearTimeout(refreshTimer);
   }, [refreshTimer]);
 
+  useEffect(() => () => thinkingTimeout.clear(), [thinkingTimeout]);
+
   useEffect(() => () => {
     void client.disconnect();
   }, [client]);
 
   const value: VoiceContextValue = {
-    error,
+    error: errorState.message,
     voiceRuns,
     phase,
     sentText,

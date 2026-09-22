@@ -101,6 +101,9 @@ async def test_provider_transcripts_do_not_plan_before_pipecat_finishes_the_turn
 
     context = LLMContext(messages=[{"role": "user", "content": "I live in the city."}])
     await processor.process_frame(LLMContextFrame(context=context), FrameDirection.DOWNSTREAM)
+    from voice_teaching import CompletedLearnerTurnFrame
+    await processor.process_frame(CompletedLearnerTurnFrame(
+        "I live in the city.", "pipecat:test-city"), FrameDirection.DOWNSTREAM)
 
     assert service.calls == ["I live in the city."]
     assert exchange.plan is not None
@@ -114,6 +117,9 @@ async def test_eval_send_text_plans_one_typed_turn(tmp_path):
 
     context = LLMContext(messages=[{"role": "user", "content": "I am happy today."}])
     await processor.process_frame(LLMContextFrame(context=context), FrameDirection.DOWNSTREAM)
+    from voice_teaching import CompletedLearnerTurnFrame
+    await processor.process_frame(CompletedLearnerTurnFrame(
+        "I am happy today.", "pipecat:test-happy"), FrameDirection.DOWNSTREAM)
 
     assert service.calls == ["I am happy today."]
     assert exchange.plan is not None
@@ -169,6 +175,83 @@ async def test_interruption_discards_unspoken_pending_completion(tmp_path, monke
     stored = exchange.repository.get_session(exchange.session_id)
     assert stored.state.state_version == 0
     assert stored.turns == ()
+
+
+@pytest.mark.asyncio
+async def test_interrupted_spoken_transition_is_committed_before_next_learner_turn(tmp_path, monkeypatch):
+    from luna_tutor.api.runtime import FixtureScriptEvaluator
+    from luna_tutor.curriculum.lesson_script import load_lesson_script
+    from luna_tutor.teaching.scripted_lesson import ScriptedLessonService
+
+    from language_tts import LanguageSynthesisStartedFrame
+    from voice_teaching import VoiceCommitProcessor, VoiceTeachingExchange, VoiceTeachingProcessor
+
+    async def skip_framework_dispatch(_processor, _frame, _direction):
+        return None
+
+    monkeypatch.setattr(
+        "pipecat.processors.frame_processor.FrameProcessor.process_frame",
+        skip_framework_dispatch,
+    )
+    script = load_lesson_script(
+        Path(__file__).resolve().parents[2] / "curriculum/grade-03/unit-01/lesson-01/content.yaml"
+    )
+    service = ScriptedLessonService(script, FixtureScriptEvaluator(), None)
+    hello = service.opportunities[3]
+    state = service.fresh_state("voice-grade3").model_copy(update={
+        "script_index": 3,
+        "stage_id": hello.stage,
+        "activity_id": hello.activity_id,
+        "objective_id": hello.objective_id,
+        "last_teacher_turn": hello.say,
+    })
+    repository = SessionRepository(tmp_path / "voice-grade3.sqlite3")
+    repository.create_session(state)
+    exchange = VoiceTeachingExchange(service, repository, state.session_id, state)
+    exchange.flow = RecordingFlow()
+    teaching = VoiceTeachingProcessor(exchange)
+    previous = await service.process(state, "Hello.", "voice:hello")
+    assert previous.next_state.activity_id == "lesson-03.exchange-01"
+    exchange.pending_completion = previous
+    commit = VoiceCommitProcessor(exchange)
+
+    await teaching.process_frame(LanguageSynthesisStartedFrame("tts-hi"), FrameDirection.UPSTREAM)
+    await teaching.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
+    await commit.process_frame(InterruptionFrame(), FrameDirection.DOWNSTREAM)
+    assert exchange.repository.get_session(exchange.session_id).state.state_version == 0
+
+    await teaching._plan_turn("Hi.", "voice:hi")
+    stored = exchange.repository.get_session(exchange.session_id)
+    assert stored.state.state_version == 1
+    assert stored.turns[0].plan.turn_id == "voice:hello"
+    assert exchange.plan is not None
+    assert exchange.plan.state_version == 1
+    assert exchange.plan.decision.next_activity_id == "lesson-04.exchange-01"
+
+
+@pytest.mark.asyncio
+async def test_completed_transcript_is_queued_as_uninterruptible_work(tmp_path, monkeypatch):
+    from pipecat.frames.frames import UninterruptibleFrame
+
+    exchange, teaching, service = make_exchange(tmp_path)
+    queued = []
+
+    async def record_queue(frame, direction=FrameDirection.DOWNSTREAM):
+        queued.append((frame, direction))
+
+    monkeypatch.setattr(teaching, "queue_frame", record_queue)
+    context = LLMContext(messages=[{"role": "user", "content": "Hi. Hi. Hi."}])
+    await teaching.process_frame(LLMContextFrame(context=context), FrameDirection.DOWNSTREAM)
+
+    assert service.calls == []
+    assert len(queued) == 1
+    turn_frame, direction = queued[0]
+    assert isinstance(turn_frame, UninterruptibleFrame)
+    assert turn_frame.text == "Hi. Hi. Hi."
+    assert direction == FrameDirection.DOWNSTREAM
+    await teaching.process_frame(turn_frame, direction)
+    assert service.calls == ["Hi. Hi. Hi."]
+    assert exchange.flow.nodes
 
 
 @pytest.mark.asyncio

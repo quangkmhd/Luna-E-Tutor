@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 from pipecat.transcriptions.language import Language
+from pipecat.turns.user_turn_strategies import ExternalUserTurnStrategies
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "voice/server"))
 
@@ -18,8 +19,8 @@ def test_voice_config_names_every_missing_live_variable():
 
 
 def test_soniox_services_use_pipecat_settings():
-    from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
     from luna_tutor.curriculum.loader import load_unit
+    from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
 
     config = VoiceConfig.from_environment(
         {
@@ -36,7 +37,8 @@ def test_soniox_services_use_pipecat_settings():
 
     assert stt._settings.model == "stt-rt-v5"
     assert set(stt._settings.language_hints) == {Language.EN, Language.VI}
-    assert stt._vad_force_turn_endpoint is True
+    assert stt._vad_force_turn_endpoint is False
+    assert isinstance(stt.service_metadata_frame().user_turn_strategies, ExternalUserTurnStrategies)
     assert 'Grade 3 Unit 1 Hello' in stt._settings.context
     assert 'goodbye' in stt._settings.context
     assert 'countryside' not in stt._settings.context

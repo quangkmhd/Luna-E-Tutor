@@ -8,6 +8,7 @@ from pipecat.services.soniox.stt import SonioxSTTService
 from pipecat.services.soniox.tts import SonioxTTSService
 from pipecat.transcriptions.language import Language
 
+
 def transcription_context(curriculum: UnitCurriculum) -> str:
     targets = [item.text for item in curriculum.vocabulary]
     targets.extend(item.text for item in curriculum.patterns)
@@ -41,7 +42,7 @@ class VoiceConfig:
 def build_soniox_stt(config: VoiceConfig, curriculum: UnitCurriculum) -> SonioxSTTService:
     return SonioxSTTService(
         api_key=config.soniox_api_key,
-        vad_force_turn_endpoint=True,
+        vad_force_turn_endpoint=False,
         settings=SonioxSTTService.Settings(
             model="stt-rt-v5",
             language_hints=[Language.EN, Language.VI],
