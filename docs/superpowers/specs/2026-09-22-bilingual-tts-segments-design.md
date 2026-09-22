@@ -15,7 +15,7 @@ say: |-
   <en>[long pause] Listen first! "HELLO".</en>
 ```
 
-Tags may share a line or span multiple lines. Nested, unclosed, or mismatched tags are invalid in authored curriculum and produce a lesson-loading error that identifies the source field. Untagged text remains Vietnamese for backward compatibility. Empty tagged spans are ignored. Preserve the authored segment order, ordinary whitespace and line breaks, and Soniox delivery cues such as `[long pause]` within their segment. No tag text is sent to TTS, persisted as learner-facing display text, or shown in the browser. A generated Teacher response with malformed tags is handled safely: remove recognizable tag tokens, speak the remaining text with the default Vietnamese setting, and log the invalid markup rather than failing the whole lesson.
+Tags may share a line or span multiple lines. Nested, unclosed, or mismatched tags are invalid in authored curriculum and produce a lesson-loading error that identifies the source field. Untagged text remains Vietnamese for backward compatibility. Empty tagged spans and whitespace-only spans outside tags are ignored for TTS; trim outer whitespace of each TTS span, but preserve its internal wording and cues. Removing tags for learner display preserves authored spaces and line breaks, including spaces between adjacent spans. No tag text is sent to TTS, persisted as learner-facing display text, or shown in the browser. A generated Teacher response with malformed tags is handled safely: remove recognizable tag tokens, speak the remaining text with the default Vietnamese setting, and log the invalid markup rather than failing the whole lesson.
 
 ## Voice delivery
 
@@ -31,13 +31,13 @@ For each edited speech span, preserve the existing words, capitalization, pronun
 
 ## Completion and interruption
 
-A tagged response is one **logical teaching turn**, even though it contains multiple TTS streams. The current commit trigger (`BotStoppedSpeakingFrame`) may occur between segments, so it cannot alone authorize persistence. The voice adapter emits a final-audio marker only after the last segment has drained through TTS/output. `VoiceCommitProcessor` commits a pending completion only after it has observed both that marker and the final stopped-speaking signal, regardless of which arrives first. Earlier stopped-speaking signals do not commit. An interruption, provider error, cancellation, or disconnect discards the pending completion and its markers. A fallback Teacher response remains speakable but cannot commit a proposed lesson transition.
+A tagged response is one **logical teaching turn**, even though it contains multiple TTS streams. The current commit trigger (`BotStoppedSpeakingFrame`) may occur between segments, so it cannot alone authorize persistence. The voice adapter waits for the upstream stopped-speaking event from the transport before dispatching the next segment. After the *last* segment's stopped-speaking event, it emits a final-audio marker; that marker is the commit authorization because it is impossible to emit before the final stop. Earlier stopped-speaking signals do not commit. An interruption, provider error, cancellation, or disconnect discards the pending completion and its markers. A fallback Teacher response remains speakable but cannot commit a proposed lesson transition.
 
 ## Validation and tests
 
 - Parser tests cover VI → EN → VI, adjacent tags on one line, multiline spans, untagged legacy text, empty spans, malformed tags, and pause cues.
 - Frame-level voice tests prove settings and complete speech streams are emitted in order and no markup reaches Soniox or learner-facing frames. Include opening speech, normal Teacher response, and fallback response.
-- Commit tests prove an intermediate stop cannot commit, either final-signal order commits once, and interruption/error before completion commits nothing.
+- Commit tests prove an intermediate stop cannot commit, the adapter emits its marker only on the final stop, and interruption/error before completion commits nothing.
 - Web tests prove tags/cues never appear, while voice captions still reveal only spoken text and text-only responses display immediately.
 - Curriculum tests load every Grade 3 lesson file and assert valid markup in every tagged teacher-speech field; the migration audit asserts the untagged speech remains unchanged.
 - Run the backend, voice, and web suites plus lint/build checks. Where credentials and local services permit, make one real Grade 3 Lesson 1 voice pass and inspect Soniox/provider logs for language transitions and `invalid_stream_state`; do not claim a live audio verification if that pass was unavailable.
