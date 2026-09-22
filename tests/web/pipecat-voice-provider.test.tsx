@@ -347,6 +347,22 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.queryByText(/\[(?:long )?pause\]/i)).not.toBeInTheDocument();
   });
 
+  it('splits multiline live Luna text into separate turns', () => {
+    sdk.conversationMessages = [{
+      role: 'assistant', final: false, createdAt: '1', parts: [
+        { text: { spoken: 'Listen first! [long pause]\n', unspoken: 'Your turn now!' }, final: false, createdAt: '1' },
+      ],
+    }];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /></PipecatVoiceProvider>);
+
+    const rows = document.querySelectorAll('.bubble-row.teacher');
+    expect(rows).toHaveLength(2);
+    expect(Array.from(rows, (row) => row.querySelector('p')?.textContent)).toEqual([
+      'Listen first!',
+      'Your turn now!',
+    ]);
+  });
+
   it('keeps all final learner transcript chunks in the current Pipecat turn', () => {
     sdk.conversationMessages = [{
       role: 'user', final: false, createdAt: '1', parts: [

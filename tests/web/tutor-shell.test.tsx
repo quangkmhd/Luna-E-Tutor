@@ -388,6 +388,22 @@ describe('TutorShell', () => {
     expect(screen.queryByText(/\[(?:long )?pause\]/i)).not.toBeInTheDocument();
   });
 
+  it('renders each YAML say line as a separate Luna turn', () => {
+    render(<ChatPanel messages={[
+      { role: 'teacher', text: 'Cô trò mình sang Trạm 1. [long pause]\nHELLO nghĩa là xin chào. [long pause]\n\nListen first! HELLO.\nYour turn now!' },
+    ]} />);
+
+    const rows = document.querySelectorAll('.bubble-row.teacher');
+    expect(rows).toHaveLength(4);
+    expect(Array.from(rows, (row) => row.querySelector('p')?.textContent)).toEqual([
+      'Cô trò mình sang Trạm 1.',
+      'HELLO nghĩa là xin chào.',
+      'Listen first! HELLO.',
+      'Your turn now!',
+    ]);
+    expect(Array.from(rows).every((row) => row.querySelector('.speaker')?.textContent?.includes('Luna'))).toBe(true);
+  });
+
   it('shows retryable provider errors without inventing a message', async () => {
     const api = mockApi({ submitTurn: vi.fn().mockRejectedValue(new ApiError('PROVIDER_UNAVAILABLE', 'Provider down', true, 503)) });
     const user = userEvent.setup(); await openLesson(api);

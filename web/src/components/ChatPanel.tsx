@@ -14,7 +14,22 @@ function conversationText(message: ConversationMessage): string {
 }
 
 function teacherDisplayText(text: string): string {
-  return text.replace(/\[[^\]]*\]/g, '').replace(/\s+/g, ' ').trim();
+  return text.replace(/\[[^\]]*\]/g, '').split(/\r?\n/)
+    .map((line) => line.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n');
+}
+
+function teacherMatchText(text: string): string {
+  return teacherDisplayText(text).replace(/\s+/g, ' ').trim();
+}
+
+function stripSavedTeacherPrefix(text: string, savedText: string): string | null {
+  const comparable = teacherMatchText(savedText);
+  if (!comparable) return text;
+  const prefix = new RegExp(`^${comparable.split(' ').map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+')}`);
+  const match = text.match(prefix);
+  if (match) return text.slice(match[0].length).trim();
+  if (comparable.includes(teacherMatchText(text))) return null;
+  return text;
 }
 
 export function ChatPanel({ messages }: { messages: Message[] }) {
@@ -41,12 +56,11 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
         .filter((live) => live.role === 'learner' && live.text === message.text).length;
       return savedCount >= liveCount || sentText.some((sent) => sent.text === message.text) ? [] : [message];
     }
-    let text = teacherDisplayText(message.text);
+    let text: string | null = teacherDisplayText(message.text);
     for (const saved of savedMessages) {
       if (saved.role !== 'teacher') continue;
-      const savedText = teacherDisplayText(saved.text);
-      if (text.startsWith(savedText)) text = text.slice(savedText.length).trim();
-      else if (savedText.includes(text)) return [];
+      if (!text) return [];
+      text = stripSavedTeacherPrefix(text, saved.text);
     }
     return text ? [{ ...message, text }] : [];
   });
@@ -62,10 +76,15 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
     const rightTime = Date.parse(right.timestamp);
     return (Number.isNaN(leftTime) ? 0 : leftTime) - (Number.isNaN(rightTime) ? 0 : rightTime);
   });
-  const latestTeacherIndex = displayedMessages.findLastIndex((message) => message.role === 'teacher');
+  const visibleMessages = displayedMessages.flatMap((message) => message.role === 'teacher'
+    ? teacherDisplayText(message.text).split('\n').filter(Boolean).map((line, index) => ({
+      ...message, text: line, timestamp: `${message.timestamp}-line-${index}`,
+    }))
+    : [message]);
+  const latestTeacherIndex = visibleMessages.findLastIndex((message) => message.role === 'teacher');
   useEffect(() => { latestMessage.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, [displayedMessages.length]);
   return <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
-    {displayedMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.timestamp}`}>
+    {visibleMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.timestamp}`}>
       {message.role === 'teacher' && <div className="avatar" aria-hidden="true">L</div>}
       <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span><p>{message.role === 'teacher' ? teacherDisplayText(message.text) : message.text}</p></div>
     </article>)}
