@@ -41,6 +41,22 @@ import { TalkRoom } from '@/components/talk/TalkRoom';
 describe('TalkRoom', () => {
   beforeEach(() => voice.provider.mockClear());
 
+  it('shows classroom-like topic, work, and guide regions without fake progress', () => {
+    render(<TalkRoom />);
+    expect(screen.getByRole('navigation', { name: 'Chủ đề Free Talk' })).toBeVisible();
+    expect(screen.getByRole('region', { name: 'Chọn chủ đề trò chuyện' })).toBeVisible();
+    expect(screen.getByText('Mẹo trò chuyện')).toBeVisible();
+    expect(screen.queryByText(/ngày liên tiếp|huy hiệu|điểm thưởng/i)).not.toBeInTheDocument();
+  });
+
+  it('will not start from whitespace only', async () => {
+    const user = userEvent.setup();
+    render(<TalkRoom />);
+    await user.type(screen.getByLabelText('Or enter another topic'), '   ');
+    expect(screen.getByRole('button', { name: 'Start Free Talk' })).toBeDisabled();
+    expect(voice.provider).not.toHaveBeenCalled();
+  });
+
   it('requires a topic before starting', () => {
     render(<TalkRoom />);
     expect(screen.getByRole('button', { name: 'Start Free Talk' })).toBeDisabled();
@@ -81,6 +97,8 @@ describe('TalkRoom', () => {
     await user.click(screen.getByRole('button', { name: 'Start Free Talk' }));
 
     expect(screen.getByTestId('talk-transcript')).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Phòng trò chuyện Luna' })).toBeVisible();
+    expect(screen.getByText('Food')).toBeVisible();
     expect(screen.getByRole('button', { name: 'Start conversation' })).toBeInTheDocument();
   });
 

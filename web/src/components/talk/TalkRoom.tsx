@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import { ChatPanel } from '@/components/ChatPanel';
+import { LearnerHeader } from '@/components/LearnerHeader';
 import { PipecatVoiceProvider } from '@/components/voice/PipecatVoiceProvider';
 import { VoiceControls } from '@/components/voice/VoiceControls';
 
@@ -29,38 +30,25 @@ export function TalkRoom() {
   }
 
   return (
-    <main className={styles.shell}>
-      <header className={styles.topbar}>
-        <div className={styles.brand}>
-          <div className="logo-mark">L</div>
-          <div>
-            <span>Luna</span>
-            <small>English Tutor · Free Talk</small>
-          </div>
-        </div>
-        <Link className="secondary-button" href="/">Back to Unit 1</Link>
-      </header>
-
-      {!activeTopic ? (
-        <section className={styles.setup} aria-labelledby="talk-heading">
-          <span className="eyebrow">Free Talk Room</span>
-          <h1 id="talk-heading">What would you like to talk about?</h1>
-          <p>Luna will share ideas, ask one question at a time, and help you keep speaking naturally.</p>
-
-          <div className={styles.topics} role="group" aria-label="Suggested topics">
-            {TOPICS.map((topic) => (
-              <button
-                aria-pressed={selectedTopic === topic}
-                className={styles.topic}
-                key={topic}
-                onClick={() => chooseTopic(topic)}
-                type="button"
-              >
-                {topic}
-              </button>
-            ))}
-          </div>
-
+    <main className={`${styles.shell} learner-app`}>
+      <LearnerHeader subtitle="Gia sư tiếng Anh · Free Talk">
+        <Link className={styles.backLink} href="/">Chọn Unit</Link>
+      </LearnerHeader>
+      <div className={styles.workspace}>
+        <nav className={styles.topicRail} aria-label="Chủ đề Free Talk">
+          <h2>Chọn chủ đề</h2>
+          {!activeTopic ? TOPICS.map((topic) => <button
+            aria-pressed={selectedTopic === topic}
+            className={styles.topic}
+            key={topic}
+            onClick={() => chooseTopic(topic)}
+            type="button"
+          >{topic}</button>) : <div className={styles.currentTopic}><span>Đang trò chuyện</span><strong>{activeTopic}</strong></div>}
+        </nav>
+        {!activeTopic ? <section className={styles.setup} aria-label="Chọn chủ đề trò chuyện">
+          <span className={styles.kicker}>FREE TALK ROOM</span>
+          <h1 id="talk-heading">Con muốn nói về điều gì?</h1>
+          <p>Luna sẽ cùng con trò chuyện từng câu một. Chọn một chủ đề bên trái hoặc nhập điều con thích.</p>
           <label className={styles.label} htmlFor="custom-topic">Or enter another topic</label>
           <input
             autoComplete="off"
@@ -78,25 +66,13 @@ export function TalkRoom() {
           <p className={styles.helper} aria-live="polite">
             {normalizedTopic ? `Ready to talk about ${normalizedTopic}.` : 'Choose or enter a topic to begin.'}
           </p>
-          <button
-            className={styles.start}
-            disabled={!normalizedTopic}
-            onClick={startRoom}
-            type="button"
-          >
+          <button className={styles.start} disabled={!normalizedTopic} onClick={startRoom} type="button">
             Start Free Talk
           </button>
-        </section>
-      ) : (
-        <section className={styles.conversation}>
+        </section> : <section className={styles.conversation} aria-label="Phòng trò chuyện Luna">
           <div className={styles.conversationHeading}>
-            <div>
-              <span className="eyebrow">Free Talk Room</span>
-              <h1>Talking about {activeTopic}</h1>
-            </div>
-            <button className="secondary-button" onClick={() => setActiveTopic(null)} type="button">
-              Change topic
-            </button>
+            <div><span className={styles.kicker}>FREE TALK ROOM</span><h1>Talking about {activeTopic}</h1></div>
+            <button className={styles.changeTopic} onClick={() => setActiveTopic(null)} type="button">Change topic</button>
           </div>
           <PipecatVoiceProvider
             key={activeTopic}
@@ -106,16 +82,18 @@ export function TalkRoom() {
             <div className={styles.voiceRoom}>
               <ChatPanel messages={[]} />
               <div className={styles.controls}>
-                <VoiceControls
-                  startLabel="Start conversation"
-                  stopLabel="Stop conversation"
-                  onStopped={() => setActiveTopic(null)}
-                />
+                <VoiceControls startLabel="Start conversation" stopLabel="Stop conversation"
+                  onStopped={() => setActiveTopic(null)} />
               </div>
             </div>
           </PipecatVoiceProvider>
-        </section>
-      )}
+        </section>}
+        <aside className={styles.guide}>
+          <h2>Mẹo trò chuyện</h2>
+          <p>Con có thể nói ngắn rồi kể thêm khi sẵn sàng.</p>
+          <p>Nếu cần nghĩ một chút, con cứ thong thả. Luna sẽ chờ con.</p>
+        </aside>
+      </div>
     </main>
   );
 }
