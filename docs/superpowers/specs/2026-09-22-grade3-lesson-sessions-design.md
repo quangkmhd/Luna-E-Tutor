@@ -10,7 +10,7 @@ The session request identifies the unit and lesson. Grade 3 Unit 1 Lesson 1 load
 
 ## Authoring format
 
-Lesson YAML has `lesson`, `title`, a required `greeting`, short `words` and `patterns` definitions, and exactly three ordered `stations`: `vocabulary`, `patterns`, `conversation`. The greeting is delivered first and can be edited without code changes. Each station has ordered `steps`. A step groups consecutive teacher lines in `say` and the learner opportunity that follows in `accept`; `target` refers to a word or pattern key. Teacher-only steps omit `accept`. Optional `source` links workbook row IDs (for example `B1-15:B1-19`). Teacher text is the sheet's wording, with `[long pause]` inserted only at suitable spoken boundaries; preserve the wording, case, and punctuation.
+Lesson YAML has `lesson`, `title`, a required `greeting`, short `words` and `patterns` definitions, and exactly three ordered `stations`: `vocabulary`, `patterns`, `conversation`. The greeting is delivered first and can be edited without code changes. Each station has ordered `steps`. A step groups consecutive teacher lines in `say` and the learner opportunity that follows in `accept`; `target` refers to a word or pattern key. Teacher-only steps omit `accept`. Workbook row numbers are not stored in the lesson YAML. Teacher text is the sheet's wording, with `[long pause]` inserted only at suitable spoken boundaries; preserve the wording, case, and punctuation.
 
 Targets are authored once. The loader derives internal activity and objective IDs, stage links, required flags, and normal completion rules. The YAML does not repeat these fields. Attempts and repetitions have code defaults and appear in a step only when that lesson needs an override. This makes a new lesson a script to fill, rather than a serialized runtime state machine.
 
@@ -27,8 +27,7 @@ patterns:
 stations:
   - id: vocabulary
     steps:
-      - source: B1-15:B1-19
-        say: |-
+      - say: |-
           Cô trò mình sang Trạm 1 — học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé! [long pause]
           HELLO nghĩa là xin chào — con nói khi gặp bất kỳ ai: bạn bè, thầy cô, hay cô Luna. [long pause]
           Listen first! HELLO. [long pause]
@@ -59,8 +58,8 @@ Silence still counts as a learner event in the existing runtime. This design sup
 
 ## Validation and verification
 
-Validate nonempty greeting, nonoverlapping source rows, target references, exactly three ordered stations, and at least one learner opportunity per station. Reject empty `say` for teacher-led steps and empty `accept` when a response is expected. Check all Lesson 1 workbook teacher rows and learner opportunities in the three stations against the YAML; ignore opening and ending rows. Test that editing only the greeting field changes the first teacher message, lesson selection and completion within one session, progression through all three stations, acceptable alternatives, incorrect and silent responses, and that Grade 5 routes are unaffected. Run the focused backend tests and a real session route through the available local stack when services and credentials are available.
+Validate nonempty greeting, target references, exactly three ordered stations, and at least one learner opportunity per station. Reject empty `say` for teacher-led steps and empty `accept` when a response is expected. Review all Lesson 1 workbook teacher lines and learner opportunities in the three stations against the YAML, using a test fixture if mechanical traceability is needed; ignore opening and ending rows. Test that editing only the greeting field changes the first teacher message, lesson selection and completion within one session, progression through all three stations, acceptable alternatives, incorrect and silent responses, and that Grade 5 routes are unaffected. Run the focused backend tests and a real session route through the available local stack when services and credentials are available.
 
 ## Deliberate additions
 
-Keep optional source row ranges for Excel traceability. Keep spoken text separate from acceptance criteria and progression rules. Add an explicit response mode for nonverbal workbook activities rather than treating a clap as a spoken word. Defer Lesson 2–4 content conversion until Lesson 1's format and runtime are verified.
+Keep workbook traceability outside the runtime YAML. Keep spoken text separate from acceptance criteria and progression rules. Add an explicit response mode for nonverbal workbook activities rather than treating a clap as a spoken word. Defer Lesson 2–4 content conversion until Lesson 1's format and runtime are verified.
