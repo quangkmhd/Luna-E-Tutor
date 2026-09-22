@@ -8,6 +8,7 @@ title: Hỏi thăm sức khỏe
 greeting:
   order: 1
   say: "Hi, con! Hôm nay cô trò mình hỏi thăm nhau nhé."
+  accept: Con đáp lại bằng Hi hoặc Hello; một câu chào ngắn cũng đạt.
 words: [how, you, fine, thank you]
 patterns:
   ask: "How are you?"
@@ -36,7 +37,7 @@ stations:
     accept: Chấp nhận “Fine”, “I'm fine”, hoặc câu nói cảm xúc thật phù hợp.
 ```
 
-- `order` đếm **mục dạy** liên tục cho toàn lesson: chào là 1, mục đầu trạm 1 là 2. Không đánh số câu học sinh.
+- `order` đếm **mục dạy** liên tục cho toàn lesson: chào là 1, mục đầu trạm 1 là 2. Không đánh số câu học sinh. Cô chào rồi chờ con đáp theo `greeting.accept` trước khi vào Trạm 1.
 - `say` là lời cô nói. Đặt `[long pause]` vào chỗ cần chờ khi phát âm.
 - `accept` là mô tả cho LLM đánh giá câu con vừa nói. Ghi rõ cách nói thiếu hoặc sai nhẹ vẫn được chấp nhận. Nội dung này không được phát cho học sinh.
 - `target` dùng từ trong `words` hoặc khóa trong `patterns`. Có thể bỏ qua ở trò chơi hay hội thoại không kiểm tra một từ/mẫu câu riêng.

@@ -33,7 +33,7 @@ class Teacher:
 def script():
     return LessonScript.model_validate({
         'lesson': 1, 'title': 'Hello',
-        'greeting': {'order': 1, 'say': 'Hi, con!'},
+        'greeting': {'order': 1, 'say': 'Hi, con!', 'accept': 'Chấp nhận Hi hoặc Hello.'},
         'words': ['hello', 'hi'], 'patterns': {},
         'stations': [
             {'id': 'vocabulary', 'steps': [
@@ -59,19 +59,20 @@ async def test_scripted_session_sends_accept_to_evaluator_and_delivers_next_text
     service = ScriptedLessonService(script(), evaluator, Teacher())
     state = service.fresh_state('session-1')
     assert state.opening_message == 'Hi, con!'
-    assert state.opening_script == 'Say hello.'
+    assert state.opening_script is None
+    assert state.stage_id == 'greeting'
     completed = await service.process(state, 'Hello', 'turn-1')
     assert evaluator.requests[0].active_objectives[0].evidence_criteria == (
-        'Chấp nhận hello; nói ngắn vẫn đạt.')
+        'Chấp nhận Hi hoặc Hello.')
     assert completed.next_state.script_index == 1
     assert completed.next_state.stage_id == 'vocabulary'
-    assert completed.teacher_utterance.spoken_text.endswith('Say hi.')
+    assert completed.teacher_utterance.spoken_text.endswith('Say hello.')
 
 
 @pytest.mark.asyncio
 async def test_substitutes_chosen_name_in_next_script_line():
     service = ScriptedLessonService(script(), Evaluator(), Teacher())
-    state = service.fresh_state('session-2').model_copy(update={'script_index': 2,
+    state = service.fresh_state('session-2').model_copy(update={'script_index': 3,
         'stage_id': 'patterns', 'activity_id': 'lesson-04.exchange-01',
         'objective_id': 'lesson-04.objective-01',
         'last_teacher_turn': 'Introduce yourself.'})
@@ -92,9 +93,15 @@ async def test_word_imitation_counts_without_independent_meaning_claim():
                 })]})
 
     service = ScriptedLessonService(script(), ImitationEvaluator(), Teacher())
-    completed = await service.process(service.fresh_state('session-imitation'),
+    state = service.fresh_state('session-imitation').model_copy(update={
+        'script_index': 1, 'stage_id': 'vocabulary',
+        'activity_id': 'lesson-02.exchange-01',
+        'objective_id': 'lesson-02.objective-01',
+        'last_teacher_turn': 'Say hello.',
+    })
+    completed = await service.process(state,
                                       'Hello', 'turn-imitation')
-    assert completed.next_state.script_index == 1
+    assert completed.next_state.script_index == 2
     assert completed.teacher_utterance.spoken_text.endswith('Say hi.')
 
 
@@ -114,7 +121,7 @@ async def test_wrong_answer_gets_one_retry_then_moves_without_false_praise():
     assert first.next_state.script_index == 0
     second = await service.process(first.next_state, 'book', 'wrong-2')
     assert second.next_state.script_index == 1
-    assert second.teacher_utterance.spoken_text.endswith('Say hi.')
+    assert second.teacher_utterance.spoken_text.endswith('Say hello.')
     assert second.next_state.objective_progress == ()
 
 
@@ -125,7 +132,7 @@ async def test_silence_advances_without_workbook_hint():
                                       input_event='no_response')
     assert completed.next_state.script_index == 1
     assert completed.plan.evidence.response_kind == 'no_response'
-    assert completed.teacher_utterance.spoken_text.endswith('Say hi.')
+    assert completed.teacher_utterance.spoken_text.endswith('Say hello.')
 
 
 @pytest.mark.asyncio
@@ -151,7 +158,7 @@ async def test_uncertain_transcript_does_not_consume_attempt_or_advance():
 async def test_final_script_line_is_spoken_before_completion():
     service = ScriptedLessonService(script(), Evaluator(), Teacher())
     state = service.fresh_state('session-final').model_copy(update={
-        'script_index': 4, 'stage_id': 'conversation',
+        'script_index': 5, 'stage_id': 'conversation',
         'activity_id': 'lesson-05.exchange-01',
         'objective_id': 'lesson-05.objective-01',
         'last_teacher_turn': 'Greet me.', 'script_name': 'Nam',
@@ -194,13 +201,13 @@ async def test_pattern_target_form_alone_does_not_override_accept_judgment():
 
     service = ScriptedLessonService(script(), FormOnlyEvaluator(), Teacher())
     state = service.fresh_state('session-pattern').model_copy(update={
-        'script_index': 2, 'stage_id': 'patterns',
+        'script_index': 3, 'stage_id': 'patterns',
         'activity_id': 'lesson-04.exchange-01',
         'objective_id': 'lesson-04.objective-01',
         'last_teacher_turn': 'Introduce yourself.',
     })
     completed = await service.process(state, 'Hi.', 'turn-form-only')
-    assert completed.next_state.script_index == 2
+    assert completed.next_state.script_index == 3
     assert completed.next_state.attempt_count == 1
 
 
@@ -208,7 +215,7 @@ async def test_pattern_target_form_alone_does_not_override_accept_judgment():
 async def test_vietnamese_chosen_name_is_kept_for_later_script_lines():
     service = ScriptedLessonService(script(), Evaluator(), Teacher())
     state = service.fresh_state('session-name').model_copy(update={
-        'script_index': 2, 'stage_id': 'patterns',
+        'script_index': 3, 'stage_id': 'patterns',
         'activity_id': 'lesson-04.exchange-01',
         'objective_id': 'lesson-04.objective-01',
         'last_teacher_turn': 'Introduce yourself.',
@@ -239,5 +246,11 @@ async def test_step_can_override_default_attempt_limit():
             return result.model_copy(update={'objective_evidence': []})
 
     service = ScriptedLessonService(scripted, RejectingEvaluator(), Teacher())
-    completed = await service.process(service.fresh_state('session-limit'), 'book', 'wrong-1')
-    assert completed.next_state.script_index == 1
+    state = service.fresh_state('session-limit').model_copy(update={
+        'script_index': 1, 'stage_id': 'vocabulary',
+        'activity_id': 'lesson-02.exchange-01',
+        'objective_id': 'lesson-02.objective-01',
+        'last_teacher_turn': 'Say hello.',
+    })
+    completed = await service.process(state, 'book', 'wrong-1')
+    assert completed.next_state.script_index == 2

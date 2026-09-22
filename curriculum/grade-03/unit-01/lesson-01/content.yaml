@@ -4,7 +4,8 @@ greeting:
   order: 1
   say: |-
     Hi! My name is Luna — I'm your English tutor! [long pause]
-    Xin chào con! Cô là Luna, gia sư tiếng Anh của con.
+    Xin chào con! Cô là Luna, gia sư tiếng Anh của con. Con chào cô nhé!
+  accept: Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.
 words:
 - hello
 - hi

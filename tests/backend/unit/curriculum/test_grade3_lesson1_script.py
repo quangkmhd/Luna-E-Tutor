@@ -15,7 +15,7 @@ def test_lesson_one_is_a_editable_three_station_script():
     assert lesson.stations[0].steps[0].target == 'hello'
     assert lesson.stations[0].steps[1].order == 3
     assert lesson.stations[0].steps[1].target == 'hi'
-    assert 'HELLO nghĩa là xin chào' in lesson.stations[0].steps[0].say
+    assert 'HELLO nghĩa là xin chào' in lesson.stations[0].steps[0].say.replace('"', '')
     assert '[long pause]' in lesson.stations[0].steps[0].say
     assert any('Thiếu Hi vẫn đạt' in exchange.accept
                for station in lesson.stations for step in station.steps

@@ -26,9 +26,10 @@ def test_grade3_session_starts_lesson_one_and_rejects_unknown_lesson(tmp_path: P
     assert response.status_code == 200, response.text
     session = response.json()
     assert session['lesson_id'] == 1
-    assert session['stage_id'] == 'vocabulary'
+    assert session['stage_id'] == 'greeting'
     assert 'Cô là Luna' in session['messages'][0]['text']
-    assert 'HELLO nghĩa là xin chào' in session['messages'][1]['text']
+    assert len(session['messages']) == 1
+    assert 'HELLO nghĩa là xin chào' not in session['messages'][0]['text']
     assert api.get(f"/api/sessions/{session['session_id']}").json()['lesson_id'] == 1
     bad = api.post('/api/sessions', json={
         'unit_id': 'grade03.unit01', 'lesson_id': 99,
@@ -46,6 +47,16 @@ def test_grade3_fixture_session_runs_all_three_stations(tmp_path: Path):
             'unit_id': 'grade03.unit01', 'lesson_id': 1,
         }).json()
         visited = {session['stage_id']}
+        greeting = api.post(
+            f"/api/sessions/{session['session_id']}/turns",
+            json={'turn_id': 'greeting-reply', 'expected_state_version': session['state_version'],
+                  'learner_text': 'Hi, Luna!'},
+        )
+        assert greeting.status_code == 200, greeting.text
+        session = greeting.json()['session']
+        assert session['stage_id'] == 'vocabulary'
+        assert 'HELLO' in session['messages'][-1]['text']
+        visited.add(session['stage_id'])
         for n in range(40):
             if session['status'] == 'completed':
                 break
@@ -58,5 +69,5 @@ def test_grade3_fixture_session_runs_all_three_stations(tmp_path: Path):
             session = response.json()['session']
             visited.add(session['stage_id'])
         assert session['status'] == 'completed'
-        assert visited == {'vocabulary', 'patterns', 'conversation'}
+        assert visited == {'greeting', 'vocabulary', 'patterns', 'conversation'}
         assert all(stage not in visited for stage in ('level-02', 'level-03', 'free-talk'))

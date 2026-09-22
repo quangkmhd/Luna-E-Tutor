@@ -133,7 +133,8 @@ def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
                 script.patterns[target] for step in station.steps
                 for target in ([step.target] if isinstance(step.target, str) else step.target or [])
                 if target in script.patterns)),
-            highlighted=station.id == state.stage_id,
+            highlighted=station.id == state.stage_id or (
+                state.stage_id == 'greeting' and station.id == 'vocabulary'),
         ) for station in script.stations]
     return SessionView(
         session_id=state.session_id, unit_id=state.unit_id, lesson_id=state.lesson_id,

@@ -21,6 +21,7 @@ class Exchange(_Strict):
 class Greeting(_Strict):
     order: int = Field(ge=1)
     say: Text
+    accept: Text
 
 
 class TeachingStep(Exchange):

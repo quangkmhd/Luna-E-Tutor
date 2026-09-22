@@ -43,7 +43,11 @@ class Opportunity:
 
 
 def _opportunities(script: LessonScript) -> tuple[tuple[Opportunity, ...], tuple[str, ...]]:
-    result = []
+    result = [Opportunity(
+        order=script.greeting.order, exchange=1, stage='greeting',
+        lead_in=(), say=script.greeting.say, accept=script.greeting.accept,
+        target=None, attempts=2,
+    )]
     pending = []
     for station in script.stations:
         for step in station.steps:
@@ -76,14 +80,12 @@ class ScriptedLessonService:
     def fresh_state(self, session_id: str) -> LessonState:
         first = self._opportunities[0]
         greeting = self.script.greeting.say
-        opening = first.prompt()
         return LessonState(
             session_id=session_id, unit_id='grade03.unit01',
             lesson_id=self.script.lesson, script_index=0,
             stage_id=first.stage, activity_id=first.activity_id,
             objective_id=first.objective_id,
-            opening_message=greeting, opening_script=opening,
-            last_teacher_turn=opening,
+            opening_message=greeting, last_teacher_turn=greeting,
         )
 
     async def plan(self, state: LessonState, learner_text: str, turn_id: str,

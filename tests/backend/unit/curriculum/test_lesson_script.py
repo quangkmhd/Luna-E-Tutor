@@ -9,7 +9,7 @@ from luna_tutor.curriculum.lesson_script import load_lesson_script
 def payload():
     return {
         'lesson': 1, 'title': 'Hello',
-        'greeting': {'order': 1, 'say': 'Hi, con!'},
+        'greeting': {'order': 1, 'say': 'Hi, con!', 'accept': 'Chấp nhận Hi hoặc Hello.'},
         'words': ['hello', 'hi'], 'patterns': {},
         'stations': [
             {'id': 'vocabulary', 'steps': [
@@ -48,6 +48,7 @@ def test_one_item_can_reference_several_vocabulary_words(tmp_path):
 
 @pytest.mark.parametrize('change', [
     lambda data: data['greeting'].update(say=''),
+    lambda data: data['greeting'].update(accept=''),
     lambda data: data['greeting'].update(order=2),
     lambda data: data['stations'][0]['steps'][1].update(order=2),
     lambda data: data['stations'][0]['steps'][1].update(order=7),
