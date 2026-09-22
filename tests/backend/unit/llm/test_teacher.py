@@ -75,6 +75,17 @@ async def test_teacher_receives_recast_request_without_evaluator_generated_wordi
 
 
 @pytest.mark.asyncio
+async def test_teacher_forwards_repeated_vocabulary_invitation_without_retry():
+    client = FakeClient('Say hello again!')
+    result = await GeminiTeacher(client).respond(request(
+        previous_teacher_turn='Say hello again!',
+    ))
+
+    assert result.spoken_text == 'Say hello again!'
+    assert len(client.calls) == 1
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize('text', [
     '**Repeat after me:** I live in the countryside? Again?',
     'First question? Second question?',

@@ -39,14 +39,15 @@ trap cleanup EXIT INT TERM
   uv run "${env_args[@]}" uvicorn luna_tutor.api.runtime:build_runtime_app --factory \
     --host 127.0.0.1 --port 8000 \
     --reload --reload-dir "$project_root/backend/src" \
+    --reload-dir "$project_root/curriculum" --reload-include '*.yaml' \
     > >(tee -a "$log_dir/backend.log") 2>&1
 ) &
 backend_pid=$!
 
 (
   cd "$project_root/voice/server"
-  uv run watchfiles --filter python "$voice_command_string" \
-    "$project_root/voice/server" "$project_root/backend/src" \
+  uv run watchfiles --filter default "$voice_command_string" \
+    "$project_root/voice/server" "$project_root/backend/src" "$project_root/curriculum" \
     > >(tee -a "$log_dir/voice.log") 2>&1
 ) &
 voice_pid=$!

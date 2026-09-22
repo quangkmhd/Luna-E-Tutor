@@ -10,16 +10,12 @@ vocabulary:
   text: good morning
 - id: good-afternoon
   text: good afternoon
-- id: good-evening
-  text: good evening
 - id: good-night
   text: good night
 - id: see-you-later
   text: see you later
 - id: take-care
   text: take care
-- id: nice-to-meet-you
-  text: nice to meet you
 - id: and-you
   text: and you?
 - id: not-bad
@@ -46,11 +42,6 @@ objectives:
   vocabulary_ids:
   - good-afternoon
   evidence_criteria: Understand or use good afternoon in context; imitation alone is not independent use.
-- id: unit01.level02.vocabulary.good_evening
-  description: 'Vocabulary: good evening'
-  vocabulary_ids:
-  - good-evening
-  evidence_criteria: Understand or use good evening in context; imitation alone is not independent use.
 - id: unit01.level02.vocabulary.good_night
   description: 'Vocabulary: good night'
   vocabulary_ids:
@@ -66,11 +57,6 @@ objectives:
   vocabulary_ids:
   - take-care
   evidence_criteria: Understand or use take care in context; imitation alone is not independent use.
-- id: unit01.level02.vocabulary.nice_to_meet_you
-  description: 'Vocabulary: nice to meet you'
-  vocabulary_ids:
-  - nice-to-meet-you
-  evidence_criteria: Understand or use nice to meet you in context; imitation alone is not independent use.
 - id: unit01.level02.vocabulary.and_you
   description: 'Vocabulary: and you?'
   vocabulary_ids:
@@ -137,21 +123,6 @@ activities:
     require real personal details.
   examples:
   - good afternoon
-- id: level-02.introduce-good-evening
-  stage_id: level-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.level02.vocabulary.good_evening
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “good evening” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Choose one plausible time or scene for the greeting; do not
-    require real personal details.
-  examples:
-  - good evening
 - id: level-02.introduce-good-night
   stage_id: level-02
   kind: vocabulary_introduction
@@ -197,21 +168,6 @@ activities:
     require real personal details.
   examples:
   - take care
-- id: level-02.introduce-nice-to-meet-you
-  stage_id: level-02
-  kind: vocabulary_introduction
-  objective_ids:
-  - unit01.level02.vocabulary.nice_to_meet_you
-  required: true
-  max_attempts: 2
-  completion_rule:
-    mode: vocabulary_turn
-    model_repetitions: 2
-  instruction: Model “nice to meet you” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Choose one plausible time or scene for the greeting; do not
-    require real personal details.
-  examples:
-  - nice to meet you
 - id: level-02.introduce-and-you
   stage_id: level-02
   kind: vocabulary_introduction

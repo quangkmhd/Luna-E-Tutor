@@ -45,6 +45,11 @@ async def test_delivered_models_and_response_opportunity_unlock_next_turn(unit_0
     assert progress.response_opportunity_given
     assert first.next_state.support_given.model_spoken_recently
     assert state.activity_progress == ()
+    ready = first.next_state.model_copy(update={
+        'activity_progress': tuple(item.model_copy(update={
+            'successful_learner_repetitions': 2}) if item.activity_id == state.activity_id
+            else item for item in first.next_state.activity_progress),
+    })
 
     class AnswerEvaluator:
         async def evaluate(self, request):
@@ -52,12 +57,12 @@ async def test_delivered_models_and_response_opportunity_unlock_next_turn(unit_0
                 response_kind='answer', emotional_signals=[], needs_clarification=False,
                 ambiguity_reason=None, objective_evidence=[ObjectiveEvidence(
                     objective_id=state.objective_id, meaning_status='satisfied',
-                    target_form_status='not_used', evidence_quote='Tall buildings.',
+                    target_form_status='correct_target_form', evidence_quote='city',
                     recast_needed=False, corrected_form=None)])
 
     second = await TurnService(TurnPlanner(AnswerEvaluator(), TeachingEngine(), unit_01),
                                Teacher('Class. Class. What class are you in?')).process(
-        first.next_state, 'Tall buildings.', 'delivery-2')
+        ready, 'city', 'delivery-2')
     assert second.next_state.activity_id == 'lesson-01.introduce-class'
     assert second.next_state.state_version == 2
     delivered = {p.activity_id: p for p in second.next_state.activity_progress}

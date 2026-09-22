@@ -65,8 +65,8 @@ chmod +x scripts/run-local.sh
 
 Script khởi động đồng thời:
 
-- `backend` tại `127.0.0.1:8000` (tự reload khi sửa `backend/src`)
-- `voice` tại `127.0.0.1:7860` (theo dõi `voice/server` và `backend/src`)
+- `backend` tại `127.0.0.1:8000` (tự reload khi sửa Python hoặc YAML trong `backend/src`, và YAML trong `curriculum`)
+- `voice` tại `127.0.0.1:7860` (theo dõi `voice/server`, `backend/src` và `curriculum`)
 - `talk` tại `127.0.0.1:7863` (theo dõi `talk/server`)
 - `web` tại `http://localhost:3000`
 
@@ -76,6 +76,12 @@ script để dừng toàn bộ bốn process.
 
 Màn chọn bài hiện có lớp 3 Unit 1 **Hello** và lớp 5 Unit 1–5. Unit 1 lớp 3
 có URL `/grade3/unit1`; các URL `/unit1`–`/unit5` của lớp 5 vẫn dùng được.
+
+Trong `curriculum/grade-*/unit-*/.../content.yaml`, hoạt động giới thiệu từ vựng
+mặc định cần **3 lượt học sinh nói đúng** trước khi chuyển từ. Có thể đổi cho từng
+hoạt động bằng `completion_rule.learner_repetitions` (1–5). Trường
+`model_repetitions` đếm số lần Luna đọc mẫu; `max_attempts` giới hạn lượt cần
+sửa hoặc hỗ trợ, không đếm lượt đọc đúng.
 System prompt Teacher và Gemini Evaluator được ghép từ quy tắc chung trong
 `backend/src/luna_tutor/prompts/shared/` và phần riêng của từng lớp trong
 `backend/src/luna_tutor/prompts/grades/grade-03/` hoặc `grade-05/`.

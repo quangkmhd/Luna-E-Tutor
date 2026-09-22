@@ -41,6 +41,7 @@ class Objective(StrictModel):
 class CompletionRule(StrictModel):
     mode: Literal['delivered', 'interaction', 'vocabulary_turn', 'communicative_turn', 'ask_teacher', 'user_end']
     model_repetitions: int = Field(default=0, ge=0, le=2)
+    learner_repetitions: int | None = Field(default=None, ge=1, le=5)
     meaning_objective_ids: list[Identifier] = Field(default_factory=list)
     require_all_meanings: bool = False
 
@@ -56,7 +57,12 @@ class Activity(StrictModel):
     max_attempts: int = Field(ge=1, le=2)
     completion_rule: CompletionRule
     instruction: Text
+    intro_imitation: Text | None = None
     examples: list[Text] = Field(default_factory=list)
+
+    @property
+    def required_learner_repetitions(self) -> int:
+        return self.completion_rule.learner_repetitions or (3 if self.kind == 'vocabulary_introduction' else 1)
 
     @model_validator(mode='after')
     def check_completion(self) -> Self:
@@ -81,6 +87,8 @@ class Activity(StrictModel):
         if self.kind in {'guided_response', 'comprehension', 'review', 'ask_teacher'}:
             if not self.objective_ids:
                 raise ValueError('Practice requires objectives')
+        if self.intro_imitation is not None and self.kind != 'guided_response':
+            raise ValueError('Intro imitation belongs to guided response practice')
         return self
 
 

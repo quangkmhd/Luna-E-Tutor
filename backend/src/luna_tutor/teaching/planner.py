@@ -1,5 +1,7 @@
 """Pure turn planning boundary shared by web and Pipecat adapters."""
 
+import re
+
 from luna_tutor.curriculum.models import Activity, Objective, UnitCurriculum
 from luna_tutor.domain.decisions import (
     PlannedTurn,
@@ -67,6 +69,24 @@ class TurnPlanner:
             evidence = await self._evaluator.evaluate(request)
         if evidence.turn_id != turn_id or evidence.state_version != state.state_version:
             raise ValueError('stale or uncorrelated evaluator result')
+        # A final exact target word is observable even if the evaluator returns
+        # an internally conflicting "unclear" label alongside correct form.
+        if (activity.kind == 'vocabulary_introduction' and transcript_status == 'final'
+                and input_event == 'transcript' and evidence.needs_clarification
+                and len(activity.objective_ids) == 1):
+            objective = next(item for item in self._curriculum.objectives
+                             if item.id == activity.objective_ids[0])
+            words = [item.text for item in self._curriculum.vocabulary
+                     if item.id in objective.vocabulary_ids]
+            normalize = lambda value: ' '.join(re.findall(r'[^\W_]+', value.casefold()))
+            if (len(words) == 1 and normalize(redacted.text) == normalize(words[0])
+                    and any(item.objective_id == objective.id
+                            and item.target_form_status == 'correct_target_form'
+                            for item in evidence.objective_evidence)):
+                evidence = EvaluatorResult.model_validate({
+                    **evidence.model_dump(), 'response_kind': 'answer',
+                    'needs_clarification': False, 'ambiguity_reason': None,
+                })
         decision = self._engine.decide(planning_state, evidence, self._curriculum, learner_text=redacted.text)
         target_activity = next((item for item in self._curriculum.activities
                                 if item.id == decision.next_activity_id), activity)
@@ -94,11 +114,15 @@ class TurnPlanner:
                               if target_activity.kind == 'roleplay' and decision.next_objective_id else None),
             activity_context=self._teacher_context(target_activity, state, enforce_delivery=(
                 target_activity.id != activity.id or decision.feedback_action not in {
-                    'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'})),
+                    'clarify', 'explain_meaning', 'privacy_redirect', 'reassure'}),
+                counted_repetition=(target_activity.id == activity.id
+                                    and decision.count_successful_repetition)),
             constraints=TeacherConstraints(
-                require_repetition=(decision.count_attempt
-                                    and decision.progression_action == 'stay'
-                                    and decision.feedback_action in {'offer_support', 'recast'}),
+                require_repetition=(decision.progression_action == 'stay'
+                                    and (decision.count_successful_repetition
+                                         or decision.feedback_action == 'recast'
+                                         or (decision.count_attempt
+                                             and decision.feedback_action == 'offer_support'))),
                 encouragement_required=(
                     decision.feedback_action == 'acknowledge_and_continue'
                     and target_activity.id != activity.id
@@ -114,7 +138,8 @@ class TurnPlanner:
             proposed_next_state=proposed,
         )
 
-    def _teacher_context(self, activity: Activity, state=None, *, enforce_delivery=True) -> TeacherActivityContext:
+    def _teacher_context(self, activity: Activity, state=None, *, enforce_delivery=True,
+                         counted_repetition=False) -> TeacherActivityContext:
         stage = next(s for s in self._curriculum.stages if s.id == activity.stage_id)
         objectives = [item for item in self._curriculum.objectives
                       if item.id in activity.objective_ids and stage.review is None]
@@ -137,6 +162,9 @@ class TurnPlanner:
             examples=(() if stage.review and state and state.stage_id == activity.stage_id
                       else tuple(activity.examples)),
             model_repetitions=activity.completion_rule.model_repetitions,
+            required_learner_repetitions=activity.required_learner_repetitions,
+            successful_learner_repetitions=(delivered.successful_learner_repetitions
+                                            if delivered else 0) + int(counted_repetition),
             remaining_model_repetitions=remaining_models, needs_response_invitation=needs_invitation,
             delivery_only=activity.completion_rule.mode == 'delivered',
         )
@@ -186,12 +214,16 @@ class TurnPlanner:
             if target.completion_rule.mode == 'delivered':
                 return self._descriptions.branch('no_response_move_to_delivery', target=target)
             return self._descriptions.branch('no_response_move_with_support', target=target)
+        if decision.count_successful_repetition and decision.progression_action == 'stay':
+            return self._descriptions.branch('repeat_successful_response')
+        if decision.intro_imitation_acknowledged:
+            return self._descriptions.branch('acknowledge_intro_imitation', current=current)
+        if decision.feedback_action == 'recast' and decision.progression_action == 'stay':
+            return self._descriptions.branch('retry_target_form')
         if (decision.count_attempt and decision.progression_action == 'stay'
-                and decision.feedback_action in {'offer_support', 'recast'}):
+                and decision.feedback_action == 'offer_support'):
             if current.kind == 'vocabulary_introduction':
                 return self._descriptions.branch('retry_vocabulary')
-            if decision.feedback_action == 'recast':
-                return self._descriptions.branch('retry_target_form')
             return self._descriptions.branch('retry_meaning')
         stage = next(s for s in self._curriculum.stages if s.id == current.stage_id)
         if stage.review is not None and not decision.next_activity_id:
@@ -251,6 +283,8 @@ class TurnPlanner:
             'status': ('support_limit_reached' if reached_limit else 'completed')
                       if leaving else 'in_progress',
             'attempt_count': 0 if is_review_stage else old.attempt_count + int(decision.count_attempt),
+            'successful_learner_repetitions': (old.successful_learner_repetitions
+                                               + int(decision.count_successful_repetition)),
             'demonstrated_meaning_ids': tuple(sorted(set(old.demonstrated_meaning_ids) | {
                 item.objective_id for item in evidence.objective_evidence
                 if item.meaning_status == 'satisfied' and item.objective_id in current.objective_ids})),

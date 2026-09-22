@@ -68,6 +68,21 @@ def _word_imitation(activity: Activity, evidence: EvaluatorResult,
     return len(words) == 1 and normalize(learner_text) == normalize(words[0])
 
 
+def _guided_intro_imitation(activity: Activity, evidence: EvaluatorResult,
+                            learner_text: str) -> bool:
+    """Accept the requested short model without treating it as a full pattern."""
+    if activity.kind != 'guided_response' or not activity.intro_imitation:
+        return False
+    if evidence.response_kind != 'answer':
+        return False
+    normalize = lambda value: re.sub(r'\s+', ' ', value.replace('’', "'").strip(' \t\n.!?"“”')).casefold()
+    if normalize(learner_text) != normalize(activity.intro_imitation):
+        return False
+    return any(item.objective_id in activity.objective_ids
+               and item.target_form_status == 'correct_target_form'
+               for item in evidence.objective_evidence)
+
+
 def _progress(state: LessonState, activity: Activity) -> ActivityProgress:
     return next((item for item in state.activity_progress if item.activity_id == activity.id),
                 ActivityProgress(activity_id=activity.id))
@@ -241,6 +256,11 @@ class TeachingEngine:
             return TeachingDecision(feedback_action=('explain_meaning' if kind == 'asks_meaning'
                                                     else 'answer_teacher_question'), **move, **base)
 
+        if _guided_intro_imitation(activity, evidence, learner_text):
+            return TeachingDecision(
+                feedback_action='acknowledge_and_continue', progression_action='stay',
+                intro_imitation_acknowledged=True, **base)
+
         targets = (set(activity.completion_rule.meaning_objective_ids or activity.objective_ids)
                    if stage.review is None else
                    {state.objective_id} if state.objective_id else set(activity.objective_ids))
@@ -282,7 +302,19 @@ class TeachingEngine:
                                 for item in evidence.objective_evidence)
         successful_activity = ((complete_meaning and meaningful or word_imitation)
                                and activity.kind != 'ask_teacher' and not target_form_error)
+        if activity.kind == 'vocabulary_introduction':
+            successful_activity = word_imitation or any(
+                item.objective_id in targets and _english_success(item, curriculum)
+                for item in evidence.objective_evidence)
         if successful_activity:
+            if (activity.kind == 'vocabulary_introduction'
+                    or activity.completion_rule.learner_repetitions is not None):
+                base['count_successful_repetition'] = True
+                if activity.required_learner_repetitions > 1:
+                    base['count_attempt'] = False
+                if (progress.successful_learner_repetitions + 1
+                        < activity.required_learner_repetitions):
+                    return TeachingDecision(progression_action='stay', **base)
             return TeachingDecision(**_next_move(state, curriculum, stage, activity), **base)
         if attempts + int(count) >= activity.max_attempts:
             add.extend(oid for oid in (sorted(targets if activity.kind == 'ask_teacher' else targets - demonstrated) if targets else [])

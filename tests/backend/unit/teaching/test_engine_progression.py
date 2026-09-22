@@ -41,7 +41,7 @@ def test_valid_alternative_is_success_without_recast(engine, state, evidence, un
 
 @pytest.mark.parametrize(('models', 'opportunity', 'progression'), [
     (0, True, 'stay'), (1, True, 'stay'), (2, False, 'stay'),
-    (2, True, 'move_to_next_objective'),
+    (2, True, 'stay'),
 ])
 def test_word_completion_requires_delivered_models_and_response_opportunity(
         engine, state, evidence, unit_01, models, opportunity, progression):
@@ -53,9 +53,9 @@ def test_word_completion_requires_delivered_models_and_response_opportunity(
     })
     decision = engine.decide(state, evidence(objective_id=CITY, quote='city'), unit_01)
     assert decision.progression_action == progression
-    assert decision.count_attempt is (models == 2 and opportunity)
-    if progression != 'stay':
-        assert decision.next_activity_id == 'lesson-01.introduce-class'
+    assert not decision.count_attempt
+    if models == 2 and opportunity:
+        assert decision.count_successful_repetition
 
 
 @pytest.mark.parametrize(('word', 'activity_id', 'objective_id', 'next_activity'), [
@@ -73,7 +73,8 @@ def test_correct_imitation_completes_word_step_without_claiming_meaning(
         'last_teacher_turn': f'Can you say “{word}”?',
         'activity_progress': prior + (ActivityProgress(
             activity_id=activity_id, status='in_progress',
-            model_repetitions_delivered=2, response_opportunity_given=True),),
+            model_repetitions_delivered=2, response_opportunity_given=True,
+            successful_learner_repetitions=2),),
     })
     result = evidence(objective_id=objective_id, meaning='not_demonstrated',
                       form='correct_target_form', quote=word)

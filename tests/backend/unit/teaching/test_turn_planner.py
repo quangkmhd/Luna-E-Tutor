@@ -103,18 +103,19 @@ async def test_successful_answer_before_new_vocabulary_requires_encouragement(un
         last_teacher_turn='Would you see a dolphin in the ocean or on a mountain?',
         activity_progress=(ActivityProgress(
             activity_id='lesson-02.introduce-dolphin', status='in_progress',
-            model_repetitions_delivered=2, response_opportunity_given=True),),
+            model_repetitions_delivered=2, response_opportunity_given=True,
+            successful_learner_repetitions=2),),
     )
     evidence = EvaluatorResult(
         turn_id='placeholder', state_version=0, response_kind='answer',
         emotional_signals=[], objective_evidence=[ObjectiveEvidence(
             objective_id='unit01.lesson02.vocabulary.dolphin',
-            meaning_status='satisfied', target_form_status='not_used',
-            evidence_quote='dưới biển', recast_needed=False, corrected_form=None,
+            meaning_status='satisfied', target_form_status='correct_target_form',
+            evidence_quote='dolphin', recast_needed=False, corrected_form=None,
         )], needs_clarification=False, ambiguity_reason=None,
     )
     plan = await TurnPlanner(FakeEvaluator(evidence), TeachingEngine(), unit_01).plan(
-        state, 'dưới biển', 'natural-transition')
+        state, 'dolphin', 'natural-transition')
 
     assert plan.teacher_request.activity_context.activity_id == 'lesson-02.introduce-pink'
     assert plan.teacher_request.constraints.model_dump().get('encouragement_required') is True

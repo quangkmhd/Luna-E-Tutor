@@ -11,6 +11,8 @@ BRANCH_NAMES = {
     'no_response_move_with_support', 'free_talk', 'support_ask_teacher',
     'support_new_vocabulary', 'offer_support', 'finish',
     'retry_vocabulary', 'retry_target_form', 'retry_meaning',
+    'repeat_successful_response',
+    'acknowledge_intro_imitation',
     'support_limit_then_move',
     'move_to_ask_teacher', 'move_to_next_activity', 'current_activity',
 }

@@ -31,6 +31,8 @@ class TeachingDecision(Contract):
     # a mastery score or a claim that one correct answer proves mastery.
     mastery_updates: list[ObjectiveProgress] = Field(default_factory=list)
     count_attempt: bool = False
+    count_successful_repetition: bool = False
+    intro_imitation_acknowledged: bool = False
     support_limit_exit: bool = False
 
     @model_validator(mode='after')
@@ -62,6 +64,8 @@ class TeacherActivityContext(Contract):
     target_patterns: SnapshotItems[Text] = ()
     examples: SnapshotItems[Text] = ()
     model_repetitions: int = Field(default=0, ge=0, le=2)
+    required_learner_repetitions: int = Field(default=1, ge=1)
+    successful_learner_repetitions: int = Field(default=0, ge=0)
     remaining_model_repetitions: int = Field(default=0, ge=0, le=2)
     needs_response_invitation: bool = False
     delivery_only: bool = False

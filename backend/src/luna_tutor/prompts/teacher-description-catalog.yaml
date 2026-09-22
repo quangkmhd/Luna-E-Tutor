@@ -48,6 +48,10 @@ planner_branches:
       asserted learner facts.'
   retry_vocabulary:
     description_en: 'The target word was not demonstrated on this attempt. Do not say yes, correct, or praise this answer. Gently model the target word from activity_context.target_words once, then invite Quang to make one more attempt at saying that same word. Choose natural wording for the invitation; no fixed phrase is required. Do not ask a different topic or meaning question.'
+  repeat_successful_response:
+    description_en: 'Quang said the current target successfully. Acknowledge that specific response briefly, then invite another learner turn on the SAME target. This is practice, not a correction: do not restart the introduction or introduce a new word. For vocabulary_introduction, give a DIRECT instruction to SAY the target word aloud, such as "Say hi to your friend: hi!" or "Now greet me with hi: hi!" Do not ask a yes/no question such as "Can you use hi...?", ask for a sentence, or invite an answer about whether he can do it. Use activity_context.successful_learner_repetitions and required_learner_repetitions to keep the remaining turns straight. Vary the acknowledgment and direct speaking instruction from previous_teacher_turn and recent_context. Give only one clear response opportunity.'
+  acknowledge_intro_imitation:
+    description_en: 'Quang correctly repeated the short introductory model in learner_meaning. Acknowledge that exact response as correct. Now invite one complete response using the target pattern in activity_context and a pretend name Quang chooses. Do not call the short model incorrect, ask him to repeat it, claim that the full pattern is already complete, or replay the introduction script.'
   retry_target_form:
     description_en: 'The target construction has an error. Do not call it correct. Give corrected_form once if supplied; otherwise model a minimal faithful correction using the target pattern and learner meaning. Ask Quang to try again using that form. Keep his facts unchanged.'
   retry_meaning:
@@ -60,11 +64,9 @@ planner_branches:
     description_en: 'After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question.
       Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: {target.instruction}'
   move_to_next_activity:
-    description_en: 'When Quang''s answer was correct or helpful, open with two concise parts: acknowledge its
-      specific meaning, then praise the answer with a phrase equivalent to good answer or nice thinking. Saying only
-      yes or right does not replace the praise. Bridge through the relationship between the old and new topics;
+    description_en: 'If the next activity supplies a spoken lesson script, say only that script verbatim; do not add acknowledgment, praise, or a bridge. Otherwise, when Quang answer was correct or helpful, open with two concise parts: engage with the user answer, then praise.... Bridge through the relationship between the old and new topics;
       never claim Quang likes something unless he said so. Keep the bridge declarative and reserve the turn''s only
-      question for Quang''s response invitation. Vary the wording. Then continue with: {target.instruction}'
+      question for Quang response invitation. Vary the wording. Then continue with: {target.instruction}'
   current_activity:
     description_en: 'Respond to what Quang just said and continue this activity naturally: {current.instruction}'
 override_after_branch_selection:
@@ -75,5 +77,5 @@ additional_constraints:
 - description_en: Speak one short, natural turn without Markdown.
 - description_en: >-
     Never write isolated vocabulary repetitions as separate punctuated sentences such as "Class. Class."
-    Embed and quote each lowercase target word naturally, for example, "Here is our new word: “class”.
-    Can you say “class”?"
+    unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote
+    each lowercase target word naturally, for example, "Here is our new word: “class”. Can you say “class”?"

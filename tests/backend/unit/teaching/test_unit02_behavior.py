@@ -89,7 +89,7 @@ def _result(objective_id, *, meaning, form, quote, kind="answer"):
     )
 
 
-def _introduction_state(unit_02, *, attempts=0):
+def _introduction_state(unit_02, *, attempts=0, successful_repetitions=0):
     activity_id = "lesson-01.introduce-building"
     return LessonState(
         session_id="unit-02-building",
@@ -105,6 +105,7 @@ def _introduction_state(unit_02, *, attempts=0):
                 status="in_progress",
                 model_repetitions_delivered=2,
                 response_opportunity_given=True,
+                successful_learner_repetitions=successful_repetitions,
             ),
         ),
     )
@@ -113,7 +114,7 @@ def _introduction_state(unit_02, *, attempts=0):
 def test_unit02_correct_answer_advances(unit_02):
     objective_id = "unit02.lesson01.vocabulary.building"
     decision = TeachingEngine().decide(
-        _introduction_state(unit_02),
+        _introduction_state(unit_02, successful_repetitions=2),
         _result(
             objective_id,
             meaning="satisfied",

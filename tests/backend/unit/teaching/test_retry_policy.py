@@ -132,7 +132,8 @@ async def test_exact_spoken_word_advances_even_if_evaluator_marks_form_not_used(
         last_teacher_turn='Can you say “city”?',
         activity_progress=(ActivityProgress(
             activity_id=activity_id, status='in_progress',
-            model_repetitions_delivered=2, response_opportunity_given=True),),
+            model_repetitions_delivered=2, response_opportunity_given=True,
+            successful_learner_repetitions=2),),
     )
     item = ObjectiveEvidence(
         objective_id=objective_id, meaning_status='not_demonstrated',

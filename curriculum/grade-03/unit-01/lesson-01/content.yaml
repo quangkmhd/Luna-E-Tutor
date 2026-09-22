@@ -10,6 +10,10 @@ vocabulary:
   text: hello
 - id: hi
   text: hi
+- id: good-evening
+  text: good evening
+- id: nice-to-meet-you
+  text: nice to meet you
 patterns:
 - id: pattern-hello-hi-i-m
   text: Hello./Hi. I'm ___.
@@ -26,6 +30,16 @@ objectives:
   vocabulary_ids:
   - hi
   evidence_criteria: Understand or use hi in context; imitation alone is not independent use.
+- id: unit01.level02.vocabulary.good_evening
+  description: 'Vocabulary: good evening'
+  vocabulary_ids:
+  - good-evening
+  evidence_criteria: Understand or use good evening in context; imitation alone is not independent use.
+- id: unit01.level02.vocabulary.nice_to_meet_you
+  description: 'Vocabulary: nice to meet you'
+  vocabulary_ids:
+  - nice-to-meet-you
+  evidence_criteria: Understand or use nice to meet you in context; imitation alone is not independent use.
 - id: unit01.lesson01.pattern.pattern_hello_hi_i_m
   description: 'Pattern: Hello./Hi. I''m ___.'
   pattern_ids:
@@ -47,9 +61,21 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-  instruction: Model “hello” twice, invite Quang to say it, wait for one response, then give evidence-based
-    feedback. Move on after at most two attempts. Let Quang choose a pretend name for practice; do not request
-    a real full name.
+    learner_repetitions: 3
+  instruction: >-
+    For this first introduction of “hello”, speak the following lesson script verbatim,
+    including the four [long pause] delivery cues. Preserve the capitalization
+    and punctuation of both HELLO and Hello? Do not add quotation marks, a greeting,
+    explanation, or another question before or after it:
+    Cô trò mình sang Trạm 1 — học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước,
+    con đọc theo cô nhé! [long pause]
+    Listen first! [long pause] HELLO. [long pause]
+    Your turn now! Can you say: [long pause] Hello?
+    After Quang responds, give evidence-based feedback. The curriculum requires
+    three successful learner turns before moving on; invite each next turn with
+    different natural wording. The two-attempt limit applies only when he needs
+    correction or support. Let Quang choose a pretend name for practice; do not
+    request a real full name.
   examples:
   - hello
 - id: lesson-01.introduce-hi
@@ -62,22 +88,44 @@ activities:
   completion_rule:
     mode: vocabulary_turn
     model_repetitions: 2
-  instruction: Model “hi” twice, invite Quang to say it, wait for one response, then give evidence-based feedback.
-    Move on after at most two attempts. Let Quang choose a pretend name for practice; do not request a real
-    full name.
+  instruction: >-
+    When Quang has completed the three successful “hello” practice turns, speak
+    this next-word lesson script verbatim, including all four [long pause] cues.
+    Preserve its exact wording, capitalization, and punctuation. Do not add
+    anything before or after the script:
+    Excellent! I heard the /h/ clearly — well done! [long pause]
+    Hi cũng là xin chào, nhưng ngắn và thân mật hơn — con dùng với bạn bè.
+    Listen first! [long pause] Hi. [long pause] Your turn now! [long pause] Hi!
+    If the previous activity ended from the support limit instead of three
+    successful turns, do not claim success or say Excellent; briefly introduce
+    “hi” and invite Quang to say it. For subsequent “hi” turns, give evidence-based
+    feedback and follow its configured learner repetitions. Let Quang choose a
+    pretend name for practice; do not request a real full name. Do not claim to
+    have heard a specific sound unless audio pronunciation evidence is provided.
   examples:
   - hi
 - id: lesson-01.practice-01
   stage_id: lesson-01
   kind: guided_response
+  intro_imitation: "I'm"
   objective_ids:
   - unit01.lesson01.pattern.pattern_hello_hi_i_m
   required: true
   max_attempts: 2
   completion_rule:
     mode: communicative_turn
-  instruction: 'Practise this short exchange with one learner response opportunity: Hello./Hi. I''m ___. Let
-    Quang choose a pretend name for practice; do not request a real full name.'
+  instruction: >-
+    On first entering this activity, speak the following lesson script verbatim,
+    including all four [long pause] delivery cues. Preserve the wording,
+    capitalization, and punctuation. Do not add a greeting, praise, or a second
+    question before or after it:
+    "I" nghĩa là mình — khi con nói về chính con. "I'm" nghĩa là 'mình là'.
+    Cuối chữ, con ngậm môi lại: I'mmm. [long pause]
+    Listen first! [long pause] "I'M". [long pause]
+    Your turn now! [pause] Can you say:[long pause] "I'm"?
+    After Quang responds, continue practising the pattern Hello./Hi. I'm ___
+    with one learner response opportunity per turn. Let Quang choose a pretend
+    name for practice; do not request a real full name.
   examples:
   - Hello./Hi. I'm ___.
 - id: lesson-01.practice-02
@@ -93,16 +141,46 @@ activities:
     Let Quang choose a pretend name for practice; do not request a real full name.'
   examples:
   - Hello,/Hi, ___. I'm ___.
-- id: lesson-01.ask-luna
+- id: lesson-01.introduce-good-evening
   stage_id: lesson-01
-  kind: ask_teacher
+  kind: vocabulary_introduction
   objective_ids:
-  - unit01.lesson01.pattern.pattern_hello_hi_i_m
+  - unit01.level02.vocabulary.good_evening
   required: true
   max_attempts: 2
   completion_rule:
-    mode: ask_teacher
-  instruction: Invite Quang to ask Luna one short question about the current greeting scene. Let Quang choose
-    a pretend name for practice; do not request a real full name.
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: >-
+    On first entering this activity, speak the following lesson script verbatim,
+    including the three [long pause] delivery cues. Do not add a greeting,
+    another explanation, or a second question before or after it:
+    Good evening là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.
+    [long pause] Listen first! [long pause] GOOD EVENING.
+    [long pause] Your turn now! Good evening!
+    After Quang responds, give evidence-based feedback and follow the configured
+    learner repetitions. Do not ask Quang to ask Luna a question here.
   examples:
-  - 'Pattern: Hello./Hi. I''m ___.'
+  - good evening
+- id: lesson-01.introduce-nice-to-meet-you
+  stage_id: lesson-01
+  kind: vocabulary_introduction
+  objective_ids:
+  - unit01.level02.vocabulary.nice_to_meet_you
+  required: true
+  max_attempts: 2
+  completion_rule:
+    mode: vocabulary_turn
+    model_repetitions: 2
+  instruction: >-
+    On first entering this activity, speak the following lesson script verbatim,
+    including the three [long pause] delivery cues. Preserve the uppercase
+    LẦN ĐẦU and NICE TO MEET YOU, and do not add a greeting, explanation, or
+    question before or after the script:
+    Khi gặp ai LẦN ĐẦU, con nói Nice to meet you — nghĩa là rất vui được gặp bạn.
+    [long pause] Listen first! [long pause] NICE TO MEET YOU.
+    [long pause] Your turn now! Nice to meet you!
+    After Quang responds, give evidence-based feedback and follow the configured
+    learner repetitions.
+  examples:
+  - nice to meet you
