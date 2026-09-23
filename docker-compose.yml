@@ -74,12 +74,14 @@ services:
         - NEXT_PUBLIC_TALK_PIPECAT_URL=${NEXT_PUBLIC_TALK_PIPECAT_URL:-/talk-bot}
         - BACKEND_HOST=http://backend
         - BACKEND_PORT=8000
-        - VOICE_HOST=http://172.21.0.1
+        - VOICE_HOST=http://host.docker.internal
         - VOICE_PORT=7860
-        - TALK_HOST=http://172.21.0.1
+        - TALK_HOST=http://host.docker.internal
         - TALK_PORT=7863
     container_name: luna-web
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "${WEB_PORT:-3001}:3000"
     networks:
