@@ -19,11 +19,18 @@ import {
 } from 'react';
 
 export type VoiceRun = { start: number; end?: number; endedAt?: string; connected: boolean };
+export type TeacherImageCue = {
+  image_url: string | null;
+  turn_id: string | null;
+  spoken_text: string | null;
+  receivedAt: string;
+};
 
 type VoiceContextValue = {
   error: string | null;
   voiceRuns: VoiceRun[];
   phase: VoicePhase;
+  teacherImageCue: TeacherImageCue | null;
   sentText: Array<{ id: string; text: string; timestamp: string }>;
   ttfaSeconds: number | null;
   elapsedSeconds: number;
@@ -121,6 +128,7 @@ export function PipecatVoiceProvider({
 }: PipecatVoiceProviderProps) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
+  const [teacherImageCue, setTeacherImageCue] = useState<TeacherImageCue | null>(null);
   const [errorState, setErrorState] = useState<{ message: string | null; fatal: boolean }>({ message: null, fatal: false });
   const [voiceRuns, setVoiceRuns] = useState<VoiceRun[]>([]);
   const savedMessageCountRef = useRef(savedMessageCount);
@@ -151,6 +159,18 @@ export function PipecatVoiceProvider({
       enableCam: false,
       disconnectOnBotDisconnect: true,
       callbacks: {
+      onServerMessage: (message: unknown) => {
+        if (!message || typeof message !== 'object') return;
+        const data = message as { event?: unknown; payload?: unknown };
+        if (data.event !== 'teacher-image' || !data.payload || typeof data.payload !== 'object') return;
+        const payload = data.payload as { image_url?: unknown; turn_id?: unknown; spoken_text?: unknown };
+        setTeacherImageCue({
+          image_url: typeof payload.image_url === 'string' ? payload.image_url : null,
+          turn_id: typeof payload.turn_id === 'string' ? payload.turn_id : null,
+          spoken_text: typeof payload.spoken_text === 'string' ? payload.spoken_text : null,
+          receivedAt: new Date().toISOString(),
+        });
+      },
       onTransportStateChanged: (state: TransportState) => {
         setTransportState(state);
         if (['initializing', 'connecting', 'authenticating'].includes(state)) {
@@ -222,6 +242,7 @@ export function PipecatVoiceProvider({
       onDeviceError: (reason: DeviceError) => setErrorState({ message: deviceErrorMessage(reason), fatal: false }),
       onError: (message: RTVIMessage) => {
         thinkingTimeout.clear();
+        setTeacherImageCue(null);
         const data = message.data as ErrorData;
         setErrorState({ message: voiceServiceErrorMessage(message), fatal: data.fatal });
         if (!data.fatal) {
@@ -237,6 +258,7 @@ export function PipecatVoiceProvider({
       },
       onMessageError: () => {
         thinkingTimeout.clear();
+        setTeacherImageCue(null);
         setPhase('ready');
         setErrorState({ message: 'The voice service could not process that message. Try again.', fatal: false });
       },
@@ -315,6 +337,8 @@ export function PipecatVoiceProvider({
     if (!enabled) void client.disconnect();
   }, [client, enabled]);
 
+  useEffect(() => { setTeacherImageCue(null); }, [sessionId]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       const startedAt = elapsedStartedAt.current;
@@ -339,6 +363,7 @@ export function PipecatVoiceProvider({
     error: errorState.message,
     voiceRuns,
     phase,
+    teacherImageCue,
     sentText,
     sendText,
     start,

@@ -26,6 +26,7 @@ from pipecat.services.llm_service import LLMService
 from pipecat.services.settings import LLMSettings
 from pipecat.turns.user_turn_strategies import ExternalUserTurnStrategies
 from pipecat.workers.runner import WorkerRunner
+from pipecat.processors.frameworks.rtvi.frames import RTVIServerMessageFrame
 
 from text_frames import CompletedTeachingFrame, LearnerTextFrame, TextResultProcessor
 from language_tts import LanguageTaggedSpeechFrame
@@ -104,6 +105,18 @@ class BoundedTeacherLLM(LLMService):
         self.end_after_response = end_after_response
         self.responded_turn_ids = set()
 
+    async def _speak(self, text: str, turn_id: str | None, image_url: str | None):
+        if not self.end_after_response:
+            await self.push_frame(RTVIServerMessageFrame(data={
+                "event": "teacher-image",
+                "payload": {
+                    "turn_id": turn_id,
+                    "image_url": image_url,
+                    "spoken_text": text,
+                },
+            }))
+        await self.push_frame(LanguageTaggedSpeechFrame(text, turn_id))
+
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
         if not isinstance(frame, LLMContextFrame):
@@ -149,7 +162,7 @@ class BoundedTeacherLLM(LLMService):
                 # A safe Teacher fallback is speakable but cannot authorize or
                 # persist the Engine's proposed transition. Keep voice alive so
                 # the learner can try again on the unchanged stored state.
-                await self.push_frame(LanguageTaggedSpeechFrame(utterance.spoken_text))
+                await self._speak(utterance.spoken_text, plan.turn_id, None)
                 return
             completed = exchange.service.complete(state, plan, utterance)
             if (
@@ -159,9 +172,19 @@ class BoundedTeacherLLM(LLMService):
                 return
             if hasattr(exchange, "pending_completion"):
                 exchange.pending_completion = completed
-            await self.push_frame(LanguageTaggedSpeechFrame(
-                completed.teacher_utterance.spoken_text, completed.plan.turn_id,
-            ))
+            lesson_script = getattr(exchange, "lesson_script", None)
+            image_url = (
+                lesson_script.image_for_activity(
+                    completed.plan.proposed_next_state.activity_id
+                )
+                if lesson_script is not None
+                else None
+            )
+            await self._speak(
+                completed.teacher_utterance.spoken_text,
+                completed.plan.turn_id,
+                image_url,
+            )
             await self.push_frame(CompletedTeachingFrame(completed))
             if self.end_after_response:
                 await exchange.worker.queue_frame(EndFrame())

@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any, cast
 
 from loguru import logger
+from luna_tutor.curriculum.lesson_script import LessonScript
 from luna_tutor.domain.decisions import CompletedTurn, PlannedTurn
 from luna_tutor.domain.state import LessonState
 from luna_tutor.storage.session_repository import SessionRepository
@@ -36,6 +37,7 @@ class VoiceTeachingExchange:
     repository: SessionRepository
     session_id: str
     state: LessonState
+    lesson_script: LessonScript | None = None
     plan: PlannedTurn | None = None
     pending_completion: CompletedTurn | None = None
     interrupted_completion: CompletedTurn | None = None

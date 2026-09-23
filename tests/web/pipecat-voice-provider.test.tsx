@@ -475,6 +475,93 @@ describe('PipecatVoiceProvider', () => {
     ]);
   });
 
+  it('keeps the image with the current spoken line when its cue arrives after the transcript starts', async () => {
+    const user = userEvent.setup();
+    const createdAt = new Date(Date.now() - 1000).toISOString();
+    sdk.conversationMessages = [
+      { role: 'user', final: true, createdAt, parts: [{ text: 'hi', final: true, createdAt }] },
+      { role: 'assistant', final: false, createdAt, parts: [{
+        text: { spoken: 'Cô trò mình sang Trạm 1', unspoken: ' học từ mới.' }, final: false, createdAt,
+      }] },
+    ];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[{
+      role: 'teacher', text: 'Xin chào con!',
+    }]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: 'turn-1', image_url: '/images/hello.webp',
+        spoken_text: '<vi>Cô trò mình sang Trạm 1 học từ mới.</vi>',
+      },
+    }));
+
+    const image = screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' });
+    expect(image.closest('.bubble-row')).toHaveTextContent('Cô trò mình sang Trạm 1');
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(2);
+    expect(screen.queryByText(/học từ mới/)).not.toBeInTheDocument();
+  });
+
+  it('groups bilingual spoken parts by authored YAML lines without revealing future words', async () => {
+    const user = userEvent.setup();
+    const createdAt = new Date(Date.now() - 1000).toISOString();
+    sdk.conversationMessages = [
+      { role: 'user', final: true, createdAt, parts: [{ text: 'hi', final: true, createdAt }] },
+      { role: 'assistant', final: false, createdAt, parts: [
+        { text: { spoken: 'Cô trò mình sang Trạm 1.', unspoken: '' }, final: true, createdAt },
+        { text: { spoken: '"HELLO"', unspoken: '' }, final: true, createdAt },
+        { text: { spoken: 'nghĩa là xin chào', unspoken: ', con nói khi gặp bạn.' }, final: false, createdAt },
+      ] },
+    ];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: 'turn-1', image_url: '/images/hello.webp',
+        spoken_text: '<vi>Cô trò mình sang Trạm 1.</vi>\n<en>"HELLO"</en><vi> nghĩa là xin chào, con nói khi gặp bạn.</vi>\n<en>Listen first!</en>',
+      },
+    }));
+
+    const rows = document.querySelectorAll('.bubble-row.teacher');
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toHaveTextContent('Cô trò mình sang Trạm 1.');
+    expect(rows[0].querySelector('img')).toBeInTheDocument();
+    expect(rows[1]).toHaveTextContent('"HELLO" nghĩa là xin chào');
+    expect(screen.queryByText(/con nói khi gặp bạn|Listen first/)).not.toBeInTheDocument();
+  });
+
+  it('shows the image before audio and joins it to the first spoken line', async () => {
+    const user = userEvent.setup();
+    const createdAt = new Date(Date.now() - 1000).toISOString();
+    sdk.conversationMessages = [{
+      role: 'user', final: true, createdAt, parts: [{ text: 'hi', final: true, createdAt }],
+    }];
+    const view = render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: 'turn-1', image_url: '/images/hello.webp',
+        spoken_text: '<vi>Cô trò mình sang Trạm 1 học từ mới.</vi>',
+      },
+    }));
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
+    expect(screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' })).toBeInTheDocument();
+
+    sdk.conversationMessages = [
+      sdk.conversationMessages[0],
+      { role: 'assistant', final: false, createdAt: new Date().toISOString(), parts: [{
+        text: { spoken: 'Cô trò mình', unspoken: ' sang Trạm 1 học từ mới.' }, final: false, createdAt,
+      }] },
+    ];
+    view.rerender(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
+    const image = screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' });
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
+    expect(image.closest('.bubble-row')).toHaveTextContent('Cô trò mình');
+    expect(screen.queryByText(/sang Trạm 1 học từ mới/)).not.toBeInTheDocument();
+  });
+
   it('reveals only Luna words confirmed spoken during an active voice lesson', async () => {
     const user = userEvent.setup();
     sdk.conversationMessages = [{
