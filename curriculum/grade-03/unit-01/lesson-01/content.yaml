@@ -5,6 +5,7 @@ greeting:
   say: |-
     <en>Hi! My name is Luna. I'm your English tutor!</en>
     <vi>[long pause] Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>
+    <vi> We're going to practice English together. Ready?</vi>
   accept: Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.
   image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
 words:
