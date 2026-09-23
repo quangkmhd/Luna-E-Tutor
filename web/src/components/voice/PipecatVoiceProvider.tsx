@@ -25,6 +25,7 @@ export type TeacherImageCue = {
   spoken_text: string | null;
   receivedAt: string;
 };
+type SessionTeacherImageCue = TeacherImageCue & { sessionId: string | undefined };
 
 type VoiceContextValue = {
   error: string | null;
@@ -128,7 +129,9 @@ export function PipecatVoiceProvider({
 }: PipecatVoiceProviderProps) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
   const [phase, setPhase] = useState<VoicePhase>('off');
-  const [teacherImageCue, setTeacherImageCue] = useState<TeacherImageCue | null>(null);
+  const [teacherImageCue, setTeacherImageCue] = useState<SessionTeacherImageCue | null>(null);
+  const sessionIdRef = useRef(sessionId);
+  useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
   const [errorState, setErrorState] = useState<{ message: string | null; fatal: boolean }>({ message: null, fatal: false });
   const [voiceRuns, setVoiceRuns] = useState<VoiceRun[]>([]);
   const savedMessageCountRef = useRef(savedMessageCount);
@@ -169,6 +172,7 @@ export function PipecatVoiceProvider({
           turn_id: typeof payload.turn_id === 'string' ? payload.turn_id : null,
           spoken_text: typeof payload.spoken_text === 'string' ? payload.spoken_text : null,
           receivedAt: new Date().toISOString(),
+          sessionId: sessionIdRef.current,
         });
       },
       onTransportStateChanged: (state: TransportState) => {
@@ -361,7 +365,7 @@ export function PipecatVoiceProvider({
     error: errorState.message,
     voiceRuns,
     phase,
-    teacherImageCue,
+    teacherImageCue: teacherImageCue?.sessionId === sessionId ? teacherImageCue : null,
     sentText,
     sendText,
     start,

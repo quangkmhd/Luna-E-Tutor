@@ -498,6 +498,50 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.queryByText(/học từ mới/)).not.toBeInTheDocument();
   });
 
+  it('restores authored bubbles when Pipecat reuses an assistant message across barge-in', async () => {
+    const user = userEvent.setup();
+    const assistantCreatedAt = new Date(Date.now() - 2_000).toISOString();
+    const learnerCreatedAt = new Date(Date.now() - 1_000).toISOString();
+    sdk.conversationMessages = [
+      { role: 'assistant', final: false, createdAt: assistantCreatedAt, parts: [
+        { text: { spoken: "Hi! My name is Luna. I'm your English tutor!", unspoken: '' }, final: true, createdAt: assistantCreatedAt },
+        { text: { spoken: 'Cô trò mình sang Trạm 1 học từ mới.', unspoken: '' }, final: true, createdAt: assistantCreatedAt },
+        { text: { spoken: '"HELLO"', unspoken: '' }, final: true, createdAt: assistantCreatedAt },
+        { text: { spoken: 'nghĩa là xin chào.', unspoken: '' }, final: true, createdAt: assistantCreatedAt },
+        { text: { spoken: 'Listen first! "HELLO"', unspoken: '' }, final: true, createdAt: assistantCreatedAt },
+        { text: { spoken: 'Your turn now!', unspoken: '' }, final: true, createdAt: assistantCreatedAt },
+      ] },
+      { role: 'user', final: true, createdAt: learnerCreatedAt, parts: [
+        { text: 'hi', final: true, createdAt: learnerCreatedAt },
+      ] },
+    ];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[
+      { role: 'teacher', text: "Hi! My name is Luna. I'm your English tutor!" },
+      { role: 'teacher', text: 'Xin chào con! Cô là Luna, gia sư tiếng Anh của con.' },
+    ]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: 'turn-after-barge-in', image_url: '/images/hello.webp',
+        spoken_text: '<vi>Cô trò mình sang Trạm 1 học từ mới.</vi>\n<en>"HELLO"</en><vi> nghĩa là xin chào.</vi>\n<en>Listen first! "HELLO"</en>\n<en>Your turn now!</en>',
+      },
+    }));
+
+    const rows = document.querySelectorAll('.bubble-row.teacher');
+    expect(Array.from(rows, (row) => row.querySelector('p')?.textContent).slice(-4)).toEqual([
+      'Cô trò mình sang Trạm 1 học từ mới.',
+      '"HELLO" nghĩa là xin chào.',
+      'Listen first! "HELLO"',
+      'Your turn now!',
+    ]);
+    expect(rows[2].querySelector('img')).toBeInTheDocument();
+    expect(Array.from(rows).filter((row) => !row.querySelector('p'))).toHaveLength(0);
+    expect(Array.from(document.querySelectorAll('.bubble-row'), (row) => row.classList.contains('learner') ? 'learner' : 'teacher')).toEqual([
+      'teacher', 'teacher', 'learner', 'teacher', 'teacher', 'teacher', 'teacher',
+    ]);
+  });
+
   it('groups bilingual spoken parts by authored YAML lines without revealing future words', async () => {
     const user = userEvent.setup();
     const createdAt = new Date(Date.now() - 1000).toISOString();
@@ -556,6 +600,21 @@ describe('PipecatVoiceProvider', () => {
     expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
     expect(image.closest('.bubble-row')).toHaveTextContent('Cô trò mình');
     expect(screen.queryByText(/sang Trạm 1 học từ mới/)).not.toBeInTheDocument();
+  });
+
+  it('clears a teacher image cue when the lesson session changes', () => {
+    const view = render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /></PipecatVoiceProvider>);
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: 'turn-session-7', image_url: '/images/hello.webp',
+        spoken_text: '<vi>Cô trò mình sang Trạm 1 học từ mới.</vi>',
+      },
+    }));
+    expect(screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' })).toBeInTheDocument();
+
+    view.rerender(<PipecatVoiceProvider sessionId="session-8"><ChatPanel messages={[]} /></PipecatVoiceProvider>);
+
+    expect(screen.queryByRole('img', { name: 'Hình minh họa cho câu nói của Luna' })).not.toBeInTheDocument();
   });
 
   it('reveals only Luna words confirmed spoken during an active voice lesson', async () => {

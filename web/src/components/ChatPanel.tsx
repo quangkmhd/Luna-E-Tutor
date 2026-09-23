@@ -60,6 +60,17 @@ function spokenAuthoredLines(spoken: string, authored: string): string[] {
   });
 }
 
+function trimSpokenToAuthoredStart(spoken: string, authored: string): string {
+  const spokenWords = teacherDisplayText(spoken).replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+  const authoredLead = speechKey(authored).split(' ').slice(0, 5);
+  if (!authoredLead.length) return spokenWords.join(' ');
+  const spokenKeys = spokenWords.map((word) => speechKey(word));
+  const start = spokenKeys.findIndex((_, index) => authoredLead.every(
+    (word, offset) => spokenKeys[index + offset] === word,
+  ));
+  return start >= 0 ? spokenWords.slice(start).join(' ') : spokenWords.join(' ');
+}
+
 export function ChatPanel({ messages }: { messages: Message[] }) {
   const latestMessage = useRef<HTMLDivElement>(null);
   const voice = useOptionalVoiceLesson();
@@ -71,20 +82,30 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
   const imageCue = voice?.teacherImageCue;
   const lastUserIndex = pipecatMessages.findLastIndex((message) => message.role === 'user');
   const authoredKey = imageCue?.spoken_text ? speechKey(imageCue.spoken_text) : '';
+  const authoredLead = authoredKey.split(' ').slice(0, 5).join(' ');
+  const matchesImageCue = (message: ConversationMessage) => {
+    if (message.role !== 'assistant') return false;
+    const spokenKey = speechKey(conversationText(message, true));
+    return Boolean(spokenKey && authoredLead && spokenKey.includes(authoredLead));
+  };
   const cueAssistant = imageCue?.image_url && authoredKey
-    ? pipecatMessages.slice(lastUserIndex + 1).findLast((message) => {
-      if (message.role !== 'assistant') return false;
-      const spokenKey = speechKey(conversationText(message, true));
-      return spokenKey && authoredKey.startsWith(spokenKey.slice(0, 24));
-    })
+    ? pipecatMessages.slice(lastUserIndex + 1).findLast(matchesImageCue)
+      ?? pipecatMessages.findLast(matchesImageCue)
     : undefined;
   const pipecatConversation: DisplayMessage[] = pipecatMessages
     .filter((message) => message.role === 'user' || message.role === 'assistant')
     .flatMap((message) => message.role === 'assistant' && spokenOnly
       ? (message === cueAssistant && imageCue?.spoken_text
-        ? spokenAuthoredLines(conversationText(message, true), imageCue.spoken_text)
+        ? spokenAuthoredLines(
+          trimSpokenToAuthoredStart(conversationText(message, true), imageCue.spoken_text),
+          imageCue.spoken_text,
+        )
         : [conversationText(message, true)]).flatMap((text, index) => text
-        ? [{ role: 'teacher' as const, text, timestamp: message.createdAt, key: `${message.createdAt}-line-${index}` }]
+        ? [{
+          role: 'teacher' as const, text,
+          timestamp: message === cueAssistant ? imageCue?.receivedAt ?? message.createdAt : message.createdAt,
+          key: `${message.createdAt}-line-${index}`,
+        }]
         : [])
       : [{
         role: message.role === 'user' ? 'learner' as const : 'teacher' as const,
