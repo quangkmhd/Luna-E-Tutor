@@ -337,8 +337,6 @@ export function PipecatVoiceProvider({
     if (!enabled) void client.disconnect();
   }, [client, enabled]);
 
-  useEffect(() => { setTeacherImageCue(null); }, [sessionId]);
-
   useEffect(() => {
     const timer = setInterval(() => {
       const startedAt = elapsedStartedAt.current;

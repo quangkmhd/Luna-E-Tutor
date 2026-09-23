@@ -154,7 +154,7 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
   return <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
     {visibleMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.key ?? message.timestamp}-${index}`}>
       {message.role === 'teacher' && <div className="avatar" aria-hidden="true">L</div>}
-      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span>{message.text && <p>{message.role === 'teacher' ? emphasizedText(teacherDisplayText(message.text)) : message.text}</p>}{message.role === 'teacher' && message.image_url && <img className="teacher-image-card" src={message.image_url} alt="Hình minh họa cho câu nói của Luna" loading="lazy" />}</div>
+      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span>{message.text && <p>{message.role === 'teacher' ? emphasizedText(teacherDisplayText(message.text)) : message.text}</p>}{message.role === 'teacher' && message.image_url && <img className="teacher-image-card" src={message.image_url} alt="Hình minh họa cho câu nói của Luna" loading="eager" />}</div>
     </article>)}
     <div ref={latestMessage} aria-hidden="true" />
   </div>;

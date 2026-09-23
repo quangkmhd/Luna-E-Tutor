@@ -423,7 +423,7 @@ describe('PipecatVoiceProvider', () => {
     ]);
   });
 
-  it('keeps sequential bilingual TTS segments in separate Luna bubbles', async () => {
+  it('keeps sequential bilingual TTS segments in one bubble without an authored template', async () => {
     const user = userEvent.setup();
     sdk.conversationMessages = [{
       role: 'assistant', final: false, createdAt: '2026-09-22T00:00:00Z', parts: [
@@ -440,11 +440,7 @@ describe('PipecatVoiceProvider', () => {
 
     const rows = document.querySelectorAll('.bubble-row.teacher');
     expect(Array.from(rows, (row) => row.querySelector('p')?.textContent)).toEqual([
-      'Cô trò mình sang Trạm 1 học từ mới.',
-      '"HELLO"',
-      'nghĩa là xin chào.',
-      'Listen first! "HELLO"',
-      'Your turn now!',
+      'Cô trò mình sang Trạm 1 học từ mới. "HELLO" nghĩa là xin chào. Listen first! "HELLO" Your turn now!',
     ]);
     expect(screen.queryByText(/Can you say/)).not.toBeInTheDocument();
   });
