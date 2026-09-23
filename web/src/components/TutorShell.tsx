@@ -24,6 +24,13 @@ function LessonComposer({ busy, onSend }: { busy: boolean; onSend: (text: string
   return <Composer disabled={busy || connecting} onSend={connected ? voice.sendText : onSend} voiceControls={<VoiceControls />} />;
 }
 
+function LessonClock() {
+  const { elapsedSeconds } = useVoiceLesson();
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = String(elapsedSeconds % 60).padStart(2, '0');
+  return <span className="lesson-time-chip" aria-label={`Thời gian học ${minutes} phút ${seconds} giây`}>◷ {minutes}:{seconds}</span>;
+}
+
 export function TutorShell({
   api = tutorApi,
   initialUnitId,
@@ -111,7 +118,7 @@ export function TutorShell({
     </div>
   </main>;
   if (!current) return <><UnitSelector units={units} busy={busy} onSelect={(unitId) => { void selectUnit(unitId); }} />{error && <div className="error-banner" role="alert">{error.message}</div>}</>;
-  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession} savedMessageCount={current.messages.length} savedHasTurn={current.messages.some((message) => Boolean(message.turn_id))}><main className="app-shell classroom-shell learner-app"><LearnerHeader subtitle={`English Tutor · Grade ${current.unit.grade} · Unit ${current.unit.unit}${current.lesson_id ? ` · Lesson ${current.lesson_id}` : ''}`}><span className={`status-pill ${current.status}`}>{current.status === 'active' ? 'Đang học' : current.status}</span><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={chooseAnotherUnit}>{current.lesson_id ? 'Chọn Lesson khác' : 'Choose another unit'}</button><NewSessionButton busy={busy} onClick={startNew} /><span className="student-chip" aria-label="Học viên Quang">Q <span>Quang</span></span></LearnerHeader>
+  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession} savedMessageCount={current.messages.length} savedHasTurn={current.messages.some((message) => Boolean(message.turn_id))}><main className="app-shell classroom-shell learner-app"><LearnerHeader subtitle={`English Tutor · Grade ${current.unit.grade} · Unit ${current.unit.unit}${current.lesson_id ? ` · Lesson ${current.lesson_id}` : ''}`}><span className={`status-pill ${current.status}`}>{current.status === 'active' ? 'Đang học' : current.status}</span><LessonClock /><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={chooseAnotherUnit}>{current.lesson_id ? 'Chọn Lesson khác' : 'Choose another unit'}</button><NewSessionButton busy={busy} onClick={startNew} /><span className="student-chip" aria-label="Học viên Quang">Q <span>Quang</span></span></LearnerHeader>
     <div className="workspace classroom-workspace"><CurriculumNav units={units} session={current} busy={busy} onSelect={selectUnit} expandedUnitId={lessonUnitId ?? undefined} lessons={lessons} lessonBasePath={lessonUnitId ? `${unitPath(current.unit.grade, current.unit.unit)}/lesson` : undefined} /><section className="lesson-card" role="region" aria-label="Lớp học Luna"><div className="lesson-heading"><div><h1 className="lesson-title">Practice with Luna</h1><span className="lesson-crumb">{current.lesson_id ? `Lesson ${current.lesson_id} · ` : ''}Lớp {current.unit.grade} · Unit {current.unit.unit} · {current.unit.title}</span></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><div className="lesson-phases" aria-label="Các chặng học">{current.learning_focus.length > 0 ? current.learning_focus.map((focus) => <span key={focus.stage_id} className={focus.highlighted ? 'phase-current' : ''} aria-current={focus.highlighted ? 'step' : undefined}><span aria-hidden="true">{focus.highlighted ? '●' : '○'}</span> {focus.stage_title}</span>) : <span className="phase-current">● {current.stage_id.replaceAll('-', ' ')}</span>}</div><ChatPanel messages={current.messages} />
       {error && <div className="error-banner" role="alert"><strong>{error.retryable ? 'Please try again.' : 'Something changed.'}</strong> {error.message}</div>}
       {current.status === 'active' && <LessonComposer busy={busy} onSend={send} />}

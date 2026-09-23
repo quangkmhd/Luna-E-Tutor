@@ -4,7 +4,45 @@ greeting:
   order: 1
   say: "<en>Hi! Great to see you again! How are you today?</en>"
   accept: Chấp nhận lời chào hoặc câu trả lời thăm hỏi ngắn; Fine, Great, OK hoặc cảm xúc thật đều đạt.
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
 words: [how, you, fine, thank you, great, OK, tired, sleepy, happy]
+cards:
+- word: how
+  pronunciation: /haʊ/
+  meaning_vi: thế nào
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: you
+  pronunciation: /juː/
+  meaning_vi: bạn, con
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: fine
+  pronunciation: /faɪn/
+  meaning_vi: ổn
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: thank you
+  pronunciation: /ˈθæŋk juː/
+  meaning_vi: cảm ơn
+  image_url: /images/grade-03/unit-01/lesson-02/02-thank-you.webp
+- word: great
+  pronunciation: /ɡreɪt/
+  meaning_vi: tuyệt
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: OK
+  pronunciation: /ˌoʊˈkeɪ/
+  meaning_vi: ổn, được
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: tired
+  pronunciation: /ˈtaɪərd/
+  meaning_vi: mệt
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: sleepy
+  pronunciation: /ˈsliːpi/
+  meaning_vi: buồn ngủ
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+- word: happy
+  pronunciation: /ˈhæpi/
+  meaning_vi: vui
+  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
 patterns:
   ask: "How are you?"
   answer: "Fine, thank you."
@@ -15,57 +53,65 @@ stations:
   steps:
   - order: 2
     target: how
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
       <vi>Trạm 1 nhé: hôm nay có bốn từ mới để hỏi thăm nhau, và mấy từ nói về cảm xúc của con. [long pause]</vi>
-      <en>How</en><vi> nghĩa là thế nào, ra sao. Con nghe không — </vi><en>how</en><vi> cũng bắt đầu bằng hơi thở giống </vi><en>hello</en><vi> hôm qua! [long pause]</vi>
-      <en>Listen first! [long pause] "HOW" [long pause]</en>
-      <en>Your turn now! How!</en>
+      <en>*How*</en><vi> nghĩa là thế nào, ra sao. Con nghe không — </vi><en>*how*</en><vi> cũng bắt đầu bằng hơi thở giống </vi><en>hello</en><vi> hôm qua! [long pause]</vi>
+      <en>Listen first! [long pause] "*HOW*" [long pause]</en>
+      <en>Your turn now! *How*!</en>
     accept: Chấp nhận con nói “how”; âm /h/ đầu rõ. Chưa cần dùng trong câu.
   - order: 3
     target: you
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
-      <en>You</en><vi> là bạn — người con đang nói chuyện cùng. Khi cô nói với con, </vi><en>You</en><vi> chính là con. [long pause]</vi>
-      <en>Listen first! [long pause] "YOU" [long pause]</en>
-      <en>Your turn now! You!</en>
+      <en>*You*</en><vi> là bạn — người con đang nói chuyện cùng. Khi cô nói với con, </vi><en>*You*</en><vi> chính là con. [long pause]</vi>
+      <en>Listen first! [long pause] "*YOU*" [long pause]</en>
+      <en>Your turn now! *You*!</en>
     accept: Chấp nhận “you”.
   - order: 4
     target: fine
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
-      <en>Fine</en><vi> là khoẻ, ổn. [long pause]</vi>
-      <en>Listen first! [long pause] "FINE" [long pause]</en>
-      <en>Your turn now! Fine!</en>
+      <en>*Fine*</en><vi> là khoẻ, ổn. [long pause]</vi>
+      <en>Listen first! [long pause] "*FINE*" [long pause]</en>
+      <en>Your turn now! *Fine*!</en>
     accept: Chấp nhận “fine”; mất /n/ cuối vẫn đạt.
   - order: 5
     target: thank you
+    image_url: /images/grade-03/unit-01/lesson-02/02-thank-you.webp
     say: |-
-      <en>Thank you</en><vi> là cảm ơn — con nói khi ai hỏi thăm hay giúp con. Cô phát âm chậm: </vi><en>TH-ANK YOU</en><vi> — đầu lưỡi đặt nhẹ giữa hai hàm răng. [long pause]</vi>
-      <en>Listen first! [long pause] "THANK YOU" [long pause]</en>
+      <en>*Thank you*</en><vi> là cảm ơn — con nói khi ai hỏi thăm hay giúp con. Cô phát âm chậm: </vi><en>*THANK YOU*</en><vi> — đầu lưỡi đặt nhẹ giữa hai hàm răng. [long pause]</vi>
+      <en>Listen first! [long pause] "*THANK YOU*" [long pause]</en>
       <en>Now you!</en>
     accept: Chấp nhận “thank you”, kể cả khi đọc /th/ như /t/.
   - order: 6
     target: [great, OK]
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
-      <en>Great</en><vi> là tuyệt, rất tốt. </vi><en>OK</en><vi> là bình thường, ổn. [long pause]</vi>
-      <en>Listen first! [long pause] "GREAT" [long pause] "OK" [long pause]</en>
-      <en>Your turn now! Great… OK!</en>
+      <en>*Great*</en><vi> là tuyệt, rất tốt. </vi><en>*OK*</en><vi> là bình thường, ổn. [long pause]</vi>
+      <en>Listen first! [long pause] "*GREAT*" [long pause] "*OK*" [long pause]</en>
+      <en>Your turn now! "*Great*" ,"*OK*"!</en>
     accept: Chấp nhận con nói được great và OK; ở Mức 1 chỉ nghe cũng có thể chuyển tiếp.
   - order: 7
     target: [tired, sleepy, happy]
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
-      <en>Tired</en><vi> là mệt, </vi><en>sleepy</en><vi> là buồn ngủ, </vi><en>happy</en><vi> là vui — con dùng để nói con đang thấy thế nào. [long pause]</vi>
-      <en>Listen first! [long pause] "TIRED" [long pause] "SLEEPY" [long pause] "HAPPY" [long pause]</en>
+      <en>*Tired*</en><vi> là mệt, </vi><en>*sleepy*</en><vi> là buồn ngủ, </vi><en>*happy*</en><vi> là vui — con dùng để nói con đang thấy thế nào. [long pause]</vi>
+      <en>Listen first! [long pause] "*TIRED*" [long pause] "*SLEEPY*" [long pause] "*HAPPY*" [long pause]</en>
       <en>Your turn now!</en>
     accept: Chấp nhận con nói được các từ; Mức 3 khuyến khích ít nhất hai từ. Mức 1 chỉ nghe vẫn đạt.
   - order: 8
     target: [happy, tired, fine]
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
-      <en>Let's play! Happy — laugh. Tired — sigh. Fine — say OK! [long pause]</en>
-      <en>Great!… Tired… Fine… Happy!</en>
+      <en>Let's play! *Happy* — laugh. *Tired* — sigh. *Fine* — say OK! [long pause]</en>
+      <en>Great!… *Tired*… *Fine*… *Happy*!</en>
     accept: Chấp nhận phản ứng hoặc nói đúng ít nhất ba trong bốn cảm xúc; với Mức 1, great và fine là đủ.
 - id: patterns
   steps:
   - order: 9
     target: ask
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
       <vi>Trạm 2: cô trò mình ghép các từ vừa học thành một câu hỏi thăm hoàn chỉnh. [long pause]</vi>
       <en>Here's our secret question! Listen first: [long pause] "How are you?" [long pause]</en>
@@ -77,6 +123,7 @@ stations:
       accept: Chấp nhận “How are you?” nói liền mạch; không cần phát âm hoàn hảo.
   - order: 10
     target: answer
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
       <en>Listen first! [long pause] "Fine, thank you." [long pause]</en>
       <vi>Nghĩa là: Mình khoẻ, cảm ơn — con trả lời khi ai hỏi </vi><en>How are you.</en><vi> [long pause]</vi>
@@ -87,6 +134,7 @@ stations:
       accept: Chấp nhận Fine, I'm fine, Fine thank you, Great, OK hoặc câu trả lời cảm xúc phù hợp.
   - order: 11
     target: answer
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: <vi>Con không phải lúc nào cũng nói </vi><en>fine</en><vi> đâu. Hôm nay con thấy thế nào thật sự? </vi><en>Tell me — how are you really?</en>
     accept: Chấp nhận bất kỳ cảm xúc đã học, có hoặc không có “I'm”; Fine và Great cũng đạt.
     more:
@@ -94,6 +142,7 @@ stations:
       accept: Chấp nhận lời nói thêm về cảm xúc, bằng tiếng Anh hoặc tiếng Việt; Mức 1 có thể trả lời ngắn.
   - order: 12
     target: ask_back
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
       <en>Listen first! [long pause] "Fine, thank you. And you?" [long pause]</en>
       <en>And you</en><vi> nghĩa là: còn bạn thì sao? — hỏi lại cho lịch sự. [long pause]</vi>
@@ -101,7 +150,8 @@ stations:
     accept: Chấp nhận “Fine, thank you. And you?”; Mức 1 không bắt buộc “And you?”.
   - order: 13
     target: ask
-    say: '<en>Now your turn to ask ME! Say: How are you?</en>'
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+    say: '<en>Now your turn to *ask* ME! Say: How are you?</en>'
     accept: Chấp nhận “How are you?”, có hoặc không gọi tên Luna.
     more:
     - say: "<en>I'm great, thank you! And you?</en>"
@@ -110,6 +160,7 @@ stations:
   steps:
   - order: 14
     target: ask_back
+    image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
     say: |-
       <vi>Trạm 3: cô trò mình nói chuyện bằng tiếng Anh nhé! </vi><en>Let's talk, just like every evening! [long pause]</en>
       <en>Good evening, {tên}!</en>

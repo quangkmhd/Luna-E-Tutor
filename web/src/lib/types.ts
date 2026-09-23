@@ -3,6 +3,15 @@ export type Message = {
   text: string;
   turn_id?: string | null;
   delivery_intent?: string | null;
+  image_url?: string | null;
+};
+
+export type VocabularyCard = {
+  word: string;
+  pronunciation?: string | null;
+  meaning_vi?: string | null;
+  image_url?: string | null;
+  status: 'new' | 'learning' | 'learned';
 };
 
 export type UnitSummary = {
@@ -55,6 +64,7 @@ export type SessionView = {
     target_patterns: string[];
     highlighted: boolean;
   }>;
+  flashcards: VocabularyCard[];
   status: 'active' | 'paused' | 'completed' | 'abandoned';
   messages: Message[];
   review_queue: Array<{ objective_id: string; difficulty: string }>;

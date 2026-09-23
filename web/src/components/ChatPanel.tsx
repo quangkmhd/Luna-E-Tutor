@@ -5,7 +5,14 @@ import type { Message } from '@/lib/types';
 import { VoiceLatency } from './voice/VoiceLatency';
 import { useOptionalVoiceLesson } from './voice/PipecatVoiceProvider';
 
-type DisplayMessage = { role: 'learner' | 'teacher'; text: string; timestamp: string; key?: string };
+type DisplayMessage = { role: 'learner' | 'teacher'; text: string; timestamp: string; key?: string; image_url?: string | null };
+
+function emphasizedText(text: string) {
+  return text.split(/(\*[^*\n]+\*)/g).map((part, index) => {
+    const emphasis = part.match(/^\*([^*\n]+)\*$/);
+    return emphasis ? <strong key={`emphasis-${index}`}>{emphasis[1]}</strong> : part;
+  });
+}
 
 function conversationText(message: ConversationMessage, spokenOnly: boolean): string {
   return message.parts.map((part) => {
@@ -21,7 +28,7 @@ function teacherDisplayText(text: string): string {
 }
 
 function teacherMatchText(text: string): string {
-  return teacherDisplayText(text).replace(/\s+/g, ' ').trim();
+  return teacherDisplayText(text).replace(/\*([^*]+)\*/g, '$1').replace(/\s+/g, ' ').trim();
 }
 
 function stripSavedTeacherPrefix(text: string, savedText: string): string | null {
@@ -32,27 +39,6 @@ function stripSavedTeacherPrefix(text: string, savedText: string): string | null
   if (match) return text.slice(match[0].length).trim();
   if (comparable.includes(teacherMatchText(text))) return null;
   return text;
-}
-
-function restoreAuthoredLines(live: DisplayMessage[], saved: Message[]): DisplayMessage[] {
-  const restored: DisplayMessage[] = [];
-  for (let index = 0; index < live.length;) {
-    const first = live[index];
-    if (first.role !== 'teacher') {
-      restored.push(first);
-      index += 1;
-      continue;
-    }
-    let end = index + 1;
-    while (end < live.length && live[end].role === 'teacher' && live[end].timestamp === first.timestamp) end += 1;
-    const segments = live.slice(index, end);
-    const spoken = teacherMatchText(segments.map((segment) => segment.text).join(' '));
-    const authored = saved.find((message) => message.role === 'teacher' && teacherMatchText(message.text) === spoken);
-    if (authored) restored.push({ ...first, text: authored.text });
-    else restored.push(...segments);
-    index = end;
-  }
-  return restored;
 }
 
 export function ChatPanel({ messages }: { messages: Message[] }) {
@@ -77,14 +63,11 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
       }])
     .filter((message) => message.text);
   const savedMessages = messages.flatMap((message, index) => {
-    if (voiceRuns.some((run) => index >= run.start && (run.end === undefined || index < run.end))) return [];
     const precedingRun = voiceRuns.findLast((run) => run.end !== undefined && index >= run.end);
-    return [{ ...message, timestamp: precedingRun?.endedAt ?? `${message.turn_id ?? 'opening'}-${index}` }];
+    return [{ ...message, key: `saved-${index}`, timestamp: precedingRun?.endedAt ?? '' }];
   });
   const sentText = voice?.sentText ?? [];
-  const liveMessages = spokenOnly
-    ? pipecatConversation.filter((message) => message.role !== 'learner' || !sentText.some((sent) => sent.text === message.text))
-    : messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
+  const liveMessages = voice?.phase === 'off' ? [] : messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
     if (message.role === 'learner') {
       const savedCount = savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length;
       const liveCount = pipecatConversation.slice(0, index + 1)
@@ -99,7 +82,7 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
     }
     return text ? [{ ...message, text }] : [];
   });
-  const displayedMessages: DisplayMessage[] = [...savedMessages, ...(spokenOnly ? restoreAuthoredLines(liveMessages, messages) : liveMessages), ...sentText.filter((message, index) =>
+  const displayedMessages: DisplayMessage[] = [...savedMessages, ...liveMessages, ...sentText.filter((message, index) =>
     savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length
       < sentText.slice(0, index + 1).filter((sent) => sent.text === message.text).length,
   ).map((message) => ({
@@ -113,15 +96,16 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
   });
   const visibleMessages = displayedMessages.flatMap((message) => message.role === 'teacher'
     ? teacherDisplayText(message.text).split('\n').filter(Boolean).map((line, index) => ({
-      ...message, text: line, key: `${message.key ?? message.timestamp}-line-${index}`,
+      ...message, image_url: index === 0 ? message.image_url : null,
+      text: line, key: `${message.key ?? message.timestamp}-line-${index}`,
     }))
     : [message]);
   const latestTeacherIndex = visibleMessages.findLastIndex((message) => message.role === 'teacher');
   useEffect(() => { latestMessage.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, [displayedMessages.length]);
   return <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
-    {visibleMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.key ?? message.timestamp}`}>
+    {visibleMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.key ?? message.timestamp}-${index}`}>
       {message.role === 'teacher' && <div className="avatar" aria-hidden="true">L</div>}
-      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span><p>{message.role === 'teacher' ? teacherDisplayText(message.text) : message.text}</p></div>
+      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span><p>{message.role === 'teacher' ? emphasizedText(teacherDisplayText(message.text)) : message.text}</p>{message.role === 'teacher' && message.image_url && <img className="teacher-image-card" src={message.image_url} alt="Hình minh họa cho câu nói của Luna" loading="lazy" />}</div>
     </article>)}
     <div ref={latestMessage} aria-hidden="true" />
   </div>;

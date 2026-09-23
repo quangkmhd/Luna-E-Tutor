@@ -1,0 +1,1477 @@
+{
+  "unit": "grade03.unit01",
+  "lesson_id": 1,
+  "evaluator": "~typesafe/jev-latest via OpenRouter",
+  "outputs": [
+    {
+      "case": "correct_answer",
+      "learner_text": "Hi!",
+      "opportunity": {
+        "order": 1,
+        "exchange": 1,
+        "stage": "greeting",
+        "say": "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>",
+        "accept": "Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.",
+        "target": null
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-01",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-01.objective-01",
+            "meaning_status": "satisfied",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "Hi!",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "move_to_next_stage",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "lesson-02.objective-01",
+        "next_activity_id": "lesson-02.exchange-01",
+        "next_stage_id": "vocabulary",
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-01",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "Hi!",
+        "next_teaching_move": "The learner is reading the scripted lesson aloud. Deliver scripted_say exactly; do not add a greeting, acknowledgement, praise, or another question.",
+        "scripted_say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "emotional_support": false,
+        "previous_teacher_turn": "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>",
+        "activity_context": {
+          "stage_id": "greeting",
+          "activity_id": "lesson-01.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt."
+          ],
+          "target_words": [],
+          "target_patterns": [],
+          "examples": [
+            "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 0,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": false
+    },
+    {
+      "case": "short_correct_answer",
+      "learner_text": "Hello.",
+      "opportunity": {
+        "order": 1,
+        "exchange": 1,
+        "stage": "greeting",
+        "say": "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>",
+        "accept": "Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.",
+        "target": null
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-02",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-01.objective-01",
+            "meaning_status": "satisfied",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "Hello.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "move_to_next_stage",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "lesson-02.objective-01",
+        "next_activity_id": "lesson-02.exchange-01",
+        "next_stage_id": "vocabulary",
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-02",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "Hello.",
+        "next_teaching_move": "The learner is reading the scripted lesson aloud. Deliver scripted_say exactly; do not add a greeting, acknowledgement, praise, or another question.",
+        "scripted_say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "emotional_support": false,
+        "previous_teacher_turn": "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>",
+        "activity_context": {
+          "stage_id": "greeting",
+          "activity_id": "lesson-01.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt."
+          ],
+          "target_words": [],
+          "target_patterns": [],
+          "examples": [
+            "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 0,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": false
+    },
+    {
+      "case": "exact_vocabulary_imitation",
+      "learner_text": "Hello.",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-03",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "Hello.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "move_to_next_objective",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "lesson-02.objective-02",
+        "next_activity_id": "lesson-02.exchange-02",
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-03",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "Hello.",
+        "next_teaching_move": "The learner is reading the scripted lesson aloud. Deliver scripted_say exactly; do not add a greeting, acknowledgement, praise, or another question.",
+        "scripted_say": "<en>Once more! [long pause] \"Hello\" [long pause]</en>",
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 0,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": false
+    },
+    {
+      "case": "grammar_error_known_meaning",
+      "learner_text": "Hi. I Mai.",
+      "opportunity": {
+        "order": 8,
+        "exchange": 1,
+        "stage": "patterns",
+        "say": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "accept": "Hi/Hello + I'm + Mai",
+        "target": "introduce"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-04",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-08.objective-01",
+            "meaning_status": "partially_satisfied",
+            "target_form_status": "error_in_target_form",
+            "evidence_quote": "Hi. I Mai.",
+            "recast_needed": true,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-04",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "Hi. I Mai.",
+        "next_teaching_move": "The learner has not yet met the current lesson criterion. Give one short, concrete model or hint from activity_context and invite one retry of the current target. Do not repeat the entire introduction in previous_teacher_turn. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "activity_context": {
+          "stage_id": "patterns",
+          "activity_id": "lesson-08.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Hi/Hello + I'm + Mai"
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "Hello./Hi. I'm {name}."
+          ],
+          "examples": [
+            "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "wrong_semantic_category",
+      "learner_text": "Pink.",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-05",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "wrong_semantic_category",
+            "target_form_status": "not_used",
+            "evidence_quote": "Pink.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-05",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "Pink.",
+        "next_teaching_move": "Gently return to the same scripted response. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "partial_answer",
+      "learner_text": "Hi.",
+      "opportunity": {
+        "order": 8,
+        "exchange": 1,
+        "stage": "patterns",
+        "say": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "accept": "Hi/Hello + I'm + Mai",
+        "target": "introduce"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-06",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-08.objective-01",
+            "meaning_status": "partially_satisfied",
+            "target_form_status": "not_used",
+            "evidence_quote": "Hi.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-06",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "Hi.",
+        "next_teaching_move": "The learner has not yet met the current lesson criterion. Give one short, concrete model or hint from activity_context and invite one retry of the current target. Do not repeat the entire introduction in previous_teacher_turn. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "activity_context": {
+          "stage_id": "patterns",
+          "activity_id": "lesson-08.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Hi/Hello + I'm + Mai"
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "Hello./Hi. I'm {name}."
+          ],
+          "examples": [
+            "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "explicit_dont_know",
+      "learner_text": "I don't know.",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-07",
+        "state_version": 0,
+        "response_kind": "does_not_know",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-07",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "I don't know.",
+        "next_teaching_move": "The learner has not yet met the current lesson criterion. Give one short, concrete model or hint from activity_context and invite one retry of the current target. Do not repeat the entire introduction in previous_teacher_turn. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "wrong_answer_second_attempt",
+      "learner_text": "Hi. I Mai.",
+      "opportunity": {
+        "order": 8,
+        "exchange": 1,
+        "stage": "patterns",
+        "say": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "accept": "Hi/Hello + I'm + Mai",
+        "target": "introduce"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-08",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-08.objective-01",
+            "meaning_status": "partially_satisfied",
+            "target_form_status": "error_in_target_form",
+            "evidence_quote": "Hi. I Mai.",
+            "recast_needed": true,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "move_to_next_objective",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "lesson-08.objective-02",
+        "next_activity_id": "lesson-08.exchange-02",
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": true
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-08",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "Hi. I Mai.",
+        "next_teaching_move": "The learner has used the allowed attempts on the current lesson line. Correct the OLD answer in one brief declarative sentence. Compare learner_meaning with the authored model in activity_context.examples and use recent_context to understand the learner's previous attempts. State the complete correct word or sentence for that old exercise, preserving its example name. This is a correction, not another speaking task: do not say \"Let's say\", \"Can you say\", \"Now you\", or ask the learner to repeat it. Do not praise the incorrect answer, claim to have heard pronunciation details from text, or restart the introduction. Stop after the correction; the next authored lesson line, possibly with a different name or target, will be appended exactly afterward. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "activity_context": {
+          "stage_id": "patterns",
+          "activity_id": "lesson-08.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Hi/Hello + I'm + Mai"
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "Hello./Hi. I'm {name}."
+          ],
+          "examples": [
+            "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 0,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "asks_meaning",
+      "learner_text": "What does hello mean?",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-09",
+        "state_version": 0,
+        "response_kind": "asks_meaning",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "explain_meaning",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-09",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "explain_meaning",
+        "corrected_form": null,
+        "learner_meaning": "What does hello mean?",
+        "next_teaching_move": "Answer the learner question briefly, then invite the same scripted response. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "asks_teacher_pace",
+      "learner_text": "Can you speak more slowly?",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-10",
+        "state_version": 0,
+        "response_kind": "asks_teacher",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": true,
+        "ambiguity_reason": "Jev marked the learner input as unclear."
+      },
+      "decision": {
+        "feedback_action": "clarify",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-10",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "clarify",
+        "corrected_form": null,
+        "learner_meaning": "Can you speak more slowly?",
+        "next_teaching_move": "Ask for a clear repeat because the input was uncertain; do not call it wrong. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "off_topic",
+      "learner_text": "I like playing Minecraft.",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-11",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-11",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "I like playing Minecraft.",
+        "next_teaching_move": "Gently return to the same scripted response. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "emotional_tiredness",
+      "learner_text": "I'm tired.",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-12",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [
+          "emotional_signal_detected"
+        ],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-12",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "I'm tired.",
+        "next_teaching_move": "Gently return to the same scripted response. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "refusal_to_answer",
+      "learner_text": "I don't want to answer.",
+      "opportunity": {
+        "order": 2,
+        "exchange": 1,
+        "stage": "vocabulary",
+        "say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "accept": "hello (có /h/)",
+        "target": "hello"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-13",
+        "state_version": 0,
+        "response_kind": "does_not_know",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-02.objective-01",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-13",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "I don't want to answer.",
+        "next_teaching_move": "The learner has not yet met the current lesson criterion. Give one short, concrete model or hint from activity_context and invite one retry of the current target. Do not repeat the entire introduction in previous_teacher_turn. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "activity_context": {
+          "stage_id": "vocabulary",
+          "activity_id": "lesson-02.exchange-01",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "hello (có /h/)"
+          ],
+          "target_words": [
+            "hello"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "mixed_answer_and_emotion",
+      "learner_text": "Hi! I'm tired.",
+      "opportunity": {
+        "order": 1,
+        "exchange": 1,
+        "stage": "greeting",
+        "say": "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>",
+        "accept": "Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.",
+        "target": null
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-14",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [
+          "emotional_signal_detected"
+        ],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-01.objective-01",
+            "meaning_status": "satisfied",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "Hi! I'm tired.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "move_to_next_stage",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "lesson-02.objective-01",
+        "next_activity_id": "lesson-02.exchange-01",
+        "next_stage_id": "vocabulary",
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-14",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "Hi! I'm tired.",
+        "next_teaching_move": "The learner is reading the scripted lesson aloud. Deliver scripted_say exactly; do not add a greeting, acknowledgement, praise, or another question.",
+        "scripted_say": "<vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>\n<en>[long pause] \"HELLO\"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>\n<en>[long pause] Listen first! [long pause] \"HELLO\" </en>\n<en>[long pause] Your turn now! Can you say: [long pause] [slowly] \"Hello\"?</en>",
+        "emotional_support": false,
+        "previous_teacher_turn": "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>",
+        "activity_context": {
+          "stage_id": "greeting",
+          "activity_id": "lesson-01.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt."
+          ],
+          "target_words": [],
+          "target_patterns": [],
+          "examples": [
+            "<en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 0,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": false
+    },
+    {
+      "case": "incomplete_transcript",
+      "learner_text": "Hi. I",
+      "opportunity": {
+        "order": 8,
+        "exchange": 1,
+        "stage": "patterns",
+        "say": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "accept": "Hi/Hello + I'm + Mai",
+        "target": "introduce"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-15",
+        "state_version": 0,
+        "response_kind": "insufficient_data",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-08.objective-01",
+            "meaning_status": "partially_satisfied",
+            "target_form_status": "error_in_target_form",
+            "evidence_quote": "Hi. I",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": true,
+        "ambiguity_reason": "Jev marked the learner input as unclear."
+      },
+      "decision": {
+        "feedback_action": "clarify",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-15",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "clarify",
+        "corrected_form": null,
+        "learner_meaning": "Hi. I",
+        "next_teaching_move": "Ask for a clear repeat because the input was uncertain; do not call it wrong. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "activity_context": {
+          "stage_id": "patterns",
+          "activity_id": "lesson-08.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Hi/Hello + I'm + Mai"
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "Hello./Hi. I'm {name}."
+          ],
+          "examples": [
+            "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    },
+    {
+      "case": "uninterpretable_utterance",
+      "learner_text": "Blue yesterday under maybe.",
+      "opportunity": {
+        "order": 8,
+        "exchange": 1,
+        "stage": "patterns",
+        "say": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "accept": "Hi/Hello + I'm + Mai",
+        "target": "introduce"
+      },
+      "evaluator_output": {
+        "turn_id": "g3-live-scenario-16",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "lesson-08.objective-01",
+            "meaning_status": "wrong_semantic_category",
+            "target_form_status": "not_used",
+            "evidence_quote": "Blue yesterday under maybe.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      },
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "g3-live-scenario-16",
+        "unit_id": "grade03.unit01",
+        "lesson_id": 1,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "Blue yesterday under maybe.",
+        "next_teaching_move": "Gently return to the same scripted response. The learner is practicing a scripted line, not greeting you. Respond to the current question or difficulty without restarting the greeting.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>",
+        "activity_context": {
+          "stage_id": "patterns",
+          "activity_id": "lesson-08.exchange-01",
+          "kind": "scripted_practice",
+          "objectives": [
+            "Hi/Hello + I'm + Mai"
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "Hello./Hi. I'm {name}."
+          ],
+          "examples": [
+            "<vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>\n<vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] \"Hi. I'm Mai.\" [long pause]</en>\n<en>Your turn now! Can you say: [long pause] \"Hi. I'm Mai.\" [long pause]?</en>"
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": []
+        }
+      },
+      "teacher_llm_called": true
+    }
+  ]
+}

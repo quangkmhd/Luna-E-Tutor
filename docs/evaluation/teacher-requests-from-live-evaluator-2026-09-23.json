@@ -1,0 +1,1153 @@
+{
+  "source": "saved live Evaluator outputs replayed through current TurnPlanner and TeachingEngine",
+  "outputs": [
+    {
+      "case": "correct_answer",
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "move_to_next_objective",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "unit01.lesson01.pattern.live_in",
+        "next_activity_id": "lesson-01.ask-luna",
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-01",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "I live in the countryside.",
+        "next_teaching_move": "After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question. Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: Create an opportunity to ask Luna where she lives. If still difficult after support, record the opportunity as handled without claiming the learner asked.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.ask-luna",
+          "kind": "ask_teacher",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": true,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "short_correct_answer",
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "move_to_next_objective",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": "unit01.lesson01.pattern.live_in",
+        "next_activity_id": "lesson-01.ask-luna",
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-02",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "Countryside.",
+        "next_teaching_move": "After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question. Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: Create an opportunity to ask Luna where she lives. If still difficult after support, record the opportunity as handled without claiming the learner asked.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.ask-luna",
+          "kind": "ask_teacher",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": true,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "exact_vocabulary_imitation",
+      "decision": {
+        "feedback_action": "acknowledge_and_continue",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": true,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-03",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "acknowledge_and_continue",
+        "corrected_form": null,
+        "learner_meaning": "City.",
+        "next_teaching_move": "Quang said the current target successfully. Acknowledge that specific response briefly, then invite another learner turn on the SAME target. This is practice, not a correction: do not restart the introduction or introduce a new word. For vocabulary_introduction, give a DIRECT instruction to SAY the target word aloud, such as \"Say hi to your friend: hi!\" or \"Now greet me with hi: hi!\" Do not ask a yes/no question such as \"Can you use hi...?\", ask for a sentence, or invite an answer about whether he can do it. Use activity_context.successful_learner_repetitions and required_learner_repetitions to keep the remaining turns straight. Vary the acknowledgment and direct speaking instruction from previous_teacher_turn and recent_context. Give only one clear response opportunity.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Can you say “city”?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.introduce-city",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "Vocabulary: city"
+          ],
+          "target_words": [
+            "city"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "city"
+          ],
+          "model_repetitions": 2,
+          "required_learner_repetitions": 3,
+          "successful_learner_repetitions": 1,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "grammar_error_known_meaning",
+      "decision": {
+        "feedback_action": "recast",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [
+          "unit01.lesson01.pattern.live_in"
+        ],
+        "review_queue_remove": [],
+        "mastery_updates": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 0,
+            "needs_review": true
+          }
+        ],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-04",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "recast",
+        "corrected_form": null,
+        "learner_meaning": "I live countryside.",
+        "next_teaching_move": "The target construction has an error. Do not call it correct. Give corrected_form once if supplied; otherwise model a minimal faithful correction using the target pattern and learner meaning. Ask Quang to try again using that form. Keep his facts unchanged.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "wrong_semantic_category",
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-05",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "Pink.",
+        "next_teaching_move": "Respond to what Quang just said and continue this activity naturally: Ask about the favourite animal; accept any appropriate animal, not only the textbook example.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "What is your favourite animal?",
+        "activity_context": {
+          "stage_id": "lesson-02",
+          "activity_id": "lesson-02.favourite-animal",
+          "kind": "guided_response",
+          "objectives": [
+            "Vocabulary: dolphin",
+            "Pattern: What's your favourite ___? – It's ___."
+          ],
+          "target_words": [
+            "dolphin"
+          ],
+          "target_patterns": [
+            "What's your favourite ___? – It's ___."
+          ],
+          "examples": [
+            "What's your favourite animal? – It's a dolphin.",
+            "What's your favourite colour? – It's pink.",
+            "What's your favourite food? – It's a sandwich."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "partial_answer",
+      "decision": {
+        "feedback_action": "clarify",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-06",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "clarify",
+        "corrected_form": null,
+        "learner_meaning": "I live...",
+        "next_teaching_move": "The input is not reliable enough to assess. Ask one short question to confirm what Quang meant, using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation error, ask for imitation, or restart the activity introduction.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "explicit_dont_know",
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-07",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "I don't know.",
+        "next_teaching_move": "The answer did not meet the current goal. Do not say it was correct or praise it. Briefly explain the mismatch, then ask Quang to try again on the same question, with at most two concrete choices if helpful. Stay on the current objective.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "wrong_answer_second_attempt",
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-08",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "Pink.",
+        "next_teaching_move": "Respond to what Quang just said and continue this activity naturally: Ask about the favourite animal; accept any appropriate animal, not only the textbook example.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "What is your favourite animal?",
+        "activity_context": {
+          "stage_id": "lesson-02",
+          "activity_id": "lesson-02.favourite-animal",
+          "kind": "guided_response",
+          "objectives": [
+            "Vocabulary: dolphin",
+            "Pattern: What's your favourite ___? – It's ___."
+          ],
+          "target_words": [
+            "dolphin"
+          ],
+          "target_patterns": [
+            "What's your favourite ___? – It's ___."
+          ],
+          "examples": [
+            "What's your favourite animal? – It's a dolphin.",
+            "What's your favourite colour? – It's pink.",
+            "What's your favourite food? – It's a sandwich."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "asks_meaning",
+      "decision": {
+        "feedback_action": "explain_meaning",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-09",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "explain_meaning",
+        "corrected_form": null,
+        "learner_meaning": "What does city mean?",
+        "next_teaching_move": "Explain the meaning Quang asked about with one concrete example. Check understanding with one easy meaning question or choice; do not ask him to repeat the word or restart the introduction.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Can you say “city”?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.introduce-city",
+          "kind": "vocabulary_introduction",
+          "objectives": [
+            "Vocabulary: city"
+          ],
+          "target_words": [
+            "city"
+          ],
+          "target_patterns": [],
+          "examples": [
+            "city"
+          ],
+          "model_repetitions": 2,
+          "required_learner_repetitions": 3,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "asks_teacher_pace",
+      "decision": {
+        "feedback_action": "clarify",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-10",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "clarify",
+        "corrected_form": null,
+        "learner_meaning": "Can you speak more slowly?",
+        "next_teaching_move": "The input is not reliable enough to assess. Ask one short question to confirm what Quang meant, using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation error, ask for imitation, or restart the activity introduction.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "off_topic",
+      "decision": {
+        "feedback_action": "redirect",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-11",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "redirect",
+        "corrected_form": null,
+        "learner_meaning": "I like playing Minecraft.",
+        "next_teaching_move": "Respond to what Quang just said and continue this activity naturally: Invite Quang to describe where he lives. Accept one-word or Vietnamese meaning; record English form separately.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "emotional_tiredness",
+      "decision": {
+        "feedback_action": "reassure",
+        "progression_action": "reduce_difficulty",
+        "corrected_form": null,
+        "emotional_support": true,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-12",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "reassure",
+        "corrected_form": null,
+        "learner_meaning": "I'm tired.",
+        "next_teaching_move": "Briefly acknowledge any expressed feeling or confusion. Make the authorized activity easier with one question containing two concrete, simple answer choices. A one-word choice is enough; do not demand a full sentence, an abstract drawback explanation, or another attempt at the same difficult wording. If the learner gave the wrong semantic category, first explain that distinction briefly. Use the activity context for the CURRENT target, even after a transition. Do not re-ask a fact Quang already gave or repeat the previous question. Choose a missing part of the goal: if he already gave a drawback such as crowding, ask about a positive feature instead. For an addition goal, ask about another positive feature. Choices are possible answers, never asserted learner facts.",
+        "scripted_say": null,
+        "emotional_support": true,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "refusal_to_answer",
+      "decision": {
+        "feedback_action": "offer_support",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-13",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "offer_support",
+        "corrected_form": null,
+        "learner_meaning": "I don't want to answer.",
+        "next_teaching_move": "The answer did not meet the current goal. Do not say it was correct or praise it. Briefly explain the mismatch, then ask Quang to try again on the same question, with at most two concrete choices if helpful. Stay on the current objective.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": true,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "mixed_answer_and_emotion",
+      "decision": {
+        "feedback_action": "reassure",
+        "progression_action": "move_to_next_objective",
+        "corrected_form": null,
+        "emotional_support": true,
+        "next_objective_id": "unit01.lesson01.pattern.live_in",
+        "next_activity_id": "lesson-01.ask-luna",
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "introduced": false,
+            "attempted": true,
+            "supported_uses": 0,
+            "independent_uses": 1,
+            "needs_review": false
+          }
+        ],
+        "count_attempt": true,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-14",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "reassure",
+        "corrected_form": null,
+        "learner_meaning": "I'm tired, but I live in a city.",
+        "next_teaching_move": "After responding to Quang, invite HIM to ask YOU about the target topic; wait for his question. Do not answer on your own behalf yet, and do not ask him to answer the previous question again. Topic: Create an opportunity to ask Luna where she lives. If still difficult after support, record the opportunity as handled without claiming the learner asked.",
+        "scripted_say": null,
+        "emotional_support": true,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.ask-luna",
+          "kind": "ask_teacher",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": true,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "incomplete_transcript",
+      "decision": {
+        "feedback_action": "clarify",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-15",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "clarify",
+        "corrected_form": null,
+        "learner_meaning": "I live in the",
+        "next_teaching_move": "The input is not reliable enough to assess. Ask one short question to confirm what Quang meant, using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation error, ask for imitation, or restart the activity introduction.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    },
+    {
+      "case": "uninterpretable_utterance",
+      "decision": {
+        "feedback_action": "clarify",
+        "progression_action": "stay",
+        "corrected_form": null,
+        "emotional_support": false,
+        "next_objective_id": null,
+        "next_activity_id": null,
+        "next_stage_id": null,
+        "review_queue_add": [],
+        "review_queue_remove": [],
+        "mastery_updates": [],
+        "count_attempt": false,
+        "count_successful_repetition": false,
+        "intro_imitation_acknowledged": false,
+        "support_limit_exit": false
+      },
+      "teacher_request": {
+        "turn_id": "live-scenario-16",
+        "unit_id": "grade05.unit01",
+        "lesson_id": null,
+        "feedback_action": "clarify",
+        "corrected_form": null,
+        "learner_meaning": "Blue yesterday under maybe.",
+        "next_teaching_move": "The input is not reliable enough to assess. Ask one short question to confirm what Quang meant, using the previous question for context. Do not treat a partial word as a successful answer, infer a pronunciation error, ask for imitation, or restart the activity introduction.",
+        "scripted_say": null,
+        "emotional_support": false,
+        "previous_teacher_turn": "Where do you live?",
+        "activity_context": {
+          "stage_id": "lesson-01",
+          "activity_id": "lesson-01.home",
+          "kind": "guided_response",
+          "objectives": [
+            "Pattern: I live in the ___."
+          ],
+          "target_words": [],
+          "target_patterns": [
+            "I live in the ___."
+          ],
+          "examples": [
+            "I live in the city.",
+            "I live in the countryside."
+          ],
+          "model_repetitions": 0,
+          "required_learner_repetitions": 1,
+          "successful_learner_repetitions": 0,
+          "remaining_model_repetitions": 0,
+          "needs_response_invitation": false,
+          "delivery_only": false,
+          "role_name": null,
+          "role_country": null
+        },
+        "review_objective": null,
+        "recent_context": [],
+        "constraints": {
+          "max_questions": 1,
+          "require_repetition": false,
+          "allow_pronunciation_claims": false,
+          "plain_spoken_text": true,
+          "encouragement_required": false,
+          "additional": [
+            "Ask Quang to try a correction again only when constraints.require_repetition is true; otherwise never require repetition.",
+            "Speak one short, natural turn without Markdown.",
+            "Never write isolated vocabulary repetitions as separate punctuated sentences such as \"Class. Class.\" unless the active activity instruction explicitly supplies a spoken lesson script. Otherwise embed and quote each lowercase target word naturally, for example, \"Here is our new word: “class”. Can you say “class”?\""
+          ]
+        }
+      }
+    }
+  ]
+}

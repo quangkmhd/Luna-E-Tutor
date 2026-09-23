@@ -18,6 +18,9 @@ class VocabularyItem(StrictModel):
     id: Identifier
     text: Text
     usage: Literal['taught', 'supporting'] = 'taught'
+    pronunciation: str | None = None
+    meaning_vi: str | None = None
+    image_url: str | None = None
 
 
 class Pattern(StrictModel):
@@ -61,6 +64,7 @@ class Activity(StrictModel):
     instruction: Text
     intro_imitation: Text | None = None
     examples: list[Text] = Field(default_factory=list)
+    image_url: str | None = None
 
     @property
     def required_learner_repetitions(self) -> int:

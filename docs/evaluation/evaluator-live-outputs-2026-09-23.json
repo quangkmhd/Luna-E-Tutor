@@ -1,0 +1,393 @@
+{
+  "model": "~typesafe/jev-latest via configured OpenRouter endpoint",
+  "outputs": [
+    {
+      "case": "correct_answer",
+      "input": "I live in the countryside.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-01",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "satisfied",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "I live in the countryside.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "short_correct_answer",
+      "input": "Countryside.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-02",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "satisfied",
+            "target_form_status": "valid_alternative",
+            "evidence_quote": "Countryside.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "exact_vocabulary_imitation",
+      "input": "City.",
+      "teacher_turn": "Can you say “city”?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-03",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.vocabulary.city",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "City.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "grammar_error_known_meaning",
+      "input": "I live countryside.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-04",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "satisfied",
+            "target_form_status": "error_in_target_form",
+            "evidence_quote": "I live countryside.",
+            "recast_needed": true,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "wrong_semantic_category",
+      "input": "Pink.",
+      "teacher_turn": "What is your favourite animal?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-05",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson02.pattern.favourite",
+            "meaning_status": "wrong_semantic_category",
+            "target_form_status": "not_used",
+            "evidence_quote": "Pink.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "partial_answer",
+      "input": "I live...",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-06",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "partially_satisfied",
+            "target_form_status": "not_used",
+            "evidence_quote": "I live...",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": true,
+        "ambiguity_reason": "Jev marked the learner input as unclear."
+      }
+    },
+    {
+      "case": "explicit_dont_know",
+      "input": "I don't know.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-07",
+        "state_version": 0,
+        "response_kind": "does_not_know",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "wrong_answer_second_attempt",
+      "input": "Pink.",
+      "teacher_turn": "What is your favourite animal?",
+      "attempt_count": 1,
+      "evaluator_output": {
+        "turn_id": "live-scenario-08",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson02.pattern.favourite",
+            "meaning_status": "wrong_semantic_category",
+            "target_form_status": "not_used",
+            "evidence_quote": "Pink.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "asks_meaning",
+      "input": "What does city mean?",
+      "teacher_turn": "Can you say “city”?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-09",
+        "state_version": 0,
+        "response_kind": "asks_meaning",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.vocabulary.city",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "correct_target_form",
+            "evidence_quote": "What does city mean?",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "asks_teacher_pace",
+      "input": "Can you speak more slowly?",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-10",
+        "state_version": 0,
+        "response_kind": "asks_teacher",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": true,
+        "ambiguity_reason": "Jev marked the learner input as unclear."
+      }
+    },
+    {
+      "case": "off_topic",
+      "input": "I like playing Minecraft.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-11",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "emotional_tiredness",
+      "input": "I'm tired.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-12",
+        "state_version": 0,
+        "response_kind": "off_topic",
+        "emotional_signals": [
+          "emotional_signal_detected"
+        ],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "refusal_to_answer",
+      "input": "I don't want to answer.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-13",
+        "state_version": 0,
+        "response_kind": "does_not_know",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "not_demonstrated",
+            "target_form_status": "not_used",
+            "evidence_quote": null,
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "mixed_answer_and_emotion",
+      "input": "I'm tired, but I live in a city.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-14",
+        "state_version": 0,
+        "response_kind": "answer",
+        "emotional_signals": [
+          "emotional_signal_detected"
+        ],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "satisfied",
+            "target_form_status": "valid_alternative",
+            "evidence_quote": "I'm tired, but I live in a city.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": false,
+        "ambiguity_reason": null
+      }
+    },
+    {
+      "case": "incomplete_transcript",
+      "input": "I live in the",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-15",
+        "state_version": 0,
+        "response_kind": "insufficient_data",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "partially_satisfied",
+            "target_form_status": "not_used",
+            "evidence_quote": "I live in the",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": true,
+        "ambiguity_reason": "Jev marked the learner input as unclear."
+      }
+    },
+    {
+      "case": "uninterpretable_utterance",
+      "input": "Blue yesterday under maybe.",
+      "teacher_turn": "Where do you live?",
+      "attempt_count": 0,
+      "evaluator_output": {
+        "turn_id": "live-scenario-16",
+        "state_version": 0,
+        "response_kind": "insufficient_data",
+        "emotional_signals": [],
+        "objective_evidence": [
+          {
+            "objective_id": "unit01.lesson01.pattern.live_in",
+            "meaning_status": "wrong_semantic_category",
+            "target_form_status": "not_used",
+            "evidence_quote": "Blue yesterday under maybe.",
+            "recast_needed": false,
+            "corrected_form": null
+          }
+        ],
+        "needs_clarification": true,
+        "ambiguity_reason": "Jev marked the learner input as unclear."
+      }
+    }
+  ]
+}

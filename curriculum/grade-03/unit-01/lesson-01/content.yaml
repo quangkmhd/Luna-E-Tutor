@@ -3,9 +3,10 @@ title: Chào hỏi và giới thiệu tên
 greeting:
   order: 1
   say: |-
-    <en>Hi! My name is Luna — I'm your English tutor! [long pause]</en>
-    <vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>
+    <en>Hi! My name is Luna. I'm your English tutor!</en>
+    <vi>[long pause] Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>
   accept: Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.
+  image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
 words:
 - hello
 - hi
@@ -16,6 +17,31 @@ words:
 - Minh
 - good evening
 - nice to meet you
+cards:
+- word: hello
+  pronunciation: /həˈloʊ/
+  meaning_vi: xin chào
+  image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
+- word: hi
+  pronunciation: /haɪ/
+  meaning_vi: chào
+  image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
+- word: I
+  pronunciation: /aɪ/
+  meaning_vi: tôi, mình
+  image_url: /images/grade-03/unit-01/lesson-01/02-self-introduction.webp
+- word: I'm
+  pronunciation: /aɪm/
+  meaning_vi: mình là
+  image_url: /images/grade-03/unit-01/lesson-01/02-self-introduction.webp
+- word: good evening
+  pronunciation: /ˌɡʊd ˈiːvnɪŋ/
+  meaning_vi: chào buổi tối
+  image_url: /images/grade-03/unit-01/lesson-01/03-time-of-day-greetings.webp
+- word: nice to meet you
+  pronunciation: /naɪs tə ˈmiːt juː/
+  meaning_vi: rất vui được gặp bạn
+  image_url: /images/grade-03/unit-01/lesson-01/04-first-meeting.webp
 patterns:
   introduce: Hello./Hi. I'm {name}.
   reply: Hello,/Hi, {friend}. I'm {name}.
@@ -24,11 +50,12 @@ stations:
   steps:
   - order: 2
     target: hello
+    image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
     say: |-
       <vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>
-      <en>[long pause] "HELLO"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai bạn bè, thầy cô, hay cô Luna .</vi>
-      <en>[long pause] Listen first! [long pause] "HELLO" </en>
-      <en>[long pause] Your turn now! Can you say: [long pause] [slowly] "Hello"?</en>
+      <en>[long pause] "*HELLO*"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai như bạn bè, thầy cô, hay cô Luna.</vi>
+      <en>[long pause] Listen first! [long pause] "*HELLO*" </en>
+      <en>[long pause] Your turn now! Can you say: [long pause] [slowly] "*Hello*"?</en>
     accept: hello (có /h/)
     more:
     - say: |-
@@ -36,40 +63,44 @@ stations:
       accept: hello
     - say: |-
         <vi>Cô phát âm chậm nhé: </vi>
-        <en>[long pause] "H-H-HELLO"</en><vi> </vi>
-        <vi>[long pause] Con đặt tay trước miệng — thấy hơi ấm phả ra không? Đó là âm giống như một hơi thở. [long pause]</vi>
+        <en>[long pause] "H-HELLO"</en><vi> </vi>
+        <vi>[long pause] Con đặt tay trước miệng thấy hơi ấm phả ra không? Đó là âm giống như một hơi thở. [long pause]</vi>
         <en>Now you!</en>
       accept: Có /h/ rõ
   - order: 3
     target: hi
+    image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
     say: |-
-      <en>[long pause] "Hi"</en><vi> [long pause] cũng là xin chào, nhưng ngắn và thân mật hơn — con dùng với bạn bè.</vi>
-      <en>Listen first! [long pause] "Hi" [long pause]</en>
-      <en>Your turn now! [long pause][slowly] "Hi" [long pause]</en>
+      <en>[long pause] "*Hi*"</en><vi> [long pause] cũng là xin chào, nhưng ngắn và thân mật hơn, con dùng với bạn bè.</vi>
+      <en>Listen first! [long pause] "*Hi*" [long pause]</en>
+      <en>Your turn now! [long pause][slowly] "*Hi*" [long pause]</en>
     accept: hi
   - order: 4
     target: I'm
+    image_url: /images/grade-03/unit-01/lesson-01/02-self-introduction.webp
     say: |-
-      <en>[long pause] "I"</en><vi> [long pause] nghĩa là mình — khi con nói về chính con. </vi>
-      <en>[long pause] "I'm"</en><vi> [long pause] nghĩa là 'mình là'. Cuối chữ, con ngậm môi lại: </vi>
-      <en>[long pause] "I'mmm" [long pause]</en>
-      <en>Listen first! [long pause] "I'M" [long pause]</en>
-      <en>Your turn now! Can you say: [long pause][slowly] "I'm" [long pause]?</en>
+      <en>[long pause] "I"</en><vi> [long pause] nghĩa là mình khi con nói về chính con.</vi>
+      <en>[long pause] "*I'm*"</en><vi> [long pause] nghĩa là 'mình là'. Cuối chữ, con ngậm môi lại:</vi>
+      <en>[long pause] "I'mm" [long pause]</en>
+      <en>Listen first! [long pause] "*I'm*" [long pause]</en>
+      <en>Your turn now! Can you say: [long pause][slowly] "*I'm*" [long pause]?</en>
     accept: Có /m/ cuối
   - order: 5
     target: good evening
+    image_url: /images/grade-03/unit-01/lesson-01/03-time-of-day-greetings.webp
     say: |-
-      <en>"Good evening"</en><vi> [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.</vi>
-      <en>Listen first! [long pause] "GOOD EVENING" [long pause]</en>
-      <en>Your turn now! [long pause] "Good evening" [long pause]!</en>
+      <en>"*Good evening*"</en><vi> [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.</vi>
+      <en>Listen first! [long pause] "*Good evening*" [long pause]</en>
+      <en>Your turn now! [long pause] "*Good evening*" [long pause]!</en>
     accept: good evening
   - order: 6
     target: nice to meet you
+    image_url: /images/grade-03/unit-01/lesson-01/04-first-meeting.webp
     say: |-
-      <vi>Khi gặp ai LẦN ĐẦU, con nói </vi><en>[long pause] "Nice to meet you"</en>
+      <vi>Khi gặp ai LẦN ĐẦU, con nói </vi><en>[long pause] "*Nice to meet you*"</en>
       <vi> [long pause] — nghĩa là rất vui được gặp bạn.</vi>
-      <en>Listen first! [long pause] "NICE TO MEET YOU" [long pause]</en>
-      <en>Your turn now! [long pause] "Nice to meet you" [long pause]!</en>
+      <en>Listen first! [long pause] "*NICE TO MEET YOU*" [long pause]</en>
+      <en>Your turn now! [long pause] "*Nice to meet you*" [long pause]!</en>
     accept: Đủ cụm, nối âm chưa chuẩn vẫn đạt
   - order: 7
     target: [hi, good evening]
@@ -111,7 +142,7 @@ stations:
         <en>Now I'm Emma from England! [long pause] "Hello. I'm Emma." [long pause]</en>
       accept: Đủ các thành phần
     - say: |-
-        <en>Scene done! You just had a real conversation in English! 🎉</en>
+        <en>Scene done! You just had a real conversation in English!</en>
   - order: 11
     target: introduce
     say: |-
@@ -137,7 +168,7 @@ stations:
         <en>[long pause] "Hi, {tên}! Nice to meet you." [long pause]</en>
       accept: 'Nice to meet you (Mức 3: …, too)'
     - say: |-
-        <en>Wow! That was your first English conversation! 🎉</en>
+        <en>Wow! That was your first English conversation! </en>
   - order: 13
     target: introduce
     say: |-

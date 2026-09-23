@@ -44,6 +44,15 @@ class MessageView(Contract):
     text: str
     turn_id: str | None = None
     delivery_intent: str | None = None
+    image_url: str | None = None
+
+
+class VocabularyCardView(Contract):
+    word: str
+    pronunciation: str | None = None
+    meaning_vi: str | None = None
+    image_url: str | None = None
+    status: Literal['new', 'learning', 'learned'] = 'new'
 
 
 class SummaryView(Contract):
@@ -71,6 +80,7 @@ class SessionView(Contract):
     activity_id: str | None
     objective_id: str | None
     learning_focus: list[LearningStageFocusView]
+    flashcards: list[VocabularyCardView] = Field(default_factory=list)
     status: str
     messages: list[MessageView]
     review_queue: list[ReviewItem]

@@ -13,6 +13,7 @@ from luna_tutor.api.schemas import (
     TurnRequest,
     TurnResponse,
     UnitView,
+    VocabularyCardView,
     VersionRequest,
 )
 from luna_tutor.curriculum.registry import UnknownUnitError
@@ -100,27 +101,38 @@ def _learning_focus(curriculum, current_stage_id: str) -> list[LearningStageFocu
 
 
 def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
-    messages = [MessageView(role='teacher', text=plain_speech_text(stored.state.opening_message or LEGACY_GREETING))]
+    state = stored.state
+    curriculum = curriculum_registry.get(state.unit_id)
+    script = curriculum_registry.get_lesson_script(state.unit_id, state.lesson_id) if state.lesson_id is not None else None
+    opening_image = script.image_for_activity(state.activity_id) if script else None
+    messages = [MessageView(role='teacher', text=plain_speech_text(state.opening_message or LEGACY_GREETING),
+                            image_url=opening_image)]
     if stored.state.opening_script:
-        messages.append(MessageView(role='teacher', text=plain_speech_text(stored.state.opening_script)))
+        messages.append(MessageView(role='teacher', text=plain_speech_text(stored.state.opening_script),
+                                    image_url=opening_image))
     for completed in stored.turns:
+        next_activity_id = completed.plan.proposed_next_state.activity_id
+        if script:
+            image_url = script.image_for_activity(next_activity_id)
+        else:
+            next_activity = next((item for item in curriculum.activities
+                                  if item.id == next_activity_id), None)
+            image_url = next_activity.image_url if next_activity else None
         messages.extend([
             MessageView(role='learner', text=completed.plan.learner_text,
                         turn_id=completed.plan.turn_id),
             MessageView(role='teacher', text=plain_speech_text(completed.teacher_utterance.spoken_text),
                         turn_id=completed.plan.turn_id,
-                        delivery_intent=completed.teacher_utterance.delivery_intent),
+                        delivery_intent=completed.teacher_utterance.delivery_intent,
+                        image_url=image_url),
         ])
     last = stored.turns[-1] if stored.turns else None
-    state = stored.state
-    curriculum = curriculum_registry.get(state.unit_id)
     if state.closing_message:
         messages.append(MessageView(role='teacher', text=plain_speech_text(state.closing_message),
                                     delivery_intent='warm'))
     if state.lesson_id is None:
         focus = _learning_focus(curriculum, state.stage_id)
     else:
-        script = curriculum_registry.get_lesson_script(state.unit_id, state.lesson_id)
         focus = [LearningStageFocusView(
             stage_id=station.id,
             stage_title={'vocabulary': 'Trạm 1 · Từ vựng',
@@ -137,6 +149,48 @@ def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
             highlighted=station.id == state.stage_id or (
                 state.stage_id == 'greeting' and station.id == 'vocabulary'),
         ) for station in script.stations]
+    active_words = list(dict.fromkeys(
+        word for item in focus if item.highlighted for word in item.target_words
+    ))
+    card_by_word = {item.text: item for item in curriculum.vocabulary}
+    if script:
+        card_by_word.update({card.word: card for card in script.cards})
+        active_words = [word for word in active_words if word in card_by_word]
+    else:
+        active_words = [word for word in active_words if word in card_by_word and (
+            card_by_word[word].image_url or card_by_word[word].meaning_vi
+            or card_by_word[word].pronunciation
+        )]
+    vocabulary_text_by_id = {item.id: item.text for item in curriculum.vocabulary}
+    objectives_by_word = {
+        vocabulary_text_by_id[word]: objective.id
+        for objective in curriculum.objectives
+        for word in objective.vocabulary_ids if word in vocabulary_text_by_id
+    }
+    if script:
+        for step in script.steps():
+            target_exchanges = (step, *step.more)
+            for exchange_index, exchange in enumerate(target_exchanges, start=1):
+                selected = ([step.target] if isinstance(step.target, str) else step.target or [])
+                for word in selected:
+                    if word in script.words:
+                        objectives_by_word[word] = (
+                            f'lesson-{step.order:02d}.objective-{exchange_index:02d}'
+                        )
+    progress_by_id = {item.objective_id: item for item in state.objective_progress}
+    flashcards = []
+    for word in active_words:
+        card = card_by_word.get(word)
+        objective = progress_by_id.get(objectives_by_word.get(word, ''))
+        status = ('learned' if objective and objective.independent_uses else
+                  'learning' if objective and (objective.supported_uses or objective.attempted) else 'new')
+        flashcards.append(VocabularyCardView(
+            word=word,
+            pronunciation=card.pronunciation if card else None,
+            meaning_vi=card.meaning_vi if card else None,
+            image_url=card.image_url if card else None,
+            status=status,
+        ))
     return SessionView(
         session_id=state.session_id, unit_id=state.unit_id, lesson_id=state.lesson_id,
         unit=UnitView(
@@ -146,6 +200,7 @@ def session_view(stored: StoredSession, curriculum_registry) -> SessionView:
         state_version=state.state_version, stage_id=state.stage_id,
         activity_id=state.activity_id, objective_id=state.objective_id,
         learning_focus=focus,
+        flashcards=flashcards,
         status=state.status, messages=messages,
         review_queue=list(state.review_queue),
         objective_progress=list(state.objective_progress),

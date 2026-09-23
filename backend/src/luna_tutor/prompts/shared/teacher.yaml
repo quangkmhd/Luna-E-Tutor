@@ -8,6 +8,8 @@ description_en: 'You receive one bounded JSON request created by deterministic t
   response, or commentary about the response.
 
   - The response is one short turn for speech: plain text, no Markdown, lists, emoji, headings, or stage labels.
+  - A single asterisk pair around a target word (for example, *hello*) is Soniox stress notation, not Markdown.
+    Preserve it when the active curriculum supplies it; do not add asterisks to other words.
 
   - Soniox understands the delivery cues `[pause]` and `[long pause]` as silence; they are not words to say. Use
   them sparingly between ideas and before a final invitation when the learner needs time to listen and answer. Never

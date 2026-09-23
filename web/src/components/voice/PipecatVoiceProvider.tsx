@@ -26,6 +26,7 @@ type VoiceContextValue = {
   phase: VoicePhase;
   sentText: Array<{ id: string; text: string; timestamp: string }>;
   ttfaSeconds: number | null;
+  elapsedSeconds: number;
   sendText: (text: string) => Promise<void>;
   start: () => Promise<void>;
   stop: () => Promise<void>;
@@ -126,6 +127,19 @@ export function PipecatVoiceProvider({
   useEffect(() => { savedMessageCountRef.current = savedMessageCount; }, [savedMessageCount]);
   const [sentText, setSentText] = useState<VoiceContextValue['sentText']>([]);
   const [ttfaSeconds, setTtfaSeconds] = useState<number | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const elapsedBase = useRef(0);
+  const elapsedStartedAt = useRef<number | null>(null);
+  function resumeElapsedClock() {
+    if (elapsedStartedAt.current === null) elapsedStartedAt.current = Date.now();
+    setElapsedSeconds(elapsedBase.current);
+  }
+  function pauseElapsedClock() {
+    if (elapsedStartedAt.current === null) return;
+    elapsedBase.current += Math.floor((Date.now() - elapsedStartedAt.current) / 1_000);
+    elapsedStartedAt.current = null;
+    setElapsedSeconds(elapsedBase.current);
+  }
   const [, setUserStoppedAt] = useState<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [thinkingTimeout] = useState(createThinkingTimeout);
@@ -142,6 +156,7 @@ export function PipecatVoiceProvider({
         if (['initializing', 'connecting', 'authenticating'].includes(state)) {
           setPhase('connecting');
         } else if (state === 'disconnected') {
+          pauseElapsedClock();
           thinkingTimeout.clear();
           setPhase('off');
           setVoiceRuns((previous) => {
@@ -232,6 +247,7 @@ export function PipecatVoiceProvider({
 
   async function start() {
     thinkingTimeout.clear();
+    resumeElapsedClock();
     setVoiceRuns((previous) => [...previous, {
       start: savedHasTurn ? savedMessageCount : 0,
       connected: false,
@@ -252,6 +268,7 @@ export function PipecatVoiceProvider({
         },
       });
     } catch (reason) {
+      pauseElapsedClock();
       setVoiceRuns((previous) => previous.at(-1)?.connected ? previous : previous.slice(0, -1));
       setPhase('off');
       setErrorState({ message: reason instanceof Error ? reason.message : 'Could not start the voice lesson.', fatal: false });
@@ -265,6 +282,7 @@ export function PipecatVoiceProvider({
     } catch {
       setErrorState({ message: 'The voice session could not close cleanly. You can reconnect.', fatal: false });
     } finally {
+      pauseElapsedClock();
       setVoiceRuns((previous) => {
         const current = previous.at(-1);
         return current && current.end === undefined
@@ -297,6 +315,16 @@ export function PipecatVoiceProvider({
     if (!enabled) void client.disconnect();
   }, [client, enabled]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const startedAt = elapsedStartedAt.current;
+      if (startedAt !== null) {
+        setElapsedSeconds(elapsedBase.current + Math.floor((Date.now() - startedAt) / 1_000));
+      }
+    }, 1_000);
+    return () => clearInterval(timer);
+  }, []);
+
   useEffect(() => () => {
     if (refreshTimer) clearTimeout(refreshTimer);
   }, [refreshTimer]);
@@ -316,6 +344,7 @@ export function PipecatVoiceProvider({
     start,
     stop,
     ttfaSeconds,
+    elapsedSeconds,
     transportState,
   };
 

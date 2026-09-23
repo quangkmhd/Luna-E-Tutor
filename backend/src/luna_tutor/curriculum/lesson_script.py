@@ -18,6 +18,7 @@ class _Strict(BaseModel):
 class Exchange(_Strict):
     say: Text
     accept: Text | None = None
+    image_url: str | None = None
 
     @field_validator('say')
     @classmethod
@@ -30,6 +31,7 @@ class Greeting(_Strict):
     order: int = Field(ge=1)
     say: Text
     accept: Text
+    image_url: str | None = None
 
     @field_validator('say')
     @classmethod
@@ -45,6 +47,13 @@ class TeachingStep(Exchange):
     more: list[Exchange] = Field(default_factory=list)
 
 
+class LessonVocabularyCard(_Strict):
+    word: Text
+    pronunciation: str | None = None
+    meaning_vi: str | None = None
+    image_url: str | None = None
+
+
 class StationScript(_Strict):
     id: Literal['vocabulary', 'patterns', 'conversation']
     steps: list[TeachingStep] = Field(min_length=1)
@@ -55,6 +64,7 @@ class LessonScript(_Strict):
     title: Text
     greeting: Greeting
     words: list[Text] = Field(default_factory=list)
+    cards: list[LessonVocabularyCard] = Field(default_factory=list)
     patterns: dict[str, Text] = Field(default_factory=dict)
     stations: list[StationScript] = Field(min_length=3, max_length=3)
 
@@ -74,6 +84,10 @@ class LessonScript(_Strict):
                 raise ValueError(f'Unknown teaching target: {step.target}')
         if len(self.words) != len(set(self.words)):
             raise ValueError('Duplicate words')
+        if len({card.word for card in self.cards}) != len(self.cards):
+            raise ValueError('Duplicate vocabulary card words')
+        if any(card.word not in self.words for card in self.cards):
+            raise ValueError('Vocabulary cards must reference lesson words')
         if any(not any(exchange.accept for step in station.steps
                        for exchange in (step, *step.more)) for station in self.stations):
             raise ValueError('Each station needs a learner opportunity')
@@ -81,6 +95,23 @@ class LessonScript(_Strict):
 
     def steps(self) -> tuple[TeachingStep, ...]:
         return tuple(step for station in self.stations for step in station.steps)
+
+    def image_for_activity(self, activity_id: str | None) -> str | None:
+        if not activity_id:
+            return None
+        if activity_id == f'lesson-{self.lesson:02d}.exchange-01':
+            return self.greeting.image_url
+        for step in self.steps():
+            prefix = f'lesson-{step.order:02d}.exchange-'
+            if not activity_id.startswith(prefix):
+                continue
+            suffix = activity_id.removeprefix(prefix)
+            if not suffix.isdigit():
+                return None
+            index = int(suffix) - 1
+            exchanges = (step, *step.more)
+            return exchanges[index].image_url if 0 <= index < len(exchanges) else None
+        return None
 
 
 def load_lesson_script(path: Path) -> LessonScript:
