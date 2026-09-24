@@ -13,7 +13,6 @@
 .learner-picker-page .unit-grid button,.learner-picker-page .lesson-grid .lesson-choice{min-height:112px;border-color:var(--learner-rule);border-radius:15px;box-shadow:none;background:#fdf8f1}
 .learner-picker-page .unit-grid button:hover:not(:disabled),.learner-picker-page .lesson-grid .lesson-choice:hover{border-color:var(--learner-coral);background:#fdeae3;transform:translateY(-2px)}
 .learner-picker-page .unit-grid strong,.learner-picker-page .lesson-choice strong{color:#b8462a}.learner-picker-page .unit-grid span{font-size:21px;overflow-wrap:anywhere}
-.learner-picker-page .free-talk-card{background:#0f6f6c;border-radius:21px;box-shadow:0 14px 28px -22px rgba(15,111,108,.7)}
 .learner-picker-page .design-entry-card{background:#6b4a86;border-radius:21px;box-shadow:0 14px 28px -22px rgba(107,74,134,.7)}
 .learner-picker-page .lesson-back{color:#0f6f6c}.learner-picker-page .lesson-selector{align-items:stretch;text-align:left}.learner-picker-page .lesson-selector>.eyebrow,.learner-picker-page .lesson-selector>h1,.learner-picker-page .lesson-selector>p{text-align:left}
 .learner-picker-page .lesson-grid{max-width:none}.learner-picker-page .learner-empty{padding:18px 22px;border:1px solid var(--learner-rule);border-radius:15px;background:#fff;color:#6f6479}
@@ -26,15 +25,10 @@
 .classroom-shell .flashcard-caption{display:grid;gap:2px;padding:8px 10px 10px}
 .classroom-shell .flashcard-word-row{display:flex;align-items:center;justify-content:space-between;gap:4px}
 .classroom-shell .flashcard-word-row strong{font-size:15px;line-height:1.25}
-.classroom-shell .flashcard-word-row button{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;background:#fdeae3;color:#b8462a;font-size:14px}
 .classroom-shell .flashcard-pronunciation{color:#6f6479;font-size:10px}
 .classroom-shell .flashcard-meaning{color:#4e4359;font-size:11px}
-.classroom-shell .flashcard-status{justify-self:start;margin-top:3px;padding:2px 7px;border-radius:99px;font-size:9px;font-weight:700}
-.classroom-shell .flashcard-status.new{background:#f7f1e7;color:#6f6479}.classroom-shell .flashcard-status.learning{background:#fdf0d8;color:#8a5f06}.classroom-shell .flashcard-status.learned{background:#e0f1e8;color:#2f8558}
 .classroom-shell .lesson-vocabulary-list{margin-top:18px}.classroom-shell .lesson-vocabulary-list h3{margin:0 0 9px;font-size:13px}
 .classroom-shell .lesson-vocabulary-row{width:100%;display:flex;align-items:center;gap:9px;min-height:48px;margin:0 0 6px;padding:8px 10px;border-radius:13px;background:#f7f1e7;text-align:left}
 .classroom-shell .lesson-vocabulary-row>span:first-child{display:grid;min-width:0;flex:1}.classroom-shell .lesson-vocabulary-row strong{font-size:13px}.classroom-shell .lesson-vocabulary-row small{color:#6f6479;font-size:10px}
-.classroom-shell .vocabulary-progress{display:flex;gap:2px}.classroom-shell .vocabulary-progress i{width:5px;height:6px;border-radius:2px;background:#d2c4ae}
-.classroom-shell .lesson-vocabulary-row.learning .vocabulary-progress i:nth-child(-n+4),.classroom-shell .lesson-vocabulary-row.learned .vocabulary-progress i{background:#2f8558}
-.classroom-shell .teacher-image-card{display:block;width:min(100%,320px);max-height:220px;object-fit:cover;margin-top:10px;border:1px solid #e6dbca;border-radius:15px;background:#e3edf9}
+.classroom-shell .teacher-image-card{display:block;width:min(100%,220px);height:auto;aspect-ratio:1;object-fit:cover;border:1px solid #e6dbca;border-radius:15px;background:#e3edf9}
 @media(max-width:650px){.classroom-shell .lesson-flashcards{grid-template-columns:repeat(2,minmax(0,1fr))}.lesson-time-chip{min-height:34px;padding:6px 10px;font-size:12px}}

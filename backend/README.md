@@ -1,14 +1,14 @@
-# Backend — Luna Tutor API và Teaching Engine
+# Backend — Luna Tutor lớp 3
 
-FastAPI service cho curriculum lớp 3 và lớp 5, Evaluator, Teaching Engine, Teacher,
-session persistence SQLite và API mà web/voice sử dụng. Đây là service riêng
+FastAPI service cho học liệu lớp 3, Jev, Teacher và phiên học trong bộ nhớ.
+Đây là service riêng
 chạy bằng `backend/.venv`; xem [README root](../README.md) để biết bốn service.
 
 ## Chạy local
 
 ```bash
 uv sync
-uv run --env-file ../.env uvicorn luna_tutor.api.runtime:build_runtime_app \
+uv run --env-file ../.env uvicorn luna_tutor.api.lesson_runtime:build_lesson_runtime_app \
   --factory --host 127.0.0.1 --port 8000 --reload --reload-dir src
 ```
 
@@ -25,14 +25,11 @@ Sao chép `.env.example` tại root thành `.env` và đặt các biến provide
 ```text
 OPENROUTER_API_KEY=
 OPENROUTER_MODEL=google/gemini-3.5-flash-lite
-TUTOR_EVALUATOR_MODEL=~typesafe/jev-latest
 SONIOX_API_KEY=
-SONIOX_TTS_VOICE=Grace
-TUTOR_DATABASE_PATH=backend/data/luna-tutor.sqlite3
+SONIOX_VOICE_ID=Grace
 ```
 
-Không commit `.env` hoặc SQLite runtime data. Đường dẫn database có thể đổi bằng
-`TUTOR_DATABASE_PATH`.
+Không commit `.env`. Phiên học kết thúc khi rời bài hoặc service dừng.
 
 ## Cấu trúc
 
@@ -41,9 +38,8 @@ backend/
 ├── src/luna_tutor/
 │   ├── api/          # FastAPI routes/runtime
 │   ├── teaching/     # deterministic lesson progression
-│   ├── prompts/      # Teacher/Evaluator prompt resources
+│   ├── prompts/      # Teacher rules; Jev rubric nằm trong docs/evaluation
 │   └── ...
-├── data/             # local SQLite data (runtime)
 ├── pyproject.toml
 └── .venv/            # backend-specific Python environment
 ```
@@ -54,11 +50,4 @@ Từ repository root:
 
 ```bash
 uv run --project backend pytest -q
-```
-
-Các eval CLI cũng chạy qua backend project, ví dụ:
-
-```bash
-uv run --project backend python -m luna_tutor.evals.cli verify-baseline \
-  evals/unit-01/baseline.json
 ```

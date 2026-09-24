@@ -1,6 +1,6 @@
 # Luna English Tutor
 
-Ứng dụng học tiếng Anh lớp 3 và lớp 5 gồm bốn dịch vụ chạy cục bộ độc lập: giao diện
+Ứng dụng học tiếng Anh lớp 3 gồm bốn dịch vụ chạy cục bộ độc lập: giao diện
 web, API/teaching engine, phòng học có lộ trình, và phòng Free Talk.
 
 ## Kiến trúc cục bộ
@@ -18,7 +18,7 @@ web (Next.js)
 | Thành phần | Thư mục | Vai trò | Local URL/port | Runtime riêng |
 | --- | --- | --- | --- | --- |
 | `web` | `web/` | Next.js UI; chọn Unit, hiển thị lớp học và Free Talk | http://localhost:3000 | Node.js/npm, không dùng Python venv |
-| `backend` | `backend/` | FastAPI API, Teaching Engine, Evaluator, SQLite | http://127.0.0.1:8000 | `backend/.venv` |
+| `backend` | `backend/` | FastAPI, Jev, Teacher và phiên học trong bộ nhớ | http://127.0.0.1:8000 | `backend/.venv` |
 | `voice` | `voice/server/` | Pipecat WebRTC cho bài học có lộ trình | http://127.0.0.1:7860/client/ | `voice/server/.venv` |
 | `talk` | `talk/server/` | Pipecat WebRTC cho trang `/talk`, không có lesson state | http://127.0.0.1:7863/client/ | `talk/server/.venv` |
 
@@ -74,19 +74,12 @@ Mở `http://localhost:3000` để học theo Unit, hoặc
 `http://localhost:3000/talk` để dùng Free Talk. Nhấn `Ctrl+C` ở terminal chạy
 script để dừng toàn bộ bốn process.
 
-Màn chọn bài hiện có lớp 3 Unit 1 **Hello** và lớp 5 Unit 1–5. Unit 1 lớp 3
-có URL `/grade3/unit1` để chọn Lesson; Lesson 1 mở tại
-`/grade3/unit1/lesson/1`. Các URL `/unit1`–`/unit5` của lớp 5 vẫn dùng được.
-
-Trong `curriculum/grade-*/unit-*/.../content.yaml`, hoạt động giới thiệu từ vựng
-mặc định cần **3 lượt học sinh nói đúng** trước khi chuyển từ. Có thể đổi cho từng
-hoạt động bằng `completion_rule.learner_repetitions` (1–5). Trường
-`model_repetitions` đếm số lần Luna đọc mẫu; `max_attempts` giới hạn lượt cần
-sửa hoặc hỗ trợ, không đếm lượt đọc đúng.
-System prompt Teacher và Gemini Evaluator được ghép từ quy tắc chung trong
-`backend/src/luna_tutor/prompts/shared/` và phần riêng của từng lớp trong
-`backend/src/luna_tutor/prompts/grades/grade-03/` hoặc `grade-05/`.
-Runtime chọn prompt theo lớp của phiên học; thiếu prompt thì báo lỗi cấu hình.
+Màn chọn bài có lớp 3 Unit 1 **Hello** tại `/grade3/unit1`; Lesson 1 mở tại
+`/grade3/unit1/lesson/1`. Mỗi `content.yaml` cần các mục `practice`,
+`narration`, `end`; chỉ `practice` có `learner_goal`. Xem
+`docs/grade3_lesson_refactor_spec.md` trước khi biên soạn học liệu.
+Bốn lesson lớp 3 của Unit 1 đã được chuyển sang định dạng mới; người biên soạn
+có thể chỉnh trực tiếp `say` và `learner_goal` trong các YAML này.
 
 Log tách riêng tại:
 
@@ -105,7 +98,7 @@ Mỗi lệnh cần được chạy trong terminal riêng.
 
 ```bash
 cd backend
-uv run --env-file ../.env uvicorn luna_tutor.api.runtime:build_runtime_app \
+uv run --env-file ../.env uvicorn luna_tutor.api.lesson_runtime:build_lesson_runtime_app \
   --factory --host 127.0.0.1 --port 8000 --reload --reload-dir src
 ```
 

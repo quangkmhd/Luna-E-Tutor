@@ -1,0 +1,8 @@
+lesson: 1
+title: Greetings
+items:
+  - type: practice
+    say: "Say hello to Luna."
+    learner_goal: "Học sinh nói lời chào Luna bằng tiếng Anh."
+  - type: end
+    say: "Great work today!"

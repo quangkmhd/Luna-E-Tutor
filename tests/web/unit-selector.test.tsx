@@ -18,21 +18,20 @@ it('reports the exact selected curriculum id', async () => {
   const onSelect = vi.fn();
   render(<UnitSelector
     units={[
-      { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
-      { id: 'grade05.unit02', grade: 5, unit: 2, title: 'Our homes' },
+      { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' },
     ]}
     busy={false}
     onSelect={onSelect}
   />);
 
   await userEvent.click(screen.getByRole(
-    'button', { name: /Unit 2.*Our homes/i },
+    'button', { name: /Unit 1.*Hello/i },
   ));
 
-  expect(onSelect).toHaveBeenCalledWith('grade05.unit02');
+  expect(onSelect).toHaveBeenCalledWith('grade03.unit01');
 });
 
-it('shows both Unit 1 choices under their own grades', async () => {
+it('shows only Grade 3 even when the API still returns Grade 5', async () => {
   const onSelect = vi.fn();
   render(<UnitSelector units={[
     { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' },
@@ -40,7 +39,8 @@ it('shows both Unit 1 choices under their own grades', async () => {
   ]} busy={false} onSelect={onSelect} />);
 
   expect(screen.getByRole('heading', { name: /Lớp 3.*Global Success/i })).toBeVisible();
-  expect(screen.getByRole('heading', { name: /Lớp 5.*Global Success/i })).toBeVisible();
+  expect(screen.queryByRole('heading', { name: /Lớp 5.*Global Success/i })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /All about me!/i })).not.toBeInTheDocument();
   await userEvent.click(screen.getByRole('button', { name: /Unit 1.*Hello/i }));
   expect(onSelect).toHaveBeenCalledWith('grade03.unit01');
 });
@@ -48,7 +48,7 @@ it('shows both Unit 1 choices under their own grades', async () => {
 it('keeps Free Talk in the classroom header, separate from the Unit buttons', () => {
   render(<UnitSelector
     units={[
-      { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
+      { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' },
     ]}
     busy={false}
     onSelect={vi.fn()}
@@ -57,14 +57,14 @@ it('keeps Free Talk in the classroom header, separate from the Unit buttons', ()
   const freeTalk = screen.getByRole('link', { name: 'Free Talk Room' });
   expect(freeTalk).toHaveAttribute('href', '/talk');
   expect(freeTalk.closest('header')).toHaveClass('learner-header');
-  expect(screen.getByRole('button', { name: /Unit 1.*All about me!/i }))
+  expect(screen.getByRole('button', { name: /Unit 1.*Hello/i }))
     .not.toContainElement(freeTalk);
 });
 
 it('offers the Luna design principles as a separate document destination', () => {
   render(<UnitSelector
     units={[
-      { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
+      { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' },
     ]}
     busy={false}
     onSelect={vi.fn()}

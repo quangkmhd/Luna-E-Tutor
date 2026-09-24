@@ -8,23 +8,17 @@ export const metadata: Metadata = {
   description: 'Các nguyên tắc sư phạm và hội thoại của Luna English Tutor.',
 };
 
-const RULE_MARKDOWN = `**Các quy tắc tôi sẽ đưa vào thiết kế**
+const RULE_MARKDOWN = `**Quy tắc dạy học theo kịch bản lớp 3**
 
 | Nhóm                        | Cách áp dụng                                                                                                                     |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Chào                        | Buổi đầu giới thiệu Luna; buổi sau chào lại. Warm-up chỉ chào và kiểm tra tâm trạng                                   |
-| Dạy từ                     | Từng từ riêng, đọc mẫu hai lần trước khi mời trẻ nói; phản hồi rồi mới chuyển                                      |
-| Luyện tập                  | Cô làm mẫu → trả lời có hỗ trợ → tự diễn đạt; giữ yêu cầu 4–6 lượt hỏi đáp tại các trạm được đặc tả |
-| Hỏi ngược                 | Theo dõi trẻ đã hỏi Luna ít nhất một lần mỗi trạm; câu hỏi tự phát cũng được tính                               |
-| Sửa lỗi                    | Nghe hết → phản hồi ý → recast → tiếp tục; không bắt nhắc lại                                                          |
-| Trả lời ngắn/tiếng Việt | Tiếp nhận ý, cung cấp cách diễn đạt tiếng Anh, tiếp tục bằng câu hỏi phù hợp                                        |
-| nói sai                    | gợi ý ngắn hoặc hai lựa chọn                                                                                                  |
-| Khó khăn                   | Tối đa hai lần thử ở cùng điểm rồi giảm khó/chuyển; không tạo vòng lặp thất bại                                   |
-| Thành công                 | Theo dõi thành công có bằng chứng; vài lần  chưa có thì chủ động giảm khó                                         |
-| Ngôn ngữ                   | Cô–con nhất quán; mục tiêu Anh 90%, Việt 10%, dùng tiếng Việt đúng các trường hợp cho phép                         |
-|                              |                                                                                                                                     |
-| Free Talk                    | Chỉ mở sau ba level; ôn toàn Unit, tạo cơ hội dùng từ/cấu trúc còn thiếu                                               |
-|                              |                                                                                                                                     |
+| Kịch bản | Luna đọc nguyên văn say; narration tự chuyển, practice chờ học sinh, end kết thúc bài. |
+| Mục tiêu | Mỗi practice có một learner_goal để Jev đối chiếu với lời học sinh. |
+| Đánh giá | Jev chọn đúng một trong năm mã PASSED, ATTEMPT_FAILED, OTHER_INTENT, PASSED_WITH_REPLY, UNCLEAR_INPUT. |
+| Sửa lỗi | Sai lần 1 gợi ý sửa; lần 2 giảm độ khó; lần 3 hỗ trợ rõ hơn; lần 4 nói cách đúng rồi chuyển bài. |
+| Đối thoại | Teacher hồi đáp ngoại lệ theo một rule cho lượt hiện tại; code quyết định chuyển kịch bản. |
+| Voice | Học sinh chủ động bật mic và ấn Gửi; Luna nói xong mic vẫn tắt cho đến khi học sinh ấn lại. |
+| Text | Dùng cùng logic bài học và đánh giá như Voice, hiển thị chữ mà không chạy TTS. |
 `;
 
 export default function DesignPage() {

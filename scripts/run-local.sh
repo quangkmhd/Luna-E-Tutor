@@ -36,7 +36,7 @@ trap cleanup EXIT INT TERM
 
 (
   cd "$project_root/backend"
-  uv run "${env_args[@]}" uvicorn luna_tutor.api.runtime:build_runtime_app --factory \
+  uv run "${env_args[@]}" uvicorn luna_tutor.api.lesson_runtime:build_lesson_runtime_app --factory \
     --host 127.0.0.1 --port 8000 \
     --reload --reload-dir "$project_root/backend/src" \
     --reload-dir "$project_root/curriculum" --reload-include '*.yaml' \

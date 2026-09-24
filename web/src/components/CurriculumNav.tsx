@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import type { LessonSummary, SessionView, UnitSummary } from '@/lib/types';
+import { isSupportedUnit } from '@/lib/unit-route';
 
 export function CurriculumNav({ units, session, busy, onSelect, expandedUnitId, lessons = [], lessonBasePath, initialGrade }: {
   units: UnitSummary[];
@@ -17,13 +18,11 @@ export function CurriculumNav({ units, session, busy, onSelect, expandedUnitId, 
   const [query, setQuery] = useState('');
   const [grade, setGrade] = useState<number | null>(session?.unit.grade ?? initialGrade ?? null);
   const currentUnitId = session?.unit_id ?? expandedUnitId;
-  const grades = [...new Set(units.map((unit) => unit.grade))].sort((a, b) => a - b);
-  const visible = units.filter((unit) => {
-    const focusTerms = session && unit.id === session.unit_id
-      ? session.learning_focus.flatMap((focus) => [focus.stage_title, ...focus.target_words, ...focus.target_patterns])
-      : [];
+  const supportedUnits = units.filter(isSupportedUnit);
+  const grades = [...new Set(supportedUnits.map((unit) => unit.grade))].sort((a, b) => a - b);
+  const visible = supportedUnits.filter((unit) => {
     return (grade === null || unit.grade === grade)
-      && `${unit.title} unit ${unit.unit} lớp ${unit.grade} ${focusTerms.join(' ')}`
+      && `${unit.title} unit ${unit.unit} lớp ${unit.grade}`
         .toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
   });
 
@@ -37,7 +36,7 @@ export function CurriculumNav({ units, session, busy, onSelect, expandedUnitId, 
       </div>
     </div>
     <nav aria-label="Chương trình học" className="curriculum-tree">
-      {visible.length === 0 && <p className="curriculum-empty">{units.length === 0 ? 'Chưa có Unit để học.' : 'Không tìm thấy bài nào.'}</p>}
+      {visible.length === 0 && <p className="curriculum-empty">{supportedUnits.length === 0 ? 'Chưa có Unit để học.' : 'Không tìm thấy bài nào.'}</p>}
       {grades.filter((item) => visible.some((unit) => unit.grade === item)).map((item) => <div key={item} className="curriculum-grade">
         <h3>Lớp {item} · Global Success</h3>
         {visible.filter((unit) => unit.grade === item).map((unit) => <div className="curriculum-unit" key={unit.id}>

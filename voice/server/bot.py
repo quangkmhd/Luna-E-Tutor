@@ -1,209 +1,104 @@
-"""Pipecat SmallWebRTC worker for the persistent Luna English tutor."""
+"""Grade 3 scripted Voice worker: manual Soniox finalization and ordered TTS."""
 
 import os
-from collections.abc import Mapping
 from pathlib import Path
 
 from dotenv import load_dotenv
 from loguru import logger
-from luna_tutor.api.runtime import RuntimeComponents, build_runtime_components
-from pipecat.audio.vad.silero import SileroVADAnalyzer
-from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.evals.transport import EvalTransportParams
-from pipecat.flows import ContextStrategy, ContextStrategyConfig, FlowManager
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
-from pipecat.processors.aggregators.llm_context import LLMContext
-from pipecat.processors.aggregators.llm_response_universal import (
-    LLMContextAggregatorPair,
-    LLMUserAggregatorParams,
-)
+from pipecat.processors.frameworks.rtvi import RTVIProcessor
 from pipecat.runner.types import RunnerArguments
 from pipecat.runner.utils import create_transport
 from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.workers.runner import WorkerRunner
 
-from text_flows import BoundedTeacherLLM
-from language_tts import LanguageTaggedSpeechFrame, LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
-from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
-from voice_rtvi import LunaRTVIProcessor
-from voice_teaching import (
-    VoiceCommitProcessor,
-    VoiceTeachingExchange,
-    VoiceTeachingProcessor,
+from language_tts import LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
+from lesson_voice_bridge import (
+    ManualAudioDrainGate,
+    ScriptedDeliveryObserver,
+    ScriptedVoiceAPI,
+    ScriptedVoiceBridge,
 )
+from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-load_dotenv(PROJECT_ROOT / ".env", override=True)
-
-
-class LunaVoiceWorker(PipelineWorker):
-    """Pipeline worker with explicit session-owned resources."""
-
-    def __init__(self, pipeline, exchange, components):
-        super().__init__(
-            pipeline,
-            params=PipelineParams(enable_metrics=True, enable_usage_metrics=True),
-            rtvi_processor=LunaRTVIProcessor(),
-        )
-        self.luna_exchange = exchange
-        self.luna_components = components
-        self.luna_pipeline = pipeline
+load_dotenv(PROJECT_ROOT / '.env', override=True)
 
 
 def _session_id(runner_args: RunnerArguments) -> str:
-    body = getattr(runner_args, "body", None)
-    session_id = body.get("session_id") if isinstance(body, dict) else None
+    body = getattr(runner_args, 'body', None)
+    session_id = body.get('session_id') if isinstance(body, dict) else None
     if not isinstance(session_id, str) or not session_id.strip():
-        raise ValueError("SmallWebRTC request_data must include a non-empty session_id")
+        raise ValueError('SmallWebRTC request_data must include a non-empty session_id')
     return session_id.strip()
 
 
-def build_voice_worker(
-    transport: BaseTransport,
-    runner_args: RunnerArguments,
-    environment: Mapping[str, str] = os.environ,
-) -> LunaVoiceWorker:
-    """Build one Pipecat worker after validating its persisted lesson session."""
-
+def build_voice_worker(transport: BaseTransport, runner_args: RunnerArguments,
+                       environment=os.environ) -> PipelineWorker:
     session_id = _session_id(runner_args)
-    components: RuntimeComponents = build_runtime_components(environment)
-    stored = components.repository.get_session(session_id)
-    curriculum = components.curriculum_registry.get(stored.state.unit_id)
-    lesson_script = (
-        components.curriculum_registry.get_lesson_script(
-            stored.state.unit_id, stored.state.lesson_id
-        )
-        if stored.state.lesson_id is not None
-        else None
-    )
-
-    # Provider objects come after metadata/session validation so a malformed
-    # offer cannot open provider connections or mutate lesson state.
     config = VoiceConfig.from_environment(environment)
-    stt = build_soniox_stt(config, curriculum)
-    tts = build_soniox_tts(config)
-    exchange = VoiceTeachingExchange(
-        service=components.turn_service,
-        repository=components.repository,
-        session_id=session_id,
-        state=stored.state,
-        lesson_script=lesson_script,
+    stt = build_soniox_stt(config)
+    api = ScriptedVoiceAPI(environment.get('TUTOR_API_URL', 'http://127.0.0.1:8000'),
+                           session_id)
+    bridge = ScriptedVoiceBridge(api)
+    delivery = ScriptedDeliveryObserver(bridge.delivery_finished, bridge.delivery_failed)
+    bridge.set_delivery_started(delivery.start_delivery)
+    pipeline = Pipeline([
+        transport.input(), ManualAudioDrainGate(), stt, bridge, LanguageTaggedTTSProcessor(),
+        delivery, build_soniox_tts(config), transport.output(),
+        LanguageTTSCompletionObserver(),
+    ])
+    worker = PipelineWorker(
+        pipeline,
+        params=PipelineParams(enable_metrics=True, enable_usage_metrics=True),
+        rtvi_processor=RTVIProcessor(),
     )
-    voice_teaching = VoiceTeachingProcessor(exchange)
-    voice_commit = VoiceCommitProcessor(exchange)
+    worker.luna_api = api
+    worker.luna_bridge = bridge
 
-    context = LLMContext()
-    aggregators = LLMContextAggregatorPair(
-        context,
-        user_params=LLMUserAggregatorParams(
-            # Grade-school learners pause inside sentences. Pipecat's 200 ms
-            # default was finalizing Soniox several times inside one utterance.
-            vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=0.8)),
-        ),
-    )
-    teacher_llm = BoundedTeacherLLM(exchange, end_after_response=False)
-    language_tts = LanguageTaggedTTSProcessor()
-    pipeline = Pipeline(
-        [
-            transport.input(),
-            stt,
-            aggregators.user(),
-            voice_teaching,
-            teacher_llm,
-            language_tts,
-            tts,
-            transport.output(),
-            LanguageTTSCompletionObserver(),
-            voice_commit,
-            aggregators.assistant(),
-        ]
-    )
-    worker = LunaVoiceWorker(pipeline, exchange, components)
-    exchange.worker = worker
-    exchange.flow = FlowManager(
-        worker=worker,
-        llm=teacher_llm,
-        context_aggregator=aggregators,
-        transport=transport,
-        context_strategy=ContextStrategyConfig(strategy=ContextStrategy.RESET),
-    )
-
-    # Deliberately attached session resources make the runner lifecycle and
-    # focused integration tests observable without global registries.
     greeted = False
 
-    @worker.rtvi.event_handler("on_client_ready")
+    @worker.rtvi.event_handler('on_client_ready')
     async def on_client_ready(_rtvi):
         nonlocal greeted
-        latest = exchange.repository.get_session(exchange.session_id)
-        exchange.state = latest.state
-        await exchange.flow.set_node_from_config(
-            {
-                "name": latest.state.activity_id,
-                "task_messages": [
-                    {"role": "developer", "content": "Wait for the learner's speech."}
-                ],
-                "respond_immediately": False,
-            }
-        )
-        if not greeted and not latest.turns and latest.state.opening_message:
+        if not greeted:
             greeted = True
-            await worker.queue_frame(
-                LanguageTaggedSpeechFrame(latest.state.opening_message)
-            )
-            if latest.state.opening_script:
-                await worker.queue_frame(
-                    LanguageTaggedSpeechFrame(latest.state.opening_script)
-                )
+            await bridge.start_lesson()
 
-    @transport.event_handler("on_client_connected")
+    @transport.event_handler('on_client_connected')
     async def on_client_connected(_transport, _client):
-        logger.info("Voice client connected for session {}", exchange.session_id)
+        logger.info('Voice client connected for session {}', session_id)
 
-    @transport.event_handler("on_client_disconnected")
+    @transport.event_handler('on_client_disconnected')
     async def on_client_disconnected(_transport, _client):
-        logger.info("Voice client disconnected for session {}", exchange.session_id)
-        exchange.discard_pending()
+        logger.info('Voice client disconnected for session {}', session_id)
         await worker.cancel()
 
     return worker
 
 
 async def run_bot(transport: BaseTransport, runner_args: RunnerArguments) -> None:
-    """Initialize Flows and run one browser voice lesson."""
-
     worker = build_voice_worker(transport, runner_args)
     runner = WorkerRunner(handle_sigint=False)
     await runner.add_workers(worker)
-    await worker.luna_exchange.flow.initialize()
     try:
         await runner.run()
     finally:
-        client = worker.luna_components.client
-        if client is not None:
-            await client.aclose()
+        await worker.luna_api.close()
 
 
 async def bot(runner_args: RunnerArguments):
-    """Pipecat dev-runner entry point."""
-
     _session_id(runner_args)
     transport_params = {
-        "webrtc": lambda: TransportParams(
-            audio_in_enabled=True,
-            audio_out_enabled=True,
-        ),
-        "eval": lambda: EvalTransportParams(
-            audio_in_enabled=True,
-            audio_out_enabled=True,
-        ),
+        'webrtc': lambda: TransportParams(audio_in_enabled=True, audio_out_enabled=True),
+        'eval': lambda: EvalTransportParams(audio_in_enabled=True, audio_out_enabled=True),
     }
     transport = await create_transport(runner_args, transport_params)
     await run_bot(transport, runner_args)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from pipecat.runner.run import main
-
     main()

@@ -1,41 +1,17 @@
-# Pipecat text runtime
+# Text lesson mode
 
-`server/text_runtime.py` serves the existing HTTP session API and SQLite history for the Next.js website. Production turns use Pipecat 1.11's bundled **native Flows**:
+The website sends typed turns directly to the Grade 3 FastAPI service at
+`/api/sessions/{session_id}/turns` with `source: text`. The backend uses the same
+Jev decision, Teacher context, and scripted lesson state as Voice, and returns
+text without Soniox TTS. The browser disconnects the Voice transport before
+submitting typed text.
 
-1. Restore the current activity node from the authoritative session snapshot, without generating speech/text.
-2. Evaluator supplies evidence; Teaching Engine authorizes the next action.
-3. FlowManager selects the authorized activity node and replaces its bounded task context.
-4. A custom Pipecat LLMService passes that context to the existing Gemini Teacher prompt/schema/validation.
-5. One validated response plus its state proposal returns to the API for atomic persistence.
-
-Each HTTP request owns its worker, context and FlowManager. Retries restore SQLite state; failed evaluation, node setup or Teacher output cannot commit advancement. Flows transports the authorized context; it does not give Gemini authority to choose transitions. Process-only test fixtures retain a minimal pipeline adapter and are not the production teaching path.
-
-No STT/TTS is constructed. User turns use `ExternalUserTurnStrategies`, with no default local audio turn analyzer. The separate `pipecat-ai-flows` dependency was removed because Flows is bundled in the pinned framework.
-
-From the repository root:
+Run the backend with:
 
 ```bash
-uv sync --project voice/server
-uv run --project voice/server uvicorn text_runtime:build_app --factory --app-dir voice/server --host 127.0.0.1 --port 8000 --env-file /path/to/.env
+uv run --project backend --env-file .env uvicorn luna_tutor.api.lesson_runtime:build_lesson_runtime_app --factory --host 127.0.0.1 --port 8000
 ```
 
-In another terminal:
-
-```bash
-cd web
-NEXT_PUBLIC_TUTOR_API_URL=http://localhost:8000 npm run dev
-```
-
-Only `OPENROUTER_API_KEY` is needed. The teaching core fixes the model to `google/gemini-3.5-flash-lite`. Original CLI-generated `server/bot.py` and starter audio/eval files remain deferred scaffold references, not the text entry point.
-
-Verification commands:
-
-```bash
-voice/server/.venv/bin/python -m pytest backend/tests voice/tests -q
-voice/server/.venv/bin/python scripts/eval-pipecat-text.py --env-file /path/to/.env --output /tmp/new-behavior-run.json
-voice/server/.venv/bin/python scripts/eval-unit1-journey.py --env-file /path/to/.env --output /tmp/new-journey-run.json
-```
-
-The scenario command runs real model outputs with independent state/action checks and keeps semantic criteria pending review. The journey uses scripted answers; repeated scripted answers and reaching Free Talk are not proof of natural or complete teaching. See `docs/evaluation/pipecat-text-audit.md` for failures, corrections and outstanding acceptance work.
-
-The explicit Free Talk end button is a control event, not a synthetic learner utterance. It atomically stores a short authored role exit and closing, moves to the summary stage, and retains pending review. Repeating the end request returns the same saved result. Ending does not call speech services or depend on an LLM being available; it does not manufacture learning evidence.
+The old Pipecat text pipeline and SQLite lesson session were removed. Grade 3
+lesson YAML must be converted to the `items` format described in
+`docs/grade3_lesson_refactor_spec.md` by the curriculum author.

@@ -1,8 +1,9 @@
-# Voice — lớp học theo Unit
+# Voice — bài học theo kịch bản lớp 3
 
-Pipecat WebRTC bot cho luồng học có lộ trình. Bot dùng pipeline cascade:
-Soniox STT → OpenRouter LLM → Soniox TTS, và dùng teaching core từ `backend`.
-Nó khác với `talk`: Voice có lesson state, mục tiêu Unit và tiến trình học.
+Pipecat WebRTC bot cho bài học lớp 3. Soniox STT gửi transcript đã chốt
+sang backend để Jev đánh giá và Teacher xử lý ngoại lệ; Soniox TTS phát lời
+Teacher hoặc lời `say` nguyên văn. Học sinh ấn mic để nói rồi ấn Gửi để yêu
+cầu chốt lượt. `talk` là phòng trò chuyện riêng.
 
 Xem [README root](../README.md) để biết bốn service cùng chạy như thế nào.
 
@@ -35,29 +36,21 @@ OPENROUTER_API_KEY=
 OPENROUTER_MODEL=google/gemini-3.5-flash-lite
 SONIOX_API_KEY=
 SONIOX_VOICE_ID=Grace
-SONIOX_TTS_VOICE=Grace
 ```
 
 Xem [`.env.example`](../.env.example) cho CORS và ICE/STUN khi chạy qua mạng.
 
-## Evals và test
+## Test
 
-Chạy từ `voice/server`:
+Chạy từ repository root:
 
 ```bash
-# Text-mode behavioral eval
-uv run bot.py -t eval
-
-# Terminal khác, khi bot eval đang chạy
-uv run pipecat eval run evals/starter_text.yaml -v
-uv run pipecat eval run evals/starter_audio.yaml -v
-
-# Focused test suite từ repository root
-uv run --project voice/server pytest -q tests/voice tests/scripts tests/ops
+uv run --project voice/server pytest -q tests/voice
 ```
 
-Text eval kiểm tra quyết định/hội thoại; audio eval mới kiểm tra đường STT, VAD
-và TTS. Các scenario nằm ở `server/evals/`.
+Các scenario eval cũ dùng lượt nói tự chốt và barge-in, không còn áp dụng cho
+cơ chế nút Gửi. Test hiện tại dùng frame giả; cần kiểm tra thêm một phiên mic,
+Soniox và TTS thật trước khi xác nhận Voice hoạt động trọn vẹn.
 
 ## Cấu trúc
 
@@ -65,7 +58,7 @@ và TTS. Các scenario nằm ở `server/evals/`.
 voice/
 ├── server/
 │   ├── bot.py       # Pipecat bot entry point
-│   ├── evals/       # headless behavioral scenarios
+│   ├── lesson_voice_bridge.py  # chốt transcript và giao lời phát
 │   ├── pyproject.toml
 │   └── .venv/       # service-specific Python environment
 └── README.md

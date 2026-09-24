@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { usePipecatConversation } from '@pipecat-ai/client-react';
 import type { BotOutputText, ConversationMessage } from '@pipecat-ai/client-react';
 import type { Message } from '@/lib/types';
@@ -60,19 +60,33 @@ function spokenAuthoredLines(spoken: string, authored: string): string[] {
   });
 }
 
-function trimSpokenToAuthoredStart(spoken: string, authored: string): string {
+function authoredStartIndex(spoken: string, authored: string): number {
   const spokenWords = teacherDisplayText(spoken).replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
   const authoredLead = speechKey(authored).split(' ').slice(0, 5);
-  if (!authoredLead.length) return spokenWords.join(' ');
+  if (!authoredLead.length) return -1;
   const spokenKeys = spokenWords.map((word) => speechKey(word));
-  const start = spokenKeys.findIndex((_, index) => authoredLead.every(
-    (word, offset) => spokenKeys[index + offset] === word,
-  ));
+  for (let index = spokenKeys.length - 1; index >= 0; index--) {
+    let matched = 0;
+    while (matched < authoredLead.length && index + matched < spokenKeys.length) {
+      const heard = spokenKeys[index + matched];
+      const authoredWord = authoredLead[matched];
+      if (!heard || (heard !== authoredWord && !(index + matched === spokenKeys.length - 1 && authoredWord.startsWith(heard)))) break;
+      matched++;
+    }
+    if (matched && (matched === authoredLead.length || index + matched === spokenKeys.length)) return index;
+  }
+  return -1;
+}
+
+function trimSpokenToAuthoredStart(spoken: string, authored: string): string {
+  const spokenWords = teacherDisplayText(spoken).replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+  const start = authoredStartIndex(spoken, authored);
   return start >= 0 ? spokenWords.slice(start).join(' ') : spokenWords.join(' ');
 }
 
 export function ChatPanel({ messages }: { messages: Message[] }) {
-  const latestMessage = useRef<HTMLDivElement>(null);
+  const chatScroll = useRef<HTMLDivElement>(null);
+  const followLatest = useRef(true);
   const voice = useOptionalVoiceLesson();
   const { messages: pipecatMessages } = usePipecatConversation({
     botOutputFilter: { spoken: true, unspoken: false },
@@ -82,11 +96,9 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
   const imageCue = voice?.teacherImageCue;
   const lastUserIndex = pipecatMessages.findLastIndex((message) => message.role === 'user');
   const authoredKey = imageCue?.spoken_text ? speechKey(imageCue.spoken_text) : '';
-  const authoredLead = authoredKey.split(' ').slice(0, 5).join(' ');
   const matchesImageCue = (message: ConversationMessage) => {
     if (message.role !== 'assistant') return false;
-    const spokenKey = speechKey(conversationText(message, true));
-    return Boolean(spokenKey && authoredLead && spokenKey.includes(authoredLead));
+    return Boolean(authoredKey && authoredStartIndex(conversationText(message, true), imageCue?.spoken_text ?? '') >= 0);
   };
   const cueAssistant = imageCue?.image_url && authoredKey
     ? pipecatMessages.slice(lastUserIndex + 1).findLast(matchesImageCue)
@@ -118,7 +130,7 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
     return [{ ...message, key: `saved-${index}`, timestamp: precedingRun?.endedAt ?? '' }];
   });
   const sentText = voice?.sentText ?? [];
-  const liveMessages = voice?.phase === 'off' ? [] : messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
+  const liveMessages = messages.length === 0 ? pipecatConversation : pipecatConversation.flatMap((message, index) => {
     if (message.role === 'learner') {
       const savedCount = savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length;
       const liveCount = pipecatConversation.slice(0, index + 1)
@@ -136,47 +148,52 @@ export function ChatPanel({ messages }: { messages: Message[] }) {
   const savedCue = imageCue?.image_url && imageCue.turn_id
     ? savedMessages.some((message) => message.role === 'teacher' && message.turn_id === imageCue.turn_id)
     : false;
-  const liveImageTarget = imageCue?.image_url && !savedCue && cueAssistant
-    ? liveMessages.find((message) => message.role === 'teacher' && message.key === `${cueAssistant.createdAt}-line-0`)
-    : undefined;
-  const liveMessagesWithImages = liveMessages.map((message) => ({
-    ...message,
-    image_url: liveImageTarget?.key === message.key ? imageCue?.image_url : message.image_url,
-  }));
-  const pendingImage: DisplayMessage[] = imageCue?.image_url && !savedCue && !liveImageTarget
+  const pendingImage: DisplayMessage[] = imageCue?.image_url && !savedCue
     ? [{
       role: 'teacher', text: '', timestamp: imageCue.receivedAt,
-      key: `pending-image-${imageCue.turn_id ?? imageCue.receivedAt}`,
+      key: `image-${imageCue.turn_id ?? imageCue.receivedAt}`,
       turn_id: imageCue.turn_id, image_url: imageCue.image_url,
     }]
     : [];
-  const displayedMessages: DisplayMessage[] = [...savedMessages, ...liveMessagesWithImages, ...pendingImage, ...sentText.filter((message, index) =>
+  const displayedMessages: DisplayMessage[] = [...savedMessages, ...liveMessages, ...pendingImage, ...sentText.filter((message, index) =>
     savedMessages.filter((saved) => saved.role === 'learner' && saved.text === message.text).length
       < sentText.slice(0, index + 1).filter((sent) => sent.text === message.text).length,
   ).map((message) => ({
     role: 'learner' as const,
     text: message.text,
     timestamp: message.timestamp,
+    key: `sent-${message.id}`,
   }))].sort((left, right) => {
     const leftTime = Date.parse(left.timestamp);
     const rightTime = Date.parse(right.timestamp);
-    return (Number.isNaN(leftTime) ? 0 : leftTime) - (Number.isNaN(rightTime) ? 0 : rightTime);
+    const timeOrder = (Number.isNaN(leftTime) ? 0 : leftTime) - (Number.isNaN(rightTime) ? 0 : rightTime);
+    if (timeOrder) return timeOrder;
+    return Number(Boolean(right.key?.startsWith('image-'))) - Number(Boolean(left.key?.startsWith('image-')));
   });
   const visibleMessages = displayedMessages.flatMap((message) => message.role === 'teacher'
-    ? (teacherDisplayText(message.text).split('\n').filter(Boolean).length
-      ? teacherDisplayText(message.text).split('\n').filter(Boolean).map((line, index) => ({
-      ...message, image_url: index === 0 ? message.image_url : null,
-      text: line, key: `${message.key ?? message.timestamp}-line-${index}`,
-      }))
-      : message.image_url ? [message] : [])
+    ? [
+      ...(message.image_url ? [{
+        ...message, text: '',
+        key: message.turn_id ? `image-${message.turn_id}` : message.key?.startsWith('image-')
+          ? message.key : `image-${message.key ?? message.timestamp}`,
+      }] : []),
+      ...teacherDisplayText(message.text).split('\n').filter(Boolean).map((line, index) => ({
+        ...message, image_url: null,
+        text: line, key: `${message.key ?? message.timestamp}-line-${index}`,
+      })),
+    ]
     : [message]);
-  const latestTeacherIndex = visibleMessages.findLastIndex((message) => message.role === 'teacher');
-  useEffect(() => { latestMessage.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, [displayedMessages.length]);
-  return <div className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna">
-    {visibleMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.key ?? message.timestamp}-${index}`}>
+  const latestTeacherIndex = visibleMessages.findLastIndex((message) => message.role === 'teacher' && message.text);
+  useLayoutEffect(() => {
+    if (followLatest.current && chatScroll.current) chatScroll.current.scrollTop = chatScroll.current.scrollHeight;
+  });
+  return <div ref={chatScroll} className="chat-scroll" aria-live="polite" aria-label="Conversation with Luna" onScroll={(event) => {
+    const target = event.currentTarget;
+    followLatest.current = target.scrollHeight - target.clientHeight - target.scrollTop < 40;
+  }}>
+    {visibleMessages.map((message, index) => <article className={`bubble-row ${message.role}`} key={`${message.role}-${message.key ?? message.timestamp}`}>
       {message.role === 'teacher' && <div className="avatar" aria-hidden="true">L</div>}
-      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span>{message.text && <p>{message.role === 'teacher' ? emphasizedText(teacherDisplayText(message.text)) : message.text}</p>}{message.role === 'teacher' && message.image_url && <img className="teacher-image-card" src={message.image_url} alt="Hình minh họa cho câu nói của Luna" loading="eager" />}</div>
+      <div className="bubble"><span className="speaker"><span>{message.role === 'teacher' ? 'Luna' : 'Quang'}</span>{index === latestTeacherIndex && <VoiceLatency />}</span>{message.text && <p>{message.role === 'teacher' ? emphasizedText(teacherDisplayText(message.text)) : message.text}</p>}{message.role === 'teacher' && message.image_url && <img className="teacher-image-card" src={message.image_url} alt="Hình minh họa cho câu nói của Luna" width={220} height={220} loading="eager" />}</div>
     </article>)}
-    <div ref={latestMessage} aria-hidden="true" />
   </div>;
 }

@@ -6,58 +6,58 @@ import { parseRuleMarkdown } from '@/lib/design-rules';
 
 describe('design rules page', () => {
   it('turns non-empty Markdown table rows into readable design rules', () => {
-    const markdown = `**Các quy tắc tôi sẽ đưa vào thiết kế**
+    const markdown = `**Quy tắc dạy học lớp 3**
 
 | Nhóm | Cách áp dụng |
 | --- | --- |
-| Chào | Warm-up chỉ chào và kiểm tra tâm trạng |
+| Kịch bản | Luna đọc nguyên văn say |
 | | |
-| Free Talk | Chỉ mở sau ba level |
+| Voice | Học sinh ấn Gửi để chốt transcript |
 `;
 
     expect(parseRuleMarkdown(markdown)).toEqual({
-      title: 'Các quy tắc tôi sẽ đưa vào thiết kế',
+      title: 'Quy tắc dạy học lớp 3',
       rules: [
-        { group: 'Chào', application: 'Warm-up chỉ chào và kiểm tra tâm trạng' },
-        { group: 'Free Talk', application: 'Chỉ mở sau ba level' },
+        { group: 'Kịch bản', application: 'Luna đọc nguyên văn say' },
+        { group: 'Voice', application: 'Học sinh ấn Gửi để chốt transcript' },
       ],
     });
   });
 
   it('presents the rules as an executive-readable document', () => {
     render(<DesignRulesPage document={{
-      title: 'Các quy tắc tôi sẽ đưa vào thiết kế',
+      title: 'Quy tắc dạy học lớp 3',
       rules: [
-        { group: 'Dạy từ', application: 'Đọc mẫu hai lần trước khi mời trẻ nói.' },
-        { group: 'Free Talk', application: 'Chỉ mở sau ba level.' },
+        { group: 'Kịch bản', application: 'Luna đọc nguyên văn say.' },
+        { group: 'Voice', application: 'Học sinh ấn Gửi.' },
       ],
     }} />);
 
     expect(screen.getByRole('heading', { name: 'Nguyên tắc thiết kế Luna' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Dạy từ' })).toBeVisible();
-    expect(screen.getByText('Đọc mẫu hai lần trước khi mời trẻ nói.')).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Free Talk' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Kịch bản' })).toBeVisible();
+    expect(screen.getByText('Luna đọc nguyên văn say.')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Voice' })).toBeVisible();
     expect(screen.getByRole('link', { name: 'Mở ứng dụng Luna' })).toHaveAttribute('href', '/');
   });
 
   it('shows the complete teaching system derived from the Unit 1 scenarios', () => {
     render(<DesignRulesPage document={{
-      title: 'Các quy tắc tôi sẽ đưa vào thiết kế',
+      title: 'Quy tắc dạy học lớp 3',
       rules: [
-        { group: 'Dạy từ', application: 'Đọc mẫu hai lần trước khi mời trẻ nói.' },
+        { group: 'Kịch bản', application: 'Luna đọc nguyên văn say.' },
       ],
     }} />);
 
     expect(screen.getByRole('heading', { name: 'Mục tiêu trải nghiệm' })).toBeVisible();
-    expect(screen.getByText(/Học sinh nói tối thiểu 60% toàn buổi/i)).toBeVisible();
+    expect(screen.getByText(/Mỗi mục practice có một learner_goal/i)).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Vòng lặp dạy học' })).toBeVisible();
-    expect(screen.getByText(/Làm mẫu → hỗ trợ → tự diễn đạt → hỏi ngược/i)).toBeVisible();
+    expect(screen.getByText(/Jev so lời học sinh với learner_goal/i)).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Bộ điều khiển thích ứng' })).toBeVisible();
-    expect(screen.getByText(/Phân biệt sai nghĩa, sai ngữ pháp/i)).toBeVisible();
+    expect(screen.getByText(/Lần sai thứ nhất sửa một điểm/i)).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Bằng chứng tiến bộ' })).toBeVisible();
-    expect(screen.getByText(/độc lập, có hỗ trợ hoặc chưa dùng/i)).toBeVisible();
+    expect(screen.getByText(/Một turn_id chỉ được tính một lần/i)).toBeVisible();
     expect(screen.getByRole('heading', { name: 'An toàn và hoàn tất' })).toBeVisible();
-    expect(screen.getByText(/Không thu thập số điện thoại thật/i)).toBeVisible();
-    expect(screen.getByText('docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md')).toBeVisible();
+    expect(screen.getByText(/Học sinh ấn mic để nói/i)).toBeVisible();
+    expect(screen.getByText('docs/grade3_lesson_refactor_spec.md')).toBeVisible();
   });
 });

@@ -1,0 +1,49 @@
+# Thiết kế đã chốt cho câu hỏi Jev của lượt dạy theo kịch bản.
+# Runtime đọc mục này và gửi trong `questions` của
+# Decisions API; `state` gồm learner_goal, history, learner_query.
+turn_evaluation:
+  type: choice
+  instructions: >-
+    Classify only `learner_query` against `learner_goal`. Use `history` to
+    understand references, choices, and what Luna just asked; do not count an
+    earlier learner answer as the current answer. Judge whether the goal is
+    achieved by its meaning and requirements, not by exact string matching.
+    A clear utterance with several ideas still gets one classification. Do
+    not infer pronunciation errors from text. Choose the one criterion that
+    best describes the current learner turn. If the goal is achieved and Luna
+    needs to answer the learner, choose PASSED_WITH_REPLY before PASSED; this
+    includes a successful question when asking Luna is the goal itself. If
+    the learner gives a related answer or statement instead of the question
+    required by the goal, treat it as an unsuccessful attempt, not a new
+    unrelated intent. When Luna directly asks for a word, phrase, or answer,
+    a different word or phrase given as the answer is an unsuccessful attempt
+    (for example, "Goodbye" after "Can you say Hello?"). Use OTHER_INTENT for
+    a clear intent that does not try to perform the current goal.
+  criteria:
+    PASSED: >-
+      The current utterance achieves `learner_goal` and contains nothing else
+      Luna needs to answer. Do not choose this when the goal itself requires
+      asking Luna a question: a successful question needs Luna's reply.
+    PASSED_WITH_REPLY: >-
+      The current utterance achieves `learner_goal` and also contains a
+      question, request, or personal statement that Luna should respond to.
+      If asking Luna a question is itself the `learner_goal`, a successful
+      question belongs here even without any extra content.
+    ATTEMPT_FAILED: >-
+      The learner makes an understandable attempt at `learner_goal`, but the
+      current utterance does not meet its requirements. When the goal is to
+      ask Luna about a topic, a related statement or answer about that topic
+      instead of a question is a failed attempt. This remains an attempt
+      even if the learner also asks something. A short wrong answer to Luna's
+      current exercise is an attempt, including a greeting or farewell word
+      that does not satisfy the exact word being practiced.
+    OTHER_INTENT: >-
+      The learner communicates something understandable but does not attempt
+      `learner_goal`, such as asking for help, expressing a feeling, refusing,
+      or changing the subject. Do not use this merely because a short answer
+      uses the wrong word in the exercise Luna just asked the learner to do.
+    UNCLEAR_INPUT: >-
+      The current utterance is too incomplete, noisy, or ambiguous to
+      determine reliably whether the learner attempted or achieved
+      `learner_goal` or expressed another clear intent. A short but
+      understandable answer is not unclear.

@@ -1,15 +1,15 @@
 [project]
 name = "luna-tutor"
 version = "0.1.0"
-description = "Provider-independent English teaching core for multiple grades"
+description = "Grade 3 scripted English teaching core"
 requires-python = ">=3.12"
 dependencies = [
     "pydantic",
     "httpx",
     "PyYAML",
-    "openpyxl",
     "fastapi",
     "uvicorn[standard]",
+    "pipecat-ai[openrouter]==1.11.0",
 ]
 
 [dependency-groups]

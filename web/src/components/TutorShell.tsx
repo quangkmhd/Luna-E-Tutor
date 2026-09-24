@@ -1,13 +1,13 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatPanel } from './ChatPanel';
 import { CurriculumNav } from './CurriculumNav';
 import { LearnerHeader } from './LearnerHeader';
 import { Composer } from './Composer';
 import { NewSessionButton } from './NewSessionButton';
-import { StateInspector } from './StateInspector';
+import { LessonFlashcards } from './LessonFlashcards';
 import { UnitSelector } from './UnitSelector';
 import { PipecatVoiceProvider, useVoiceLesson } from './voice/PipecatVoiceProvider';
 import { VoiceControls } from './voice/VoiceControls';
@@ -19,9 +19,12 @@ function newTurnId() { return globalThis.crypto?.randomUUID?.() ?? `turn-${Date.
 
 function LessonComposer({ busy, onSend }: { busy: boolean; onSend: (text: string) => Promise<void> }) {
   const voice = useVoiceLesson();
-  const connected = voice.transportState === 'connected' || voice.transportState === 'ready';
   const connecting = ['initializing', 'initialized', 'authenticating', 'authenticated', 'connecting'].includes(voice.transportState);
-  return <Composer disabled={busy || connecting} onSend={connected ? voice.sendText : onSend} voiceControls={<VoiceControls />} />;
+  async function sendText(text: string) {
+    if (voice.transportState === 'connected' || voice.transportState === 'ready') await voice.stop();
+    await onSend(text);
+  }
+  return <Composer disabled={busy || connecting || voice.phase === 'speaking' || voice.phase === 'thinking' || voice.micMode !== 'off'} onSend={sendText} voiceControls={<VoiceControls />} />;
 }
 
 function LessonClock() {
@@ -47,6 +50,21 @@ export function TutorShell({
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
   const currentSessionId = current?.session_id;
+  const abandonedByUnmount = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (abandonedByUnmount.current !== null) clearTimeout(abandonedByUnmount.current);
+    if (!currentSessionId) return;
+    const closeOnExit = () => {
+      navigator.sendBeacon?.(`/api/sessions/${encodeURIComponent(currentSessionId)}/abandon`);
+    };
+    window.addEventListener('pagehide', closeOnExit);
+    return () => {
+      window.removeEventListener('pagehide', closeOnExit);
+      abandonedByUnmount.current = setTimeout(() => {
+        void api.abandonSession(currentSessionId).catch(() => undefined);
+      }, 0);
+    };
+  }, [api, currentSessionId]);
   const lessonUnitId = current?.lesson_id != null ? current.unit_id : null;
   const replaceSession = useCallback((session: SessionView) => { setCurrent(session); }, []);
   useEffect(() => { const controller = new AbortController(); void (async () => {
@@ -98,13 +116,19 @@ export function TutorShell({
     setBusy(true); setError(null);
     router.push(unitPath(selectedUnit.grade, selectedUnit.unit));
   }
-  function chooseAnotherUnit() { setCurrent(null); router.push(current?.lesson_id ? '/grade3/unit1' : '/'); }
+  async function chooseAnotherUnit() {
+    if (!current) return;
+    setBusy(true);
+    try { await api.abandonSession(current.session_id); }
+    catch (reason) { setError(reason as ApiError); setBusy(false); return; }
+    setCurrent(null);
+    router.push(current.lesson_id ? '/grade3/unit1' : '/');
+  }
   async function startNew() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await (
     current.lesson_id == null
-      ? api.resetSession(current.unit.id)
-      : api.resetSession(current.unit.id, undefined, current.lesson_id)
+      ? api.resetSession(current.unit.id, undefined, undefined, current.session_id)
+      : api.resetSession(current.unit.id, undefined, current.lesson_id, current.session_id)
   )); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
-  async function finish() { if (!current) return; setBusy(true); setError(null); try { replaceSession(await api.finishSession(current.session_id, current.state_version)); } catch (reason) { setError(reason as ApiError); } finally { setBusy(false); } }
   if (!current && busy) return <main className="app-shell classroom-shell learner-app" aria-busy="true">
     <LearnerHeader subtitle="Gia sư tiếng Anh" />
     <div className="classroom-loading">
@@ -118,11 +142,9 @@ export function TutorShell({
     </div>
   </main>;
   if (!current) return <><UnitSelector units={units} busy={busy} onSelect={(unitId) => { void selectUnit(unitId); }} />{error && <div className="error-banner" role="alert">{error.message}</div>}</>;
-  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession} savedMessageCount={current.messages.length} savedHasTurn={current.messages.some((message) => Boolean(message.turn_id))}><main className="app-shell classroom-shell learner-app"><LearnerHeader subtitle={`English Tutor · Grade ${current.unit.grade} · Unit ${current.unit.unit}${current.lesson_id ? ` · Lesson ${current.lesson_id}` : ''}`}><span className={`status-pill ${current.status}`}>{current.status === 'active' ? 'Đang học' : current.status}</span><LessonClock /><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={chooseAnotherUnit}>{current.lesson_id ? 'Chọn Lesson khác' : 'Choose another unit'}</button><NewSessionButton busy={busy} onClick={startNew} /><span className="student-chip" aria-label="Học viên Quang">Q <span>Quang</span></span></LearnerHeader>
-    <div className="workspace classroom-workspace"><CurriculumNav units={units} session={current} busy={busy} onSelect={selectUnit} expandedUnitId={lessonUnitId ?? undefined} lessons={lessons} lessonBasePath={lessonUnitId ? `${unitPath(current.unit.grade, current.unit.unit)}/lesson` : undefined} /><section className="lesson-card" role="region" aria-label="Lớp học Luna"><div className="lesson-heading"><div><h1 className="lesson-title">Practice with Luna</h1><span className="lesson-crumb">{current.lesson_id ? `Lesson ${current.lesson_id} · ` : ''}Lớp {current.unit.grade} · Unit {current.unit.unit} · {current.unit.title}</span></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><div className="lesson-phases" aria-label="Các chặng học">{current.learning_focus.length > 0 ? current.learning_focus.map((focus) => <span key={focus.stage_id} className={focus.highlighted ? 'phase-current' : ''} aria-current={focus.highlighted ? 'step' : undefined}><span aria-hidden="true">{focus.highlighted ? '●' : '○'}</span> {focus.stage_title}</span>) : <span className="phase-current">● {current.stage_id.replaceAll('-', ' ')}</span>}</div><ChatPanel messages={current.messages} />
+  return <PipecatVoiceProvider key={current.session_id} sessionId={current.session_id} enabled={current.status === 'active'} onSessionChanged={refreshVoiceSession} savedMessageCount={current.messages.length} savedHasTurn={current.messages.some((message) => Boolean(message.turn_id))}><main className="app-shell classroom-shell learner-app"><LearnerHeader subtitle={`English Tutor · Grade ${current.unit.grade} · Unit ${current.unit.unit}${current.lesson_id ? ` · Lesson ${current.lesson_id}` : ''}`}><span className={`status-pill ${current.status}`}>{current.status === 'active' ? 'Đang học' : current.status}</span><LessonClock /><Link className="secondary-button" href="/talk">Free Talk Room</Link><button className="secondary-button" type="button" disabled={busy} onClick={() => void chooseAnotherUnit()}>{current.lesson_id ? 'Chọn Lesson khác' : 'Choose another unit'}</button><NewSessionButton busy={busy} onClick={startNew} /><span className="student-chip" aria-label="Học viên Quang">Q <span>Quang</span></span></LearnerHeader>
+    <div className="workspace classroom-workspace"><CurriculumNav units={units} session={current} busy={busy} onSelect={selectUnit} expandedUnitId={lessonUnitId ?? undefined} lessons={lessons} lessonBasePath={lessonUnitId ? `${unitPath(current.unit.grade, current.unit.unit)}/lesson` : undefined} /><section className="lesson-card" role="region" aria-label="Lớp học Luna"><div className="lesson-heading"><div><h1 className="lesson-title">Practice with Luna</h1><span className="lesson-crumb">{current.lesson_id ? `Lesson ${current.lesson_id} · ` : ''}Lớp {current.unit.grade} · Unit {current.unit.unit} · {current.unit.title}</span></div><span className="stage-chip">{current.stage_id.replaceAll('-', ' ')}</span></div><div className="lesson-phases" aria-label="Loại hoạt động"><span className="phase-current">● {current.stage_id.replaceAll('-', ' ')}</span></div><ChatPanel messages={current.messages} />
       {error && <div className="error-banner" role="alert"><strong>{error.retryable ? 'Please try again.' : 'Something changed.'}</strong> {error.message}</div>}
       {current.status === 'active' && <LessonComposer busy={busy} onSend={send} />}
-      {current.stage_id === 'free-talk' && current.status === 'active' && <button className="finish-button" disabled={busy} onClick={finish}>End Free Talk</button>}
-      {current.summary && <section className="summary"><span className="eyebrow">Session complete</span><h2>What Quang showed today</h2><p>Demonstrated: {current.summary.demonstrated.join(', ') || 'Still gathering evidence'}</p><p>Review next time: {current.summary.needs_review.join(', ') || 'No open review items'}</p></section>}
-    </section><aside className="sidebar"><StateInspector session={current} /></aside></div></main></PipecatVoiceProvider>;
+    </section><aside className="sidebar"><LessonFlashcards session={current} /></aside></div></main></PipecatVoiceProvider>;
 }

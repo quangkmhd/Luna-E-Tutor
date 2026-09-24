@@ -1,35 +1,10 @@
 'use client';
 
-import { PipecatClientMicToggle } from '@pipecat-ai/client-react';
-
 import { useVoiceLesson } from './PipecatVoiceProvider';
-import type { VoicePhase } from './PipecatVoiceProvider';
 import styles from './voice.module.css';
 
-const phaseLabels: Record<VoicePhase, string> = {
-  off: 'Voice off',
-  connecting: 'Connecting',
-  ready: 'Ready',
-  listening: 'Listening',
-  thinking: 'Thinking',
-  speaking: 'Speaking',
-};
-
-function VoicePhaseIcon({ phase }: { phase: VoicePhase }) {
-  if (phase === 'thinking') {
-    return <span className={styles.thinkingDots} aria-hidden="true"><i /><i /><i /></span>;
-  }
-  if (phase === 'listening') {
-    return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="4" width="6" height="10" rx="3" /><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3M9 20h6" /></svg>;
-  }
-  if (phase === 'speaking') {
-    return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h3l4 3V7l-4 3H5Z" /><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" /></svg>;
-  }
-  return <span className={styles.statusDot} aria-hidden="true" />;
-}
-
 export function VoiceControls({
-  startLabel = 'Start voice lesson',
+  startLabel = 'Bật mic để nói',
   stopLabel = 'Stop voice lesson',
   onStopped,
 }: {
@@ -53,29 +28,31 @@ export function VoiceControls({
 
   return (
     <div className={styles.voiceControls} aria-label="Voice lesson controls">
-      <span className={`${styles.state} ${styles[voice.phase]}`} aria-live="polite">
-        <span className={styles.phaseIcon}><VoicePhaseIcon phase={voice.phase} /></span>
-        {phaseLabels[voice.phase]}
+      <span className={`${styles.state} ${voice.micMode === 'off' ? styles.micOffState : styles.micOnState}`} aria-live="polite">
+        <strong>{pending || (!active && voice.phase === 'connecting') ? 'Đang kết nối' : voice.micMode === 'speaking' ? 'Đang nói' : voice.micMode === 'listening' ? 'Đang nghe' : 'MIC ĐANG TẮT'}</strong>
       </span>
+      {active && voice.phase === 'speaking' && <span className={styles.speakerPlaying} role="status" aria-label="Loa đang phát">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" /><path className={styles.speakerWave} d="M16 9a4 4 0 0 1 0 6" /><path className={`${styles.speakerWave} ${styles.speakerWaveOuter}`} d="M18.5 6a8 8 0 0 1 0 12" /></svg>
+        <strong>LOA ĐANG PHÁT</strong>
+      </span>}
       <div className={styles.actions}>
-        {!active ? (
-          <button type="button" className={styles.primary} disabled={pending} onClick={() => void voice.start()}>
-            {pending ? 'Connecting…' : startLabel}
-          </button>
-        ) : (
-          <>
-            <PipecatClientMicToggle>
-              {({ disabled, isMicEnabled, onClick }) => (
-                <button type="button" className={styles.primary} disabled={disabled} onClick={onClick}>
-                  {isMicEnabled ? 'Mute microphone' : 'Unmute microphone'}
-                </button>
-              )}
-            </PipecatClientMicToggle>
-            <button type="button" className={styles.secondary} onClick={() => void stop()}>
-              {stopLabel}
-            </button>
-          </>
-        )}
+        <button
+          type="button"
+          className={`${styles.micButton} ${voice.micMode === 'off' ? styles.micIdle : ''} ${voice.micMode !== 'off' ? styles.micActive : ''} ${voice.micMode === 'speaking' ? styles.micSpeaking : ''}`}
+          aria-label={pending ? 'Đang kết nối mic' : voice.micMode === 'off' ? 'Bật mic để nói' : voice.manualSubmit ? 'Đang thu lời nói' : 'Tắt mic'}
+          aria-pressed={active && voice.micMode !== 'off'}
+          disabled={pending || (active && (!voice.turnReady || (voice.manualSubmit && voice.micMode !== 'off')))}
+          title={!active ? startLabel : undefined}
+          onClick={() => { if (active) voice.toggleMic(); else void voice.start(); }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6" />{voice.micMode === 'off' && <path data-mic-off-mark="true" d="M4 4l16 16" />}</svg>
+        </button>
+        {active && voice.manualSubmit && voice.micMode !== 'off' && <button type="button" className={styles.secondary} onClick={() => void voice.submitVoice()}>
+          Gửi
+        </button>}
+        {active && <button type="button" className={styles.secondary} onClick={() => void stop()}>
+          {stopLabel}
+        </button>}
       </div>
       {voice.error && <p className={styles.error} role="alert">{voice.error}</p>}
     </div>

@@ -12,17 +12,15 @@ from pipecat.frames.frames import (
     Frame,
     InterruptionFrame,
     LLMFullResponseEndFrame,
+    TTSAudioRawFrame,
     TTSSpeakFrame,
     TTSStartedFrame,
     TTSStoppedFrame,
-    TTSAudioRawFrame,
     TTSUpdateSettingsFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.services.soniox.tts import SonioxTTSSettings
 from pipecat.transcriptions.language import Language
-
-from text_frames import CompletedTeachingFrame
 
 
 @dataclass
@@ -142,7 +140,7 @@ class LanguageTaggedTTSProcessor(FrameProcessor):
             self._queue.append(frame)
             await self._start_next()
         elif direction == FrameDirection.DOWNSTREAM and self._active is not None and isinstance(
-            frame, (LLMFullResponseEndFrame, CompletedTeachingFrame)
+            frame, LLMFullResponseEndFrame
         ):
             self._deferred.append(frame)
         else:

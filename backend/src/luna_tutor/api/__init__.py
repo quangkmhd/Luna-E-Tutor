@@ -1,5 +1,5 @@
-"""HTTP application for the local Unit 1 experiment."""
+"""HTTP entry points for the Grade 3 scripted tutor."""
 
-from .app import create_app
+from .lesson_api import create_lesson_api
 
-__all__ = ['create_app']
+__all__ = ['create_lesson_api']

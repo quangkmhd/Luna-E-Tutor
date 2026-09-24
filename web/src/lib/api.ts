@@ -1,4 +1,4 @@
-import type { ComparisonResult, LessonSummary, SessionView, TurnInput, TurnResponse, UnitSummary } from './types';
+import type { LessonSummary, SessionView, TurnInput, TurnResponse, UnitSummary } from './types';
 
 export class ApiError extends Error {
   constructor(public code: string, message: string, public retryable = false, public status = 0) {
@@ -41,9 +41,9 @@ export class TutorApi {
       method: 'POST', body: JSON.stringify({ unit_id: unitId, ...(lessonId ? { lesson_id: lessonId } : {}) }), signal,
     });
   }
-  resetSession(unitId: string, signal?: AbortSignal, lessonId?: number) {
+  resetSession(unitId: string, signal?: AbortSignal, lessonId?: number, previousSessionId?: string) {
     return this.request<SessionView>('/api/sessions/reset', {
-      method: 'POST', body: JSON.stringify({ unit_id: unitId, ...(lessonId ? { lesson_id: lessonId } : {}) }), signal,
+      method: 'POST', body: JSON.stringify({ unit_id: unitId, ...(lessonId ? { lesson_id: lessonId } : {}), ...(previousSessionId ? { previous_session_id: previousSessionId } : {}) }), signal,
     });
   }
   listSessions(signal?: AbortSignal) {
@@ -59,16 +59,6 @@ export class TutorApi {
   }
   abandonSession(id: string) {
     return this.request<SessionView>(`/api/sessions/${id}/abandon`, { method: 'POST' });
-  }
-  finishSession(id: string, expected_state_version: number) {
-    return this.request<SessionView>(`/api/sessions/${id}/finish`, {
-      method: 'POST', body: JSON.stringify({ expected_state_version }),
-    });
-  }
-  compareEvaluators(id: string, learner_text: string, signal?: AbortSignal) {
-    return this.request<ComparisonResult>(`/api/review/${id}`, {
-      method: 'POST', body: JSON.stringify({ learner_text }), signal,
-    });
   }
 }
 

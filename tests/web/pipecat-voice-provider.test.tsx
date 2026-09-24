@@ -7,7 +7,7 @@ const sdk = vi.hoisted(() => {
   const disconnect = vi.fn().mockResolvedValue(undefined);
   const sendText = vi.fn().mockResolvedValue(undefined);
   const enableMic = vi.fn();
-  const client = { startBotAndConnect, disconnect, sendText, enableMic, state: 'disconnected' };
+  const client = { startBotAndConnect, disconnect, sendText, enableMic, sendClientMessage: vi.fn(), state: 'disconnected' };
   return {
     startBotAndConnect,
     disconnect,
@@ -99,9 +99,9 @@ describe('PipecatVoiceProvider', () => {
     const view = render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
     );
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     expect(sdk.options).toMatchObject({
-      enableMic: true,
+      enableMic: false,
       enableCam: false,
       disconnectOnBotDisconnect: true,
     });
@@ -144,7 +144,7 @@ describe('PipecatVoiceProvider', () => {
       </PipecatVoiceProvider>,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Start conversation' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
 
     expect(sdk.startBotAndConnect).toHaveBeenCalledWith({
       endpoint: 'http://localhost:7863/start',
@@ -166,7 +166,7 @@ describe('PipecatVoiceProvider', () => {
       onTransportStateChanged(state: string): void;
     };
 
-    await user.click(screen.getByRole('button', { name: 'Start conversation' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => callbacks.onTransportStateChanged('ready'));
     await user.click(screen.getByRole('button', { name: 'Stop conversation' }));
     act(() => callbacks.onTransportStateChanged('ready'));
@@ -217,14 +217,16 @@ describe('PipecatVoiceProvider', () => {
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
   });
 
-  it('does not ask for a reconnect when Pipecat reports a non-fatal service error', () => {
+  it('locks manual Mic until reconnect when Pipecat reports a service error', () => {
     render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
     );
     const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
       onError(message: { data: { error: string; fatal: boolean } }): void;
     };
 
+    act(() => callbacks.onTransportStateChanged('ready'));
     act(() => callbacks.onError({
       data: {
         error: 'TTS context completed with no audio',
@@ -233,9 +235,9 @@ describe('PipecatVoiceProvider', () => {
     }));
 
     expect(screen.getByRole('alert')).toHaveTextContent(
-      'Voice audio was interrupted. Please try speaking again.',
+      'Lượt nói chưa hoàn tất. Con ngắt rồi kết nối giọng nói lại nhé.',
     );
-    expect(screen.queryByText(/stop and reconnect/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bật mic để nói' })).toBeDisabled();
   });
 
   it('clears an old recoverable TTS warning when the bot speaks again, but retains a new failure', () => {
@@ -246,17 +248,18 @@ describe('PipecatVoiceProvider', () => {
       onError(message: { data: { error: string; fatal: boolean } }): void;
       onBotStartedSpeaking(): void;
       onBotStoppedSpeaking(): void;
+      onServerMessage(message: unknown): void;
     };
 
     act(() => callbacks.onError({ data: { error: 'Soniox TTS error 408 request_timeout', fatal: false } }));
-    expect(screen.getByRole('alert')).toHaveTextContent('Voice audio was interrupted.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Lượt nói chưa hoàn tất.');
 
     act(() => callbacks.onBotStartedSpeaking());
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 
     act(() => callbacks.onError({ data: { error: 'Soniox TTS error 408 request_timeout', fatal: false } }));
     act(() => callbacks.onBotStoppedSpeaking());
-    expect(screen.getByRole('alert')).toHaveTextContent('Voice audio was interrupted.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Lượt nói chưa hoàn tất.');
   });
 
   it('disconnects and becomes startable again when Pipecat reports a fatal service error', async () => {
@@ -286,39 +289,46 @@ describe('PipecatVoiceProvider', () => {
       'The voice session ended. Reconnect when you are ready.',
     );
     await waitFor(() => expect(sdk.disconnect).toHaveBeenCalledOnce());
-    expect(screen.getByRole('button', { name: 'Start voice lesson' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bật mic để nói' })).toBeInTheDocument();
   });
 
-  it('shows Pipecat listening, thinking, and speaking states in the voice controls', () => {
+  it('shows the microphone and Luna speaking states in the voice controls', async () => {
+    const user = userEvent.setup();
     render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
     );
     const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
       onBotReady(): void;
       onUserStartedSpeaking(): void;
       onUserStoppedSpeaking(): void;
+      onUserTranscript?: (data: { text: string; final: boolean; timestamp: string; user_id: string }) => void;
       onBotLlmStarted(): void;
       onBotStartedSpeaking(): void;
       onBotStoppedSpeaking(): void;
     };
 
-    act(() => callbacks.onBotReady());
-    expect(screen.getByText('Ready')).toBeInTheDocument();
+    act(() => { callbacks.onTransportStateChanged('ready'); callbacks.onBotReady(); });
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+    expect(screen.getByText('MIC ĐANG TẮT')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    expect(screen.getByText('Đang nghe')).toBeInTheDocument();
 
     act(() => callbacks.onUserStartedSpeaking());
-    expect(screen.getByText('Listening')).toBeInTheDocument();
+    expect(screen.getByText('Đang nói')).toBeInTheDocument();
 
     act(() => callbacks.onUserStoppedSpeaking());
-    expect(screen.getByText('Thinking')).toBeInTheDocument();
+    act(() => callbacks.onUserTranscript?.({ text: 'Hello', final: true, timestamp: '1', user_id: 'u1' }));
+    expect(screen.getByText('Đang nói')).toBeInTheDocument();
 
     act(() => callbacks.onBotLlmStarted());
-    expect(screen.getByText('Thinking')).toBeInTheDocument();
 
     act(() => callbacks.onBotStartedSpeaking());
-    expect(screen.getByText('Speaking')).toBeInTheDocument();
+    expect(screen.getByText('MIC ĐANG TẮT')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Loa đang phát' })).toBeInTheDocument();
 
     act(() => callbacks.onBotStoppedSpeaking());
-    expect(screen.getByText('Ready')).toBeInTheDocument();
+    expect(screen.getByText('MIC ĐANG TẮT')).toBeInTheDocument();
   });
 
   it('shows perceived TTFA seconds after Luna starts speaking', () => {
@@ -435,7 +445,7 @@ describe('PipecatVoiceProvider', () => {
       ],
     }];
     render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
 
     const rows = document.querySelectorAll('.bubble-row.teacher');
@@ -460,7 +470,7 @@ describe('PipecatVoiceProvider', () => {
       role: 'teacher',
       text: '<vi>Cô trò mình sang Trạm 1.</vi>\n<en>"HELLO"</en><vi> nghĩa là xin chào.</vi>\n<en>Listen first! "HELLO"</en>\n<en>Your turn now!</en>',
     }]} /><VoiceControls /></PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
 
     expect(Array.from(document.querySelectorAll('.bubble-row.teacher'), (row) => row.querySelector('p')?.textContent)).toEqual([
@@ -471,7 +481,7 @@ describe('PipecatVoiceProvider', () => {
     ]);
   });
 
-  it('keeps the image with the current spoken line when its cue arrives after the transcript starts', async () => {
+  it('keeps the image in a separate Luna bubble when its cue arrives after speech starts', async () => {
     const user = userEvent.setup();
     const createdAt = new Date(Date.now() - 1000).toISOString();
     sdk.conversationMessages = [
@@ -483,7 +493,7 @@ describe('PipecatVoiceProvider', () => {
     render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[{
       role: 'teacher', text: 'Xin chào con!',
     }]} /><VoiceControls /></PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
     act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
       event: 'teacher-image', payload: {
@@ -493,8 +503,9 @@ describe('PipecatVoiceProvider', () => {
     }));
 
     const image = screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' });
-    expect(image.closest('.bubble-row')).toHaveTextContent('Cô trò mình sang Trạm 1');
-    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(2);
+    expect(image.closest('.bubble-row')).not.toHaveTextContent('Cô trò mình sang Trạm 1');
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(3);
+    expect(screen.getByText('Cô trò mình sang Trạm 1')).toBeVisible();
     expect(screen.queryByText(/học từ mới/)).not.toBeInTheDocument();
   });
 
@@ -519,7 +530,7 @@ describe('PipecatVoiceProvider', () => {
       { role: 'teacher', text: "Hi! My name is Luna. I'm your English tutor!" },
       { role: 'teacher', text: 'Xin chào con! Cô là Luna, gia sư tiếng Anh của con.' },
     ]} /><VoiceControls /></PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
     act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
       event: 'teacher-image', payload: {
@@ -536,10 +547,36 @@ describe('PipecatVoiceProvider', () => {
       'Your turn now!',
     ]);
     expect(rows[2].querySelector('img')).toBeInTheDocument();
-    expect(Array.from(rows).filter((row) => !row.querySelector('p'))).toHaveLength(0);
+    expect(Array.from(rows).filter((row) => !row.querySelector('p'))).toHaveLength(1);
     expect(Array.from(document.querySelectorAll('.bubble-row'), (row) => row.classList.contains('learner') ? 'learner' : 'teacher')).toEqual([
-      'teacher', 'teacher', 'learner', 'teacher', 'teacher', 'teacher', 'teacher',
+      'teacher', 'teacher', 'learner', 'teacher', 'teacher', 'teacher', 'teacher', 'teacher',
     ]);
+  });
+
+  it('keeps the first partial words after barge-in below the learner and image', async () => {
+    const user = userEvent.setup();
+    const assistantCreatedAt = new Date(Date.now() - 2_000).toISOString();
+    const learnerCreatedAt = new Date(Date.now() - 1_000).toISOString();
+    sdk.conversationMessages = [
+      { role: 'assistant', final: false, createdAt: assistantCreatedAt, parts: [{
+        text: { spoken: 'Hi! My name is Luna. Cô trò', unspoken: ' mình sang Trạm 1.' },
+        final: false, createdAt: assistantCreatedAt,
+      }] },
+      { role: 'user', final: true, createdAt: learnerCreatedAt, parts: [{ text: 'hi', final: true, createdAt: learnerCreatedAt }] },
+    ];
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: 'turn-after-barge-in', image_url: '/images/hello.webp',
+        spoken_text: 'Cô trò mình sang Trạm 1.',
+      },
+    }));
+
+    expect(Array.from(document.querySelectorAll('.bubble-row'), (row) =>
+      row.querySelector('img') ? 'image' : row.classList.contains('learner') ? 'learner' : row.querySelector('p')?.textContent,
+    )).toEqual(['learner', 'image', 'Cô trò']);
   });
 
   it('groups bilingual spoken parts by authored YAML lines without revealing future words', async () => {
@@ -554,7 +591,7 @@ describe('PipecatVoiceProvider', () => {
       ] },
     ];
     render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
     act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
       event: 'teacher-image', payload: {
@@ -564,21 +601,22 @@ describe('PipecatVoiceProvider', () => {
     }));
 
     const rows = document.querySelectorAll('.bubble-row.teacher');
-    expect(rows).toHaveLength(2);
-    expect(rows[0]).toHaveTextContent('Cô trò mình sang Trạm 1.');
+    expect(rows).toHaveLength(3);
     expect(rows[0].querySelector('img')).toBeInTheDocument();
-    expect(rows[1]).toHaveTextContent('"HELLO" nghĩa là xin chào');
+    expect(rows[0].querySelector('p')).not.toBeInTheDocument();
+    expect(rows[1]).toHaveTextContent('Cô trò mình sang Trạm 1.');
+    expect(rows[2]).toHaveTextContent('"HELLO" nghĩa là xin chào');
     expect(screen.queryByText(/con nói khi gặp bạn|Listen first/)).not.toBeInTheDocument();
   });
 
-  it('shows the image before audio and joins it to the first spoken line', async () => {
+  it('keeps the image in its own Luna bubble while spoken text grows', async () => {
     const user = userEvent.setup();
     const createdAt = new Date(Date.now() - 1000).toISOString();
     sdk.conversationMessages = [{
       role: 'user', final: true, createdAt, parts: [{ text: 'hi', final: true, createdAt }],
     }];
     const view = render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
     act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
       event: 'teacher-image', payload: {
@@ -586,20 +624,22 @@ describe('PipecatVoiceProvider', () => {
         spoken_text: '<vi>Cô trò mình sang Trạm 1 học từ mới.</vi>',
       },
     }));
+    const image = screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' });
+    const imageRow = image.closest('.bubble-row');
     expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
-    expect(screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' })).toBeInTheDocument();
+    expect(imageRow).not.toHaveTextContent('Cô trò mình');
 
     sdk.conversationMessages = [
       sdk.conversationMessages[0],
       { role: 'assistant', final: false, createdAt: new Date().toISOString(), parts: [{
-        text: { spoken: 'Cô trò mình', unspoken: ' sang Trạm 1 học từ mới.' }, final: false, createdAt,
+        text: { spoken: 'Cô trò mình sang Trạm 1', unspoken: ' học từ mới.' }, final: false, createdAt,
       }] },
     ];
     view.rerender(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[]} /><VoiceControls /></PipecatVoiceProvider>);
-    const image = screen.getByRole('img', { name: 'Hình minh họa cho câu nói của Luna' });
-    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
-    expect(image.closest('.bubble-row')).toHaveTextContent('Cô trò mình');
-    expect(screen.queryByText(/sang Trạm 1 học từ mới/)).not.toBeInTheDocument();
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(2);
+    expect(image.closest('.bubble-row')).toBe(imageRow);
+    expect(imageRow?.nextElementSibling).toHaveTextContent('Cô trò mình sang Trạm 1');
+    expect(screen.queryByText(/học từ mới/)).not.toBeInTheDocument();
   });
 
   it('clears a teacher image cue when the lesson session changes', () => {
@@ -624,14 +664,11 @@ describe('PipecatVoiceProvider', () => {
         { text: { spoken: 'Listen first!\nHEL', unspoken: 'LO means hello.\nYour turn now!' }, final: false, createdAt: '1' },
       ],
     }];
-    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={2}>
-      <ChatPanel messages={[
-        { role: 'teacher', text: 'Hello, Quang!' },
-        { role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' },
-      ]} />
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
+      <ChatPanel messages={[]} />
       <VoiceControls />
     </PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
     act(() => callbacks.onTransportStateChanged('ready'));
 
@@ -652,7 +689,7 @@ describe('PipecatVoiceProvider', () => {
     render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
       <ChatPanel messages={[]} /><VoiceControls />
     </PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
 
     expect(screen.getByText('Xin chào. HE')).toBeVisible();
@@ -667,26 +704,26 @@ describe('PipecatVoiceProvider', () => {
       }],
     }];
     sdk.conversationMessages = spoken('');
-    const view = render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
-      <ChatPanel messages={[{ role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' }]} />
+    const view = render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
+      <ChatPanel messages={[]} />
       <VoiceControls />
     </PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
     act(() => callbacks.onTransportStateChanged('ready'));
     expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(0);
 
     sdk.conversationMessages = spoken('Listen first!');
-    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
-      <ChatPanel messages={[{ role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' }]} />
+    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
+      <ChatPanel messages={[]} />
       <VoiceControls />
     </PipecatVoiceProvider>);
     expect(screen.getByText('Listen first!')).toBeVisible();
     expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
 
     sdk.conversationMessages = spoken('Listen first!\nHELLO');
-    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
-      <ChatPanel messages={[{ role: 'teacher', text: 'Listen first!\nHELLO means hello.\nYour turn now!' }]} />
+    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
+      <ChatPanel messages={[]} />
       <VoiceControls />
     </PipecatVoiceProvider>);
     expect(screen.getByText('HELLO')).toBeVisible();
@@ -701,20 +738,19 @@ describe('PipecatVoiceProvider', () => {
         { text: { spoken: 'HEL', unspoken: 'LO means hello.' }, final: false, createdAt: '1' },
       ],
     }];
-    const view = render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
-      <ChatPanel messages={[{ role: 'teacher', text: 'HELLO means hello.' }]} />
+    const view = render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={0}>
+      <ChatPanel messages={[]} />
       <VoiceControls />
     </PipecatVoiceProvider>);
-    await user.click(screen.getByRole('button', { name: 'Start voice lesson' }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
     const callbacks = sdk.options?.callbacks as { onTransportStateChanged(state: string): void };
     act(() => callbacks.onTransportStateChanged('ready'));
     await user.click(screen.getByRole('button', { name: 'Stop voice lesson' }));
 
     expect(screen.getByText('HEL')).toBeVisible();
     expect(screen.queryByText('HELLO means hello.')).not.toBeInTheDocument();
-    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={3}>
+    view.rerender(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={2}>
       <ChatPanel messages={[
-        { role: 'teacher', text: 'HELLO means hello.' },
         { role: 'learner', text: 'Hi' },
         { role: 'teacher', text: 'Nice to see you!' },
       ]} />

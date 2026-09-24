@@ -1,23 +1,136 @@
 lesson: 1
 title: Chào hỏi và giới thiệu tên
-greeting:
-  order: 1
+items:
+- type: practice
   say: |-
     <en>Hi! My name is Luna. I'm your English tutor!</en>
     <vi>[long pause] Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>
-    <vi> We're going to practice English together. Ready?</vi>
-  accept: Con đáp lại bằng Hi hoặc Hello; có thể gọi tên cô Luna. Một câu chào ngắn cũng đạt.
+    <en> We're going to practice English together. Ready?</en>
+  learner_goal: Học sinh đáp lời chào Luna bằng tiếng Anh, chẳng hạn Hi hoặc Hello; có thể gọi tên Luna. Chỉ nói
+    lời tạm biệt thì chưa đạt.
   image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
-words:
-- hello
-- hi
-- I
-- I'm
-- Ben
-- Mai
-- Minh
-- good evening
-- nice to meet you
+- type: practice
+  say: |-
+    <vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>
+    <en>[long pause] "*HELLO*"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai như bạn bè, thầy cô, hay cô Luna.</vi>
+    <en>[long pause] Listen first! [long pause] "*HELLO*" </en>
+    <en>[long pause] Your turn now! Can you say: [long pause] [slowly] "*Hello*"?</en>
+  learner_goal: Học sinh nói từ Hello bằng tiếng Anh. Một lời chào khác như Hi chưa đạt lượt luyện đúng từ Hello.
+  image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
+- type: practice
+  say: <en>Once more! [long pause] "Hello"</en>
+  learner_goal: Học sinh nói lại từ Hello bằng tiếng Anh; không cần thêm câu khác.
+- type: practice
+  say: |-
+    <vi>Cô phát âm chậm nhé: </vi>
+    <en>[long pause] "H-HELLO"</en><vi> </vi>
+    <vi>[long pause] Con đặt tay trước miệng thấy hơi ấm phả ra không? Đó là âm giống như một hơi thở. [long pause]</vi>
+    <en>Now you!</en>
+  learner_goal: Học sinh nói từ Hello bằng tiếng Anh; không kết luận âm /h/ rõ hay chưa chỉ từ transcript chữ.
+- type: practice
+  say: |-
+    <en>[long pause] "*Hi*"</en><vi> [long pause] cũng là xin chào, nhưng ngắn và thân mật hơn, con dùng với bạn bè.</vi>
+    <en>Listen first! [long pause] "*Hi*"</en>
+    <en>Your turn now! [long pause][slowly] "*Hi*"</en>
+  learner_goal: Học sinh nói từ Hi bằng tiếng Anh. Hello có nghĩa gần giống nhưng chưa đạt lượt luyện đúng từ Hi.
+  image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
+- type: practice
+  say: |-
+    <en>[long pause] "I"</en><vi> [long pause] nghĩa là mình khi con nói về chính con.</vi>
+    <en>[long pause] "*I'm*"</en><vi> [long pause] nghĩa là 'mình là'. Cuối chữ, con ngậm môi lại:</vi>
+    <en>[long pause] "I'mm"</en>
+    <en>Listen first! [long pause] "*I'm*"</en>
+    <en>Your turn now! Can you say: [long pause][slowly] "*I'm*"?</en>
+  learner_goal: Học sinh nói cụm I'm bằng tiếng Anh; có thể thêm tên do học sinh tự chọn. Không đánh giá âm /m/
+    cuối từ transcript chữ.
+  image_url: /images/grade-03/unit-01/lesson-01/02-self-introduction.webp
+- type: practice
+  say: |-
+    <en>"*Good evening*"</en><vi> [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.</vi>
+    <en>Listen first! [long pause] "*Good evening*"</en>
+    <en>Your turn now! [long pause] "*Good evening*"!</en>
+  learner_goal: Học sinh nói Good evening bằng tiếng Anh để chào khi gặp vào buổi tối; Good night là lời chúc khi
+    chia tay nên chưa đạt.
+  image_url: /images/grade-03/unit-01/lesson-01/03-time-of-day-greetings.webp
+- type: practice
+  say: |-
+    <vi>Khi gặp ai LẦN ĐẦU, con nói </vi><en>[long pause] "*Nice to meet you*"</en>
+    <vi> [long pause] — nghĩa là rất vui được gặp bạn.</vi>
+    <en>Listen first! [long pause] "*NICE TO MEET YOU*"</en>
+    <en>Your turn now! [long pause] "*Nice to meet you*"!</en>
+  learner_goal: Học sinh nói đủ cụm Nice to meet you bằng tiếng Anh; không đánh giá nối âm từ transcript chữ.
+  image_url: /images/grade-03/unit-01/lesson-01/04-first-meeting.webp
+- type: practice
+  say: |-
+    <vi>Cô đố con trò Mật mã hai cửa nhé! [long pause]</vi>
+    <vi>Cửa thứ nhất: con gặp một bạn thân. Cửa thứ hai: con gặp cô Luna vào buổi tối. [long pause]</vi>
+    <vi>Con nói hai lời chào phù hợp theo đúng thứ tự để mở cả hai cửa nào!</vi>
+  learner_goal: 'Học sinh nói hai lời chào theo đúng thứ tự: Hi hoặc Hello cho bạn thân, rồi Good evening khi gặp
+    Luna buổi tối. Thiếu một lời chào hoặc đảo thứ tự thì chưa đạt.'
+- type: practice
+  say: |-
+    <vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>
+    <vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] "Hi. I'm Mai."</en>
+    <en>Your turn now! Can you say: [long pause] "Hi. I'm Mai."?</en>
+  learner_goal: Học sinh nói lời chào Hi hoặc Hello rồi giới thiệu đúng tên Mai bằng I'm Mai như mẫu đang luyện.
+    Chỉ nói Mai hoặc dùng I'm với tên khác thì chưa đạt mẫu này.
+- type: practice
+  say: <en>Listen first! [long pause] "Hello. I'm Minh." [long pause] Your turn now!</en>
+  learner_goal: Học sinh nói lời chào Hi hoặc Hello rồi giới thiệu đúng tên Minh bằng I'm Minh như mẫu vừa nghe.
+    Chỉ nói tên riêng thì chưa đạt.
+- type: practice
+  say: <en>Now say YOUR name! [long pause] "Hi. I'm Luna." Your turn!</en>
+  learner_goal: Học sinh giới thiệu tên thật hoặc tên tự chọn của mình bằng I'm [tên]; có thể thêm Hi hoặc Hello
+    ở đầu. Không coi Luna là tên học sinh chỉ vì mẫu nói I'm Luna.
+- type: practice
+  say: |-
+    <vi>Khi bạn chào con trước, con chào lại, gọi tên bạn, rồi nói tên con. </vi><en>Listen first! [long pause] "Hello, Ben. I'm Mai."</en>
+    <en>Your turn now!</en>
+  learner_goal: Học sinh đáp lời chào của Ben và tự giới thiệu tên bằng I'm [tên], ví dụ Hello, Ben. I'm Mai. Tên
+    của học sinh có thể tự chọn.
+- type: practice
+  say: |-
+    <en>Now I'm going to play a character — I'm Tom from England! [long pause]</en>
+    <en>[long pause] "Hi. I'm Tom."</en>
+  learner_goal: Học sinh đáp nhân vật Tom bằng Hi hoặc Hello rồi giới thiệu tên mình bằng I'm [tên]. Gọi Tom là
+    điểm cộng, không bắt buộc; chỉ lặp I'm Tom thì chưa phải giới thiệu mình.
+- type: practice
+  say: <en>Now I'm Emma from England! [long pause] "Hello. I'm Emma."</en>
+  learner_goal: Học sinh đáp nhân vật Emma bằng Hi hoặc Hello rồi giới thiệu tên mình bằng I'm [tên]. Có thể gọi
+    Emma; không nhận I'm Emma như tên của học sinh nếu chỉ lặp mẫu.
+- type: narration
+  say: <en>Scene done! You just had a real conversation in English!</en>
+- type: practice
+  say: '<vi>Bây giờ đổi vai — con là người chào cô trước nhé! </vi><en>Say: [long pause] "Hi. I''m…"</en>'
+  learner_goal: Học sinh tự mở lời với Luna bằng Hi hoặc Hello và I'm [tên học sinh tự chọn]. Câu cần có phần giới
+    thiệu tên, không chỉ lời chào.
+- type: narration
+  say: <en>[long pause] "Hi! I'm Luna. Nice to meet you!"</en>
+- type: practice
+  say: |-
+    <vi>Giờ con nói chuyện thật với cô bằng tiếng Anh nhé — cô luôn giúp con! [long pause]</vi>
+    <en>Let's meet again — all in English! Ready? [long pause]</en>
+    <en>[long pause] "Good evening!"</en>
+  learner_goal: Học sinh đáp lời chào Good evening của Luna bằng Good evening, Hello hoặc Hi. Một lời tạm biệt chưa
+    đạt.
+- type: practice
+  say: <en>[long pause] "I'm Luna."</en>
+  learner_goal: Học sinh chào Luna và giới thiệu tên mình bằng I'm [tên học sinh tự chọn]. Không chấp nhận chỉ lặp
+    I'm Luna như lời của học sinh.
+- type: practice
+  say: <en>[long pause] "Hi! Nice to meet you."</en>
+  learner_goal: Học sinh đáp lời gặp mặt bằng Nice to meet you hoặc Nice to meet you, too; có thể gọi tên Luna.
+- type: narration
+  say: <en>Wow! That was your first English conversation! </en>
+- type: practice
+  say: <en>Now YOU start! Say hello to me first.</en>
+  learner_goal: Học sinh chủ động chào Luna bằng Hi hoặc Hello; có thể giới thiệu tên mình bằng I'm [tên học sinh
+    tự chọn], nhưng không bắt buộc.
+- type: practice
+  say: <en>[long pause] "Good evening! I'm Luna. Nice to meet you!"</en>
+  learner_goal: Học sinh đáp lời Luna bằng Nice to meet you hoặc Nice to meet you, too; có thể thêm lời chào.
+- type: end
+  say: <en>Great work today!</en>
 cards:
 - word: hello
   pronunciation: /həˈloʊ/
@@ -43,139 +156,3 @@ cards:
   pronunciation: /naɪs tə ˈmiːt juː/
   meaning_vi: rất vui được gặp bạn
   image_url: /images/grade-03/unit-01/lesson-01/04-first-meeting.webp
-patterns:
-  introduce: Hello./Hi. I'm {name}.
-  reply: Hello,/Hi, {friend}. I'm {name}.
-stations:
-- id: vocabulary
-  steps:
-  - order: 2
-    target: hello
-    image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
-    say: |-
-      <vi>Cô trò mình sang Trạm 1 học từ mới. Mỗi từ, cô nói nghĩa rồi đọc trước, con đọc theo cô nhé!</vi>
-      <en>[long pause] "*HELLO*"</en><vi> nghĩa là xin chào, con nói khi gặp bất kỳ ai như bạn bè, thầy cô, hay cô Luna.</vi>
-      <en>[long pause] Listen first! [long pause] "*HELLO*" </en>
-      <en>[long pause] Your turn now! Can you say: [long pause] [slowly] "*Hello*"?</en>
-    accept: hello (có /h/)
-    more:
-    - say: |-
-        <en>Once more! [long pause] "Hello"</en>
-      accept: hello
-    - say: |-
-        <vi>Cô phát âm chậm nhé: </vi>
-        <en>[long pause] "H-HELLO"</en><vi> </vi>
-        <vi>[long pause] Con đặt tay trước miệng thấy hơi ấm phả ra không? Đó là âm giống như một hơi thở. [long pause]</vi>
-        <en>Now you!</en>
-      accept: Có /h/ rõ
-  - order: 3
-    target: hi
-    image_url: /images/grade-03/unit-01/lesson-01/01-hello-and-greetings.webp
-    say: |-
-      <en>[long pause] "*Hi*"</en><vi> [long pause] cũng là xin chào, nhưng ngắn và thân mật hơn, con dùng với bạn bè.</vi>
-      <en>Listen first! [long pause] "*Hi*"</en>
-      <en>Your turn now! [long pause][slowly] "*Hi*"</en>
-    accept: hi
-  - order: 4
-    target: I'm
-    image_url: /images/grade-03/unit-01/lesson-01/02-self-introduction.webp
-    say: |-
-      <en>[long pause] "I"</en><vi> [long pause] nghĩa là mình khi con nói về chính con.</vi>
-      <en>[long pause] "*I'm*"</en><vi> [long pause] nghĩa là 'mình là'. Cuối chữ, con ngậm môi lại:</vi>
-      <en>[long pause] "I'mm"</en>
-      <en>Listen first! [long pause] "*I'm*"</en>
-      <en>Your turn now! Can you say: [long pause][slowly] "*I'm*"?</en>
-    accept: Có /m/ cuối
-  - order: 5
-    target: good evening
-    image_url: /images/grade-03/unit-01/lesson-01/03-time-of-day-greetings.webp
-    say: |-
-      <en>"*Good evening*"</en><vi> [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.</vi>
-      <en>Listen first! [long pause] "*Good evening*"</en>
-      <en>Your turn now! [long pause] "*Good evening*"!</en>
-    accept: good evening
-  - order: 6
-    target: nice to meet you
-    image_url: /images/grade-03/unit-01/lesson-01/04-first-meeting.webp
-    say: |-
-      <vi>Khi gặp ai LẦN ĐẦU, con nói </vi><en>[long pause] "*Nice to meet you*"</en>
-      <vi> [long pause] — nghĩa là rất vui được gặp bạn.</vi>
-      <en>Listen first! [long pause] "*NICE TO MEET YOU*"</en>
-      <en>Your turn now! [long pause] "*Nice to meet you*"!</en>
-    accept: Đủ cụm, nối âm chưa chuẩn vẫn đạt
-  - order: 7
-    target: [hi, good evening]
-    say: |-
-      <vi>Cô đố con trò Mật mã hai cửa nhé! [long pause]</vi>
-      <vi>Cửa thứ nhất: con gặp một bạn thân. Cửa thứ hai: con gặp cô Luna vào buổi tối. [long pause]</vi>
-      <vi>Con nói hai lời chào phù hợp theo đúng thứ tự để mở cả hai cửa nào!</vi>
-    accept: Cửa 1 chấp nhận Hi hoặc Hello; cửa 2 chấp nhận Good evening. Con nói được cả hai lời chào theo đúng thứ tự thì đạt; không cần thêm câu khác.
-- id: patterns
-  steps:
-  - order: 8
-    target: introduce
-    say: |-
-      <vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>
-      <vi>Khi gặp một bạn mới, con chào rồi nói tên của con. </vi><en>Listen first! [long pause] "Hi. I'm Mai."</en>
-      <en>Your turn now! Can you say: [long pause] "Hi. I'm Mai."?</en>
-    accept: Hi/Hello + I'm + Mai
-    more:
-    - say: |-
-        <en>Listen first! [long pause] "Hello. I'm Minh."</en>
-      accept: Đủ câu
-    - say: |-
-        <en>Now say YOUR name! [long pause] "Hi. I'm Luna." Your turn!</en>
-      accept: Hi/Hello + I'm + tên. Thiếu Hi vẫn đạt.
-  - order: 9
-    target: reply
-    say: |-
-      <vi>Khi bạn chào con trước, con chào lại, gọi tên bạn, rồi nói tên con. </vi><en>Listen first! [long pause] "Hello, Ben. I'm Mai."</en>
-      <en>Your turn now!</en>
-    accept: Đủ câu
-  - order: 10
-    target: reply
-    say: |-
-      <en>Now I'm going to play a character — I'm Tom from England! [long pause]</en>
-      <en>[long pause] "Hi. I'm Tom."</en>
-    accept: Hi/Hello + Tom + I'm + tên. Quên gọi 'Tom' vẫn đạt.
-    more:
-    - say: |-
-        <en>Now I'm Emma from England! [long pause] "Hello. I'm Emma."</en>
-      accept: Đủ các thành phần
-    - say: |-
-        <en>Scene done! You just had a real conversation in English!</en>
-  - order: 11
-    target: introduce
-    say: |-
-      <vi>Bây giờ đổi vai — con là người chào cô trước nhé! </vi><en>Say: [long pause] "Hi. I'm…"</en>
-    accept: Tự mở lời bằng câu trọn vẹn
-    more:
-    - say: |-
-        <en>[long pause] "Hi, {tên}! I'm Luna. Nice to meet you!"</en>
-- id: conversation
-  steps:
-  - order: 12
-    target: introduce
-    say: |-
-      <vi>Giờ con nói chuyện thật với cô bằng tiếng Anh nhé — cô luôn giúp con! [long pause]</vi>
-      <en>Let's meet again — all in English! Ready? [long pause]</en>
-      <en>[long pause] "Good evening!"</en>
-    accept: Good evening / Hello / Hi (đều đạt)
-    more:
-    - say: |-
-        <en>[long pause] "I'm Luna."</en>
-      accept: Gọi tên Luna + I'm + tên
-    - say: |-
-        <en>[long pause] "Hi, {tên}! Nice to meet you."</en>
-      accept: 'Nice to meet you (Mức 3: …, too)'
-    - say: |-
-        <en>Wow! That was your first English conversation! </en>
-  - order: 13
-    target: introduce
-    say: |-
-      <en>Now YOU start! Say hello to me first.</en>
-    accept: Chào + I'm + tên
-    more:
-    - say: |-
-        <en>[long pause] "Good evening, {tên}! I'm Luna. Nice to meet you!"</en>
-      accept: 'Mức 2: Nice to meet you · Mức 3: …, too'

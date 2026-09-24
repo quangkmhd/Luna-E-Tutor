@@ -19,11 +19,5 @@ WORKDIR /app/backend
 # Install dependencies with uv
 RUN uv sync --frozen --no-dev
 
-# Create data directory for persistent SQLite database
-RUN mkdir -p /app/backend/data
-
 EXPOSE 8000
-
-ENV TUTOR_DATABASE_PATH=/app/backend/data/luna-tutor.sqlite3
-
-CMD ["uv", "run", "uvicorn", "luna_tutor.api.runtime:build_runtime_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "luna_tutor.api.lesson_runtime:build_lesson_runtime_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]

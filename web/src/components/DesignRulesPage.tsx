@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import type { DesignRuleDocument } from '@/lib/design-rules';
 
-const FEATURED_GROUPS = new Set(['Dạy từ', 'Sửa lỗi', 'Ngôn ngữ', 'Free Talk']);
+const FEATURED_GROUPS = new Set(['Kịch bản', 'Đánh giá', 'Sửa lỗi', 'Voice']);
 
 const SYSTEM_SECTIONS = [
   {
@@ -11,10 +11,9 @@ const SYSTEM_SECTIONS = [
     title: 'Mục tiêu trải nghiệm',
     summary: 'Để trẻ là nhân vật chính và luôn có cảm giác mình đang tiến bộ.',
     principles: [
-      'Học sinh nói tối thiểu 60% toàn buổi và 70% trong Free Talk.',
-      'Luna hỏi ngắn, chờ trẻ trả lời rồi dùng “Why?” hoặc “Tell me more” để mở rộng.',
-      'Cứ 2–3 phút tạo ít nhất một khoảnh khắc thành công rõ ràng.',
-      'Level 1 → Level 2 → Level 3 → Free Talk; mỗi bước có điều kiện hoàn thành.',
+      'Mỗi mục practice có một learner_goal rõ ràng để đối chiếu với lời học sinh.',
+      'Luna đọc nguyên văn lời say trong kịch bản.',
+      'Mục narration tự chuyển; mục end kết thúc bài sau lời nói cuối.',
     ],
   },
   {
@@ -23,10 +22,10 @@ const SYSTEM_SECTIONS = [
     title: 'Vòng lặp dạy học',
     summary: 'Một nhịp dạy dễ dự đoán nhưng vẫn tạo ra hội thoại tự nhiên.',
     principles: [
-      'Làm mẫu → hỗ trợ → tự diễn đạt → hỏi ngược.',
-      'Dạy từng từ riêng: đọc mẫu hai lần, trẻ nói, phản hồi cụ thể rồi mới chuyển.',
-      'Sau lời khen luôn có câu dẫn tiếp hoặc câu hỏi mở; không tạo ngõ cụt.',
-      'Khi phát âm chưa rõ, chỉ ra phần trẻ đã làm tốt thay vì chỉ khen chung chung.',
+      'Jev so lời học sinh với learner_goal và trả một mã cho cả lượt.',
+      'PASSED chuyển kịch bản; các ngoại lệ đưa qua Teacher.',
+      'Teacher hồi đáp đúng ý học sinh trước khi dẫn về mục tiêu nếu em có ý định khác.',
+      'Luna không đoán lỗi phát âm chỉ từ transcript chữ.',
     ],
   },
   {
@@ -35,10 +34,10 @@ const SYSTEM_SECTIONS = [
     title: 'Bộ điều khiển thích ứng',
     summary: 'Cùng một mục tiêu, nhưng đường đi thay đổi theo trạng thái thật của trẻ.',
     principles: [
-      'Phân biệt sai nghĩa, sai ngữ pháp, phát âm chưa rõ, im lặng, tiếng Việt và lạc đề.',
-      'Nếu trẻ mệt hoặc buồn, Luna giảm tốc độ, giảm độ khó và bắt đầu bằng việc dễ.',
-      'Nếu trẻ lạc đề, Luna công nhận ý, hẹn quay lại và nhẹ nhàng đưa về nhiệm vụ.',
-      'Nếu trẻ nói dài, Luna giữ ý quan trọng, hỏi sâu một ý rồi chuyển tiếp tự nhiên.',
+      'Lần sai thứ nhất sửa một điểm quan trọng rồi mời thử lại.',
+      'Lần sai thứ hai giảm độ khó; lần ba hỗ trợ rõ hơn.',
+      'Lần sai thứ tư nói cách đúng rồi phát lời kịch bản kế tiếp.',
+      'OTHER_INTENT và UNCLEAR_INPUT không tăng bộ đếm lần sai.',
     ],
   },
   {
@@ -47,10 +46,10 @@ const SYSTEM_SECTIONS = [
     title: 'Bằng chứng tiến bộ',
     summary: 'Tiến trình dựa trên điều trẻ đã thực sự nói, không dựa trên phỏng đoán.',
     principles: [
-      'Theo dõi từng từ và cấu trúc ở ba trạng thái: độc lập, có hỗ trợ hoặc chưa dùng.',
-      'Ghi nhận câu hỏi ngược tự phát và câu hỏi được Luna gợi ý.',
-      'Nếu còn mục tiêu chưa dùng, tạo ngữ cảnh phù hợp để trẻ có cơ hội thể hiện.',
-      'Chỉ chuyển chặng sau một thành công có bằng chứng và một câu chuyển tiếp rõ ràng.',
+      'Giữ lịch sử lời Luna đã phát và câu học sinh đã nói trong phiên hiện tại.',
+      'Một turn_id chỉ được tính một lần, kể cả khi gửi lại.',
+      'Bộ đếm gắn với mục practice hiện tại và về không ở mục mới.',
+      'Thoát phiên là xóa trạng thái học và lịch sử của phiên.',
     ],
   },
   {
@@ -59,10 +58,10 @@ const SYSTEM_SECTIONS = [
     title: 'An toàn và hoàn tất',
     summary: 'Bảo vệ trẻ, đóng vai minh bạch và kết thúc bằng cảm giác hoàn thành.',
     principles: [
-      'Không thu thập số điện thoại thật; chủ động dừng nếu trẻ bắt đầu chia sẻ.',
-      'Thông báo rõ khi Luna đổi vai thành Emma và khi đã thoát khỏi vai.',
-      'Cuối buổi tóm tắt trẻ đã nói được gì, không chỉ liệt kê nội dung đã học.',
-      'Kết thúc bằng một câu nhớ lại từ mới để củng cố khả năng truy hồi.',
+      'Học sinh ấn mic để nói và ấn Gửi để yêu cầu chốt transcript.',
+      'Không mở quyền bật mic khi Luna đang xử lý hoặc đang nói.',
+      'Khi Luna nói xong, mic vẫn tắt cho đến khi học sinh tự bật lại.',
+      'Bài Text dùng cùng luồng xử lý và hiển thị lời đáp không qua TTS.',
     ],
   },
 ] as const;
@@ -75,13 +74,13 @@ export function DesignRulesPage({ document }: { document: DesignRuleDocument }) 
         <Link href="/">Mở ứng dụng Luna</Link>
       </nav>
       <div className="design-hero-copy">
-        <span className="design-overline">Product design brief · Grade 5 English</span>
+        <span className="design-overline">Product design brief · Grade 3 English</span>
         <h1>Nguyên tắc thiết kế Luna</h1>
-        <p>{document.title}. Một hệ thống dạy hội thoại tự nhiên, có giới hạn rõ ràng và tiến trình dựa trên bằng chứng.</p>
+        <p>{document.title}. Luna đọc kịch bản nguyên văn và hỗ trợ học sinh theo mục tiêu của từng lượt.</p>
         <div className="design-meta">
           <span><strong>{document.rules.length}</strong> nguyên tắc cốt lõi</span>
-          <span><strong>3</strong> cấp độ học</span>
-          <span><strong>90%</strong> tiếng Anh mục tiêu</span>
+          <span><strong>3</strong> loại mục kịch bản</span>
+          <span><strong>5</strong> mã đánh giá lượt</span>
         </div>
       </div>
     </header>
@@ -110,7 +109,7 @@ export function DesignRulesPage({ document }: { document: DesignRuleDocument }) 
       <header className="design-section-heading">
         <span>From scenarios to product</span>
         <h2 id="system-heading">Hệ thống dạy học hoàn chỉnh</h2>
-        <p>Các cơ chế được rút ra từ những tình huống thật trong kịch bản Unit 1 — từ trẻ im lặng, lạc đề đến role-play và kết thúc buổi học.</p>
+        <p>Các cơ chế áp dụng cho bài học theo kịch bản lớp 3.</p>
       </header>
       <div className="design-system-list">
         {SYSTEM_SECTIONS.map((section) => <article className="design-system-section" key={section.number}>
@@ -131,7 +130,7 @@ export function DesignRulesPage({ document }: { document: DesignRuleDocument }) 
 
     <footer className="design-footer">
       <div><span className="logo-mark">L</span><strong>Luna English Tutor</strong></div>
-      <p>Nguồn: <code>tmp/rule.md</code> · <code>docs/UNIT1_ALL_ABOUT_ME_DIALOGUE.md</code></p>
+      <p>Nguồn: <code>docs/grade3_lesson_refactor_spec.md</code></p>
     </footer>
   </main>;
 }

@@ -3,36 +3,36 @@
   align-items: center;
   gap: 8px;
 }
-.voiceControls { flex-wrap: wrap; justify-content: flex-end; }
-.state { display: inline-flex; align-items: center; gap: 6px; min-width: 78px; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: capitalize; }
-.phaseIcon { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: #9ab2aa; box-shadow: 0 0 0 3px rgb(55 123 105 / 10%); }
-.phaseIcon svg { width: 15px; height: 15px; overflow: visible; fill: currentColor; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.ready .phaseIcon, .listening .phaseIcon { background: var(--green); }
-.thinking .phaseIcon { background: #d99a32; }
-.speaking .phaseIcon { background: #183b34; }
-.connecting .phaseIcon { animation: statusPulse 1.2s ease-in-out infinite; }
-.listening .phaseIcon { animation: listenPulse 1.1s ease-out infinite; }
-.speaking .phaseIcon { animation: speakPulse .8s ease-in-out infinite alternate; }
-.statusDot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.thinkingDots { display: flex; align-items: center; gap: 2px; }
-.thinkingDots i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; animation: dotBounce 1s ease-in-out infinite; }
-.thinkingDots i:nth-child(2) { animation-delay: .14s; }
-.thinkingDots i:nth-child(3) { animation-delay: .28s; }
-@keyframes statusPulse { 50% { opacity: .55; } }
-@keyframes listenPulse { 50% { box-shadow: 0 0 0 7px rgb(55 123 105 / 12%); } }
-@keyframes speakPulse { to { transform: scale(1.08); box-shadow: 0 0 0 6px rgb(24 59 52 / 12%); } }
-@keyframes dotBounce { 0%, 60%, 100% { transform: translateY(1px); opacity: .55; } 30% { transform: translateY(-2px); opacity: 1; } }
+.voiceControls { position: relative; flex-wrap: wrap; justify-content: flex-end; }
+.state { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid; border-radius: 10px; font-size: 12px; font-weight: 900; line-height: 1.2; white-space: nowrap; }
+.micOffState { color: #9a4934; background: #fff0e8; border-color: #f4c5b5; }
+.micOnState { color: #145f4c; background: #e8f6f0; border-color: #a9ddc9; }
+.speakerPlaying { position: absolute; right: 0; bottom: calc(100% + 14px); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 7px 9px; border: 1px solid #b8d5f3; border-radius: 10px; color: #245b97; background: #eaf4ff; box-shadow: 0 3px 12px rgb(36 91 151 / 12%); font-size: 11px; font-weight: 900; white-space: nowrap; }
+.speakerPlaying svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.speakerPlaying svg path:first-child { fill: currentColor; }
+.speakerWave { animation: speakerWave 1s ease-in-out infinite; }
+.speakerWaveOuter { animation-delay: .2s; }
+@keyframes speakerWave { 50% { opacity: .25; } }
 .actions { justify-content: flex-start; flex-wrap: wrap; }
-.primary, .secondary { border-radius: 12px; padding: 11px 13px; font-weight: 800; white-space: nowrap; }
-.primary { border: 0; color: #fff; background: var(--green); }
+.secondary { border-radius: 12px; padding: 11px 13px; font-weight: 800; white-space: nowrap; }
 .secondary { border: 1px solid var(--line); color: var(--ink); background: #fff; }
+.micButton { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border: 0; border-radius: 50%; color: #fff; background: linear-gradient(145deg, #f18b68, #dc5b42); box-shadow: 0 5px 15px rgb(151 56 38 / 24%); cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+.micButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgb(85 61 52 / 28%); }
+.micButton:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+.micButton svg { width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.micIdle { animation: micIdlePulse 1.6s ease-in-out infinite; }
+.micButton:disabled { cursor: wait; opacity: .7; }
+.micActive { background: linear-gradient(145deg, #49a58a, #176f59); box-shadow: 0 0 0 5px rgb(55 123 105 / 16%); }
+.micSpeaking { animation: micPulse .85s ease-in-out infinite alternate; }
+@keyframes micIdlePulse { 50% { box-shadow: 0 0 0 9px rgb(220 91 66 / 18%), 0 5px 18px rgb(151 56 38 / 25%); } }
+@keyframes micPulse { to { transform: scale(1.09); box-shadow: 0 0 0 12px rgb(55 123 105 / 16%); } }
 .error { position: absolute; right: 22px; bottom: 76px; max-width: min(420px, calc(100vw - 44px)); margin: 0; padding: 10px; border-radius: 10px; color: #7a3525; background: #ffebe4; box-shadow: var(--shadow); font-size: 13px; line-height: 1.45; }
 
 @media(max-width:620px){
   .state{min-width:auto}
-  .primary,.secondary{padding:10px}
+  .secondary{padding:10px}
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .phaseIcon, .thinkingDots i { animation: none !important; }
+  .micIdle, .micSpeaking, .speakerWave { animation: none !important; }
 }

@@ -9,11 +9,8 @@ services:
       - .env
     environment:
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
-      - TUTOR_DATABASE_PATH=/app/backend/data/luna-tutor.sqlite3
     ports:
       - "${BACKEND_PORT:-8090}:8000"
-    volumes:
-      - backend_data:/app/backend/data
     networks:
       - luna-network
 
@@ -28,9 +25,7 @@ services:
     environment:
       - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
       - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-}
-      - TUTOR_DATABASE_PATH=/app/backend/data/luna-tutor.sqlite3
-    volumes:
-      - backend_data:/app/backend/data
+      - TUTOR_API_URL=http://127.0.0.1:${BACKEND_PORT:-8090}
     network_mode: host
 
   talk:
@@ -101,8 +96,4 @@ services:
 networks:
   luna-network:
     driver: bridge
-
-volumes:
-  backend_data:
-
 

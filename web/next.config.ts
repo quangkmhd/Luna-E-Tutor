@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// Backend: cùng Docker bridge network → dùng container hostname
-const BACKEND_HOST = process.env.BACKEND_HOST || process.env.VPS_HOST || 'http://backend';
+// Docker supplies BACKEND_HOST; local Next.js talks to the backend on loopback.
+const BACKEND_HOST = process.env.BACKEND_HOST || process.env.VPS_HOST || 'http://127.0.0.1';
 const BACKEND_PORT = process.env.BACKEND_PORT || '8000';
 
 // Voice & Talk: dùng network_mode: host → phải truy cập qua Docker host gateway

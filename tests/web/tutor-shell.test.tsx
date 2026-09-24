@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StrictMode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -9,15 +9,14 @@ import { ApiError, TutorApi } from '@/lib/api';
 import type { SessionView, UnitSummary } from '@/lib/types';
 
 const push = vi.fn();
-const voice = vi.hoisted(() => ({ transportState: 'disconnected', sendText: vi.fn().mockResolvedValue(undefined) }));
+const voice = vi.hoisted(() => ({ transportState: 'disconnected', phase: 'ready', micMode: 'off', elapsedSeconds: 0, stop: vi.fn().mockResolvedValue(undefined), sendText: vi.fn().mockResolvedValue(undefined) }));
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push }),
 }));
 
 const UNITS: UnitSummary[] = [
-  { id: 'grade05.unit01', grade: 5, unit: 1, title: 'All about me!' },
-  { id: 'grade05.unit02', grade: 5, unit: 2, title: 'Our homes' },
+  { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' },
 ];
 
 vi.mock('@/components/voice/PipecatVoiceProvider', () => ({
@@ -34,22 +33,19 @@ vi.mock('@pipecat-ai/client-react', () => ({
 
 function session(changes: Partial<SessionView> = {}): SessionView {
   return {
-    session_id: 's1', unit_id: 'grade05.unit01', state_version: 0,
+    session_id: 's1', unit_id: 'grade03.unit01', state_version: 0,
     unit: UNITS[0],
     stage_id: 'warm-up', activity_id: 'warm-up.hello', objective_id: null,
-    learning_focus: [{
-      stage_id: 'lesson-01', stage_title: 'Lesson 01',
-      target_words: ['class'], target_patterns: ['I am in Class ___.'], highlighted: true,
-    }],
+    flashcards: [],
     status: 'active', messages: [{ role: 'teacher', text: 'Hello, Quang!' }],
-    review_queue: [], objective_progress: [], last_evidence: null,
-    last_decision: null, summary: null, ...changes,
+    ...changes,
   };
 }
 
 function mockApi(overrides: Record<string, unknown> = {}) {
   return {
     listUnits: vi.fn().mockResolvedValue(UNITS),
+    listLessons: vi.fn().mockResolvedValue([]),
     listSessions: vi.fn().mockResolvedValue([]),
     createSession: vi.fn().mockResolvedValue(session()),
     resetSession: vi.fn().mockResolvedValue(session()),
@@ -65,25 +61,25 @@ function mockApi(overrides: Record<string, unknown> = {}) {
 }
 
 async function openLesson(api: TutorApi) {
-  render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
-  await screen.findByText('English Tutor · Grade 5 · Unit 1');
+  render(<TutorShell api={api} initialUnitId="grade03.unit01" />);
+  await screen.findByText('English Tutor · Grade 3 · Unit 1');
 }
 
 describe('TutorShell', () => {
-  beforeEach(() => { voice.transportState = 'disconnected'; voice.sendText.mockClear(); });
+  beforeEach(() => { voice.transportState = 'disconnected'; voice.phase = 'ready'; voice.micMode = 'off'; voice.stop.mockClear(); voice.sendText.mockClear(); });
   it('keeps a classroom loading frame while a direct-route session is opening', async () => {
     let openSession: ((value: SessionView) => void) | undefined;
     const api = mockApi({
       createSession: vi.fn().mockImplementation(() => new Promise<SessionView>((resolve) => { openSession = resolve; })),
     });
 
-    render(<TutorShell api={api} initialUnitId="grade05.unit02" />);
+    render(<TutorShell api={api} initialUnitId="grade03.unit01" initialLessonId={2} />);
     await waitFor(() => expect(openSession).toBeDefined());
 
     expect(screen.getByRole('status')).toHaveTextContent('Đang mở lớp học');
     expect(screen.getByRole('status').closest('main')).toHaveClass('learner-app');
     expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
-    openSession?.(session({ unit: UNITS[1], unit_id: UNITS[1].id }));
+    openSession?.(session({ lesson_id: 2 }));
     expect(await screen.findByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
   });
 
@@ -100,7 +96,7 @@ describe('TutorShell', () => {
       }),
     });
 
-    render(<StrictMode><TutorShell api={api} initialUnitId="grade05.unit01" /></StrictMode>);
+    render(<StrictMode><TutorShell api={api} initialUnitId="grade03.unit01" /></StrictMode>);
     await waitFor(() => expect(resolveSecond).toBeDefined());
     await waitFor(() => expect(calls).toBe(2));
 
@@ -110,31 +106,29 @@ describe('TutorShell', () => {
     expect(await screen.findByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
   });
 
-  it('shows the three classroom regions using available units and real learning targets', async () => {
+  it('shows the three classroom regions using available units', async () => {
     await openLesson(mockApi());
     expect(screen.getByRole('navigation', { name: 'Chương trình học' })).toBeVisible();
-    expect(screen.getByRole('button', { name: /Unit 2.*Our homes/i })).toBeVisible();
+    expect(screen.getByRole('button', { name: /Unit 1.*Hello/i })).toBeVisible();
     expect(screen.getByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
-    expect(screen.getByLabelText('Các chặng học')).toHaveTextContent('Lesson 01');
-    expect(screen.getByRole('tab', { name: 'Thẻ học' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByText('I am in Class ___.')).toBeVisible();
+    expect(screen.getByLabelText('Loại hoạt động')).toHaveTextContent('warm up');
+    expect(screen.getByRole('heading', { name: 'Thẻ từ vựng' })).toBeVisible();
     expect(screen.queryByRole('button', { name: /Trò chơi|Gửi hình ảnh|Nghe lại/i })).not.toBeInTheDocument();
     expect(screen.queryByText('4 ngày')).not.toBeInTheDocument();
   });
 
   it('keeps every Grade 3 lesson in the curriculum while Lesson 2 is active', async () => {
-    const grade3: UnitSummary = { id: 'grade03.unit01', grade: 3, unit: 1, title: 'Hello' };
     const api = mockApi({
-      listUnits: vi.fn().mockResolvedValue([grade3, ...UNITS]),
+      listUnits: vi.fn().mockResolvedValue(UNITS),
       listLessons: vi.fn().mockResolvedValue([
         { lesson: 1, title: 'Chào hỏi và giới thiệu tên' },
         { lesson: 2, title: 'Hỏi thăm sức khỏe và cảm ơn' },
         { lesson: 3, title: 'Chào tạm biệt' },
       ]),
-      createSession: vi.fn().mockResolvedValue(session({ unit_id: grade3.id, unit: grade3, lesson_id: 2 })),
+      createSession: vi.fn().mockResolvedValue(session({ lesson_id: 2 })),
     });
 
-    render(<TutorShell api={api} initialUnitId={grade3.id} initialLessonId={2} />);
+    render(<TutorShell api={api} initialUnitId={UNITS[0].id} initialLessonId={2} />);
 
     const nav = await screen.findByRole('navigation', { name: 'Chương trình học' });
     expect(await screen.findByRole('link', { name: /Lesson 1.*Chào hỏi và giới thiệu tên/i })).toHaveAttribute('href', '/grade3/unit1/lesson/1');
@@ -143,36 +137,32 @@ describe('TutorShell', () => {
     expect(nav).not.toHaveTextContent('Lesson 2 · Đang học');
   });
 
-  it('filters the real curriculum and switches to progress without fabricated metrics', async () => {
+  it('filters the curriculum without showing obsolete progress metrics', async () => {
     const user = userEvent.setup();
     await openLesson(mockApi());
-    await user.type(screen.getByRole('searchbox', { name: 'Tìm bài học' }), 'Our homes');
-    expect(screen.queryByRole('button', { name: /Unit 1.*All about me/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Unit 2.*Our homes/i })).toBeVisible();
+    await user.type(screen.getByRole('searchbox', { name: 'Tìm bài học' }), 'unknown lesson');
+    expect(screen.queryByRole('button', { name: /Unit 1.*Hello/i })).not.toBeInTheDocument();
     await user.clear(screen.getByRole('searchbox', { name: 'Tìm bài học' }));
-    await user.type(screen.getByRole('searchbox', { name: 'Tìm bài học' }), 'class');
-    expect(screen.getByRole('button', { name: /Unit 1.*All about me/i })).toBeVisible();
-    expect(screen.queryByRole('button', { name: /Unit 2.*Our homes/i })).not.toBeInTheDocument();
-    await user.click(screen.getByRole('tab', { name: 'Tiến độ' }));
-    expect(screen.getByText('Chưa ghi nhận lần sử dụng nào.')).toBeVisible();
+    await user.type(screen.getByRole('searchbox', { name: 'Tìm bài học' }), 'Hello');
+    expect(screen.getByRole('button', { name: /Unit 1.*Hello/i })).toBeVisible();
+    expect(screen.queryByRole('tab', { name: 'Tiến độ' })).not.toBeInTheDocument();
     expect(screen.queryByText('12:30')).not.toBeInTheDocument();
   });
-  it('opens the requested direct-route unit without showing or selecting another unit', async () => {
-    const unit2 = session({
-      session_id: 'direct-unit-2',
-      unit_id: 'grade05.unit02',
-      unit: UNITS[1],
+  it('opens the requested direct-route lesson without showing or selecting another unit', async () => {
+    const lesson2 = session({
+      session_id: 'direct-lesson-2',
+      lesson_id: 2,
     });
     const api = mockApi({
-      createSession: vi.fn().mockResolvedValue(unit2),
+      createSession: vi.fn().mockResolvedValue(lesson2),
     });
 
-    render(<TutorShell api={api} initialUnitId="grade05.unit02" />);
+    render(<TutorShell api={api} initialUnitId="grade03.unit01" initialLessonId={2} />);
 
     await waitFor(() => expect(api.createSession).toHaveBeenCalledWith(
-      'grade05.unit02', expect.any(AbortSignal),
+      'grade03.unit01', expect.any(AbortSignal), 2,
     ));
-    const subtitle = await screen.findByText('English Tutor · Grade 5 · Unit 2');
+    const subtitle = await screen.findByText('English Tutor · Grade 3 · Unit 1 · Lesson 2');
     expect(subtitle).toBeVisible();
     expect(subtitle.closest('header')).toHaveClass('learner-header');
     expect(subtitle.closest('header')).toHaveTextContent('Luna');
@@ -187,19 +177,19 @@ describe('TutorShell', () => {
     const view = render(<TutorShell api={api} />);
 
     await user.click(await screen.findByRole(
-      'button', { name: /Unit 1.*All about me!/i },
+      'button', { name: /Unit 1.*Hello/i },
     ));
-    expect(push).toHaveBeenCalledWith('/unit1');
+    expect(push).toHaveBeenCalledWith('/grade3/unit1');
     view.unmount();
-    render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
+    render(<TutorShell api={api} initialUnitId="grade03.unit01" />);
     await user.click(await screen.findByRole('button', { name: 'Choose another unit' }));
     expect(push).toHaveBeenCalledWith('/');
   });
 
   it('links to Free Talk without invoking a lesson action', async () => {
     const api = mockApi();
-    render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
-    await screen.findByText('English Tutor · Grade 5 · Unit 1');
+    render(<TutorShell api={api} initialUnitId="grade03.unit01" />);
+    await screen.findByText('English Tutor · Grade 3 · Unit 1');
     const link = screen.getByRole('link', { name: 'Free Talk Room' });
 
     expect(link).toHaveAttribute('href', '/talk');
@@ -207,23 +197,23 @@ describe('TutorShell', () => {
     expect(api.finishSession).not.toHaveBeenCalled();
   });
 
-  it('starts Unit 2 only after the learner selects it', async () => {
-    const unit2 = session({
-      session_id: 'unit-2',
-      unit_id: 'grade05.unit02',
-      unit: UNITS[1],
-    });
+  it('hides an obsolete Grade 5 unit from the home curriculum', async () => {
     const api = mockApi({
-      createSession: vi.fn().mockResolvedValue(unit2),
+      listUnits: vi.fn().mockResolvedValue([
+        ...UNITS,
+        { id: 'grade05.unit02', grade: 5, unit: 2, title: 'Our homes' },
+      ]),
     });
     render(<TutorShell api={api} />);
 
     expect(api.createSession).not.toHaveBeenCalled();
+    expect(await screen.findByRole('button', { name: /Unit 1.*Hello/i })).toBeVisible();
+    expect(screen.queryByRole('button', { name: /Unit 2.*Our homes/i })).not.toBeInTheDocument();
     await userEvent.click(await screen.findByRole(
-      'button', { name: /Unit 2.*Our homes/i },
+      'button', { name: /Unit 1.*Hello/i },
     ));
 
-    expect(push).toHaveBeenCalledWith('/unit2');
+    expect(push).toHaveBeenCalledWith('/grade3/unit1');
     expect(api.createSession).not.toHaveBeenCalled();
   });
 
@@ -244,48 +234,30 @@ describe('TutorShell', () => {
     expect(screen.queryByRole('heading', { name: 'Choose a unit' })).not.toBeInTheDocument();
     expect(api.createSession).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole(
-      'button', { name: /Unit 1.*All about me!/i },
+      'button', { name: /Unit 1.*Hello/i },
     ));
     expect(api.createSession).not.toHaveBeenCalled();
     view.unmount();
-    render(<TutorShell api={api} initialUnitId="grade05.unit01" />);
+    render(<TutorShell api={api} initialUnitId="grade03.unit01" />);
     expect(await screen.findByText('Hello, Quang!')).toBeVisible();
-    expect(api.createSession).toHaveBeenCalledWith('grade05.unit01', expect.any(AbortSignal));
+    expect(api.createSession).toHaveBeenCalledWith('grade03.unit01', expect.any(AbortSignal));
     expect(api.resetSession).not.toHaveBeenCalled();
     expect(api.listSessions).not.toHaveBeenCalled();
     expect(screen.queryByText('Session history')).not.toBeInTheDocument();
     expect(screen.getByText('warm up')).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Lesson 01' })).toBeVisible();
-    expect(screen.getByText('Đang học tiếp')).toBeVisible();
+    expect(screen.getByText('Đang học')).toBeVisible();
   });
 
-  it('shows the current learning focus without technical teaching state', async () => {
+  it('shows authored vocabulary without legacy objective metrics', async () => {
     const focused = session({
-      stage_id: 'lesson-01',
-      learning_focus: [
-        {
-          stage_id: 'lesson-01', stage_title: 'Lesson 01',
-          target_words: ['building', 'flat', 'house', 'tower'],
-          target_patterns: ["Do you live in this/that ___? – Yes, I do./No, I don't."],
-          highlighted: true,
-        },
-        {
-          stage_id: 'lesson-02', stage_title: 'Lesson 02',
-          target_words: ['road'], target_patterns: ['What is your address?'],
-          highlighted: false,
-        },
-      ],
+      stage_id: 'practice',
+      flashcards: [{ word: 'hello', meaning_vi: 'xin chào' }],
     });
     await openLesson(mockApi({ createSession: vi.fn().mockResolvedValue(focused) }));
 
-    expect(await screen.findByRole('heading', { name: 'Nội dung cần học' })).toBeVisible();
-    expect(screen.getAllByText('Chặng')).toHaveLength(2);
-    expect(screen.getByRole('heading', { name: 'Lesson 01' })).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Lesson 02' })).toBeVisible();
-    expect(screen.getAllByText('Từ / cấu trúc trọng tâm')).toHaveLength(2);
-    expect(screen.getByText('building')).toBeVisible();
-    expect(screen.getByText("Do you live in this/that ___? – Yes, I do./No, I don't.")).toBeVisible();
-    expect(screen.queryByText('Chưa có từ hoặc cấu trúc mới ở chặng này.')).not.toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Thẻ từ vựng' })).toBeVisible();
+    expect(screen.getAllByText('xin chào')).toHaveLength(2);
+    expect(screen.queryByText('Mẫu câu cần nhớ')).not.toBeInTheDocument();
     expect(screen.queryByText('Activity')).not.toBeInTheDocument();
     expect(screen.queryByText('Objective')).not.toBeInTheDocument();
     expect(screen.queryByText('Version')).not.toBeInTheDocument();
@@ -311,14 +283,15 @@ describe('TutorShell', () => {
     expect(api.submitTurn).not.toHaveBeenCalled();
   });
 
-  it('routes a typed turn to Pipecat while voice is connected, not the REST teacher', async () => {
+  it('stops Voice and sends typed input through the Text API', async () => {
     voice.transportState = 'ready';
     const api = mockApi(); const user = userEvent.setup(); await openLesson(api);
     await user.type(await screen.findByLabelText('Your answer'), 'I like dolphins');
     await user.click(screen.getByRole('button', { name: 'Send' }));
 
-    expect(voice.sendText).toHaveBeenCalledWith('I like dolphins');
-    expect(api.submitTurn).not.toHaveBeenCalled();
+    expect(voice.stop).toHaveBeenCalledOnce();
+    expect(api.submitTurn).toHaveBeenCalledOnce();
+    expect(voice.sendText).not.toHaveBeenCalled();
   });
 
   it('shows Quang’s message while the teacher response is still pending', async () => {
@@ -366,17 +339,24 @@ describe('TutorShell', () => {
   });
 
   it('scrolls the conversation to the latest message after messages change', async () => {
-    const scrollIntoView = vi.fn();
-    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
-      configurable: true, value: scrollIntoView,
-    });
     const { rerender } = render(<ChatPanel messages={[{ role: 'teacher', text: 'Hello, Quang!' }]} />);
+    const scroll = screen.getByLabelText('Conversation with Luna');
+    Object.defineProperty(scroll, 'scrollHeight', { configurable: true, value: 500 });
+    Object.defineProperty(scroll, 'clientHeight', { configurable: true, value: 200 });
     rerender(<ChatPanel messages={[
       { role: 'teacher', text: 'Hello, Quang!' },
       { role: 'learner', text: 'Hi, Luna!' },
     ]} />);
+    expect(scroll.scrollTop).toBe(500);
 
-    await waitFor(() => expect(scrollIntoView).toHaveBeenLastCalledWith({ behavior: 'smooth', block: 'end' }));
+    scroll.scrollTop = 0;
+    fireEvent.scroll(scroll);
+    rerender(<ChatPanel messages={[
+      { role: 'teacher', text: 'Hello, Quang!' },
+      { role: 'learner', text: 'Hi, Luna!' },
+      { role: 'teacher', text: 'Nice to see you!' },
+    ]} />);
+    expect(scroll.scrollTop).toBe(0);
   });
 
   it('hides bracketed delivery cues from backend Luna messages', () => {
@@ -427,20 +407,10 @@ describe('TutorShell', () => {
     await screen.findByText('Hello, Quang!');
     await user.click(screen.getByRole('button', { name: /New session/i }));
     await waitFor(() => expect(api.resetSession).toHaveBeenCalledOnce());
-    expect(api.resetSession).toHaveBeenCalledWith('grade05.unit01');
+    expect(api.resetSession).toHaveBeenCalledWith('grade03.unit01', undefined, undefined, 's1');
     expect(api.abandonSession).not.toHaveBeenCalled();
     expect(confirm).not.toHaveBeenCalled();
     expect(screen.queryByText('Session history')).not.toBeInTheDocument();
   });
 
-  it('shows the manual end control only in Free Talk and displays summary', async () => {
-    const free = session({ stage_id: 'free-talk', activity_id: 'free-talk.conversation' });
-    const done = session({ stage_id: 'free-talk', status: 'completed', summary: { demonstrated: ['city'], supported: [], needs_review: ['hobby'], not_yet_observed: [] } });
-    const api = mockApi({ createSession: vi.fn().mockResolvedValue(free), finishSession: vi.fn().mockResolvedValue(done) });
-    const user = userEvent.setup(); await openLesson(api);
-    await user.click(await screen.findByRole('button', { name: 'End Free Talk' }));
-    expect(await screen.findByText('What Quang showed today')).toBeVisible();
-    expect(screen.getByText('Demonstrated: city')).toBeVisible();
-    expect(screen.queryByRole('button', { name: 'End Free Talk' })).not.toBeInTheDocument();
-  });
 });

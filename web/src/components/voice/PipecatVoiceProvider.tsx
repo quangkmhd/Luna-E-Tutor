@@ -31,6 +31,7 @@ type VoiceContextValue = {
   error: string | null;
   voiceRuns: VoiceRun[];
   phase: VoicePhase;
+  micMode: 'off' | 'listening' | 'speaking';
   teacherImageCue: TeacherImageCue | null;
   sentText: Array<{ id: string; text: string; timestamp: string }>;
   ttfaSeconds: number | null;
@@ -38,6 +39,10 @@ type VoiceContextValue = {
   sendText: (text: string) => Promise<void>;
   start: () => Promise<void>;
   stop: () => Promise<void>;
+  toggleMic: () => void;
+  submitVoice: () => Promise<void>;
+  turnReady: boolean;
+  manualSubmit: boolean;
   transportState: TransportState;
 };
 
@@ -77,13 +82,14 @@ function deviceErrorMessage(error: DeviceError): string {
   return 'The microphone could not start. Check the device and try again.';
 }
 
-function voiceServiceErrorMessage(message: RTVIMessage): string {
+function voiceServiceErrorMessage(message: RTVIMessage, manualSubmit: boolean): string {
   const data = message.data as ErrorData;
   if (data.fatal) {
     console.error('Pipecat reported a fatal voice error:', data.error);
     return 'The voice session ended. Reconnect when you are ready.';
   }
   console.warn('Pipecat reported a recoverable voice error:', data.error);
+  if (manualSubmit) return 'Lượt nói chưa hoàn tất. Con ngắt rồi kết nối giọng nói lại nhé.';
   if (data.error.includes('completed with no audio')) {
     return 'Luna could not produce audio for that reply. Please try speaking again.';
   }
@@ -128,7 +134,13 @@ export function PipecatVoiceProvider({
   savedHasTurn = false,
 }: PipecatVoiceProviderProps) {
   const [transportState, setTransportState] = useState<TransportState>('disconnected');
+  const manualSubmit = Boolean(sessionId);
   const [phase, setPhase] = useState<VoicePhase>('off');
+  const [micMode, setMicMode] = useState<VoiceContextValue['micMode']>('off');
+  const micArmedRef = useRef(false);
+  const botSpeakingRef = useRef(false);
+  const turnReadyRef = useRef(false);
+  const [turnReady, setTurnReady] = useState(false);
   const [teacherImageCue, setTeacherImageCue] = useState<SessionTeacherImageCue | null>(null);
   const sessionIdRef = useRef(sessionId);
   useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
@@ -155,16 +167,30 @@ export function PipecatVoiceProvider({
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [thinkingTimeout] = useState(createThinkingTimeout);
   const [conversationStore] = useState(createStore);
+  // The SDK invokes these callbacks after construction, never during render.
+  // eslint-disable-next-line react-hooks/refs
   const [client] = useState(() => {
     const voiceClient = new PipecatClient({
       transport: new SmallWebRTCTransport(),
-      enableMic: true,
+      enableMic: false,
       enableCam: false,
       disconnectOnBotDisconnect: true,
       callbacks: {
       onServerMessage: (message: unknown) => {
         if (!message || typeof message !== 'object') return;
         const data = message as { event?: unknown; payload?: unknown };
+        if (data.event === 'luna-turn-ready') {
+          const payload = data.payload as { ready?: unknown } | undefined;
+          turnReadyRef.current = payload?.ready === true;
+          setTurnReady(turnReadyRef.current);
+          if (turnReadyRef.current) setPhase('ready');
+          return;
+        }
+        if (data.event === 'luna-turn-error') {
+          const payload = data.payload as { message?: unknown } | undefined;
+          setErrorState({ message: typeof payload?.message === 'string' ? payload.message : 'Con thử lại nhé.', fatal: false });
+          return;
+        }
         if (data.event !== 'teacher-image' || !data.payload || typeof data.payload !== 'object') return;
         const payload = data.payload as { image_url?: unknown; turn_id?: unknown; spoken_text?: unknown };
         setTeacherImageCue({
@@ -180,6 +206,11 @@ export function PipecatVoiceProvider({
         if (['initializing', 'connecting', 'authenticating'].includes(state)) {
           setPhase('connecting');
         } else if (state === 'disconnected') {
+          turnReadyRef.current = false;
+          setTurnReady(false);
+          micArmedRef.current = false;
+          botSpeakingRef.current = false;
+          setMicMode('off');
           pauseElapsedClock();
           thinkingTimeout.clear();
           setPhase('off');
@@ -203,6 +234,7 @@ export function PipecatVoiceProvider({
       onBotReady: () => {
         thinkingTimeout.clear();
         setErrorState({ message: null, fatal: false });
+        if (!sessionId) { turnReadyRef.current = true; setTurnReady(true); }
         setPhase('ready');
       },
       onUserStartedSpeaking: () => {
@@ -211,6 +243,7 @@ export function PipecatVoiceProvider({
         setUserStoppedAt(null);
         setTtfaSeconds(null);
         setPhase('listening');
+        if (micArmedRef.current) setMicMode('speaking');
       },
       onUserStoppedSpeaking: () => {
         thinkingTimeout.clear();
@@ -223,6 +256,12 @@ export function PipecatVoiceProvider({
       },
       onBotLlmStarted: () => setPhase('thinking'),
       onBotStartedSpeaking: () => {
+        turnReadyRef.current = false;
+        setTurnReady(false);
+        botSpeakingRef.current = true;
+        micArmedRef.current = false;
+        voiceClient.enableMic(false);
+        setMicMode('off');
         thinkingTimeout.clear();
         setErrorState((previous) => previous.fatal ? previous : { message: null, fatal: false });
         setUserStoppedAt((stoppedAt) => {
@@ -232,7 +271,9 @@ export function PipecatVoiceProvider({
         setPhase('speaking');
       },
       onBotStoppedSpeaking: () => {
+        botSpeakingRef.current = false;
         thinkingTimeout.clear();
+        if (!sessionId) { turnReadyRef.current = true; setTurnReady(true); }
         setPhase('ready');
         if (!onSessionChanged) return;
         setRefreshTimer((previous) => {
@@ -243,16 +284,24 @@ export function PipecatVoiceProvider({
           }, 150);
         });
       },
-      onDeviceError: (reason: DeviceError) => setErrorState({ message: deviceErrorMessage(reason), fatal: false }),
+      onDeviceError: (reason: DeviceError) => {
+        micArmedRef.current = false;
+        botSpeakingRef.current = false;
+        setMicMode('off');
+        setErrorState({ message: deviceErrorMessage(reason), fatal: false });
+      },
       onError: (message: RTVIMessage) => {
         thinkingTimeout.clear();
         setTeacherImageCue(null);
         const data = message.data as ErrorData;
-        setErrorState({ message: voiceServiceErrorMessage(message), fatal: data.fatal });
+        setErrorState({ message: voiceServiceErrorMessage(message, manualSubmit), fatal: data.fatal });
         if (!data.fatal) {
+          if (manualSubmit) { turnReadyRef.current = false; setTurnReady(false); }
           setPhase('ready');
           return;
         }
+        micArmedRef.current = false;
+        setMicMode('off');
         void voiceClient.disconnect()
           .catch(() => undefined)
           .finally(() => {
@@ -263,8 +312,11 @@ export function PipecatVoiceProvider({
       onMessageError: () => {
         thinkingTimeout.clear();
         setTeacherImageCue(null);
+        if (manualSubmit) { turnReadyRef.current = false; setTurnReady(false); }
         setPhase('ready');
-        setErrorState({ message: 'The voice service could not process that message. Try again.', fatal: false });
+        setErrorState({ message: manualSubmit
+          ? 'Lượt nói chưa hoàn tất. Con ngắt rồi kết nối giọng nói lại nhé.'
+          : 'The voice service could not process that message. Try again.', fatal: false });
       },
       },
     });
@@ -279,6 +331,8 @@ export function PipecatVoiceProvider({
       connected: false,
     }]);
     setErrorState({ message: null, fatal: false });
+    turnReadyRef.current = false;
+    setTurnReady(false);
     setPhase('connecting');
     try {
       const resolvedEndpoint = endpoint
@@ -301,8 +355,47 @@ export function PipecatVoiceProvider({
     }
   }
 
+  function toggleMic() {
+    if ((transportState !== 'connected' && transportState !== 'ready') || botSpeakingRef.current || !turnReadyRef.current || (manualSubmit && micArmedRef.current)) return;
+    const next = manualSubmit || !micArmedRef.current;
+    try {
+      client.enableMic(next);
+      micArmedRef.current = next;
+      setMicMode(next ? 'listening' : 'off');
+      setPhase(next ? 'listening' : 'ready');
+      setErrorState({ message: null, fatal: false });
+    } catch {
+      setErrorState({ message: 'The microphone could not change state. Please try again.', fatal: false });
+    }
+  }
+
+  async function submitVoice() {
+    if (!micArmedRef.current || !turnReadyRef.current) return;
+    micArmedRef.current = false;
+    turnReadyRef.current = false;
+    setTurnReady(false);
+    client.enableMic(false);
+    setMicMode('off');
+    setPhase('thinking');
+    try {
+      // The WebRTC audio track and control data channel are independent.
+      // Allow the final encoded audio packet to leave before Soniox finalize.
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      client.sendClientMessage('luna.submit-turn', {
+        turn_id: globalThis.crypto?.randomUUID?.() ?? `voice-${Date.now()}`,
+      });
+    } catch {
+      turnReadyRef.current = true;
+      setTurnReady(true);
+      setErrorState({ message: 'Chưa gửi được lời nói. Con thử lại nhé.', fatal: false });
+    }
+  }
+
   async function stop() {
     thinkingTimeout.clear();
+    micArmedRef.current = false;
+    botSpeakingRef.current = false;
+    setMicMode('off');
     try {
       await client.disconnect();
     } catch {
@@ -365,11 +458,16 @@ export function PipecatVoiceProvider({
     error: errorState.message,
     voiceRuns,
     phase,
+    micMode,
     teacherImageCue: teacherImageCue?.sessionId === sessionId ? teacherImageCue : null,
     sentText,
     sendText,
     start,
     stop,
+    toggleMic,
+    submitVoice,
+    turnReady,
+    manualSubmit,
     ttfaSeconds,
     elapsedSeconds,
     transportState,

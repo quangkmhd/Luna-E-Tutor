@@ -31,12 +31,12 @@ describe('TutorApi', () => {
     const fetcher = vi.fn().mockResolvedValue(new Response('{}', {
       status: 200, headers: { 'Content-Type': 'application/json' },
     }));
-    await new TutorApi('http://test', fetcher).resetSession('grade05.unit02');
+    await new TutorApi('http://test', fetcher).resetSession('grade03.unit01');
     expect(fetcher).toHaveBeenCalledWith(
       'http://test/api/sessions/reset',
       expect.objectContaining({
         method: 'POST',
-        body: JSON.stringify({ unit_id: 'grade05.unit02' }),
+        body: JSON.stringify({ unit_id: 'grade03.unit01' }),
       }),
     );
   });
@@ -45,9 +45,9 @@ describe('TutorApi', () => {
     const fetcher = vi.fn().mockResolvedValue(new Response('{}', {
       status: 200, headers: { 'Content-Type': 'application/json' },
     }));
-    await new TutorApi('http://test', fetcher).createSession('grade05.unit02');
+    await new TutorApi('http://test', fetcher).createSession('grade03.unit01');
     const [, init] = fetcher.mock.calls[0];
-    expect(JSON.parse(init.body)).toEqual({ unit_id: 'grade05.unit02' });
+    expect(JSON.parse(init.body)).toEqual({ unit_id: 'grade03.unit01' });
   });
 
   it('selects a Grade 3 lesson when supplied', async () => {

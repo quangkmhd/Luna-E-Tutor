@@ -1,11 +1,101 @@
 lesson: 4
 title: Ôn tập Unit 1
-greeting:
-  order: 1
-  say: "<en>Hi! Great to see you again! Now your turn to ask ME!</en>"
-  accept: Chấp nhận lời chào rồi hỏi “How are you?”, có hoặc không gọi tên Luna.
+items:
+- type: practice
+  say: <en>Hi! Great to see you again! Now your turn to ask ME!</en>
+  learner_goal: Học sinh chào Luna rồi chủ động hỏi How are you? bằng tiếng Anh; chỉ chào hoặc tự nói mình khỏe
+    thì chưa đạt mục tiêu hỏi Luna.
   image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
-words: [hello, hi, goodbye, bye, thank you, how, nice to meet you, good night, sleepy]
+- type: practice
+  say: |-
+    <en>I'm great, thank you! And you? [long pause]</en>
+    <vi>Hôm nay là buổi cuối của bài 1 — cô trò mình ôn thật nhanh nhé! Cô nói tiếng Việt, con nói tiếng Anh! [long pause]</vi>
+    <vi>Xin chào!</vi>
+  learner_goal: Học sinh dịch lời Xin chào thành Hello hoặc Hi trong tình huống gặp nhau; Goodbye là lời tạm biệt
+    nên chưa đạt.
+  image_url: /images/grade-03/unit-01/lesson-04/01-greetings-review.webp
+- type: practice
+  say: <vi>Tạm biệt!</vi>
+  learner_goal: Học sinh dịch lời Tạm biệt thành Goodbye hoặc Bye; Hello là lời chào khi gặp nên chưa đạt.
+  image_url: /images/grade-03/unit-01/lesson-04/02-farewell-review.webp
+- type: practice
+  say: <vi>Cảm ơn!</vi>
+  learner_goal: Học sinh dịch lời Cảm ơn thành Thank you bằng tiếng Anh; không đánh giá âm /th/ từ transcript chữ.
+  image_url: /images/grade-03/unit-01/lesson-04/03-thank-you-review.webp
+- type: practice
+  say: <vi>Bạn có khoẻ không?</vi>
+  learner_goal: Học sinh dịch Bạn có khoẻ không? thành câu hỏi How are you? bằng tiếng Anh; câu kể I am fine chưa
+    đạt.
+  image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
+- type: practice
+  say: <vi>Rất vui được gặp bạn!</vi>
+  learner_goal: Học sinh dịch Rất vui được gặp bạn thành Nice to meet you bằng tiếng Anh.
+  image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
+- type: practice
+  say: <vi>Chúc ngủ ngon!</vi>
+  learner_goal: Học sinh dịch Chúc ngủ ngon thành Good night bằng tiếng Anh; Good evening không cùng tình huống.
+  image_url: /images/grade-03/unit-01/lesson-04/02-farewell-review.webp
+- type: practice
+  say: <vi>Mình buồn ngủ!</vi>
+  learner_goal: Học sinh dịch Mình buồn ngủ thành Sleepy hoặc I'm sleepy bằng tiếng Anh; Happy là cảm xúc khác nên
+    chưa đạt.
+  image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
+- type: practice
+  say: |-
+    <en>So fast! Now: which words start with /h/? [long pause]</en>
+    <en>Hello… bye… how… Ben.</en>
+  learner_goal: 'Học sinh chọn và nói hai từ bắt đầu bằng /h/ theo đúng thứ tự trong dãy đã đọc: Hello rồi How.
+    Bye và Ben không thuộc đáp án; không chấm phát âm từ transcript chữ.'
+  image_url: /images/grade-03/unit-01/lesson-04/01-greetings-review.webp
+- type: practice
+  say: |-
+    <vi>Trạm 2: cô nói, con đáp thật tự nhiên — như nói chuyện thật vậy. Rồi mình thử đoán câu hỏi nhé! [long pause]</vi>
+    <en>I say, you answer! Hi. I'm Mai.</en>
+  learner_goal: Học sinh đáp nhân vật Mai bằng Hi hoặc Hello và giới thiệu tên mình bằng I'm [tên do học sinh tự
+    chọn]. Chỉ chào Mai mà chưa giới thiệu tên thì chưa đạt.
+  image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
+- type: practice
+  say: <en>Nice to meet you.</en>
+  learner_goal: Học sinh đáp lời Nice to meet you bằng Nice to meet you, Nice to meet you, too hoặc lời chào Hi
+    ngắn phù hợp tình huống.
+  image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
+- type: practice
+  say: <en>Goodbye!</en>
+  learner_goal: Học sinh đáp lời tạm biệt Luna bằng Goodbye hoặc Bye; có thể gọi tên Luna.
+  image_url: /images/grade-03/unit-01/lesson-04/02-farewell-review.webp
+- type: practice
+  say: |-
+    <vi>Giờ khó hơn nhé: cô nói câu trả lời, con đoán câu hỏi. </vi><en>Here's the answer: Fine, thank you. [long pause]</en>
+    <en>What's the question?</en>
+  learner_goal: Học sinh đặt câu hỏi How are you? phù hợp với lời đáp Fine, thank you; chỉ nhắc lại lời đáp thì
+    chưa đạt.
+  image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
+- type: practice
+  say: '<en>Answer: Hi, Ben. I''m Mai. What did Ben say first?</en>'
+  learner_goal: Học sinh suy ra lời Ben đã nói trước là Hi. I'm Ben hoặc Hello. I'm Ben; chỉ nói tên Ben chưa đủ.
+  image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
+- type: practice
+  say: |-
+    <en>Now I'm going to play a character — I'm Emma from England! [long pause]</en>
+    <vi>Emma là bạn mới chuyển đến lớp con. Bây giờ là buổi SÁNG, giờ ra chơi. Con chào Emma trước nhé!</vi>
+  learner_goal: Học sinh chào nhân vật Emma vào buổi sáng bằng Good morning, Hello hoặc Hi; Good evening không phù
+    hợp thời điểm trong tình huống.
+  image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
+- type: practice
+  say: <en>Good morning! I'm Emma.</en>
+  learner_goal: Học sinh tự giới thiệu tên mình với Emma bằng I'm [tên do học sinh tự chọn]; có thể thêm Nice to
+    meet you. Không dùng Emma làm tên học sinh chỉ vì mẫu của nhân vật.
+- type: practice
+  say: <en>Nice to meet you, too! How are you?</en>
+  learner_goal: Học sinh trả lời How are you? bằng trạng thái hoặc cảm xúc thật bằng tiếng Anh, như Fine, OK, Happy
+    hoặc Tired; có thể hỏi lại And you?.
+- type: practice
+  say: |-
+    <en>I'm OK, thank you. [long pause]</en>
+    <en>Ring, ring! Break time is over!</en>
+  learner_goal: Học sinh chào tạm biệt Emma bằng Bye hoặc Goodbye; có thể thêm See you.
+- type: end
+  say: <en>Bye! [long pause] Scene done! You just had a real conversation in English! 🎉</en>
 cards:
 - word: hello
   pronunciation: /həˈloʊ/
@@ -43,106 +133,3 @@ cards:
   pronunciation: /ˈsliːpi/
   meaning_vi: buồn ngủ
   image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
-patterns:
-  ask: "How are you?"
-  introduce: "Hi, {friend}. I'm {name}."
-  reply: "Hi, {friend}. I'm {name}. Nice to meet you!"
-  farewell: "Bye, {friend}. See you!"
-stations:
-- id: vocabulary
-  steps:
-  - order: 2
-    target: hello
-    image_url: /images/grade-03/unit-01/lesson-04/01-greetings-review.webp
-    say: |-
-      <en>I'm great, thank you! And you? [long pause]</en>
-      <vi>Hôm nay là buổi cuối của bài 1 — cô trò mình ôn thật nhanh nhé! Cô nói tiếng Việt, con nói tiếng Anh! [long pause]</vi>
-      <vi>Xin chào!</vi>
-    accept: Chấp nhận “Hello” hoặc “Hi” khi gặp.
-  - order: 3
-    target: goodbye
-    image_url: /images/grade-03/unit-01/lesson-04/02-farewell-review.webp
-    say: '<vi>Tạm biệt!</vi>'
-    accept: Chấp nhận “Goodbye” hoặc “Bye” khi chia tay.
-  - order: 4
-    target: thank you
-    image_url: /images/grade-03/unit-01/lesson-04/03-thank-you-review.webp
-    say: '<vi>Cảm ơn!</vi>'
-    accept: Chấp nhận “Thank you”; đọc /th/ như /t/ vẫn đạt.
-  - order: 5
-    target: ask
-    image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
-    say: '<vi>Bạn có khoẻ không?</vi>'
-    accept: Chấp nhận “How are you?”.
-  - order: 6
-    target: nice to meet you
-    image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
-    say: '<vi>Rất vui được gặp bạn!</vi>'
-    accept: Chấp nhận “Nice to meet you”; Mức 1 chỉ nghe vẫn có thể chuyển tiếp.
-  - order: 7
-    target: good night
-    image_url: /images/grade-03/unit-01/lesson-04/02-farewell-review.webp
-    say: '<vi>Chúc ngủ ngon!</vi>'
-    accept: Chấp nhận “Good night” khi chia tay đi ngủ.
-  - order: 8
-    target: sleepy
-    image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
-    say: '<vi>Mình buồn ngủ!</vi>'
-    accept: Chấp nhận “Sleepy” hoặc “I'm sleepy”; Mức 1 chỉ nghe vẫn có thể chuyển tiếp.
-  - order: 9
-    target: [hello, how]
-    image_url: /images/grade-03/unit-01/lesson-04/01-greetings-review.webp
-    say: |-
-      <en>So fast! Now: which words start with /h/? [long pause]</en>
-      <en>Hello… bye… how… Ben.</en>
-    accept: Chấp nhận “hello” và “how” theo đúng thứ tự; không tính bye hoặc Ben.
-- id: patterns
-  steps:
-  - order: 10
-    target: introduce
-    image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
-    say: |-
-      <vi>Trạm 2: cô nói, con đáp thật tự nhiên — như nói chuyện thật vậy. Rồi mình thử đoán câu hỏi nhé! [long pause]</vi>
-      <en>I say, you answer! Hi. I'm Mai.</en>
-    accept: Chấp nhận lời chào Mai và “I'm” cùng tên của con; Mức 3 có thể thêm “Nice to meet you”.
-  - order: 11
-    target: reply
-    image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
-    say: '<en>Nice to meet you.</en>'
-    accept: Chấp nhận “Nice to meet you” hoặc “Nice to meet you, too”; Mức 1 có thể đáp “Hi”.
-  - order: 12
-    target: farewell
-    image_url: /images/grade-03/unit-01/lesson-04/02-farewell-review.webp
-    say: '<en>Goodbye, {tên}!</en>'
-    accept: Chấp nhận Goodbye hoặc Bye với Luna.
-  - order: 13
-    target: ask
-    image_url: /images/grade-03/unit-01/lesson-04/04-feelings-review.webp
-    say: |-
-      <vi>Giờ khó hơn nhé: cô nói câu trả lời, con đoán câu hỏi. </vi><en>Here's the answer: Fine, thank you. [long pause]</en>
-      <en>What's the question?</en>
-    accept: Chấp nhận “How are you?”; Mức 1 có thể chỉ nghe phần đảo ngược.
-  - order: 14
-    target: introduce
-    image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
-    say: "<en>Answer: Hi, Ben. I'm Mai. What did Ben say first?</en>"
-    accept: Chấp nhận “Hi. I'm Ben.” hoặc “Hello. I'm Ben.”; Mức 1 có thể chỉ nghe phần đảo ngược.
-- id: conversation
-  steps:
-  - order: 15
-    target: introduce
-    image_url: /images/grade-03/unit-01/lesson-04/05-first-meeting-review.webp
-    say: |-
-      <en>Now I'm going to play a character — I'm Emma from England! [long pause]</en>
-      <vi>Emma là bạn mới chuyển đến lớp con. Bây giờ là buổi SÁNG, giờ ra chơi. Con chào Emma trước nhé!</vi>
-    accept: Chấp nhận lời chào lúc gặp như Hello, Hi hoặc Good morning; không dùng Good evening. Mức 3 dùng Good morning.
-    more:
-    - say: "<en>Good morning! I'm Emma.</en>"
-      accept: Chấp nhận con nói “I'm” và tên mình với Emma; có thể thêm “Nice to meet you”.
-    - say: '<en>Nice to meet you, too! How are you?</en>'
-      accept: Chấp nhận câu trả lời cảm xúc phù hợp; Mức 1 “Fine” là đủ, Mức 2–3 có thể hỏi lại “And you?”.
-    - say: |-
-        <en>I'm OK, thank you. [long pause]</en>
-        <en>Ring, ring! Break time is over!</en>
-      accept: Chấp nhận lời chào tạm biệt Emma như Bye hoặc Goodbye; có thể thêm “See you”.
-    - say: '<en>Bye, {tên}! [long pause] Scene done! You just had a real conversation in English! 🎉</en>'

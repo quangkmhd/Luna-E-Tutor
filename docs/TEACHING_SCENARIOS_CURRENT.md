@@ -1,4 +1,6 @@
-# Kịch bản Evaluator và Teacher: Lớp 3 so với Lớp 5
+# Lưu trữ: Kịch bản Evaluator và Teacher trước refactor 2026-09-24
+
+> Đây là báo cáo lịch sử của runtime cũ, không mô tả logic đang chạy. Thiết kế lớp 3 hiện tại nằm trong [spec refactor](grade3_lesson_refactor_spec.md). Dữ liệu lớp 5 bên dưới chỉ được giữ làm tư liệu so sánh.
 
 > Mỗi tình huống có output Evaluator thật và quyết định/request Teacher được tạo bởi code hiện tại. Lớp 5 dùng unit `grade05.unit01`; Lớp 3 dùng `grade03.unit01`, Lesson 1 “Hello”. Các lượt gọi Evaluator chạy qua OpenRouter với Jev ngày 2026-09-23, mỗi mẫu một lần. Teacher LLM không được gọi trong lần kiểm tra này; tài liệu ghi lại payload mà code tạo và liệu luồng runtime sẽ gọi Teacher hay phát script trực tiếp. Mỗi mẫu được chạy độc lập trên state đại diện cho đúng hoạt động hiện tại; đây không phải một phiên hội thoại liên tục có lịch sử nhiều lượt.
 

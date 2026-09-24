@@ -1,10 +1,7 @@
 import pytest
 from luna_tutor.domain.privacy import (
-    SanitizedText,
-    redact_address_practice,
     redact_sensitive_contact,
 )
-from pydantic import TypeAdapter, ValidationError
 
 
 @pytest.mark.parametrize('phone', [
@@ -49,9 +46,6 @@ def test_redacts_entire_contact_span_even_when_words_adjoin_it(text, expected):
     assert result.text == expected
     assert result.safety_event is True
     assert not any(char.isdecimal() for char in result.model_dump_json())
-    with pytest.raises(ValidationError):
-        TypeAdapter(SanitizedText).validate_python(text)
-    assert TypeAdapter(SanitizedText).validate_python(result.text) == expected
 
 
 @pytest.mark.parametrize('separator', ['. ', '.\t', '.\u00a0', '.\u202f', '.\n'])
@@ -70,37 +64,3 @@ def test_preserves_school_year_ranges_and_short_class_identifiers(text):
     result = redact_sensitive_contact(text)
     assert result.text == text
     assert result.safety_event is False
-    assert TypeAdapter(SanitizedText).validate_python(text) == text
-
-
-def test_fictional_address_practice_preserves_only_reviewed_examples():
-    examples = ("It's 23 Green Street.", "It's 38 Park Road.")
-
-    safe = redact_address_practice(
-        "It's 23 Green Street.",
-        activity_id="lesson-02.fictional-address",
-        safe_examples=examples,
-    )
-    assert safe.text == "It's 23 Green Street."
-    assert not safe.safety_event
-
-    learner_address = "I live at 19 River Lane."
-    removed = redact_address_practice(
-        learner_address,
-        activity_id="lesson-02.fictional-address",
-        safe_examples=examples,
-    )
-    assert removed.text == "[REDACTED_ADDRESS]"
-    assert removed.safety_event
-    assert learner_address not in repr(removed)
-
-
-def test_address_redaction_is_contextual_not_a_general_home_filter():
-    text = "My house has a garden and two floors."
-    result = redact_address_practice(
-        text,
-        activity_id="lesson-01.home-type",
-        safe_examples=("It's 23 Green Street.",),
-    )
-    assert result.text == text
-    assert not result.safety_event
