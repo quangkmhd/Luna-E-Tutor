@@ -32,15 +32,19 @@ async def test_jev_receives_only_goal_query_and_prior_history():
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('answer', [
-    {},
-    {'turn_evaluation': {'type': 'choice', 'choice': 'NEW_CODE'}},
-    {'turn_evaluation': {'type': 'text', 'choice': 'PASSED'}},
-    {'turn_evaluation': {'type': 'choice', 'choice': ['PASSED']}},
+@pytest.mark.parametrize(('answer', 'reason'), [
+    ({}, 'Missing Jev turn_evaluation choice'),
+    ({'turn_evaluation': {'type': 'choice', 'choice': 'NEW_CODE'}},
+     'Unknown Jev turn_evaluation choice'),
+    ({'turn_evaluation': {'type': 'text', 'choice': 'PASSED'}},
+     'Invalid Jev turn_evaluation type'),
+    ({'turn_evaluation': {'type': 'choice', 'choice': ['PASSED']}},
+     'Invalid Jev turn_evaluation choice type'),
 ])
-async def test_invalid_jev_output_does_not_become_a_teaching_decision(answer):
+async def test_invalid_jev_output_does_not_become_a_teaching_decision(answer, reason):
     client = AsyncMock()
     client.decisions.return_value = {'answers': answer}
-    with pytest.raises(InvalidModelOutputError):
+    with pytest.raises(InvalidModelOutputError) as caught:
         await JevTurnEvaluator(client).evaluate_turn(
             learner_goal='Say hello.', learner_query='Hi', history=[], turn_id='turn-2')
+    assert caught.value.reason == reason

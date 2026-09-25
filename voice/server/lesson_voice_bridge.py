@@ -1,11 +1,7 @@
-"""Pipecat transport bridge for button-submitted Grade 3 turns.
-
-The backend owns Jev, Teacher history, and lesson progression. This processor
-only finalizes Soniox on a client submit and delivers authored/Teacher speech.
-"""
+"""Pipecat transport bridge for button-submitted Grade 3 turns."""
 
 import asyncio
-import time
+import logging
 from collections.abc import Awaitable, Callable
 
 import httpx
@@ -13,7 +9,6 @@ from pipecat.frames.frames import (
     BotStoppedSpeakingFrame,
     ErrorFrame,
     Frame,
-    InputAudioRawFrame,
     InterimTranscriptionFrame,
     TranscriptionFrame,
     VADUserStoppedSpeakingFrame,
@@ -31,49 +26,32 @@ from language_tts import (
 )
 
 
-class ManualAudioDrainGate(FrameProcessor):
-    """Forward Send only after incoming WebRTC audio has gone quiet.
+logger = logging.getLogger(__name__)
 
-    Audio RTP and the RTVI data channel have no shared ordering. A client
-    message can reach the pipeline before its final audio packet. This gate
-    uses the observed audio stream to delay Soniox finalize until the media
-    tail has crossed the STT boundary.
-    """
+_RETRYABLE_TURN_CODES = {
+    'INVALID_EVALUATION', 'PROVIDER_UNAVAILABLE', 'INVALID_TEACHER_OUTPUT',
+}
 
-    def __init__(self, quiet_seconds: float = 0.25):
-        super().__init__()
-        self.quiet_seconds = quiet_seconds
-        self._last_audio = 0.0
-        self._audio_arrived = asyncio.Event()
-        self._pending = False
 
-    async def _drain(self, frame: RTVIClientMessageFrame) -> None:
-        try:
-            while True:
-                remaining = self.quiet_seconds - (time.monotonic() - self._last_audio)
-                if remaining <= 0:
-                    break
-                self._audio_arrived.clear()
-                try:
-                    await asyncio.wait_for(self._audio_arrived.wait(), timeout=remaining)
-                except TimeoutError:
-                    pass
-            await self.push_frame(frame)
-        finally:
-            self._pending = False
+def _retryable_turn_code(error: httpx.HTTPStatusError) -> str | None:
+    if error.response.status_code != 503:
+        return None
+    try:
+        detail = error.response.json()['detail']
+    except (ValueError, KeyError, TypeError):
+        return None
+    if not isinstance(detail, dict) or detail.get('retryable') is not True:
+        return None
+    code = detail.get('code')
+    return code if isinstance(code, str) and code in _RETRYABLE_TURN_CODES else None
 
-    async def process_frame(self, frame: Frame, direction: FrameDirection):
-        await super().process_frame(frame, direction)
-        if direction == FrameDirection.DOWNSTREAM:
-            if isinstance(frame, InputAudioRawFrame):
-                self._last_audio = time.monotonic()
-                self._audio_arrived.set()
-            elif isinstance(frame, RTVIClientMessageFrame) and frame.type == 'luna.submit-turn':
-                if not self._pending:
-                    self._pending = True
-                    self.create_task(self._drain(frame), name='drain-webrtc-audio-before-finalize')
-                return
-        await self.push_frame(frame, direction)
+
+def _turn_failure_message(code: str) -> str:
+    if code == 'INVALID_EVALUATION':
+        return 'Luna chưa đánh giá được câu trả lời. Con bấm gửi lại lượt vừa nói nhé.'
+    if code == 'INVALID_TEACHER_OUTPUT':
+        return 'Luna chưa tạo được lời đáp. Con bấm gửi lại lượt vừa nói nhé.'
+    return 'Dịch vụ của Luna đang tạm gián đoạn. Con bấm gửi lại lượt vừa nói nhé.'
 
 
 class ScriptedVoiceAPI:
@@ -118,6 +96,7 @@ class ScriptedVoiceBridge(FrameProcessor):
         self.submitted = False
         self.processing = False
         self.final_text: list[str] = []
+        self.retry_text: str | None = None
         self.turn_id: str | None = None
         self.seen_turn_ids: set[str] = set()
         self._timeout_task: asyncio.Task | None = None
@@ -132,6 +111,8 @@ class ScriptedVoiceBridge(FrameProcessor):
             payload = await self.api.start()
             await self._deliver(payload)
         except Exception:
+            logger.exception('Voice lesson start failed: session_id=%s',
+                             getattr(self.api, 'session_id', None))
             await self.delivery_failed()
 
     async def _notify(self, event: str, **data) -> None:
@@ -163,10 +144,22 @@ class ScriptedVoiceBridge(FrameProcessor):
         self.ready = False
         self.submitted = False
         self.final_text.clear()
+        self.retry_text = None
         await self._notify(
             'luna-turn-error',
             message='Lượt nói chưa hoàn tất. Con ngắt rồi kết nối giọng nói lại nhé.',
         )
+        await self._notify('luna-turn-ready', ready=False)
+
+    async def _retryable_turn_failed(self, code: str, text: str) -> None:
+        # A structured 503 from the lesson API is raised before it commits
+        # the learner turn. Keep the finalized transcript for a resend.
+        self.submitted = False
+        self.final_text.clear()
+        self.retry_text = text
+        self.ready = False
+        await self._notify('luna-turn-error', message=_turn_failure_message(code),
+                           retryable_turn=True)
         await self._notify('luna-turn-ready', ready=False)
 
     async def _finish_missing(self) -> None:
@@ -182,7 +175,6 @@ class ScriptedVoiceBridge(FrameProcessor):
     async def _submit_final(self) -> None:
         if self.processing or not self.submitted or not self.final_text:
             return
-        self.processing = True
         self.submitted = False
         self.ready = False
         if self._timeout_task:
@@ -190,23 +182,52 @@ class ScriptedVoiceBridge(FrameProcessor):
             self._timeout_task = None
         text = ''.join(self.final_text).strip()
         self.final_text.clear()
+        await self._submit_text(text)
+
+    async def _submit_text(self, text: str) -> None:
+        self.processing = True
+        self.ready = False
+        retry_code: str | None = None
         try:
             assert self.turn_id is not None
-            try:
-                payload = await self.api.submit(text, self.turn_id)
-            except httpx.TransportError:
-                # A lost response can follow a committed backend turn. Reuse
-                # the same ID so the backend returns its stored output.
-                payload = await self.api.submit(text, self.turn_id)
-            await self._deliver(payload)
+            for attempt in range(2):
+                try:
+                    try:
+                        payload = await self.api.submit(text, self.turn_id)
+                    except httpx.TransportError:
+                        # A lost response can follow a committed backend turn.
+                        # Reuse the same ID so the backend returns stored output.
+                        payload = await self.api.submit(text, self.turn_id)
+                    break
+                except httpx.HTTPStatusError as error:
+                    code = _retryable_turn_code(error)
+                    if code is None:
+                        raise
+                    logger.warning('Lesson turn rejected before commit: code=%s status=503', code)
+                    if attempt == 0:
+                        await asyncio.sleep(0.3)
+                        continue
+                    retry_code = code
+                    break
+            if retry_code is None:
+                self.retry_text = None
+                await self._deliver(payload)
         except Exception:
+            logger.exception('Voice turn failed: session_id=%s turn_id=%s',
+                             getattr(self.api, 'session_id', None), self.turn_id)
             await self.delivery_failed()
         finally:
             self.processing = False
+        if retry_code is not None:
+            await self._retryable_turn_failed(retry_code, text)
 
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
         if direction == FrameDirection.DOWNSTREAM:
+            if isinstance(frame, RTVIClientMessageFrame) and frame.type == 'luna.retry-turn':
+                if self.retry_text is not None and not self.processing and not self.submitted:
+                    await self._submit_text(self.retry_text)
+                return
             if isinstance(frame, RTVIClientMessageFrame) and frame.type == 'luna.submit-turn':
                 if self.ready and not self.submitted and not self.processing:
                     supplied_id = frame.data.get('turn_id') if isinstance(frame.data, dict) else None
@@ -219,8 +240,8 @@ class ScriptedVoiceBridge(FrameProcessor):
                     self.submitted = True
                     self._timeout_task = self.create_task(
                         self._finish_missing(), name='wait-for-soniox-final')
-                    # Soniox is in Pipecat endpoint mode. Its built-in handler
-                    # converts this frame into the provider's finalize request.
+                    # Pipecat's Soniox service sends finalize on this frame.
+                    # Only its finalized TranscriptionFrame is submitted.
                     await self.push_frame(VADUserStoppedSpeakingFrame(), FrameDirection.UPSTREAM)
                 return
             if isinstance(frame, TranscriptionFrame):
@@ -262,6 +283,7 @@ class ScriptedDeliveryObserver(FrameProcessor):
             try:
                 await self.on_delivery()
             except Exception:
+                logger.exception('Voice delivery acknowledgement failed')
                 self.expected = 0
                 if self.on_failure:
                     await self.on_failure()

@@ -7,6 +7,7 @@
 .state { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid; border-radius: 10px; font-size: 12px; font-weight: 900; line-height: 1.2; white-space: nowrap; }
 .micOffState { color: #9a4934; background: #fff0e8; border-color: #f4c5b5; }
 .micOnState { color: #145f4c; background: #e8f6f0; border-color: #a9ddc9; }
+.shortcutHint { color: var(--ink); font-size: 12px; font-weight: 700; white-space: nowrap; }
 .speakerPlaying { position: absolute; right: 0; bottom: calc(100% + 14px); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 7px 9px; border: 1px solid #b8d5f3; border-radius: 10px; color: #245b97; background: #eaf4ff; box-shadow: 0 3px 12px rgb(36 91 151 / 12%); font-size: 11px; font-weight: 900; white-space: nowrap; }
 .speakerPlaying svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .speakerPlaying svg path:first-child { fill: currentColor; }
@@ -16,6 +17,10 @@
 .actions { justify-content: flex-start; flex-wrap: wrap; }
 .secondary { border-radius: 12px; padding: 11px 13px; font-weight: 800; white-space: nowrap; }
 .secondary { border: 1px solid var(--line); color: var(--ink); background: #fff; }
+.startLesson, .submitTurn { min-height: 52px; border: 0; border-radius: 16px; padding: 0 18px; color: #fff; background: #0f6f6c; font-weight: 800; white-space: nowrap; cursor: pointer; }
+.startLesson:disabled { opacity: .65; cursor: wait; }
+.submitTurn { background: #ef6f4c; }
+.startLesson:focus-visible, .submitTurn:focus-visible { outline: 3px solid #0f6f6c; outline-offset: 3px; }
 .micButton { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border: 0; border-radius: 50%; color: #fff; background: linear-gradient(145deg, #f18b68, #dc5b42); box-shadow: 0 5px 15px rgb(151 56 38 / 24%); cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
 .micButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgb(85 61 52 / 28%); }
 .micButton:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }

@@ -6,7 +6,7 @@ from typing import Annotated, Literal, Self
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from luna_tutor.speech.language_segments import parse_speech_segments
+from luna_tutor.speech.language_segments import parse_speech_segments, plain_speech_text
 
 
 class _Strict(BaseModel):
@@ -23,6 +23,8 @@ class _SpokenItem(_Strict):
         if not value.strip():
             raise ValueError('say must not be blank')
         parse_speech_segments(value)
+        if not plain_speech_text(value).strip():
+            raise ValueError('say has no speakable text after removing TTS cues')
         return value
 
 
@@ -61,6 +63,7 @@ class ScriptedLesson(_Strict):
     title: str = Field(min_length=1)
     items: list[ScriptItem] = Field(min_length=2)
     cards: list[VocabularyCard] = Field(default_factory=list)
+    patterns: list[str] = Field(default_factory=list)
 
     @model_validator(mode='after')
     def validate_sequence(self) -> Self:

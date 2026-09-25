@@ -4,6 +4,7 @@ from openai import APIConnectionError
 from luna_tutor.api.lesson_api import create_lesson_api
 from luna_tutor.curriculum.lesson_content import ScriptedLesson
 from luna_tutor.llm.jev_turn_evaluator import TurnEvaluation
+from luna_tutor.llm.openrouter import InvalidModelOutputError
 from luna_tutor.teaching.lesson_sessions import ScriptedSessionStore
 
 
@@ -84,7 +85,7 @@ def test_voice_api_requires_replay_and_delivery_ack_before_next_turn():
     assert final.json()['session']['status'] == 'completed'
 
 
-def test_teacher_provider_failure_is_retryable_without_advancing_session():
+def test_teacher_provider_failure_is_retryable_without_advancing_session(caplog):
     class FailedEvaluator(Evaluator):
         async def evaluate_turn(self, **_kwargs):
             return TurnEvaluation.ATTEMPT_FAILED
@@ -112,3 +113,29 @@ def test_teacher_provider_failure_is_retryable_without_advancing_session():
     assert response.status_code == 503
     assert response.json()['detail']['retryable'] is True
     assert api.get(f'/api/sessions/{session_id}').json()['state_version'] == 0
+    assert f'session_id={session_id} turn_id=t1 stage=teacher' in caplog.text
+    assert 'type=APIConnectionError' in caplog.text
+
+
+def test_jev_failure_log_identifies_stage_without_learner_text(caplog):
+    class FailedEvaluator(Evaluator):
+        async def evaluate_turn(self, **_kwargs):
+            raise InvalidModelOutputError(
+                status_code=200, request_id='t1',
+                reason='Missing Jev turn_evaluation choice')
+
+    catalog = Catalog()
+    catalog.units = lambda: [catalog.unit]
+    catalog.lessons = lambda _unit_id: [{'lesson': 1, 'title': 'Hello'}]
+    store = ScriptedSessionStore(catalog, FailedEvaluator, Teacher)
+    api = TestClient(create_lesson_api(catalog, store))
+    created = api.post('/api/sessions', json={
+        'unit_id': 'grade03.unit01', 'lesson_id': 1}).json()
+    session_id = created['session_id']
+    response = api.post(f'/api/sessions/{session_id}/turns', json={
+        'turn_id': 't1', 'learner_text': 'private learner text',
+        'expected_state_version': 0})
+    assert response.status_code == 503
+    assert f'session_id={session_id} turn_id=t1 stage=jev' in caplog.text
+    assert 'reason=Missing Jev turn_evaluation choice' in caplog.text
+    assert 'private learner text' not in caplog.text

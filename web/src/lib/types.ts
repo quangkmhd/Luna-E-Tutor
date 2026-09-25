@@ -29,8 +29,10 @@ export type SessionView = {
   state_version: number;
   stage_id: string;
   activity_id?: string | null;
+  station_id?: 1 | 2 | 3 | null;
   objective_id?: string | null;
   flashcards: VocabularyCard[];
+  patterns?: string[];
   status: 'active' | 'paused' | 'completed' | 'abandoned';
   messages: Message[];
 };

@@ -1,5 +1,6 @@
 """Session-local Grade 3 scripted teaching HTTP API."""
 
+import logging
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
@@ -8,10 +9,14 @@ from openai import APIError
 from pydantic import BaseModel, ConfigDict, Field
 
 from luna_tutor.curriculum.lesson_catalog import GRADE3_UNIT_ID, ScriptedCatalog
+from luna_tutor.curriculum.lesson_stations import active_station
 from luna_tutor.llm.openrouter import InvalidModelOutputError, ProviderError
 from luna_tutor.speech.language_segments import plain_speech_text
 from luna_tutor.teaching.lesson_sessions import ScriptedSession, ScriptedSessionStore
 from luna_tutor.teaching.teacher_context import InvalidTeacherOutputError
+
+
+logger = logging.getLogger(__name__)
 
 
 class _Input(BaseModel):
@@ -47,6 +52,7 @@ def _view(session: ScriptedSession, catalog: ScriptedCatalog) -> dict:
         'state_version': session.version,
         'stage_id': item.type if item else 'narration',
         'activity_id': f'item-{controller.item_index + 1}' if item else None,
+        'station_id': active_station(session.lesson_id, controller.item_index),
         'objective_id': f'item-{controller.item_index + 1}' if item and item.type == 'practice' else None,
         'status': session.status,
         'messages': [
@@ -55,6 +61,7 @@ def _view(session: ScriptedSession, catalog: ScriptedCatalog) -> dict:
             for message in session.messages
         ],
         'flashcards': [card.model_dump() for card in controller.lesson.cards],
+        'patterns': controller.lesson.patterns,
     }
 
 
@@ -125,13 +132,26 @@ def create_lesson_api(catalog: ScriptedCatalog, store: ScriptedSessionStore,
                     'output': [item.__dict__ for item in output]}
         except LookupError:
             _error(404, 'SESSION_NOT_FOUND', 'Session was not found.')
-        except InvalidModelOutputError:
+        except InvalidModelOutputError as error:
+            logger.warning('lesson_turn_failed session_id=%s turn_id=%s stage=jev '
+                           'code=INVALID_EVALUATION status=%s reason=%s',
+                           session_id, body.turn_id, error.status_code, error.reason)
             _error(503, 'INVALID_EVALUATION', 'The tutor could not assess that turn.', True)
-        except ProviderError:
+        except ProviderError as error:
+            logger.warning('lesson_turn_failed session_id=%s turn_id=%s stage=jev '
+                           'code=PROVIDER_UNAVAILABLE status=%s reason=%s',
+                           session_id, body.turn_id, error.status_code, error.reason)
             _error(503, 'PROVIDER_UNAVAILABLE', 'The tutor service is temporarily unavailable.', True)
-        except APIError:
+        except APIError as error:
+            logger.warning('lesson_turn_failed session_id=%s turn_id=%s stage=teacher '
+                           'code=PROVIDER_UNAVAILABLE status=%s type=%s',
+                           session_id, body.turn_id, getattr(error, 'status_code', None),
+                           type(error).__name__)
             _error(503, 'PROVIDER_UNAVAILABLE', 'The tutor service is temporarily unavailable.', True)
-        except InvalidTeacherOutputError:
+        except InvalidTeacherOutputError as error:
+            logger.warning('lesson_turn_failed session_id=%s turn_id=%s stage=teacher '
+                           'code=INVALID_TEACHER_OUTPUT reason=%s',
+                           session_id, body.turn_id, error)
             _error(503, 'INVALID_TEACHER_OUTPUT', 'Luna chưa thể trả lời lượt này.', True)
         except ValueError as error:
             _error(422, 'INVALID_TURN', str(error))

@@ -25,6 +25,15 @@ export type TeacherImageCue = {
   spoken_text: string | null;
   receivedAt: string;
 };
+export type GoogleCaptionSegment = {
+  sourceId: number;
+  sourceText: string;
+  segmentIndex: number;
+  segmentText: string;
+  audioMs: number;
+  finished: boolean;
+  receivedAt: string;
+};
 type SessionTeacherImageCue = TeacherImageCue & { sessionId: string | undefined };
 
 type VoiceContextValue = {
@@ -33,6 +42,10 @@ type VoiceContextValue = {
   phase: VoicePhase;
   micMode: 'off' | 'listening' | 'speaking';
   teacherImageCue: TeacherImageCue | null;
+  googleCaptionSegments: GoogleCaptionSegment[];
+  googleCaptionPlaybackBaseMs: number;
+  googleCaptionStartedAt: number | null;
+  ttsProvider: 'google' | 'soniox' | null;
   sentText: Array<{ id: string; text: string; timestamp: string }>;
   ttfaSeconds: number | null;
   elapsedSeconds: number;
@@ -41,6 +54,8 @@ type VoiceContextValue = {
   stop: () => Promise<void>;
   toggleMic: () => void;
   submitVoice: () => Promise<void>;
+  retryVoice: () => void;
+  retryableTurn: boolean;
   turnReady: boolean;
   manualSubmit: boolean;
   transportState: TransportState;
@@ -141,7 +156,18 @@ export function PipecatVoiceProvider({
   const botSpeakingRef = useRef(false);
   const turnReadyRef = useRef(false);
   const [turnReady, setTurnReady] = useState(false);
+  const [retryableTurn, setRetryableTurn] = useState(false);
   const [teacherImageCue, setTeacherImageCue] = useState<SessionTeacherImageCue | null>(null);
+  const [googleCaptionSegments, setGoogleCaptionSegments] = useState<GoogleCaptionSegment[]>([]);
+  const googleCaptionSegmentsRef = useRef<GoogleCaptionSegment[]>([]);
+  const [googleCaptionPlaybackBaseMs, setGoogleCaptionPlaybackBaseMs] = useState(0);
+  const [googleCaptionStartedAt, setGoogleCaptionStartedAt] = useState<number | null>(null);
+  const [ttsProvider, setTtsProvider] = useState<'google' | 'soniox' | null>(null);
+  const googleCaptionStartedAtRef = useRef<number | null>(null);
+  const googleCaptionPlaybackBaseRef = useRef(0);
+  const googleCaptionAudioMsRef = useRef(0);
+  const googleCaptionIgnoreThroughSourceIdRef = useRef(0);
+  const botInterruptedRef = useRef(false);
   const sessionIdRef = useRef(sessionId);
   useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
   const [errorState, setErrorState] = useState<{ message: string | null; fatal: boolean }>({ message: null, fatal: false });
@@ -164,9 +190,35 @@ export function PipecatVoiceProvider({
     setElapsedSeconds(elapsedBase.current);
   }
   const [, setUserStoppedAt] = useState<number | null>(null);
+  const manualSubmittedAt = useRef<number | null>(null);
   const [refreshTimer, setRefreshTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [thinkingTimeout] = useState(createThinkingTimeout);
   const [conversationStore] = useState(createStore);
+  function finishGoogleCaptionPlayback(interrupted: boolean) {
+    let playedMs = googleCaptionAudioMsRef.current;
+    if (interrupted && googleCaptionStartedAtRef.current !== null) {
+      playedMs = Math.min(playedMs, googleCaptionPlaybackBaseRef.current
+        + Math.max(0, Date.now() - googleCaptionStartedAtRef.current));
+      let offset = 0;
+      const truncated = googleCaptionSegmentsRef.current.map((segment) => {
+        const availableMs = Math.max(0, Math.min(segment.audioMs, playedMs - offset));
+        offset += segment.audioMs;
+        return { ...segment, audioMs: availableMs,
+          finished: segment.finished && availableMs === segment.audioMs };
+      });
+      googleCaptionIgnoreThroughSourceIdRef.current = Math.max(
+        googleCaptionIgnoreThroughSourceIdRef.current,
+        ...truncated.map((segment) => segment.sourceId),
+      );
+      googleCaptionSegmentsRef.current = truncated;
+      googleCaptionAudioMsRef.current = playedMs;
+      setGoogleCaptionSegments(truncated);
+    }
+    googleCaptionPlaybackBaseRef.current = playedMs;
+    setGoogleCaptionPlaybackBaseMs(playedMs);
+    googleCaptionStartedAtRef.current = null;
+    setGoogleCaptionStartedAt(null);
+  }
   // The SDK invokes these callbacks after construction, never during render.
   // eslint-disable-next-line react-hooks/refs
   const [client] = useState(() => {
@@ -183,12 +235,52 @@ export function PipecatVoiceProvider({
           const payload = data.payload as { ready?: unknown } | undefined;
           turnReadyRef.current = payload?.ready === true;
           setTurnReady(turnReadyRef.current);
-          if (turnReadyRef.current) setPhase('ready');
+          if (turnReadyRef.current) {
+            setRetryableTurn(false);
+            setPhase('ready');
+          }
           return;
         }
         if (data.event === 'luna-turn-error') {
-          const payload = data.payload as { message?: unknown } | undefined;
+          const payload = data.payload as { message?: unknown; retryable_turn?: unknown } | undefined;
+          thinkingTimeout.clear();
+          setRetryableTurn(payload?.retryable_turn === true);
+          if (payload?.retryable_turn === true) setPhase('ready');
           setErrorState({ message: typeof payload?.message === 'string' ? payload.message : 'Con thử lại nhé.', fatal: false });
+          return;
+        }
+        if (data.event === 'tts-provider' && data.payload && typeof data.payload === 'object') {
+          const provider = (data.payload as { provider?: unknown }).provider;
+          if (provider === 'google' || provider === 'soniox') setTtsProvider(provider);
+          return;
+        }
+        if (data.event === 'google-tts-caption' && data.payload && typeof data.payload === 'object') {
+          const payload = data.payload as Record<string, unknown>;
+          if (typeof payload.source_id !== 'number' || typeof payload.source_text !== 'string'
+            || typeof payload.segment_index !== 'number' || typeof payload.segment_text !== 'string'
+            || typeof payload.audio_ms !== 'number') return;
+          if (payload.source_id <= googleCaptionIgnoreThroughSourceIdRef.current) return;
+          {
+            const previous = googleCaptionSegmentsRef.current;
+            const key = (segment: GoogleCaptionSegment) => segment.sourceId === payload.source_id
+              && segment.segmentIndex === payload.segment_index;
+            const next: GoogleCaptionSegment = {
+              sourceId: payload.source_id as number,
+              sourceText: payload.source_text as string,
+              segmentIndex: payload.segment_index as number,
+              segmentText: payload.segment_text as string,
+              audioMs: payload.audio_ms as number,
+              finished: payload.kind === 'end',
+              receivedAt: new Date().toISOString(),
+            };
+            const index = previous.findIndex(key);
+            const updated = index < 0 ? [...previous, next] : previous.map((segment, position) => position === index
+              ? { ...next, receivedAt: segment.receivedAt, finished: segment.finished || next.finished }
+              : segment);
+            googleCaptionSegmentsRef.current = updated;
+            googleCaptionAudioMsRef.current = updated.reduce((total, segment) => total + segment.audioMs, 0);
+            setGoogleCaptionSegments(updated);
+          }
           return;
         }
         if (data.event !== 'teacher-image' || !data.payload || typeof data.payload !== 'object') return;
@@ -206,8 +298,11 @@ export function PipecatVoiceProvider({
         if (['initializing', 'connecting', 'authenticating'].includes(state)) {
           setPhase('connecting');
         } else if (state === 'disconnected') {
+          if (botSpeakingRef.current) finishGoogleCaptionPlayback(true);
+          manualSubmittedAt.current = null;
           turnReadyRef.current = false;
           setTurnReady(false);
+          setRetryableTurn(false);
           micArmedRef.current = false;
           botSpeakingRef.current = false;
           setMicMode('off');
@@ -238,6 +333,8 @@ export function PipecatVoiceProvider({
         setPhase('ready');
       },
       onUserStartedSpeaking: () => {
+        if (botSpeakingRef.current) botInterruptedRef.current = true;
+        manualSubmittedAt.current = null;
         thinkingTimeout.clear();
         setErrorState((previous) => previous.fatal ? previous : { message: null, fatal: false });
         setUserStoppedAt(null);
@@ -256,6 +353,12 @@ export function PipecatVoiceProvider({
       },
       onBotLlmStarted: () => setPhase('thinking'),
       onBotStartedSpeaking: () => {
+        botInterruptedRef.current = false;
+        const speakingStartedAt = Date.now();
+        if (googleCaptionStartedAtRef.current === null) {
+          googleCaptionStartedAtRef.current = speakingStartedAt;
+          setGoogleCaptionStartedAt(googleCaptionStartedAtRef.current);
+        }
         turnReadyRef.current = false;
         setTurnReady(false);
         botSpeakingRef.current = true;
@@ -264,13 +367,17 @@ export function PipecatVoiceProvider({
         setMicMode('off');
         thinkingTimeout.clear();
         setErrorState((previous) => previous.fatal ? previous : { message: null, fatal: false });
+        const submittedAt = manualSubmittedAt.current;
+        manualSubmittedAt.current = null;
         setUserStoppedAt((stoppedAt) => {
-          if (stoppedAt !== null) setTtfaSeconds((Date.now() - stoppedAt) / 1_000);
+          const turnEndedAt = submittedAt ?? stoppedAt;
+          if (turnEndedAt !== null) setTtfaSeconds((speakingStartedAt - turnEndedAt) / 1_000);
           return null;
         });
         setPhase('speaking');
       },
       onBotStoppedSpeaking: () => {
+        finishGoogleCaptionPlayback(botInterruptedRef.current);
         botSpeakingRef.current = false;
         thinkingTimeout.clear();
         if (!sessionId) { turnReadyRef.current = true; setTurnReady(true); }
@@ -285,6 +392,7 @@ export function PipecatVoiceProvider({
         });
       },
       onDeviceError: (reason: DeviceError) => {
+        setRetryableTurn(false);
         micArmedRef.current = false;
         botSpeakingRef.current = false;
         setMicMode('off');
@@ -292,6 +400,7 @@ export function PipecatVoiceProvider({
       },
       onError: (message: RTVIMessage) => {
         thinkingTimeout.clear();
+        setRetryableTurn(false);
         setTeacherImageCue(null);
         const data = message.data as ErrorData;
         setErrorState({ message: voiceServiceErrorMessage(message, manualSubmit), fatal: data.fatal });
@@ -311,6 +420,7 @@ export function PipecatVoiceProvider({
       },
       onMessageError: () => {
         thinkingTimeout.clear();
+        setRetryableTurn(false);
         setTeacherImageCue(null);
         if (manualSubmit) { turnReadyRef.current = false; setTurnReady(false); }
         setPhase('ready');
@@ -325,12 +435,24 @@ export function PipecatVoiceProvider({
 
   async function start() {
     thinkingTimeout.clear();
+    manualSubmittedAt.current = null;
     resumeElapsedClock();
+    setTtsProvider(null);
+    setGoogleCaptionSegments([]);
+    googleCaptionSegmentsRef.current = [];
+    googleCaptionAudioMsRef.current = 0;
+    googleCaptionIgnoreThroughSourceIdRef.current = 0;
+    botInterruptedRef.current = false;
+    googleCaptionPlaybackBaseRef.current = 0;
+    setGoogleCaptionPlaybackBaseMs(0);
+    googleCaptionStartedAtRef.current = null;
+    setGoogleCaptionStartedAt(null);
     setVoiceRuns((previous) => [...previous, {
       start: savedHasTurn ? savedMessageCount : 0,
       connected: false,
     }]);
     setErrorState({ message: null, fatal: false });
+    setRetryableTurn(false);
     turnReadyRef.current = false;
     setTurnReady(false);
     setPhase('connecting');
@@ -371,6 +493,7 @@ export function PipecatVoiceProvider({
 
   async function submitVoice() {
     if (!micArmedRef.current || !turnReadyRef.current) return;
+    manualSubmittedAt.current = Date.now();
     micArmedRef.current = false;
     turnReadyRef.current = false;
     setTurnReady(false);
@@ -378,21 +501,36 @@ export function PipecatVoiceProvider({
     setMicMode('off');
     setPhase('thinking');
     try {
-      // The WebRTC audio track and control data channel are independent.
-      // Allow the final encoded audio packet to leave before Soniox finalize.
-      await new Promise((resolve) => setTimeout(resolve, 250));
       client.sendClientMessage('luna.submit-turn', {
         turn_id: globalThis.crypto?.randomUUID?.() ?? `voice-${Date.now()}`,
       });
     } catch {
+      manualSubmittedAt.current = null;
       turnReadyRef.current = true;
       setTurnReady(true);
       setErrorState({ message: 'Chưa gửi được lời nói. Con thử lại nhé.', fatal: false });
     }
   }
 
+  function retryVoice() {
+    if (!retryableTurn || (transportState !== 'connected' && transportState !== 'ready')) return;
+    setRetryableTurn(false);
+    setErrorState({ message: null, fatal: false });
+    setPhase('thinking');
+    try {
+      client.sendClientMessage('luna.retry-turn', {});
+    } catch {
+      setRetryableTurn(true);
+      setPhase('ready');
+      setErrorState({ message: 'Chưa gửi lại được lượt vừa nói. Con bấm thử lại nhé.', fatal: false });
+    }
+  }
+
   async function stop() {
     thinkingTimeout.clear();
+    manualSubmittedAt.current = null;
+    setRetryableTurn(false);
+    if (botSpeakingRef.current) finishGoogleCaptionPlayback(true);
     micArmedRef.current = false;
     botSpeakingRef.current = false;
     setMicMode('off');
@@ -460,12 +598,18 @@ export function PipecatVoiceProvider({
     phase,
     micMode,
     teacherImageCue: teacherImageCue?.sessionId === sessionId ? teacherImageCue : null,
+    googleCaptionSegments,
+    googleCaptionPlaybackBaseMs,
+    googleCaptionStartedAt,
+    ttsProvider,
     sentText,
     sendText,
     start,
     stop,
     toggleMic,
     submitVoice,
+    retryVoice,
+    retryableTurn,
     turnReady,
     manualSubmit,
     ttfaSeconds,

@@ -2,7 +2,11 @@
 
 import asyncio
 
-from luna_tutor.teaching.lesson_progression import TEACHER_SYSTEM_PROMPT, TeacherInstruction
+from luna_tutor.speech.language_segments import validate_tagged_teacher_speech
+from luna_tutor.teaching.lesson_progression import (
+    TEACHER_SYSTEM_PROMPT,
+    TeacherInstruction,
+)
 from pipecat.frames.frames import LLMFullResponseStartFrame
 from pipecat.processors.aggregators.llm_context import LLMContext
 from pipecat.processors.aggregators.llm_context_summarizer import LLMContextSummarizer
@@ -91,9 +95,29 @@ class ScriptedTeacherContext:
             *conversation,
         ])
         result = await self.llm.run_inference(self.context)
-        if not isinstance(result, str) or not result.strip():
-            raise InvalidTeacherOutputError('Teacher returned no spoken text')
-        return result.strip()
+        for attempt in range(2):
+            try:
+                if not isinstance(result, str):
+                    raise TypeError('Teacher speech needs valid language markup and speakable text')
+                validate_tagged_teacher_speech(result.strip())
+                return result.strip()
+            except (TypeError, ValueError) as error:
+                if attempt:
+                    raise InvalidTeacherOutputError(str(error)) from error
+                messages = list(self.context.get_messages())
+                self.context.add_message({
+                    'role': 'developer',
+                    'content': ('Your previous reply had invalid language markup or no spoken text. '
+                                'Reply again with only complete <vi>...</vi> and <en>...</en> '
+                                'segments around the corresponding spoken languages. '
+                                'Use only letters, numbers, spaces, . , ?, apostrophes inside words, '
+                                'and paired ** for visual emphasis. No other symbols.'),
+                })
+                try:
+                    result = await self.llm.run_inference(self.context)
+                finally:
+                    self.context.set_messages(messages)
+        raise AssertionError('Unreachable Teacher retry state')
 
     async def close(self) -> None:
         if self._tasks.current_tasks():

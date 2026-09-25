@@ -1,9 +1,14 @@
 # Voice — bài học theo kịch bản lớp 3
 
-Pipecat WebRTC bot cho bài học lớp 3. Soniox STT gửi transcript đã chốt
-sang backend để Jev đánh giá và Teacher xử lý ngoại lệ; Soniox TTS phát lời
-Teacher hoặc lời `say` nguyên văn. Học sinh ấn mic để nói rồi ấn Gửi để yêu
-cầu chốt lượt. `talk` là phòng trò chuyện riêng.
+Pipecat WebRTC bot cho bài học lớp 3. Khi học sinh ấn Gửi, Voice yêu cầu
+Soniox chốt transcript ngay qua Pipecat. Chỉ transcript `final` được nộp cho
+Backend để Jev đánh giá và Teacher xử lý ngoại lệ. TTS phát lời
+Teacher hoặc lời `say` theo từng đoạn `<vi>`/`<en>`. Khi chọn Google Chirp 3 HD,
+Voice đổi giọng theo ngôn ngữ; các chỉ dẫn trong `[...]` được bỏ trước khi phát.
+Lời hiển thị chỉ giữ chữ, số, `.`, `,`, `?`, dấu nháy trong từ như `I'm`,
+và `**...**` để tô đậm. TTS nhận chữ bên trong `**` mà không nhận dấu sao;
+Google Chirp 3 HD streaming không diễn giải Markdown như lệnh nhấn giọng.
+`talk` là phòng trò chuyện riêng.
 
 Xem [README root](../README.md) để biết bốn service cùng chạy như thế nào.
 
@@ -36,6 +41,9 @@ OPENROUTER_API_KEY=
 OPENROUTER_MODEL=google/gemini-3.5-flash-lite
 SONIOX_API_KEY=
 SONIOX_VOICE_ID=Grace
+TTS_PROVIDER=soniox
+# Hoặc TTS_PROVIDER=google cùng GOOGLE_APPLICATION_CREDENTIALS,
+# GOOGLE_TTS_LOCATION, GOOGLE_TTS_VI_VOICE, GOOGLE_TTS_EN_VOICE.
 ```
 
 Xem [`.env.example`](../.env.example) cho CORS và ICE/STUN khi chạy qua mạng.
@@ -58,7 +66,7 @@ Soniox và TTS thật trước khi xác nhận Voice hoạt động trọn vẹn
 voice/
 ├── server/
 │   ├── bot.py       # Pipecat bot entry point
-│   ├── lesson_voice_bridge.py  # chốt transcript và giao lời phát
+│   ├── lesson_voice_bridge.py  # nộp lượt và giao lời phát
 │   ├── pyproject.toml
 │   └── .venv/       # service-specific Python environment
 └── README.md

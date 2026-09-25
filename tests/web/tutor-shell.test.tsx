@@ -111,10 +111,34 @@ describe('TutorShell', () => {
     expect(screen.getByRole('navigation', { name: 'Chương trình học' })).toBeVisible();
     expect(screen.getByRole('button', { name: /Unit 1.*Hello/i })).toBeVisible();
     expect(screen.getByRole('region', { name: 'Lớp học Luna' })).toBeVisible();
-    expect(screen.getByLabelText('Loại hoạt động')).toHaveTextContent('warm up');
+    expect(screen.getByRole('list', { name: 'Các phần trong bài học' })).toHaveTextContent('Trạm 1Trạm 2Trạm 3');
     expect(screen.getByRole('heading', { name: 'Thẻ từ vựng' })).toBeVisible();
     expect(screen.queryByRole('button', { name: /Trò chơi|Gửi hình ảnh|Nghe lại/i })).not.toBeInTheDocument();
     expect(screen.queryByText('4 ngày')).not.toBeInTheDocument();
+  });
+
+  it('shows the greeting phase before station 1 and advances the highlight', async () => {
+    const opening = session({ lesson_id: 1, station_id: null });
+    const atStationOne = session({ lesson_id: 1, station_id: 1, state_version: 1 });
+    const api = mockApi({
+      createSession: vi.fn().mockResolvedValue(opening),
+      submitTurn: vi.fn().mockResolvedValue({ turn_id: 't1', session: atStationOne }),
+    });
+
+    render(<TutorShell api={api} initialUnitId="grade03.unit01" initialLessonId={1} />);
+
+    const phases = await screen.findByRole('list', { name: 'Các phần trong bài học' });
+    expect(phases).toHaveTextContent('Chào & khởi độngTrạm 1Trạm 2Trạm 3');
+    const [warmup, stationOne] = Array.from(phases.querySelectorAll('[role="listitem"]'));
+    expect(warmup).toHaveTextContent('Chào & khởi động');
+    expect(warmup).toHaveAttribute('aria-current', 'step');
+    expect(stationOne).not.toHaveAttribute('aria-current');
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Your answer' }), 'Ready');
+    await userEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(stationOne).toHaveAttribute('aria-current', 'step');
+    expect(warmup).not.toHaveAttribute('aria-current');
   });
 
   it('keeps every Grade 3 lesson in the curriculum while Lesson 2 is active', async () => {
@@ -244,19 +268,22 @@ describe('TutorShell', () => {
     expect(api.resetSession).not.toHaveBeenCalled();
     expect(api.listSessions).not.toHaveBeenCalled();
     expect(screen.queryByText('Session history')).not.toBeInTheDocument();
-    expect(screen.getByText('warm up')).toBeVisible();
+    expect(screen.getByRole('list', { name: 'Các phần trong bài học' })).toHaveTextContent('Trạm 1Trạm 2Trạm 3');
     expect(screen.getByText('Đang học')).toBeVisible();
   });
 
-  it('shows authored vocabulary without legacy objective metrics', async () => {
+  it('shows vocabulary cards and authored patterns without a duplicate word list', async () => {
     const focused = session({
       stage_id: 'practice',
       flashcards: [{ word: 'hello', meaning_vi: 'xin chào' }],
+      patterns: ["Hi. I'm Mai."],
     });
     await openLesson(mockApi({ createSession: vi.fn().mockResolvedValue(focused) }));
 
     expect(await screen.findByRole('heading', { name: 'Thẻ từ vựng' })).toBeVisible();
-    expect(screen.getAllByText('xin chào')).toHaveLength(2);
+    expect(screen.getAllByText('xin chào')).toHaveLength(1);
+    expect(screen.getByRole('heading', { name: 'Mẫu câu cần học' })).toBeVisible();
+    expect(screen.getByText("Hi. I'm Mai.")).toBeVisible();
     expect(screen.queryByText('Mẫu câu cần nhớ')).not.toBeInTheDocument();
     expect(screen.queryByText('Activity')).not.toBeInTheDocument();
     expect(screen.queryByText('Objective')).not.toBeInTheDocument();
@@ -372,6 +399,14 @@ describe('TutorShell', () => {
     render(<ChatPanel messages={[{ role: 'teacher', text: '<vi>Xin chào.</vi> <en>[long pause] HELLO</en>' }]} />);
     expect(screen.getByText('Xin chào. HELLO')).toBeVisible();
     expect(screen.queryByText(/<\/?(?:vi|en)>|\[long pause\]/)).not.toBeInTheDocument();
+  });
+
+  it('separates adjacent Vietnamese and English spans in a Luna bubble', () => {
+    render(<ChatPanel messages={[{
+      role: 'teacher',
+      text: '<vi>Con biết câu hỏi thăm rất hay.</vi><en>How are you</en><vi> là cách hỏi bạn bè. Con có thể dùng từ</vi><en>Hello</en><vi>nhé.</vi><en>Say hello.</en>',
+    }]} />);
+    expect(screen.getByText('Con biết câu hỏi thăm rất hay. How are you là cách hỏi bạn bè. Con có thể dùng từ Hello nhé. Say hello.')).toBeVisible();
   });
 
   it('renders each YAML say line as a separate Luna turn', () => {

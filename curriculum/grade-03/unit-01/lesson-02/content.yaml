@@ -5,7 +5,6 @@ items:
   say: <en>Hi! Great to see you again! How are you today?</en>
   learner_goal: Học sinh đáp lời hỏi How are you? bằng một trạng thái hoặc cảm xúc thật bằng tiếng Anh, như Fine,
     Great, OK, Happy, Tired hoặc I'm ...; lời chào kèm câu trả lời cũng đạt.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
 - type: practice
   say: |-
     <vi>Trạm 1 nhé: hôm nay có bốn từ mới để hỏi thăm nhau, và mấy từ nói về cảm xúc của con. [long pause]</vi>
@@ -13,35 +12,35 @@ items:
     <en>Listen first! [long pause] "*HOW*"</en>
     <en>Your turn now! *How*!</en>
   learner_goal: Học sinh nói từ How bằng tiếng Anh. Không đánh giá âm /h/ từ transcript chữ.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V07_how_are_you.webp
 - type: practice
   say: |-
     <en>*You*</en><vi> là bạn — người con đang nói chuyện cùng. Khi cô nói với con, </vi><en>*You*</en><vi> chính là con. [long pause]</vi>
     <en>Listen first! [long pause] "*YOU*"</en>
     <en>Your turn now! *You*!</en>
   learner_goal: Học sinh nói từ You bằng tiếng Anh trong lượt luyện đúng từ này.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/F02_your_turn_microphone.webp
 - type: practice
   say: |-
     <en>*Fine*</en><vi> là khoẻ, ổn. [long pause]</vi>
     <en>Listen first! [long pause] "*FINE*"</en>
     <en>Your turn now! *Fine*!</en>
   learner_goal: Học sinh nói từ Fine bằng tiếng Anh; không đánh giá âm /n/ cuối từ transcript chữ.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V08_fine.webp
 - type: practice
   say: |-
     <en>*Thank you*</en><vi> là cảm ơn — con nói khi ai hỏi thăm hay giúp con. Cô phát âm chậm: </vi><en>*THANK YOU*</en><vi> — đầu lưỡi đặt nhẹ giữa hai hàm răng. [long pause]</vi>
     <en>Listen first! [long pause] "*THANK YOU*"</en>
     <en>Now you!</en>
   learner_goal: Học sinh nói đủ cụm Thank you bằng tiếng Anh. Không đánh giá âm /th/ từ transcript chữ.
-  image_url: /images/grade-03/unit-01/lesson-02/02-thank-you.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V14_thank_you.webp
 - type: practice
   say: |-
     <en>*Great*</en><vi> là tuyệt, rất tốt. </vi><en>*OK*</en><vi> là bình thường, ổn. [long pause]</vi>
     <en>Listen first! [long pause] "*GREAT*" "*OK*"</en>
     <en>Your turn now! "*Great*" ,"*OK*"!</en>
   learner_goal: Học sinh nói cả hai từ Great và OK bằng tiếng Anh; chỉ một từ thì chưa đủ lượt luyện hai từ.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V09_great.webp
 - type: practice
   say: |-
     <en>*Tired*</en><vi> là mệt, </vi><en>*sleepy*</en><vi> là buồn ngủ, </vi><en>*happy*</en><vi> là vui — con dùng để nói con đang thấy thế nào. [long pause]</vi>
@@ -49,14 +48,14 @@ items:
     <en>Your turn now!</en>
   learner_goal: Học sinh nói các từ Tired, Sleepy và Happy bằng tiếng Anh; có thể dùng trong câu ngắn, nhưng thiếu
     một từ thì chưa hoàn thành lượt luyện ba từ.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V11_tired.webp
 - type: practice
   say: |-
     <en>Let's play! *Happy* — laugh. *Tired* — sigh. *Fine* — say OK! [long pause]</en>
     <en>Great!… *Tired*… *Fine*… *Happy*!</en>
   learner_goal: Học sinh nói được các từ cảm xúc Great, Tired, Fine và Happy khi được gọi tên trong trò chơi; có
     thể trả lời bằng từ đơn, không đánh giá tiếng cười hoặc tiếng thở dài từ transcript chữ.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/G02_emotion_guessing_game.webp
 - type: practice
   say: |-
     <vi>Trạm 2: cô trò mình ghép các từ vừa học thành một câu hỏi thăm hoàn chỉnh. [long pause]</vi>
@@ -65,7 +64,7 @@ items:
     <en>Your turn now! Can you say: How are you?</en>
   learner_goal: Học sinh hỏi đủ câu How are you? bằng tiếng Anh. Một câu kể về cảm xúc của mình không thay thế câu
     hỏi.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V07_how_are_you.webp
 - type: practice
   say: <en>Once more, smoothly! [long pause] "How are you?"</en>
   learner_goal: Học sinh nói lại câu hỏi How are you? bằng tiếng Anh; không chấm độ liền mạch hoặc phát âm từ transcript
@@ -77,7 +76,7 @@ items:
     <en>Your turn now!</en>
   learner_goal: Học sinh đáp bằng Fine, thank you bằng tiếng Anh; Fine đơn lẻ cũng đạt ở lượt luyện trả lời cơ bản
     này.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V08_fine.webp
 - type: practice
   say: <en>Now for real! How are you?</en>
   learner_goal: Học sinh trả lời câu hỏi How are you? bằng trạng thái thật bằng tiếng Anh, như Fine, I'm fine, Great,
@@ -87,7 +86,7 @@ items:
     me — how are you really?</en>
   learner_goal: Học sinh nói cảm xúc thật của mình bằng tiếng Anh, có thể là Fine, Great, Happy, Tired, Sleepy hoặc
     I'm [cảm xúc]. Không tự suy ra cảm xúc của học sinh.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/G02_emotion_guessing_game.webp
 - type: practice
   say: <en>Really?! Tell me more about that!</en>
   learner_goal: Học sinh nói thêm một ý có nghĩa về cảm xúc vừa nêu; câu ngắn bằng tiếng Anh hoặc tiếng Việt đều
@@ -99,12 +98,12 @@ items:
     <en>Your turn now!</en>
   learner_goal: Học sinh nói lời đáp Fine, thank you và hỏi lại And you? bằng tiếng Anh. Chỉ nói Fine thì đạt ý
     trả lời nhưng chưa đạt mục tiêu luyện hỏi lại.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V07_how_are_you.webp
 - type: practice
   say: '<en>Now your turn to *ask* ME! Say: How are you?</en>'
   learner_goal: Học sinh chủ động hỏi Luna How are you? bằng tiếng Anh; có thể gọi tên Luna. Chỉ tự nói mình khỏe
     thì chưa đạt mục tiêu đặt câu hỏi.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V07_how_are_you.webp
 - type: practice
   say: <en>I'm great, thank you! And you?</en>
   learner_goal: Học sinh đáp lời Luna hỏi And you? bằng trạng thái hoặc cảm xúc của mình bằng tiếng Anh, chẳng hạn
@@ -115,7 +114,7 @@ items:
     <en>Good evening!</en>
   learner_goal: Học sinh đáp lời chào Good evening của Luna bằng Good evening, Hello hoặc Hi; chưa cần trả lời về
     cảm xúc ở lượt này.
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/S06_evening_video_call.webp
 - type: practice
   say: <en>How are you today?</en>
   learner_goal: Học sinh trả lời How are you today? bằng cảm xúc hoặc trạng thái của mình bằng tiếng Anh; có thể
@@ -127,46 +126,53 @@ items:
     <en>Hi. I'm Tom.</en>
   learner_goal: Học sinh chào nhân vật Tom bằng Hi hoặc Hello; có thể tự giới thiệu tên bằng I'm [tên], nhưng lời
     chào Tom đã đủ cho lượt này.
+  image_url: /images/grade-03/unit-01/lesson-02/C01_tom.webp
 - type: practice
   say: <en>Nice to meet you, too! How are you?</en>
   learner_goal: Học sinh trả lời How are you? bằng cảm xúc hoặc trạng thái của mình bằng tiếng Anh; có thể hỏi lại
     And you?.
 - type: end
   say: <en>I'm great, thanks! [long pause] Scene done! You just had a real conversation in English! 🎉</en>
+  image_url: /images/grade-03/unit-01/lesson-02/F01_praise_star.webp
+
 cards:
 - word: how
   pronunciation: /haʊ/
   meaning_vi: thế nào
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V07_how_are_you.webp
 - word: you
   pronunciation: /juː/
   meaning_vi: bạn, con
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V07_how_are_you.webp
 - word: fine
   pronunciation: /faɪn/
   meaning_vi: ổn
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V08_fine.webp
 - word: thank you
   pronunciation: /ˈθæŋk juː/
   meaning_vi: cảm ơn
-  image_url: /images/grade-03/unit-01/lesson-02/02-thank-you.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V14_thank_you.webp
 - word: great
   pronunciation: /ɡreɪt/
   meaning_vi: tuyệt
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V09_great.webp
 - word: OK
   pronunciation: /ˌoʊˈkeɪ/
   meaning_vi: ổn, được
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V10_ok.webp
 - word: tired
   pronunciation: /ˈtaɪərd/
   meaning_vi: mệt
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V11_tired.webp
 - word: sleepy
   pronunciation: /ˈsliːpi/
   meaning_vi: buồn ngủ
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V12_sleepy.webp
 - word: happy
   pronunciation: /ˈhæpi/
   meaning_vi: vui
-  image_url: /images/grade-03/unit-01/lesson-02/01-feelings-and-emotions.webp
+  image_url: /images/grade-03/unit-01/lesson-02/V13_happy.webp
+patterns:
+- How are you?
+- Fine, thank you.
+- Fine, thank you. And you?

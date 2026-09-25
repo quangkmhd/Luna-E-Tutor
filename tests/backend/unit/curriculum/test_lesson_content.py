@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from luna_tutor.curriculum.lesson_content import load_scripted_lesson
 
 
@@ -43,3 +42,20 @@ def test_reads_ordered_script_items_and_preserves_authored_say(tmp_path):
 def test_rejects_invalid_script_instead_of_inventing_goal(tmp_path, items):
     with pytest.raises(ValueError, match='content.yaml'):
         load_scripted_lesson(_write(tmp_path, items))
+
+
+def test_rejects_cue_only_say_before_delivery(tmp_path):
+    with pytest.raises(ValueError, match='no speakable text'):
+        load_scripted_lesson(_write(tmp_path, [
+            {'type': 'practice', 'say': '<vi>[long pause]</vi>', 'learner_goal': 'Say hello'},
+            {'type': 'end', 'say': '<en>Goodbye.</en>'},
+        ]))
+
+
+@pytest.mark.parametrize('lesson_id', [1, 2, 3, 4])
+def test_grade3_lessons_author_patterns_for_cards(lesson_id):
+    root = Path(__file__).resolve().parents[4]
+    path = root / f'curriculum/grade-03/unit-01/lesson-{lesson_id:02d}/content.yaml'
+    lesson = load_scripted_lesson(path)
+    assert lesson.patterns
+    assert all(pattern.strip() for pattern in lesson.patterns)

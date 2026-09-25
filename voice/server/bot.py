@@ -9,22 +9,23 @@ from pipecat.evals.transport import EvalTransportParams
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.worker import PipelineParams, PipelineWorker
 from pipecat.processors.frameworks.rtvi import RTVIProcessor
+from pipecat.processors.frameworks.rtvi.frames import RTVIServerMessageFrame
 from pipecat.runner.types import RunnerArguments
 from pipecat.runner.utils import create_transport
 from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.workers.runner import WorkerRunner
 
-from language_tts import LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
+from language_tts import GoogleCaptionSource, LanguageTaggedTTSProcessor, LanguageTTSCompletionObserver
+from google_captions import GoogleCaptionProgressProcessor
 from lesson_voice_bridge import (
-    ManualAudioDrainGate,
     ScriptedDeliveryObserver,
     ScriptedVoiceAPI,
     ScriptedVoiceBridge,
 )
-from voice_config import VoiceConfig, build_soniox_stt, build_soniox_tts
+from voice_config import VoiceConfig, build_soniox_stt, build_tts
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-load_dotenv(PROJECT_ROOT / '.env', override=True)
+load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 
 def _session_id(runner_args: RunnerArguments) -> str:
@@ -45,9 +46,17 @@ def build_voice_worker(transport: BaseTransport, runner_args: RunnerArguments,
     bridge = ScriptedVoiceBridge(api)
     delivery = ScriptedDeliveryObserver(bridge.delivery_finished, bridge.delivery_failed)
     bridge.set_delivery_started(delivery.start_delivery)
+    caption_source = GoogleCaptionSource() if config.tts_provider == 'google' else None
     pipeline = Pipeline([
-        transport.input(), ManualAudioDrainGate(), stt, bridge, LanguageTaggedTTSProcessor(),
-        delivery, build_soniox_tts(config), transport.output(),
+        transport.input(), stt, bridge, LanguageTaggedTTSProcessor(
+            provider=config.tts_provider,
+            google_vi_voice=config.google_vi_voice,
+            google_en_voice=config.google_en_voice,
+            caption_source=caption_source,
+        ),
+        delivery, build_tts(config),
+        *([GoogleCaptionProgressProcessor(caption_source)] if caption_source else []),
+        transport.output(),
         LanguageTTSCompletionObserver(),
     ])
     worker = PipelineWorker(
@@ -65,6 +74,9 @@ def build_voice_worker(transport: BaseTransport, runner_args: RunnerArguments,
         nonlocal greeted
         if not greeted:
             greeted = True
+            await bridge.push_frame(RTVIServerMessageFrame(data={
+                'event': 'tts-provider', 'payload': {'provider': config.tts_provider},
+            }))
             await bridge.start_lesson()
 
     @transport.event_handler('on_client_connected')

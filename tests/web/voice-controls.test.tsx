@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -41,6 +41,116 @@ describe('VoiceControls', () => {
     sdk.options = undefined;
   });
 
+  it('turns on the ready Lesson mic with Space once without starting or submitting a turn', () => {
+    render(<PipecatVoiceProvider sessionId="s1"><VoiceControls lessonMode /></PipecatVoiceProvider>);
+    fireEvent.keyDown(window, { code: 'Space', key: ' ', repeat: false });
+    expect(sdk.client.startBotAndConnect).not.toHaveBeenCalled();
+
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    fireEvent.keyDown(window, { code: 'Space', key: ' ', repeat: false });
+    expect(sdk.enableMic).not.toHaveBeenCalledWith(true);
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+
+    fireEvent.keyDown(window, { code: 'Space', key: ' ', repeat: false });
+    fireEvent.keyDown(window, { code: 'Space', key: ' ', repeat: true });
+    expect(sdk.enableMic).toHaveBeenCalledExactlyOnceWith(true);
+    expect(screen.getByText('Đang nghe')).toBeVisible();
+    expect(sdk.client.sendClientMessage).not.toHaveBeenCalled();
+  });
+
+  it('submits the recorded Lesson turn on the next Space press', () => {
+    render(<PipecatVoiceProvider sessionId="s1"><VoiceControls lessonMode /></PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+
+    fireEvent.keyDown(window, { code: 'Space', key: ' ' });
+    fireEvent.keyDown(window, { code: 'Space', key: ' ', repeat: true });
+    expect(sdk.client.sendClientMessage).not.toHaveBeenCalled();
+    fireEvent.keyUp(window, { code: 'Space', key: ' ' });
+    fireEvent.keyDown(window, { code: 'Space', key: ' ' });
+
+    expect(sdk.enableMic).toHaveBeenLastCalledWith(false);
+    expect(sdk.client.sendClientMessage).toHaveBeenCalledExactlyOnceWith(
+      'luna.submit-turn', expect.objectContaining({ turn_id: expect.any(String) }),
+    );
+    expect(screen.getByText('MIC ĐANG TẮT')).toBeVisible();
+    fireEvent.keyDown(window, { code: 'Space', key: ' ' });
+    expect(sdk.client.sendClientMessage).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the current Space action only while a Lesson turn is ready', () => {
+    render(<PipecatVoiceProvider sessionId="s1"><VoiceControls lessonMode /></PipecatVoiceProvider>);
+    expect(screen.queryByText('Nhấn Space để mở mic')).not.toBeInTheDocument();
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+    expect(screen.getByText('Nhấn Space để mở mic')).toBeVisible();
+
+    fireEvent.keyDown(window, { code: 'Space', key: ' ' });
+    expect(screen.getByText('Nhấn Space để gửi')).toBeVisible();
+    expect(screen.queryByText('Nhấn Space để mở mic')).not.toBeInTheDocument();
+
+    fireEvent.keyUp(window, { code: 'Space', key: ' ' });
+    fireEvent.keyDown(window, { code: 'Space', key: ' ' });
+    expect(screen.queryByText('Nhấn Space để gửi')).not.toBeInTheDocument();
+    expect(screen.queryByText('Nhấn Space để mở mic')).not.toBeInTheDocument();
+  });
+
+  it('ignores Space while typing or operating another control', () => {
+    render(<PipecatVoiceProvider sessionId="s1"><input aria-label="Lời nhắn" /><button type="button">Other action</button><VoiceControls /></PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+
+    fireEvent.keyDown(screen.getByRole('textbox', { name: 'Lời nhắn' }), { code: 'Space', key: ' ' });
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Other action' }), { code: 'Space', key: ' ' });
+    fireEvent.keyDown(window, { code: 'Space', key: ' ', ctrlKey: true });
+    expect(sdk.enableMic).not.toHaveBeenCalledWith(true);
+    expect(screen.getByText('MIC ĐANG TẮT')).toBeVisible();
+  });
+
+  it('starts a Lesson before revealing the mic, then swaps mic for Send until the turn is submitted', async () => {
+    const user = userEvent.setup();
+    render(<PipecatVoiceProvider sessionId="s1"><VoiceControls lessonMode /></PipecatVoiceProvider>);
+    expect(screen.getByRole('button', { name: 'Bắt đầu Lesson' })).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Bật mic để nói' })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Bắt đầu Lesson' }));
+    expect(sdk.client.startBotAndConnect).toHaveBeenCalledOnce();
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+    expect(screen.queryByRole('button', { name: 'Bắt đầu Lesson' })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    expect(sdk.enableMic).toHaveBeenLastCalledWith(true);
+    expect(screen.queryByRole('button', { name: 'Bật mic để nói' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Gửi lượt nói' }));
+    expect(sdk.enableMic).toHaveBeenLastCalledWith(false);
+    expect(sdk.client.sendClientMessage).toHaveBeenCalledWith('luna.submit-turn', expect.any(Object));
+    expect(screen.getByRole('button', { name: 'Bật mic để nói' })).toBeDisabled();
+
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+    expect(screen.getByRole('button', { name: 'Bật mic để nói' })).toBeEnabled();
+  });
+
   it('submits Voice only when Gửi is pressed and keeps the mic off until server readiness', async () => {
     const user = userEvent.setup();
     render(<PipecatVoiceProvider sessionId="s1"><VoiceControls /></PipecatVoiceProvider>);
@@ -58,6 +168,22 @@ describe('VoiceControls', () => {
     await waitFor(() => expect(sdk.client.sendClientMessage).toHaveBeenCalledWith(
       'luna.submit-turn', expect.objectContaining({ turn_id: expect.any(String) }),
     ));
+  });
+
+  it('requests Soniox finalization as soon as Gửi is pressed', async () => {
+    const user = userEvent.setup();
+    render(<PipecatVoiceProvider sessionId="s1"><VoiceControls /></PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+    };
+    act(() => callbacks.onTransportStateChanged('ready'));
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } }));
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    await user.click(screen.getByRole('button', { name: 'Gửi' }));
+    expect(sdk.client.sendClientMessage).toHaveBeenCalledWith(
+      'luna.submit-turn', expect.not.objectContaining({ text: expect.any(String) }),
+    );
   });
 
   it('connects muted and waits for a separate mic click after Luna speaks', async () => {

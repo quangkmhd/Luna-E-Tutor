@@ -5,7 +5,6 @@ items:
   say: <en>Hi! Great to see you again! How are you today?</en>
   learner_goal: Học sinh trả lời How are you today? bằng cảm xúc hoặc trạng thái của mình bằng tiếng Anh, ví dụ
     Fine, thank you hoặc I'm tired; không bắt buộc nói mình khỏe.
-  image_url: /images/grade-03/unit-01/lesson-03/04-feelings-review.webp
 - type: practice
   say: |-
     <vi>Hôm nay cô trò mình học cách chào tạm biệt, và chào cho đúng lúc sáng, chiều, tối. Trạm 1: từ mới nhé! [long pause]</vi>
@@ -13,27 +12,28 @@ items:
     <en>Listen first! [long pause] "*GOODBYE*"</en>
     <en>Your turn now! *Goodbye*!</en>
   learner_goal: Học sinh nói từ Goodbye bằng tiếng Anh; không đánh giá trọng âm từ transcript chữ.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V15_goodbye_bye.webp
 - type: practice
   say: |-
     <en>*Bye*</en><vi> cũng là tạm biệt, nhưng ngắn và thân mật hơn — con dùng với bạn bè. [long pause]</vi>
     <en>Listen first! [long pause] "*BYE*"</en>
     <en>Your turn now! *Bye*!</en>
   learner_goal: Học sinh nói từ Bye bằng tiếng Anh trong lượt luyện đúng từ này.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V15_goodbye_bye.webp
 - type: practice
   say: |-
     <vi>Cô phát âm chậm: </vi><en>B-B-BYE.</en><vi> Con mím chặt hai môi rồi bật ra; đặt tay lên cổ — thấy rung không? Đó là âm /b/. [long pause]</vi>
     <en>Now you!</en>
   learner_goal: Học sinh nói từ Bye bằng tiếng Anh sau lời hướng dẫn âm /b/; không đánh giá âm /b/ từ transcript
     chữ.
+  image_url: /images/grade-03/unit-01/lesson-03/P02_b_bye.webp
 - type: practice
   say: |-
     <en>Let's play! Which words start with /h/? Which words start with /b/? [long pause]</en>
     <en>*Hello*… *bye*… *how*… Ben… hi… book.</en>
   learner_goal: Học sinh phân biệt từ bắt đầu bằng /h/ và /b/ bằng cách nói nhóm Hello, How, Hi và nhóm Bye, Ben,
     Book; không suy đoán phát âm từ transcript chữ.
-  image_url: /images/grade-03/unit-01/lesson-03/03-greetings-review.webp
+  image_url: /images/grade-03/unit-01/lesson-03/P03_h_or_b.webp
 - type: practice
   say: |-
     <vi>Khi chia tay và hẹn mai gặp lại — đúng như cô với con mỗi tối — con nói </vi><en>*See you tomorrow*.</en><vi> [long pause]</vi>
@@ -41,7 +41,7 @@ items:
     <en>Your turn now!</en>
   learner_goal: Học sinh nói cụm See you tomorrow bằng tiếng Anh như lời hẹn gặp ngày mai; chỉ Goodbye chưa đạt
     lượt luyện cụm này.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V16_see_you_tomorrow.webp
 - type: practice
   say: |-
     <en>*Good night*</en><vi> là chúc ngủ ngon — con nói lúc CHIA TAY đi ngủ. Còn </vi><en>Good evening</en><vi> là lúc GẶP nhau. Con đừng nhầm nhé! [long pause]</vi>
@@ -49,7 +49,7 @@ items:
     <en>Your turn now! *Good night*!</en>
   learner_goal: Học sinh nói Good night bằng tiếng Anh khi chia tay đi ngủ; Good evening là lời chào lúc gặp nên
     chưa đạt.
-  image_url: /images/grade-03/unit-01/lesson-03/02-greetings-by-time-of-day.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V20_time_of_day.webp
 - type: practice
   say: |-
     <vi>Sáng gặp nhau thì chào </vi><en>*Good morning*</en><vi>, chiều gặp nhau thì chào </vi><en>*Good afternoon*.</en><vi> [long pause]</vi>
@@ -57,43 +57,45 @@ items:
     <en>Your turn now!</en>
   learner_goal: Học sinh nói cả Good morning và Good afternoon bằng tiếng Anh; chỉ một lời chào thì chưa đủ lượt
     luyện hai cụm.
-  image_url: /images/grade-03/unit-01/lesson-03/02-greetings-by-time-of-day.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V20_time_of_day.webp
 - type: practice
   say: |-
     <vi>Khi chia tay, con chào và gọi tên bạn. </vi><en>Listen first! [long pause] "Goodbye, Mai."</en>
     <en>Your turn now!</en>
   learner_goal: Học sinh nói lời tạm biệt phù hợp với Mai, như Goodbye, Mai hoặc Bye, Mai; có thể không gọi tên
     Mai nếu lời tạm biệt đúng tình huống.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V04_ben_mai_minh.webp
 - type: practice
   say: |-
     <en>Listen first! [long pause] "Bye, Ben. See you tomorrow!"</en>
     <en>Your turn now!</en>
   learner_goal: Học sinh đáp lời chia tay Ben bằng Bye hoặc Goodbye; See you tomorrow là phần mở rộng, không bắt
     buộc.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V04_ben_mai_minh.webp
 - type: practice
   say: |-
     <vi>Mình chơi trò chọn câu đúng lúc: cô kể tình huống, con nói câu tiếng Anh hợp nhất nhé! [long pause]</vi>
     <vi>Tình huống 1: Sáng đến lớp, con gặp bạn Minh.</vi>
   learner_goal: Trong tình huống sáng đến lớp gặp Minh, học sinh nói lời chào khi gặp như Hello, Hi hoặc Good morning;
     lời tạm biệt không đạt.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/S01_morning_at_school.webp
 - type: practice
   say: '<vi>Tình huống 2: Hết giờ học, con chia tay bạn Mai.</vi>'
   learner_goal: Trong tình huống hết giờ học chia tay Mai, học sinh nói Goodbye hoặc Bye; có thể thêm See you tomorrow.
+  image_url: /images/grade-03/unit-01/lesson-03/S02_after_school.webp
 - type: practice
   say: '<vi>Tình huống 3: Bạn Ben hỏi con: </vi><en>How are you?</en>'
   learner_goal: Khi Ben hỏi How are you?, học sinh nói một câu trả lời cảm xúc phù hợp bằng tiếng Anh, như Fine,
     thank you hoặc I am happy.
+  image_url: /images/grade-03/unit-01/lesson-03/S03_how_are_you_situation.webp
 - type: practice
   say: '<vi>Tình huống 4: Tối muộn, con chào bố mẹ trước khi đi ngủ.</vi>'
   learner_goal: Khi chào bố mẹ trước lúc đi ngủ, học sinh nói Good night; Bye cũng được chấp nhận theo tình huống
     của bài.
+  image_url: /images/grade-03/unit-01/lesson-03/S04_bedtime.webp
 - type: practice
   say: '<en>Now your turn to *ask* ME! Say: How are you?</en>'
   learner_goal: Học sinh chủ động hỏi Luna How are you? bằng tiếng Anh; có thể gọi tên Luna.
-  image_url: /images/grade-03/unit-01/lesson-03/04-feelings-review.webp
 - type: practice
   say: <en>I'm OK, thank you! Goodbye!</en>
   learner_goal: Học sinh đáp lời tạm biệt Luna bằng Goodbye hoặc Bye; có thể gọi tên Luna.
@@ -102,7 +104,7 @@ items:
     <vi>Trạm 3: cô trò mình nói chuyện trọn vẹn bằng tiếng Anh nhé! </vi><en>Let's have a whole talk — hello to goodbye! [long pause]</en>
     <en>Good evening!</en>
   learner_goal: Học sinh đáp lời chào lúc gặp Luna bằng Good evening, Hello hoặc Hi; chưa chuyển sang lời chia tay.
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/S06_evening_video_call.webp
 - type: practice
   say: <en>How are you today?</en>
   learner_goal: Học sinh trả lời How are you today? bằng cảm xúc hoặc trạng thái thật bằng tiếng Anh; có thể hỏi
@@ -121,32 +123,36 @@ cards:
 - word: goodbye
   pronunciation: /ˌɡʊdˈbaɪ/
   meaning_vi: tạm biệt
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V15_goodbye_bye.webp
 - word: bye
   pronunciation: /baɪ/
   meaning_vi: tạm biệt, chào nhé
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V15_goodbye_bye.webp
 - word: see you tomorrow
   pronunciation: /ˌsiː juː təˈmɑːroʊ/
   meaning_vi: hẹn gặp ngày mai
-  image_url: /images/grade-03/unit-01/lesson-03/01-farewell.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V16_see_you_tomorrow.webp
 - word: good night
   pronunciation: /ˌɡʊd ˈnaɪt/
   meaning_vi: chúc ngủ ngon
-  image_url: /images/grade-03/unit-01/lesson-03/02-greetings-by-time-of-day.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V17_good_night.webp
 - word: good morning
   pronunciation: /ˌɡʊd ˈmɔːrnɪŋ/
   meaning_vi: chào buổi sáng
-  image_url: /images/grade-03/unit-01/lesson-03/02-greetings-by-time-of-day.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V18_good_morning.webp
 - word: good afternoon
   pronunciation: /ˌɡʊd ˌæftərˈnuːn/
   meaning_vi: chào buổi chiều
-  image_url: /images/grade-03/unit-01/lesson-03/02-greetings-by-time-of-day.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V19_good_afternoon.webp
 - word: hello
   pronunciation: /həˈloʊ/
   meaning_vi: xin chào
-  image_url: /images/grade-03/unit-01/lesson-03/03-greetings-review.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V01_hello.webp
 - word: how
   pronunciation: /haʊ/
   meaning_vi: thế nào
-  image_url: /images/grade-03/unit-01/lesson-03/04-feelings-review.webp
+  image_url: /images/grade-03/unit-01/lesson-03/V07_how_are_you.webp
+patterns:
+- Goodbye, Mai.
+- Bye, Ben. See you tomorrow!
+- Good night!

@@ -49,12 +49,20 @@ class JevTurnEvaluator:
             request_id=turn_id,
         )
         answer = envelope.get('answers', {}).get('turn_evaluation')
+        reason = None
+        if not isinstance(answer, dict):
+            reason = 'Missing Jev turn_evaluation choice'
+        elif answer.get('type') != 'choice':
+            reason = 'Invalid Jev turn_evaluation type'
+        elif not isinstance(answer.get('choice'), str):
+            reason = 'Invalid Jev turn_evaluation choice type'
+        if reason is not None:
+            raise InvalidModelOutputError(
+                status_code=200, request_id=turn_id, reason=reason)
         try:
-            if not isinstance(answer, dict) or answer.get('type') != 'choice':
-                raise ValueError('missing choice')
             return TurnEvaluation(answer['choice'])
-        except (KeyError, TypeError, ValueError):
+        except ValueError:
             raise InvalidModelOutputError(
                 status_code=200, request_id=turn_id,
-                reason='Invalid Jev turn evaluation',
+                reason='Unknown Jev turn_evaluation choice',
             ) from None

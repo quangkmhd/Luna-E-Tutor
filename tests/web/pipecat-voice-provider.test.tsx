@@ -52,6 +52,7 @@ describe('PipecatVoiceProvider', () => {
     sdk.startBotAndConnect.mockClear();
     sdk.disconnect.mockClear();
     sdk.sendText.mockClear();
+    sdk.client.sendClientMessage.mockClear();
     sdk.enableMic.mockClear();
     sdk.conversationMessages = [];
     sdk.options = undefined;
@@ -59,6 +60,125 @@ describe('PipecatVoiceProvider', () => {
   });
 
   afterEach(() => vi.useRealTimers());
+
+  it('reveals a saved Google greeting as audio chunks play', async () => {
+    const user = userEvent.setup();
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: '<en>Hello my dear student.</en>' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    const callbacks = sdk.options?.callbacks as {
+      onServerMessage(message: object): void;
+      onBotStartedSpeaking(): void;
+      onBotStoppedSpeaking(): void;
+    };
+    const event = (kind: string, audioMs: number) => ({ event: 'google-tts-caption', payload: {
+      kind, source_id: 1, source_text: '<en>Hello my dear student.</en>',
+      segment_index: 0, segment_text: 'Hello my dear student.', audio_ms: audioMs,
+    } });
+    expect(screen.queryByText('Hello my dear student.')).not.toBeInTheDocument();
+    act(() => callbacks.onServerMessage(event('start', 0)));
+    expect(screen.queryByText('Hello my dear student.')).not.toBeInTheDocument();
+    act(() => callbacks.onServerMessage(event('chunk', 500)));
+    vi.useFakeTimers();
+    act(() => callbacks.onBotStartedSpeaking());
+    act(() => vi.advanceTimersByTime(420));
+    expect(screen.getByText('Hello')).toBeVisible();
+    expect(screen.queryByText('Hello my dear student.')).not.toBeInTheDocument();
+    act(() => callbacks.onServerMessage(event('end', 500)));
+    act(() => callbacks.onBotStoppedSpeaking());
+    expect(screen.getByText('Hello my dear student.')).toBeVisible();
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
+  });
+
+  it('keeps the final word when authored punctuation is not spoken by Google TTS', async () => {
+    const user = userEvent.setup();
+    const sourceText = '<vi>Hôm nay cô trò mình học cách chào hỏi bằng tiếng Anh — gặp ai con cũng biết chào và giới thiệu tên mình.</vi>\n'
+      + '<vi>Con đã biết câu chào tiếng Anh nào chưa?</vi>';
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: sourceText }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    const callbacks = sdk.options?.callbacks as {
+      onServerMessage(message: object): void;
+      onBotStartedSpeaking(): void;
+      onBotStoppedSpeaking(): void;
+    };
+    const event = (kind: string, audioMs: number) => ({ event: 'google-tts-caption', payload: {
+      kind, source_id: 1, source_text: sourceText, segment_index: 0,
+      segment_text: 'Hôm nay cô trò mình học cách chào hỏi bằng tiếng Anh gặp ai con cũng biết chào và giới thiệu tên mình Con đã biết câu chào tiếng Anh nào chưa',
+      audio_ms: audioMs,
+    } });
+    act(() => callbacks.onServerMessage(event('start', 0)));
+    act(() => callbacks.onServerMessage(event('end', 9000)));
+    act(() => callbacks.onBotStartedSpeaking());
+    act(() => callbacks.onBotStoppedSpeaking());
+    expect(screen.getByText('Con đã biết câu chào tiếng Anh nào chưa?')).toBeVisible();
+  });
+
+  it('replays a saved Google line in place after reconnecting', async () => {
+    const user = userEvent.setup();
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={2} savedHasTurn>
+      <ChatPanel messages={[{ role: 'learner', text: 'Hi', turn_id: 'turn-1' },
+        { role: 'teacher', text: '<en>Say hello again.</en>' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    const callbacks = sdk.options?.callbacks as {
+      onServerMessage(message: object): void;
+      onBotStartedSpeaking(): void;
+    };
+    const caption = (kind: string, audioMs: number) => callbacks.onServerMessage({
+      event: 'google-tts-caption', payload: { kind, source_id: 1,
+        source_text: '<en>Say hello again.</en>', segment_index: 0,
+        segment_text: 'Say hello again.', audio_ms: audioMs },
+    });
+    act(() => caption('start', 0));
+    expect(screen.queryByText('Say hello again.')).not.toBeInTheDocument();
+    act(() => caption('chunk', 1000));
+    vi.useFakeTimers();
+    act(() => callbacks.onBotStartedSpeaking());
+    act(() => vi.advanceTimersByTime(450));
+    expect(screen.getByText('Say')).toBeVisible();
+    expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(1);
+  });
+
+  it('does not reveal buffered Google audio after an interruption', async () => {
+    const user = userEvent.setup();
+    render(<PipecatVoiceProvider sessionId="session-7" savedMessageCount={1}>
+      <ChatPanel messages={[{ role: 'teacher', text: '<en>One two three four five six.</en>' }]} />
+      <VoiceControls />
+    </PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    const callbacks = sdk.options?.callbacks as {
+      onServerMessage(message: object): void;
+      onBotStartedSpeaking(): void;
+      onBotStoppedSpeaking(): void;
+      onUserStartedSpeaking(): void;
+    };
+    act(() => callbacks.onServerMessage({ event: 'google-tts-caption', payload: {
+      kind: 'end', source_id: 1, source_text: '<en>One two three four five six.</en>',
+      segment_index: 0, segment_text: 'One two three four five six.', audio_ms: 3000,
+    } }));
+    vi.useFakeTimers();
+    act(() => callbacks.onBotStartedSpeaking());
+    act(() => vi.advanceTimersByTime(450));
+    act(() => callbacks.onUserStartedSpeaking());
+    act(() => callbacks.onBotStoppedSpeaking());
+    expect(screen.getByText('One')).toBeVisible();
+    expect(screen.queryByText('One two three four five six.')).not.toBeInTheDocument();
+  });
+
+  it('shows double asterisk emphasis as bold without displaying the markers', () => {
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[{
+      role: 'teacher', text: '<en>Say **Hello** now.</en>',
+    }]} /></PipecatVoiceProvider>);
+    expect(screen.getByText('Hello', { selector: 'strong' })).toBeVisible();
+    expect(document.querySelector('.bubble-row.teacher p')).toHaveTextContent('Say Hello now.');
+    expect(document.querySelector('.bubble-row.teacher p')).not.toHaveTextContent('**');
+  });
 
   it('leaves Thinking with a retry message when a stopped voice turn produces no response', () => {
     vi.useFakeTimers();
@@ -240,6 +360,33 @@ describe('PipecatVoiceProvider', () => {
     expect(screen.getByRole('button', { name: 'Bật mic để nói' })).toBeDisabled();
   });
 
+  it('resends the saved manual turn after the lesson API rejects it before commit', () => {
+    render(
+      <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
+    );
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: unknown): void;
+      onUserStoppedSpeaking(): void;
+    };
+
+    act(() => callbacks.onTransportStateChanged('ready'));
+    vi.useFakeTimers();
+    act(() => callbacks.onUserStoppedSpeaking());
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-error', payload: {
+      message: 'Luna chưa đánh giá được câu trả lời. Con bấm gửi lại lượt vừa nói nhé.',
+      retryable_turn: true,
+    } }));
+    act(() => callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: false } }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Luna chưa đánh giá được câu trả lời.');
+    expect(screen.getByRole('button', { name: 'Bật mic để nói' })).toBeDisabled();
+    act(() => vi.advanceTimersByTime(30_000));
+    expect(screen.getByRole('alert')).toHaveTextContent('Luna chưa đánh giá được câu trả lời.');
+    act(() => screen.getByRole('button', { name: 'Gửi lại lượt vừa nói' }).click());
+    expect(sdk.client.sendClientMessage).toHaveBeenCalledWith('luna.retry-turn', {});
+  });
+
   it('clears an old recoverable TTS warning when the bot speaks again, but retains a new failure', () => {
     render(
       <PipecatVoiceProvider sessionId="session-7"><VoiceControls /></PipecatVoiceProvider>,
@@ -348,6 +495,34 @@ describe('PipecatVoiceProvider', () => {
     act(() => callbacks.onBotStartedSpeaking());
 
     expect(screen.getByText('2.84s')).toBeInTheDocument();
+    now.mockRestore();
+  });
+
+  it('shows TTFA on the latest Luna bubble after a manually submitted voice turn', async () => {
+    const user = userEvent.setup();
+    const now = vi.spyOn(Date, 'now').mockReturnValue(1_000);
+    render(<PipecatVoiceProvider sessionId="session-7">
+      <ChatPanel messages={[{ role: 'teacher', text: 'Good evening' }]} />
+      <VoiceControls lessonMode />
+    </PipecatVoiceProvider>);
+    const callbacks = sdk.options?.callbacks as {
+      onTransportStateChanged(state: string): void;
+      onServerMessage(message: object): void;
+      onBotStartedSpeaking(): void;
+    };
+
+    act(() => {
+      callbacks.onTransportStateChanged('ready');
+      callbacks.onServerMessage({ event: 'luna-turn-ready', payload: { ready: true } });
+    });
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    await user.click(screen.getByRole('button', { name: 'Gửi lượt nói' }));
+    expect(sdk.client.sendClientMessage).toHaveBeenCalledWith('luna.submit-turn', expect.any(Object));
+    now.mockReturnValue(3_840);
+    act(() => callbacks.onBotStartedSpeaking());
+
+    expect(screen.getByText('Good evening').closest('.bubble')?.querySelector('.speaker'))
+      .toHaveTextContent('Luna2.84s');
     now.mockRestore();
   });
 
@@ -507,6 +682,62 @@ describe('PipecatVoiceProvider', () => {
     expect(document.querySelectorAll('.bubble-row.teacher')).toHaveLength(3);
     expect(screen.getByText('Cô trò mình sang Trạm 1')).toBeVisible();
     expect(screen.queryByText(/học từ mới/)).not.toBeInTheDocument();
+  });
+
+  it('does not duplicate the saved opening image when voice start replays its cue', async () => {
+    const user = userEvent.setup();
+    const opening = "<en>Hi! My name is Luna. I'm your English tutor!</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>\n<en>We're going to practice English together. Ready?</en>";
+    render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[{
+      role: 'teacher', text: opening, image_url: '/images/hello.webp',
+    }]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: {
+        turn_id: null, image_url: '/images/hello.webp', spoken_text: opening,
+      },
+    }));
+
+    expect(screen.getAllByRole('img', { name: 'Hình minh họa cho câu nói của Luna' })).toHaveLength(1);
+    expect(Array.from(document.querySelectorAll('.bubble-row.teacher'), (row) =>
+      row.querySelector('img') ? 'image' : row.querySelector('p')?.textContent,
+    )).toEqual(['image']);
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'tts-provider', payload: { provider: 'soniox' },
+    }));
+    expect(Array.from(document.querySelectorAll('.bubble-row.teacher'), (row) =>
+      row.querySelector('img') ? 'image' : row.querySelector('p')?.textContent,
+    )).toEqual([
+      'image', "Hi! My name is Luna. I'm your English tutor!",
+      'Xin chào con! Cô là Luna, gia sư tiếng Anh của con.',
+      "We're going to practice English together. Ready?",
+    ]);
+  });
+
+  it('does not show the opening image again above a later typed answer', async () => {
+    const user = userEvent.setup();
+    const opening = "<en>Hi! My name is Luna. I'm your English tutor!</en>\n<vi>Xin chào con! Cô là Luna, gia sư tiếng Anh của con.</vi>\n<en>We're going to practice English together. Ready?</en>";
+    const image_url = '/images/hello.webp';
+    const view = render(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[
+      { role: 'teacher', text: opening, image_url },
+    ]} /><VoiceControls /></PipecatVoiceProvider>);
+    await user.click(screen.getByRole('button', { name: 'Bật mic để nói' }));
+    act(() => (sdk.options?.callbacks as { onTransportStateChanged(state: string): void }).onTransportStateChanged('ready'));
+    act(() => (sdk.options?.callbacks as { onServerMessage(message: object): void }).onServerMessage({
+      event: 'teacher-image', payload: { turn_id: null, image_url, spoken_text: opening },
+    }));
+
+    view.rerender(<PipecatVoiceProvider sessionId="session-7"><ChatPanel messages={[
+      { role: 'teacher', text: opening, image_url },
+      { role: 'learner', text: 'yes', turn_id: 'learner-yes' },
+      { role: 'teacher', text: 'Try saying hello to me.' },
+    ]} /><VoiceControls /></PipecatVoiceProvider>);
+
+    expect(screen.getAllByRole('img', { name: 'Hình minh họa cho câu nói của Luna' })).toHaveLength(1);
+    const rows = Array.from(document.querySelectorAll('.bubble-row'));
+    expect(rows.findIndex((row) => row.querySelector('img'))).toBeLessThan(
+      rows.findIndex((row) => row.classList.contains('learner')),
+    );
   });
 
   it('restores authored bubbles when Pipecat reuses an assistant message across barge-in', async () => {
@@ -875,6 +1106,32 @@ describe('PipecatVoiceProvider', () => {
     </PipecatVoiceProvider>);
 
     expect(screen.getAllByText('hello')).toHaveLength(2);
+  });
+
+  it('shows finalized manual voice turns separately when Pipecat groups their transcript parts', () => {
+    sdk.conversationMessages = [{
+      role: 'user', final: false, createdAt: '2026-09-24T14:00:00.000Z',
+      parts: [
+        { text: "Yes, I'm ready.", final: true, createdAt: '2026-09-24T14:00:00.000Z' },
+        { text: 'Hello, Luna.', final: true, createdAt: '2026-09-24T14:00:10.000Z' },
+      ],
+    }];
+    const view = render(<PipecatVoiceProvider sessionId="session-7">
+      <ChatPanel messages={[{ role: 'learner', text: "Yes, I'm ready." }]} />
+    </PipecatVoiceProvider>);
+
+    expect(screen.getAllByText("Yes, I'm ready.")).toHaveLength(1);
+    expect(screen.getAllByText('Hello, Luna.')).toHaveLength(1);
+    expect(screen.queryByText("Yes, I'm ready. Hello, Luna.")).not.toBeInTheDocument();
+
+    view.rerender(<PipecatVoiceProvider sessionId="session-7">
+      <ChatPanel messages={[
+        { role: 'learner', text: "Yes, I'm ready." },
+        { role: 'learner', text: 'Hello, Luna.' },
+      ]} />
+    </PipecatVoiceProvider>);
+    expect(screen.getAllByText("Yes, I'm ready.")).toHaveLength(1);
+    expect(screen.getAllByText('Hello, Luna.')).toHaveLength(1);
   });
 
   it('keeps saved lesson history alongside live Pipecat turns', () => {

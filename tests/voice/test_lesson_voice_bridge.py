@@ -3,14 +3,14 @@ import asyncio
 import httpx
 import pytest
 from pipecat.frames.frames import (
-    BotStoppedSpeakingFrame, ErrorFrame, InputAudioRawFrame, TranscriptionFrame,
+    BotStoppedSpeakingFrame, ErrorFrame, TranscriptionFrame,
     VADUserStoppedSpeakingFrame,
 )
 from pipecat.processors.frame_processor import FrameDirection
 from pipecat.processors.frameworks.rtvi.frames import RTVIClientMessageFrame
 
 from language_tts import LanguageSpeechFinishedFrame
-from lesson_voice_bridge import ManualAudioDrainGate, ScriptedDeliveryObserver, ScriptedVoiceBridge
+from lesson_voice_bridge import ScriptedDeliveryObserver, ScriptedVoiceBridge
 
 
 class API:
@@ -49,6 +49,28 @@ async def test_only_send_finalizes_one_soniox_turn(monkeypatch):
     await bridge.process_frame(final('late duplicate'), FrameDirection.DOWNSTREAM)
     assert [text for text, _ in api.submitted] == ['My name is Quang.']
     assert api.submitted[0][1] == 'stable-id'
+
+
+@pytest.mark.asyncio
+async def test_send_requests_finalize_and_waits_for_soniox_final(monkeypatch):
+    api = API()
+    bridge = ScriptedVoiceBridge(api)
+    bridge.ready = True
+    sent = []
+
+    async def record(frame, direction=FrameDirection.DOWNSTREAM):
+        sent.append((frame, direction))
+
+    monkeypatch.setattr(bridge, 'push_frame', record)
+    monkeypatch.setattr(bridge, 'create_task', lambda coro, **_kw: asyncio.create_task(coro))
+    await bridge.process_frame(RTVIClientMessageFrame(
+        msg_id='one', type='luna.submit-turn',
+        data={'turn_id': 'visible-turn', 'text': "Yes, I'm ready."}),
+        FrameDirection.DOWNSTREAM)
+    assert api.submitted == []
+    assert any(isinstance(frame, VADUserStoppedSpeakingFrame) for frame, _ in sent)
+    await bridge.process_frame(final("Yes, I am ready."), FrameDirection.DOWNSTREAM)
+    assert api.submitted == [('Yes, I am ready.', 'visible-turn')]
 
 
 @pytest.mark.asyncio
@@ -101,6 +123,83 @@ async def test_ambiguous_backend_commit_locks_voice_until_reconnect(monkeypatch)
 
 
 @pytest.mark.asyncio
+async def test_backend_503_retries_captured_transcript_with_same_turn_id(monkeypatch):
+    class RecoveringAPI(API):
+        async def submit(self, text, turn_id):
+            self.submitted.append((text, turn_id))
+            if len(self.submitted) == 1:
+                response = httpx.Response(503, json={'detail': {
+                    'code': 'PROVIDER_UNAVAILABLE', 'message': 'temporarily unavailable',
+                    'retryable': True,
+                }}, request=httpx.Request('POST', 'http://backend/turns'))
+                response.raise_for_status()
+            return {'output': [{'text': 'Try again.', 'kind': 'teacher', 'image_url': None}],
+                    'session': {'objective_id': 'item-1'}}
+
+    api = RecoveringAPI()
+    bridge = ScriptedVoiceBridge(api)
+    bridge.ready = True
+    sent = []
+
+    async def record(frame, direction=FrameDirection.DOWNSTREAM):
+        sent.append(frame)
+
+    monkeypatch.setattr(bridge, 'push_frame', record)
+    monkeypatch.setattr(bridge, 'create_task', lambda coro, **_kw: asyncio.create_task(coro))
+    await bridge.process_frame(RTVIClientMessageFrame(
+        msg_id='one', type='luna.submit-turn', data={'turn_id': 'stable-id'}),
+        FrameDirection.DOWNSTREAM)
+    await bridge.process_frame(final('One, two, three.'), FrameDirection.DOWNSTREAM)
+    assert api.submitted == [('One, two, three.', 'stable-id')] * 2
+    assert any(getattr(frame, 'text', None) == 'Try again.' for frame in sent)
+    assert not any(getattr(frame, 'data', {}).get('event') == 'luna-turn-error'
+                   for frame in sent if hasattr(frame, 'data'))
+
+
+@pytest.mark.asyncio
+async def test_persistent_backend_503_keeps_transcript_for_explicit_retry(monkeypatch):
+    class UnavailableAPI(API):
+        async def submit(self, text, turn_id):
+            self.submitted.append((text, turn_id))
+            if len(self.submitted) > 2:
+                return {'output': [{'text': 'Now letters.', 'kind': 'say', 'image_url': None}],
+                        'session': {'objective_id': 'item-4'}}
+            response = httpx.Response(503, json={'detail': {
+                'code': 'INVALID_EVALUATION', 'message': 'could not assess',
+                'retryable': True,
+            }}, request=httpx.Request('POST', 'http://backend/turns'))
+            response.raise_for_status()
+
+    api = UnavailableAPI()
+    bridge = ScriptedVoiceBridge(api)
+    bridge.ready = True
+    sent = []
+
+    async def record(frame, direction=FrameDirection.DOWNSTREAM):
+        sent.append(frame)
+
+    monkeypatch.setattr(bridge, 'push_frame', record)
+    monkeypatch.setattr(bridge, 'create_task', lambda coro, **_kw: asyncio.create_task(coro))
+    await bridge.process_frame(RTVIClientMessageFrame(
+        msg_id='one', type='luna.submit-turn', data={'turn_id': 'stable-id'}),
+        FrameDirection.DOWNSTREAM)
+    await bridge.process_frame(final('123'), FrameDirection.DOWNSTREAM)
+    assert api.submitted == [('123', 'stable-id')] * 2
+    assert not bridge.ready
+    assert any(getattr(frame, 'data', {}).get('event') == 'luna-turn-error'
+               and 'đánh giá' in frame.data['payload']['message']
+               and frame.data['payload']['retryable_turn'] is True
+               for frame in sent if hasattr(frame, 'data'))
+    assert any(getattr(frame, 'data', {}).get('event') == 'luna-turn-ready'
+               and frame.data['payload']['ready'] is False
+               for frame in sent if hasattr(frame, 'data'))
+    await bridge.process_frame(RTVIClientMessageFrame(
+        msg_id='retry', type='luna.retry-turn', data={}), FrameDirection.DOWNSTREAM)
+    assert api.submitted == [('123', 'stable-id')] * 3
+    assert any(getattr(frame, 'text', None) == 'Now letters.' for frame in sent)
+
+
+@pytest.mark.asyncio
 async def test_delivery_waits_for_last_audio_stop(monkeypatch):
     acknowledgements = []
 
@@ -139,26 +238,3 @@ async def test_tts_error_blocks_delivery_ack_and_requests_reconnect(monkeypatch)
     await observer.process_frame(LanguageSpeechFinishedFrame(), FrameDirection.DOWNSTREAM)
     assert failures == [True]
     assert acknowledgements == []
-
-
-@pytest.mark.asyncio
-async def test_submit_waits_until_incoming_audio_tail_is_drained(monkeypatch):
-    gate = ManualAudioDrainGate(quiet_seconds=0.03)
-    forwarded = []
-
-    async def record(frame, direction=FrameDirection.DOWNSTREAM):
-        forwarded.append(frame)
-
-    monkeypatch.setattr(gate, 'push_frame', record)
-    monkeypatch.setattr(gate, 'create_task', lambda coro, **_kw: asyncio.create_task(coro))
-    audio = InputAudioRawFrame(audio=b'\0\0', sample_rate=16000, num_channels=1)
-    submit = RTVIClientMessageFrame(msg_id='t1', type='luna.submit-turn')
-    await gate.process_frame(audio, FrameDirection.DOWNSTREAM)
-    await gate.process_frame(submit, FrameDirection.DOWNSTREAM)
-    assert submit not in forwarded
-    await asyncio.sleep(0.015)
-    await gate.process_frame(audio, FrameDirection.DOWNSTREAM)
-    await asyncio.sleep(0.022)
-    assert submit not in forwarded
-    await asyncio.sleep(0.025)
-    assert forwarded[-1] is submit
