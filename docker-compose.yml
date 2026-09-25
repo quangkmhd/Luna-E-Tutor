@@ -26,6 +26,8 @@ services:
       - PIPECAT_ALLOWED_ORIGINS=${PIPECAT_ALLOWED_ORIGINS:-*}
       - PIPECAT_ICE_SERVERS=${PIPECAT_ICE_SERVERS:-}
       - TUTOR_API_URL=http://127.0.0.1:${BACKEND_PORT:-8090}
+    volumes:
+      - ../files/gg.json:/app/gg.json:ro
     network_mode: host
 
   talk:
