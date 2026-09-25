@@ -8,7 +8,7 @@ items:
     <en>We're going to practice speaking English together. Ready?</en>
   learner_goal: Học sinh xác nhận đã sẵn sàng bắt đầu, chẳng hạn Ready, Yes, OK hoặc Vâng, Dạ. Chỉ chào lại
     mà chưa trả lời câu hỏi Ready thì chưa đạt.
-  image_url: /images/grade-03/unit-01/lesson-01/C01_tom.webp
+  image_url: /images/grade-03/unit-01/lesson-01/C00_luna_intro.webp
 - type: practice
   say: |-
     <vi>Hôm nay cô trò mình học cách chào hỏi bằng tiếng Anh — gặp ai con cũng biết chào và giới thiệu tên mình.</vi>
@@ -70,6 +70,12 @@ items:
   image_url: /images/grade-03/unit-01/lesson-01/V03_im_mai.webp
 - type: practice
   say: |-
+    <en>Well done! Look here now.</en>
+    <en>Meet your book friends: Ben, Mai, Minh!</en>
+  learner_goal: Học sinh nhắc lại tên ba nhân vật Ben, Mai, Minh; không đánh giá phát âm tên riêng từ transcript chữ.
+  image_url: /images/grade-03/unit-01/lesson-01/V04_ben_mai_minh.webp
+- type: practice
+  say: |-
     <en>"*Good evening*"</en><vi> [long pause] là chào buổi tối — chúng ta dùng chào nhau lúc gặp nhau vào buổi tối.</vi>
     <en>Listen first! [long pause] "*Good evening*"</en>
     <en>Your turn now! [long pause] "*Good evening*"!</en>
@@ -91,7 +97,7 @@ items:
     <vi>Con nói hai lời chào phù hợp theo đúng thứ tự để mở cả hai cửa nào!</vi>
   learner_goal: 'Học sinh nói hai lời chào theo đúng thứ tự: Hi hoặc Hello cho bạn thân, rồi Good evening khi gặp
     Luna buổi tối. Thiếu một lời chào hoặc đảo thứ tự thì chưa đạt.'
-  image_url: /images/grade-03/unit-01/lesson-01/G01_greeting_game.webp
+  image_url: /images/grade-03/unit-01/lesson-01/G01_two_door_greeting.webp
 - type: practice
   say: |-
     <vi>Có từ rồi, giờ cô trò mình ghép từ thành câu — con sẽ biết nói câu này vào lúc nào. [long pause]</vi>
@@ -104,7 +110,6 @@ items:
   say: <en>Listen first! [long pause] "Hello. I'm Minh." [long pause] Your turn now!</en>
   learner_goal: Học sinh nói lời chào Hi hoặc Hello rồi giới thiệu đúng tên Minh bằng I'm Minh như mẫu vừa nghe.
     Chỉ nói tên riêng thì chưa đạt.
-  image_url: /images/grade-03/unit-01/lesson-01/V04_ben_mai_minh.webp
 - type: practice
   say: <en>Now say YOUR name! [long pause] "Hi. I'm Luna." Your turn!</en>
   learner_goal: Học sinh giới thiệu tên thật hoặc tên tự chọn của mình bằng I'm [tên]; có thể thêm Hi hoặc Hello
